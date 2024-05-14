@@ -15,36 +15,38 @@
 #' @param legend_title A title for the legend. Defaults to "Sample ID"
 #'
 #' @return a ggplot2 object
-plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID"){
-  if(!('sample_id' %in% colnames(ftir) & 'wavenumber' %in% colnames(ftir))){
+plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
+  if (!("sample_id" %in% colnames(ftir) & "wavenumber" %in% colnames(ftir))) {
     cli::cli_abort(c("{.arg ftir} is missing column(s).", i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."))
   }
-  if('absorbance' %in% colnames(ftir) & 'transmittance' %in% colnames(ftir)){
+  if ("absorbance" %in% colnames(ftir) & "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
-  if(any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))){
+  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns named {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
 
-  mode = ifelse('absorbance' %in% colnames(ftir), "absorbance", "transmittance")
+  mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
 
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
-  
-  if(mode == "absorbance"){
+
+  if (mode == "absorbance") {
     ftir$absorbance <- as.numeric(ftir$absorbance)
   } else {
     ftir$transmittance <- as.numeric(ftir$transmittance)
   }
-  
+
   p <- ggplot2::ggplot(ftir) +
     ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id))) +
     ggplot2::scale_x_reverse() +
-    ggplot2::labs(title = plot_title, x = bquote('Wavenumber'~(cm^-1)),
-                  y = ifelse(mode == 'absorbance', 'Absorbance', 'Transmission')) +
-    ggplot2::guides(color=ggplot2::guide_legend(title=legend_title)) +
+    ggplot2::labs(
+      title = plot_title, x = bquote("Wavenumber" ~ (cm^-1)),
+      y = ifelse(mode == "absorbance", "Absorbance", "Transmission")
+    ) +
+    ggplot2::guides(color = ggplot2::guide_legend(title = legend_title)) +
     ggplot2::theme_minimal()
-  
+
   return(p)
 }
 
@@ -64,50 +66,54 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'
 #' @inherit plot_ftir_core return
 #' @export
-#' 
+#'
 #' @examples
 #' # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #' plot_ftir_stacked(biodiesel)
-#' 
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10){
-  if(!('sample_id' %in% colnames(ftir) & 'wavenumber' %in% colnames(ftir))){
+#'
+plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10) {
+  if (!("sample_id" %in% colnames(ftir) & "wavenumber" %in% colnames(ftir))) {
     cli::cli_abort(c("{.arg ftir} is missing column(s).", i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."))
   }
-  if('absorbance' %in% colnames(ftir) & 'transmittance' %in% colnames(ftir)){
+  if ("absorbance" %in% colnames(ftir) & "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
-  if(any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))){
+  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns named {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
-  
-  mode = ifelse('absorbance' %in% colnames(ftir), "absorbance", "transmittance")
-  
+
+  mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+
   # Stack FTIR traces by 10% of range number of unique samples
   stack_samples <- unique(ftir$sample_id)
   nsamples <- length(unique(stack_samples))
-  
-  if(nsamples > 1){
-    if(mode == "absorbance"){
-      #Transmittance gets an offset of stack_offset % against a percentage scale
-      #for absorbance, most signals max out around 2 so that's the range.
-      stack_offset <- (stack_offset/100) * 2.0
+
+  if (nsamples > 1) {
+    if (mode == "absorbance") {
+      # Transmittance gets an offset of stack_offset % against a percentage scale
+      # for absorbance, most signals max out around 2 so that's the range.
+      stack_offset <- (stack_offset / 100) * 2.0
     }
-    offset <- data.frame("sample_id" = stack_samples,
-                     "offset" = seq(from=0, by=stack_offset, length.out = nsamples))
-    
+    offset <- data.frame(
+      "sample_id" = stack_samples,
+      "offset" = seq(from = 0, by = stack_offset, length.out = nsamples)
+    )
+
     ftir <- dplyr::left_join(ftir, offset, by = "sample_id")
-    if (mode == "absorbance"){
+    if (mode == "absorbance") {
       ftir$absorbance <- ftir$absorbance + ftir$offset
     } else {
       ftir$transmittance <- ftir$transmittance + ftir$offset
     }
     ftir$offset <- NULL
   }
-  
-  p<-plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
-  
-  p <- p + ggplot2::theme(axis.text.y=ggplot2::element_blank(),
-                          axis.ticks.y=ggplot2::element_blank()) 
+
+  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
+
+  p <- p + ggplot2::theme(
+    axis.text.y = ggplot2::element_blank(),
+    axis.ticks.y = ggplot2::element_blank()
+  )
 
   return(p)
 }
@@ -116,29 +122,29 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #' Plot FTIR Spectra Overlaid
 #'
 #' @description
-#' Produce a basic spectra overlay plot for all samples found in the ftir dataset provided. 
-#' 
+#' Produce a basic spectra overlay plot for all samples found in the ftir dataset provided.
+#'
 #' @inherit plot_ftir_core params return
 #' @export
 #'
 #' @examples
 #' # Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
 #' plot_ftir(sample_spectra)
-#' 
-plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID"){
-  if(!('sample_id' %in% colnames(ftir) & 'wavenumber' %in% colnames(ftir))){
+#'
+plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
+  if (!("sample_id" %in% colnames(ftir) & "wavenumber" %in% colnames(ftir))) {
     cli::cli_abort(c("{.arg ftir} is missing column(s).", i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."))
   }
-  if('absorbance' %in% colnames(ftir) & 'transmittance' %in% colnames(ftir)){
+  if ("absorbance" %in% colnames(ftir) & "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
-  if(any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))){
+  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns named {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
-  
-  mode = ifelse('absorbance' %in% colnames(ftir), "absorbance", "transmittance")
-  
+
+  mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
-  
+
   return(p)
 }

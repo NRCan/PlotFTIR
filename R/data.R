@@ -1,4 +1,4 @@
-#data 
+# data
 
 #' FTIR example data
 #'
