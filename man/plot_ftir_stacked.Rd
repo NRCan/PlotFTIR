@@ -13,26 +13,52 @@ plot_ftir_stacked(
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`,
-`wavenumber`, `absorbance` The `absorbance` column may be replaced by a
-`transmittance` column for transmittance plots. The code determines the correct
-y axis units and labels the plot/adjusts the margins appropriately.}
+ `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by a
+ `transmittance` column for transmittance plots. The code determines the
+ correct y axis units and labels the plot/adjusts the margins appropriately.
 
-\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra"}
+ Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`, et
+ `absorbance`. La colonne `absorbance` peut être remplacée par une colonne
+ `transmittance` pour les tracés de transmission. Le code détermine les
+ unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
+ manière appropriée.}
 
-\item{legend_title}{A title for the legend. Defaults to "Sample ID"}
+\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra".
 
-\item{stack_offset}{the amount in percentage of stacking offset to use. For
-transmittance this is directly linked to the units of Y axis, for
-absorbance this is about 0.2 absorbance units}
+ Un titre pour une trace. La valeur par défaut est «FTIR Spectra».}
+
+\item{legend_title}{A title for the legend. Defaults to "Sample ID".
+
+ Un titre pour la légende. La valeur par défaut est «Sample ID».}
+
+\item{stack_offset}{The amount in percentage of stacking offset to use. For
+ transmittance this is directly linked to the units of Y axis, for absorbance
+ this is about 0.2 absorbance units.
+
+ Le montant en pourcentage de décalage d'empilement à utiliser. Pour
+ transmittance ceci est directement lié aux unités de l'axe Y, pour
+ l'absorbance cela représente environ 0,2 unités d'absorbance.}
 }
 \value{
-a ggplot2 object
+a ggplot object containing a  FTIR spectral plot. The plot and legend
+ titles are as provided, with each sample provided a different default color
+ from ggplot2.
+
+ un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé
+ et de la légende sont tels que fournis, chaque échantillon étant doté d'une
+ couleur par défaut différente de celle de ggplot2.
 }
 \description{
 Plot the FTIR spectra in a journal prepared format. It may be
-  desirable to plot spectra 'stacked and offset' by a certain amount. In this
-  case the Y axis becomes non-labelled and each charts baseline (0 for
-  absorbance or 100 for transmittance) is offset by a certain amount.
+ desirable to plot spectra 'stacked and offset' by a certain amount. In this
+ case the Y axis becomes non-labelled and each charts baseline (0 for
+ absorbance or 100 for transmittance) is offset by a certain amount.
+
+ Tracez les spectres FTIR dans un format préparé par un journal. C'est
+ possible souhaitable pour tracer les spectres 'empilés et décalés' d'une
+ certaine quantité. Dans ce cas l'axe Y devient non étiqueté et
+ chaque ligne de base du graphique (0 pour absorbance ou 100 pour la
+ transmission) est compensée d'une certaine quantité.
 }
 \examples{
 # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset

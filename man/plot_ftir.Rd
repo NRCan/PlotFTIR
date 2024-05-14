@@ -8,19 +8,39 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`,
-`wavenumber`, `absorbance` The `absorbance` column may be replaced by a
-`transmittance` column for transmittance plots. The code determines the correct
-y axis units and labels the plot/adjusts the margins appropriately.}
+ `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by a
+ `transmittance` column for transmittance plots. The code determines the
+ correct y axis units and labels the plot/adjusts the margins appropriately.
 
-\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra"}
+ Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`, et
+ `absorbance`. La colonne `absorbance` peut être remplacée par une colonne
+ `transmittance` pour les tracés de transmission. Le code détermine les
+ unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
+ manière appropriée.}
 
-\item{legend_title}{A title for the legend. Defaults to "Sample ID"}
+\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra".
+
+ Un titre pour une trace. La valeur par défaut est «FTIR Spectra».}
+
+\item{legend_title}{A title for the legend. Defaults to "Sample ID".
+
+ Un titre pour la légende. La valeur par défaut est «Sample ID».}
 }
 \value{
-a ggplot2 object
+a ggplot object containing a  FTIR spectral plot. The plot and legend
+ titles are as provided, with each sample provided a different default color
+ from ggplot2.
+
+ un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé
+ et de la légende sont tels que fournis, chaque échantillon étant doté d'une
+ couleur par défaut différente de celle de ggplot2.
 }
 \description{
-Produce a basic spectra overlay plot for all samples found in the ftir dataset provided.
+Produce a basic spectra overlay plot for all samples found in
+the ftir dataset provided.
+
+Produisez un tracé de superposition de spectres de base pour tous les
+échantillons trouvés dans l'ensemble de données ftir fourni.
 }
 \examples{
 # Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
