@@ -5,26 +5,27 @@
 \alias{sample_spectra}
 \title{FTIR example data}
 \format{
-The data is in long format, ready for use, and as such has the following variables:
+The data is in long format, ready for use, and as such has the
+  following variables:
 
-\describe{
-  \item `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1)
-  \item `absorbance` The absorbance of the sample at each specified wavenumber
-  \item `sample_id` Sample ID of the various included spectra. See below for descriptions
-}
+    * `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1).
+    * `absorbance` The absorbance of the sample at each specified wavenumber.
+    * `sample_id` Sample ID of the various included spectra. See below for descriptions.
 }
 \usage{
 sample_spectra
 }
 \description{
-This dataset hold example data from an ATR type FTIR instrument. 
+This dataset holds example data from ATR type FTIR instruments.
+Solvents were collected on 5-Bounce ZnSe ATR-FTIR and solids were collected
+on a 1-Bounce Diamond ATR-FTIR.
 
 
 The samples included in this data set are:
-\itemize{
- \item `toluene` a FTIR spectra of toluene
- \item `ethanol` a FTIR spectra of ethanol
- \item `diesel` a FTIR spectra of a commercially available B0 diesel fuel from the Canadian market
-}
+   * `toluene` a FTIR spectra of toluene.
+   * `isopropanol` a FTIR spectra of isopropanol.
+   * `heptanes` a FTIR spectra of heptanes.
+   * `paper` a FTIR spectra of a commercially available white paper.
+   * `polystyrene` a FTIR spectra of polystyrene film.
 }
 \keyword{datasets}

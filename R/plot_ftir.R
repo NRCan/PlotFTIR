@@ -3,11 +3,12 @@
 
 #' Plot FTIR core plot generator
 #'
-#' @description
-#' Plot the FTIR spectra in a journal prepared format. This is a simple plot only
+#' @description Plot the FTIR spectra in a journal prepared format. This is a
+#' simple plot only
 #'
-#' @param ftir A data.frame in long format with columns `sample_id`, `wavenumber`, `absorbance`
-#' The `absorbance` column may be replaced by a `transmittance` column for transmittance plots.
+#' @param ftir A data.frame in long format with columns `sample_id`,
+#'   `wavenumber`, `absorbance` The `absorbance` column may be replaced by a
+#'   `transmittance` column for transmittance plots.
 #' @param plot_title A title for a plot. Defaults to "FTIR Spectra"
 #' @param legend_title A title for the legend. Defaults to "Sample ID"
 #'
@@ -48,16 +49,17 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 
 
 #' Plot FTIR in stacked format
-#' 
-#' @description
-#' Plot the FTIR spectra in a journal prepared format. It may be desirable to plot spectra 'stacked and offset' by a certain amount. In this case
-#' the Y axis becomes non-labelled and each charts baseline (0 for absorbance or 100 for transmittance) is
-#' offset by a certain amount.  
-#' 
 #'
-#' @inheritParams plot_ftir_core 
-#' @param stack_offset the amount in percentage of stacking offset to use. For transmittance this is directly linked to the 
-#' units of Y axis, for absorbance this is about 0.2 absorbance units
+#' @description Plot the FTIR spectra in a journal prepared format. It may be
+#'   desirable to plot spectra 'stacked and offset' by a certain amount. In this
+#'   case the Y axis becomes non-labelled and each charts baseline (0 for
+#'   absorbance or 100 for transmittance) is offset by a certain amount.
+#'
+#'
+#' @inheritParams plot_ftir_core
+#' @param stack_offset the amount in percentage of stacking offset to use. For
+#'   transmittance this is directly linked to the units of Y axis, for
+#'   absorbance this is about 0.2 absorbance units
 #'
 #' @return a ggplot2 object
 #' @export
@@ -74,8 +76,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
   
   mode = ifelse('absorbance' %in% colnames(ftir), "absorbance", "transmittance")
   
-  # Stack ftir traces by 10% of range
-  # number of unique samples 
+  # Stack FTIR traces by 10% of range number of unique samples
   stack_samples <- unique(ftir$sample_id)
   nsamples <- length(unique(stack_samples))
   

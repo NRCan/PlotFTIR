@@ -7,8 +7,9 @@
 plot_ftir_core(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`, `absorbance`
-The `absorbance` column may be replaced by a `transmittance` column for transmittance plots.}
+\item{ftir}{A data.frame in long format with columns `sample_id`,
+`wavenumber`, `absorbance` The `absorbance` column may be replaced by a
+`transmittance` column for transmittance plots.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra"}
 
@@ -18,5 +19,6 @@ The `absorbance` column may be replaced by a `transmittance` column for transmit
 a ggplot2 object
 }
 \description{
-Plot the FTIR spectra in a journal prepared format. This is a simple plot only
+Plot the FTIR spectra in a journal prepared format. This is a
+simple plot only
 }

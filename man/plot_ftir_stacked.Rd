@@ -12,21 +12,24 @@ plot_ftir_stacked(
 )
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`, `absorbance`
-The `absorbance` column may be replaced by a `transmittance` column for transmittance plots.}
+\item{ftir}{A data.frame in long format with columns `sample_id`,
+`wavenumber`, `absorbance` The `absorbance` column may be replaced by a
+`transmittance` column for transmittance plots.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra"}
 
 \item{legend_title}{A title for the legend. Defaults to "Sample ID"}
 
-\item{stack_offset}{the amount in percentage of stacking offset to use. For transmittance this is directly linked to the 
-units of Y axis, for absorbance this is about 0.2 absorbance units}
+\item{stack_offset}{the amount in percentage of stacking offset to use. For
+transmittance this is directly linked to the units of Y axis, for
+absorbance this is about 0.2 absorbance units}
 }
 \value{
 a ggplot2 object
 }
 \description{
-Plot the FTIR spectra in a journal prepared format. It may be desirable to plot spectra 'stacked and offset' by a certain amount. In this case
-the Y axis becomes non-labelled and each charts baseline (0 for absorbance or 100 for transmittance) is
-offset by a certain amount.
+Plot the FTIR spectra in a journal prepared format. It may be
+  desirable to plot spectra 'stacked and offset' by a certain amount. In this
+  case the Y axis becomes non-labelled and each charts baseline (0 for
+  absorbance or 100 for transmittance) is offset by a certain amount.
 }
