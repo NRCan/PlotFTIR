@@ -3,5 +3,6 @@
 export("%>%")
 export(plot_ftir)
 export(plot_ftir_stacked)
+export(zoom_in_on_range)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
