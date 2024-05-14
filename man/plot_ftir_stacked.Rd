@@ -14,7 +14,8 @@ plot_ftir_stacked(
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`,
 `wavenumber`, `absorbance` The `absorbance` column may be replaced by a
-`transmittance` column for transmittance plots.}
+`transmittance` column for transmittance plots. The code determines the correct
+y axis units and labels the plot/adjusts the margins appropriately.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra"}
 
@@ -32,4 +33,9 @@ Plot the FTIR spectra in a journal prepared format. It may be
   desirable to plot spectra 'stacked and offset' by a certain amount. In this
   case the Y axis becomes non-labelled and each charts baseline (0 for
   absorbance or 100 for transmittance) is offset by a certain amount.
+}
+\examples{
+# Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
+plot_ftir_stacked(biodiesel)
+
 }
