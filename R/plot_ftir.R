@@ -1,9 +1,9 @@
 # Plot FTIR Spectra
 
 
-#'PlotFTIR core plot generator
+#' PlotFTIR core plot generator
 #'
-#'@description Plot the FTIR spectra in a journal prepared format. This is the
+#' @description Plot the FTIR spectra in a journal prepared format. This is the
 #'  core plot code, please call [plot_ftir()] for basic (overlaid) plots and
 #'  [plot_ftir_stacked()] for stacked and offset plots.
 #'
@@ -12,7 +12,7 @@
 #'  base (superposés) et [plot_ftir_stacked()] pour les tracés empilés et
 #'  décalés.
 #'
-#'@param ftir A data.frame in long format with columns `sample_id`,
+#' @param ftir A data.frame in long format with columns `sample_id`,
 #'  `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by a
 #'  `transmittance` column for transmittance plots. The code determines the
 #'  correct y axis units and labels the plot/adjusts the margins appropriately.
@@ -23,15 +23,15 @@
 #'  unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
 #'  manière appropriée.
 #'
-#'@param plot_title A title for a plot. Defaults to "FTIR Spectra".
+#' @param plot_title A title for a plot. Defaults to "FTIR Spectra".
 #'
 #'  Un titre pour une trace. La valeur par défaut est «FTIR Spectra».
 #'
-#'@param legend_title A title for the legend. Defaults to "Sample ID".
+#' @param legend_title A title for the legend. Defaults to "Sample ID".
 #'
 #'  Un titre pour la légende. La valeur par défaut est «Sample ID».
 #'
-#'@return a ggplot object containing a  FTIR spectral plot. The plot and legend
+#' @return a ggplot object containing a  FTIR spectral plot. The plot and legend
 #'  titles are as provided, with each sample provided a different default color
 #'  from ggplot2.
 #'
@@ -59,14 +59,13 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id)))
-
   } else {
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id)))
   }
 
-    p <- p +
+  p <- p +
     ggplot2::scale_x_reverse() +
     ggplot2::labs(
       title = plot_title, x = bquote("Wavenumber" ~ (cm^-1)),
@@ -79,9 +78,9 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 }
 
 
-#'Plot FTIR in stacked format
+#' Plot FTIR in stacked format
 #'
-#'@description Plot the FTIR spectra in a journal prepared format. It may be
+#' @description Plot the FTIR spectra in a journal prepared format. It may be
 #'  desirable to plot spectra 'stacked and offset' by a certain amount. In this
 #'  case the Y axis becomes non-labelled and each charts baseline (0 for
 #'  absorbance or 100 for transmittance) is offset by a certain amount.
@@ -92,8 +91,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'  chaque ligne de base du graphique (0 pour absorbance ou 100 pour la
 #'  transmission) est compensée d'une certaine quantité.
 #'
-#'@inheritParams plot_ftir_core
-#'@param stack_offset The amount in percentage of stacking offset to use. For
+#' @inheritParams plot_ftir_core
+#' @param stack_offset The amount in percentage of stacking offset to use. For
 #'  transmittance this is directly linked to the units of Y axis, for absorbance
 #'  this is about 0.2 absorbance units.
 #'
@@ -101,8 +100,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'  transmittance ceci est directement lié aux unités de l'axe Y, pour
 #'  l'absorbance cela représente environ 0,2 unités d'absorbance.
 #'
-#'@inherit plot_ftir_core return
-#'@export
+#' @inherit plot_ftir_core return
+#' @export
 #'
 #' @examples
 #' # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset

@@ -32,7 +32,7 @@ You can install the development version of PlotFTIR from [GitHub](https://github
 devtools::install_github("pbulsink/PlotFTIR")
 ```
 
-## Example
+## Example Plots
 
 This is a basic example which shows you how to plot a prepared set of FTIR spectra:
 
@@ -46,12 +46,33 @@ We can also plot spectra in a stacked/offset manner instead of overlaid:
 plot_ftir_stacked(biodiesel)
 ```
 
+Plots can be manipulated, for example, by zooming in on a range:
+```{r biodiesel_zoom_en}
+# Generate a plot
+biodiesel_plot <- plot_ftir(biodiesel)
+# Zoom to a specified range of 1850 to 1650 cm^-1
+zoom_in_on_range(biodiesel_plot, c(1650, 1850))
+```
+
 ## Data Sets
 
 The package contains two datasets to provide example spectra for plotting:
 * `biodiesel` is a set of diesels with 0 to 10 % FAMES (biodiesel) content, plus two known and one unknown diesel spectra.
 * `sample_spectra` is a set of random FTIR spectra which includes spectra of pure toluene, isopropanol, and heptanes, as well as white printer paper and a polystyrene film.
 
+An example of the `biodiesel` data set is below:
+```{r biodiesel_head_en}
+head(biodiesel)
+```
+
+## Data Manipulation
+
+FTIR spectral data can be converted between absorbance and transmittance. Only one type of data can exist in a data.frame and be plotted. The functions `absorbance_to_transmittance()` and `transmittance_to_absorbance()` perform these conversions.
+
+```{r convert_datatype_en}
+biodiesel_transm <- absorbance_to_transmittance(biodiesel)
+head(biodiesel_transm)
+```
 
 ## Code of Conduct
 
@@ -62,7 +83,7 @@ Please note that the PlotFTIR project is released with a [Contributor Code of Co
 
 ## Introduction et installation
 
-L'objectif de PlotFTIR est de démarrer facilement et rapidement la production de tracés spectraux FTIR de qualité journal dans R à l'aide de ggplot2. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ggplot2.
+L'objectif de PlotFTIR est de démarrer facilement et rapidement la production des tracés spectraux FTIR de qualité journal dans R à l'aide de ggplot2. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ggplot2.
 
 Vous pouvez installer la version de développement de PlotFTIR depuis [GitHub](https://github.com/) avec :
 
@@ -71,7 +92,7 @@ Vous pouvez installer la version de développement de PlotFTIR depuis [GitHub](h
 devtools::install_github("pbulsink/PlotFTIR")
 ```
 
-## Exemple
+## Exemples des tracés
 Ceci est un example de base qui vous montre comment tracer un ensemble prépar de spectres FTIR:
 
 ```{r basic_plot_fr}
@@ -84,12 +105,33 @@ Nous pouvons également tracer les spectres de manière empilée/décalée au li
 plot_ftir_stacked(biodiesel)
 ```
 
-## Ensembles de données
+Les tracés peuvent être manipulés, par exemple, en zoomant sur une plage :
+```{r biodiesel_zoom_fr}
+# Générer un tracé
+biodiesel_trace <- plot_ftir(biodiesel)
+# Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
+zoom_in_on_range(biodiesel_trace, c(1650, 1850))
+```
+
+## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples de spectres à tracer :
 * `biodiesel` est un ensemble de diesels avec une teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de diesel connus et un inconnu.
 * `sample_spectra` est un ensemble de spectres FTIR aléatoires qui comprennent des spectres de toluène pur, d'isopropanol et d'heptanes, ainsi que du papier d'imprimante blanc et un film de polystyrène.
 
+Un exemple de l'ensemble de données `biodiesel` est ci-dessous:
+```{r biodiesel_head_fr}
+head(biodiesel)
+```
+
+## Manipulation de données
+
+Les données spectrales FTIR peuvent être converties entre l'absorbance et la transmission. Un seul type de données peut exister dans un data.frame et être tracé. Les fonctions `absorbance_to_transmittance()` et `transmittance_to_absorbance()` effectuent ces conversions.
+
+```{r convert_datatype_fr}
+biodiesel_transm <- absorbance_to_transmittance(biodiesel)
+head(biodiesel_transm)
+```
 
 ## Code de conduite
 

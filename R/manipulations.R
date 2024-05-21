@@ -66,23 +66,23 @@
 #'
 #' @examples
 #' # Generate a plot
-#' biodiesel_plot<-plot_ftir(biodiesel)
+#' biodiesel_plot <- plot_ftir(biodiesel)
 #'
 #' # Zoom to a specified range of 1850 to 1650 cm^-1
 #' zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
-  if(!(inherits(ftir_spectra_plot, "ggplot"))){
+  if (!(inherits(ftir_spectra_plot, "ggplot"))) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided a {.cls {class ftir_spectra_plot}}")
   }
 
-  if(!(length(zoom_range) == 2)){
+  if (!(length(zoom_range) == 2)) {
     cli::cli_abort("{.arg zoom_range} must be a numeric vector of length two.")
   }
-  if(!all(is.numeric(zoom_range))){
+  if (!all(is.numeric(zoom_range))) {
     cli::cli_abort("{.arg zoom_range} must be numeric values")
   }
 
-  if(any(zoom_range < 400) | any(zoom_range > 4000)) {
+  if (any(zoom_range < 400) | any(zoom_range > 4000)) {
     cli::cli_abort("{.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
