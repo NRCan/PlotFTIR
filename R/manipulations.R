@@ -1,40 +1,3 @@
-# Tracking Excel File manipulations:
-
-# ftir <- tidyr::pivot_longer(ftir, cols = !wavenumber, names_to = 'sample_id', values_to = 'absorbance', cols_vary = 'slowest')
-# ftir <- ftir[complete.cases(ftir), ]
-# ftir$absorbance <- as.numeric(ftir$absorbance)
-# ftir$wavenumber <- as.numeric(ftir$wavenumber)
-#
-# remove_diamond_phonon_range <- function(ftir_spectra_plot, phonon_range = c(1900,2600), add_separators = TRUE) {
-#   if(!(inherits(ftir_spectra_plot, "ggplot"))){
-#     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided a {.cls {class ftir_spectra_plot}}")
-#   }
-#
-#   if(!(length(phonon_range) == 2)){
-#     cli::cli_abort("{.arg phonon_range} must be a numeric vector of length two.")
-#   }
-#   if(!all(is.numeric(phonon_range))){
-#     cli::cli_abort("{.arg phonon_range} must be numeric values")
-#   }
-#
-#   if(any(phonon_range < 400) | any(phonon_range > 4000)) {
-#     cli::cli_abort("{.arg phonon_range} must be values between 400 and 4000 cm^-1.")
-#   }
-#
-#   p <- ftir_spectra_plot +
-#     ggplot2::guides(x = ggh4x::guide_axis_truncated(trunc_lower = c(-Inf, min(phonon_range)),
-#                                                     trunc_upper = c(max(phonon_range), Inf)))
-#
-#   if(add_separators){
-#     # from https://stackoverflow.com/questions/69534248/how-can-i-make-a-discontinuous-axis-in-r-with-ggplot2#comment123383897_69800825
-#     p <- p +
-#       ggplot2::annotate("text", y = -Inf, x = phonon_range, label = "/") +
-#       ggplot2::coord_cartesian(clip = "off")
-#   }
-#
-#   return(p)
-# }
-
 #' Zoom in on a spectral range
 #'
 #' @description It's common to be interested in only a small portion of the FTIR
@@ -82,7 +45,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("{.arg zoom_range} must be numeric values")
   }
 
-  if (any(zoom_range < 400) | any(zoom_range > 4000)) {
+  if (any(zoom_range < 400) || any(zoom_range > 4000)) {
     cli::cli_abort("{.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
