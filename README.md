@@ -26,7 +26,7 @@ You can install the development version of PlotFTIR from
 devtools::install_github("pbulsink/PlotFTIR")
 ```
 
-## Example
+## Example Plots
 
 This is a basic example which shows you how to plot a prepared set of
 FTIR spectra:
@@ -46,6 +46,19 @@ plot_ftir_stacked(biodiesel)
 
 <img src="man/figures/README-stack_plot_en-1.png" width="100%" />
 
+Plots can be manipulated, for example, by zooming in on a range:
+
+``` r
+# Generate a plot
+biodiesel_plot<-plot_ftir(biodiesel)
+# Zoom to a specified range of 1850 to 1650 cm^-1
+zoom_in_on_range(biodiesel_plot, c(1650, 1850))
+#> Warning: Removed 18304 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
+```
+
+<img src="man/figures/README-biodiesel_zoom_en-1.png" width="100%" />
+
 ## Data Sets
 
 The package contains two datasets to provide example spectra for
@@ -54,6 +67,38 @@ plotting: \* `biodiesel` is a set of diesels with 0 to 10 % FAMES
 `sample_spectra` is a set of random FTIR spectra which includes spectra
 of pure toluene, isopropanol, and heptanes, as well as white printer
 paper and a polystyrene film.
+
+An example of the `biodiesel` data set is below:
+
+``` r
+head(biodiesel)
+#>   wavenumber absorbance   sample_id
+#> 1   700.7395   0.072530 biodiesel_0
+#> 2   702.6032   0.065398 biodiesel_0
+#> 3   704.4669   0.063371 biodiesel_0
+#> 4   706.3305   0.059454 biodiesel_0
+#> 5   708.1942   0.058133 biodiesel_0
+#> 6   710.0579   0.056636 biodiesel_0
+```
+
+## Data Manipulation
+
+FTIR spectral data can be converted between absorbance and
+transmittance. Only one type of data can exist in a data.frame and be
+plotted. The functions `absorbance_to_transmittance()` and
+`transmittance_to_absorbance()` perform these conversions.
+
+``` r
+biodiesel_transm <- absorbance_to_transmittance(biodiesel)
+head(biodiesel_transm)
+#>   wavenumber transmittance   sample_id
+#> 1   700.7395      84.61941 biodiesel_0
+#> 2   702.6032      86.02051 biodiesel_0
+#> 3   704.4669      86.42293 biodiesel_0
+#> 4   706.3305      87.20593 biodiesel_0
+#> 5   708.1942      87.47159 biodiesel_0
+#> 6   710.0579      87.77362 biodiesel_0
+```
 
 ## Code of Conduct
 
@@ -66,7 +111,7 @@ you agree to abide by its terms.
 ## Introduction et installation
 
 L’objectif de PlotFTIR est de démarrer facilement et rapidement la
-production de tracés spectraux FTIR de qualité journal dans R à l’aide
+production des tracés spectraux FTIR de qualité journal dans R à l’aide
 de ggplot2. Les tracés produits peuvent être publiés directement ou
 modifiés davantage par les fonctions ggplot2.
 
@@ -78,7 +123,7 @@ Vous pouvez installer la version de développement de PlotFTIR depuis
 devtools::install_github("pbulsink/PlotFTIR")
 ```
 
-## Exemple
+## Exemples des tracés
 
 Ceci est un example de base qui vous montre comment tracer un ensemble
 prépar de spectres FTIR:
@@ -99,7 +144,21 @@ plot_ftir_stacked(biodiesel)
 
 <img src="man/figures/README-stack_plot_fr-1.png" width="100%" />
 
-## Ensembles de données
+Les tracés peuvent être manipulés, par exemple, en zoomant sur une
+plage :
+
+``` r
+# Générer un tracé
+biodiesel_trace<-plot_ftir(biodiesel)
+# Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
+zoom_in_on_range(biodiesel_trace, c(1650, 1850))
+#> Warning: Removed 18304 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
+```
+
+<img src="man/figures/README-biodiesel_zoom_fr-1.png" width="100%" />
+
+## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples
 de spectres à tracer : \* `biodiesel` est un ensemble de diesels avec
@@ -108,6 +167,38 @@ diesel connus et un inconnu. \* `sample_spectra` est un ensemble de
 spectres FTIR aléatoires qui comprennent des spectres de toluène pur,
 d’isopropanol et d’heptanes, ainsi que du papier d’imprimante blanc et
 un film de polystyrène.
+
+Un exemple de l’ensemble de données `biodiesel` est ci-dessous:
+
+``` r
+head(biodiesel)
+#>   wavenumber absorbance   sample_id
+#> 1   700.7395   0.072530 biodiesel_0
+#> 2   702.6032   0.065398 biodiesel_0
+#> 3   704.4669   0.063371 biodiesel_0
+#> 4   706.3305   0.059454 biodiesel_0
+#> 5   708.1942   0.058133 biodiesel_0
+#> 6   710.0579   0.056636 biodiesel_0
+```
+
+## Manipulation de données
+
+Les données spectrales FTIR peuvent être converties entre l’absorbance
+et la transmission. Un seul type de données peut exister dans un
+data.frame et être tracé. Les fonctions `absorbance_to_transmittance()`
+et `transmittance_to_absorbance()` effectuent ces conversions.
+
+``` r
+biodiesel_transm <- absorbance_to_transmittance(biodiesel)
+head(biodiesel_transm)
+#>   wavenumber transmittance   sample_id
+#> 1   700.7395      84.61941 biodiesel_0
+#> 2   702.6032      86.02051 biodiesel_0
+#> 3   704.4669      86.42293 biodiesel_0
+#> 4   706.3305      87.20593 biodiesel_0
+#> 5   708.1942      87.47159 biodiesel_0
+#> 6   710.0579      87.77362 biodiesel_0
+```
 
 ## Code de conduite
 
