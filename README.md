@@ -50,7 +50,7 @@ Plots can be manipulated, for example, by zooming in on a range:
 
 ``` r
 # Generate a plot
-biodiesel_plot<-plot_ftir(biodiesel)
+biodiesel_plot <- plot_ftir(biodiesel)
 # Zoom to a specified range of 1850 to 1650 cm^-1
 zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
@@ -149,7 +149,7 @@ plage :
 
 ``` r
 # Générer un tracé
-biodiesel_trace<-plot_ftir(biodiesel)
+biodiesel_trace <- plot_ftir(biodiesel)
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
