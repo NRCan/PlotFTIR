@@ -62,7 +62,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 #'
 #' @param intercept the wavenumber at which compression starts
 #' le numéro d'onde auquel la compression commence
-#' @param reducer the rate of compression (larger numbers are more compressed)
+#' @param ratio the rate of compression (larger numbers are more compressed)
 #' le taux de compression (des nombres plus grands sont plus compressés)
 #'
 #' @references From https://stackoverflow.com/a/43321639 & https://stackoverflow.com/a/78360580
@@ -82,7 +82,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
                     }
   )
 }
-
 
 
 #' Compress Low-Energy Region

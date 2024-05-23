@@ -10,7 +10,7 @@ compress_trans(intercept = 2000, ratio = 5)
 \item{intercept}{the wavenumber at which compression starts
 le numéro d'onde auquel la compression commence}
 
-\item{reducer}{the rate of compression (larger numbers are more compressed)
+\item{ratio}{the rate of compression (larger numbers are more compressed)
 le taux de compression (des nombres plus grands sont plus compressés)}
 }
 \description{

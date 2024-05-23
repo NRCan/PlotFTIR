@@ -41,7 +41,9 @@ plot_ftir(sample_spectra)
 We can also plot spectra in a stacked/offset manner instead of overlaid:
 
 ``` r
-plot_ftir_stacked(biodiesel)
+# Generate a plot
+biodiesel_plot <- plot_ftir(biodiesel)
+biodiesel_plot
 ```
 
 <img src="man/figures/README-stack_plot_en-1.png" width="100%" />
@@ -49,8 +51,6 @@ plot_ftir_stacked(biodiesel)
 Plots can be manipulated, for example, by zooming in on a range:
 
 ``` r
-# Generate a plot
-biodiesel_plot <- plot_ftir(biodiesel)
 # Zoom to a specified range of 1850 to 1650 cm^-1
 zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
@@ -58,6 +58,17 @@ zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 ```
 
 <img src="man/figures/README-biodiesel_zoom_en-1.png" width="100%" />
+
+Some FTIR plots have a compressed low-energy portion of the graph. We
+can achieve this by the following:
+
+``` r
+# compress the data with wavenumbers above 2000 (to the left of 2000 on the
+# plot) by a factor of 5
+compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+```
+
+<img src="man/figures/README-biodiesel_compress_en-1.png" width="100%" />
 
 ## Data Sets
 
@@ -158,6 +169,17 @@ zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 ```
 
 <img src="man/figures/README-biodiesel_zoom_fr-1.png" width="100%" />
+
+Certains tracés FTIR ont une partie compressée du graphique à faible
+énergie. Nous pouvons y parvenir de la manière suivante :
+
+``` r
+# compresser les données avec des nombres d'onde supérieurs à 2000 (à gauche de
+# 2000 sur le tracé) d'un facteur 5
+compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+```
+
+<img src="man/figures/README-biodiesel_compress_fr-1.png" width="100%" />
 
 ## Ensembles des données
 
