@@ -2,6 +2,7 @@
 
 export("%>%")
 export(absorbance_to_transmittance)
+export(compress_low_energy)
 export(plot_ftir)
 export(plot_ftir_stacked)
 export(transmittance_to_absorbance)
