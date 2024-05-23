@@ -53,3 +53,4 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 
   return(p)
 }
+
