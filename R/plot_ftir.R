@@ -60,21 +60,23 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   if (mode == "absorbance") {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
-      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id)))
+      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id))) +
+      ggplot2::scale_y_continuous(breaks = scales::breaks_width(0.2))
   } else {
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
-      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id)))
+      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id))) +
+      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20))
   }
 
   p <- p +
-    ggplot2::scale_x_reverse() +
+    ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
     ggplot2::labs(
       title = plot_title, x = bquote("Wavenumber" ~ (cm^-1)),
       y = ifelse(mode == "absorbance", "Absorbance", "Transmission")
     ) +
-    ggplot2::guides(color = ggplot2::guide_legend(title = legend_title)) +
-    ggplot2::theme_minimal()
+    ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
+    ggplot2::theme_light()
 
   return(p)
 }
@@ -151,8 +153,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
 
   p <- p + ggplot2::theme(
-    axis.text.y = ggplot2::element_blank(),
-    axis.ticks.y = ggplot2::element_blank()
+    axis.text.y = ggplot2::element_blank()
   )
 
   return(p)
