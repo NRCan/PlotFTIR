@@ -7,7 +7,7 @@
 #'   core plot code, please call [plot_ftir()] for basic (overlaid) plots and
 #'   [plot_ftir_stacked()] for stacked and offset plots.
 #'
-#'   Tracez les spectres FTIR dans un format préparé par un journal. C'est le
+#'   Tracez les spectres IRTF dans un format préparé par un journal. C'est le
 #'   code de tracé principal, veuillez appeler [plot_ftir()] pour les tracés de
 #'   base (superposés) et [plot_ftir_stacked()] pour les tracés empilés et
 #'   décalés.
@@ -39,7 +39,7 @@
 #'   layers, or changes can be applied to the returned object. Further
 #'   manipulations can be performed by this package.
 #'
-#'   un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé et
+#'   un objet ggplot contenant un tracé spectral IRTF Les titres de le tracé et
 #'   de la légende sont tels que fournis, chaque échantillon étant doté d'une
 #'   couleur par défaut différente de celle de ggplot2. Puisqu'il s'agit d'un
 #'   objet ggplot, tous les autres modificateurs, calques ou modifications
@@ -106,7 +106,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'  case the Y axis becomes non-labelled and each charts baseline (0 for
 #'  absorbance or 100 for transmittance) is offset by a certain amount.
 #'
-#'  Tracez les spectres FTIR dans un format préparé par un journal. C'est
+#'  Tracez les spectres IRTF dans un format préparé par un journal. C'est
 #'  possible souhaitable pour tracer les spectres 'empilés et décalés' d'une
 #'  certaine quantité. Dans ce cas l'axe Y devient non étiqueté et
 #'  chaque ligne de base du graphique (0 pour absorbance ou 100 pour la
@@ -182,10 +182,10 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #' Plot FTIR Spectra Overlaid
 #'
 #' @description Produce a basic spectra overlay plot for all samples found in
-#' the ftir dataset provided.
+#' the FTIR dataset provided.
 #'
 #' Produisez un tracé de superposition de spectres de base pour tous les
-#' échantillons trouvés dans l'ensemble de données ftir fourni.
+#' échantillons trouvés dans l'ensemble de données IRTF fourni.
 #'
 #' @inherit plot_ftir_core params return
 #' @export

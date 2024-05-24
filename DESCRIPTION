@@ -1,11 +1,12 @@
 Package: PlotFTIR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Plot FTIR Spectra
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Authors@R: 
+    person("Philip", "Bulsink", , "bulsinkp@gmail.com", role = c("aut", "cre")
+           comment = c(ORCID = "0000-0001-9668-2429"))
+Description: The goal of `PlotFTIR` is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) spectral plots in R using ggplot2. The produced plots can be published directly or further modified by ggplot2 functions.
+    L'objectif de `PlotFTIR` est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) de qualité journal dans R à l'aide de ggplot2. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ggplot2.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
