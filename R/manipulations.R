@@ -38,7 +38,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
-  if (!(length(zoom_range) == 2) | !all(is.numeric(zoom_range))) {
+  if (!(length(zoom_range) == 2) || !all(is.numeric(zoom_range))) {
     cli::cli_abort("{.arg zoom_range} must be a numeric vector of length two.")
   }
 
@@ -108,9 +108,10 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @references From https://stackoverflow.com/a/64011534
 `-.gg` <- function(plot, layer) {
-  if (is.null(layer) | missing(layer)) {
+  if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
-                     i = "Did you accidentally put {.code -} on a new line?"))
+      i = "Did you accidentally put {.code -} on a new line?"
+    ))
   }
   if (!ggplot2::is.ggplot(plot)) {
     cli::cli_abort("You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}.")
@@ -276,9 +277,9 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
   }
 
   if (!is.null(text)) {
-    if (is.data.frame(text) | is.matrix(text)) {
+    if (is.data.frame(text) || is.matrix(text)) {
       cli::cli_abort("{.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
-    } else if (!is.numeric(text) & !is.character(text)) {
+    } else if (!is.numeric(text) && !is.character(text)) {
       cli::cli_abort("{.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
     } else if (length(text) > 1) {
       cli::cli_abort("{.arg text} should be character or numeric, but not a vector of length greater than one.")

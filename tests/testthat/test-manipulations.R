@@ -7,31 +7,55 @@ test_that("mainipulations works", {
   expect_error(add_wavenumber_marker("abc", 1500), "`ftir_spectra_plot` must be a ggplot object. You provided a string", fixed = TRUE)
 
   expect_error(zoom_in_on_range(biodiesel_plot, zoom_range = 100),
-               "`zoom_range` must be a numeric vector of length two.", fixed = TRUE)
-  expect_error(zoom_in_on_range(biodiesel_plot, zoom_range = c("a","b")),
-               "`zoom_range` must be a numeric vector of length two.", fixed = TRUE)
+    "`zoom_range` must be a numeric vector of length two.",
+    fixed = TRUE
+  )
+  expect_error(zoom_in_on_range(biodiesel_plot, zoom_range = c("a", "b")),
+    "`zoom_range` must be a numeric vector of length two.",
+    fixed = TRUE
+  )
   expect_error(zoom_in_on_range(biodiesel_plot, zoom_range = c(200, 2000)),
-               "`zoom_range` must be values between 400 and 4000 cm^-1.", fixed = TRUE)
+    "`zoom_range` must be values between 400 and 4000 cm^-1.",
+    fixed = TRUE
+  )
 
   expect_error(compress_low_energy(biodiesel_plot, cutoff = "bob"),
-               "`cutoff` must be a numeric value. You provided a string.", fixed = TRUE)
+    "`cutoff` must be a numeric value. You provided a string.",
+    fixed = TRUE
+  )
   expect_error(compress_low_energy(biodiesel_plot, cutoff = 100),
-               "`cutoff` must be a value between 400 and 4000 cm^-1.", fixed = TRUE)
+    "`cutoff` must be a value between 400 and 4000 cm^-1.",
+    fixed = TRUE
+  )
   expect_error(compress_low_energy(biodiesel_plot, compression_ratio = "bob"),
-               "`compression_ratio` must be a numeric value. You provided a string.", fixed = TRUE)
+    "`compression_ratio` must be a numeric value. You provided a string.",
+    fixed = TRUE
+  )
   expect_error(compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 1000),
-                 "`compression_ratio` must be a value between 0.01 and 100", fixed = TRUE)
+    "`compression_ratio` must be a value between 0.01 and 100",
+    fixed = TRUE
+  )
 
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = "abc"),
-               "`wavenumber` must be a numeric value. You provided a string.", fixed = TRUE)
+    "`wavenumber` must be a numeric value. You provided a string.",
+    fixed = TRUE
+  )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 1000, text = mtcars),
-               "`text` must be character or numeric, you provided a data frame.", fixed = TRUE)
+    "`text` must be character or numeric, you provided a data frame.",
+    fixed = TRUE
+  )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 1000, text = c("This is", "too long")),
-               "`text` should be character or numeric, but not a vector of length greater than one.", fixed = TRUE)
+    "`text` should be character or numeric, but not a vector of length greater than one.",
+    fixed = TRUE
+  )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 1000, text = biodiesel_plot),
-               "`text` must be character or numeric, you provided a <gg/ggplot> object.", fixed = TRUE)
+    "`text` must be character or numeric, you provided a <gg/ggplot> object.",
+    fixed = TRUE
+  )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 5000),
-               "`wavenumber` must be a value between 400 and 4000 cm^-1.", fixed = TRUE)
+    "`wavenumber` must be a value between 400 and 4000 cm^-1.",
+    fixed = TRUE
+  )
 
   # Plots should come out mostly the same.
   zoomed_plot <- zoom_in_on_range(biodiesel_plot)
