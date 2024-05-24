@@ -38,14 +38,14 @@ This is a basic example which shows you how to plot a prepared set of FTIR spect
 
 ```{r basic_plot_en}
 library(PlotFTIR)
-plot_ftir(sample_spectra)
+biodiesel_plot <- plot_ftir(biodiesel)
+biodiesel_plot
 ```
 
 We can also plot spectra in a stacked/offset manner instead of overlaid:
 ```{r stack_plot_en}
 # Generate a plot
-biodiesel_plot <- plot_ftir(biodiesel)
-biodiesel_plot
+plot_ftir_stacked(biodiesel)
 ```
 
 Plots can be manipulated, for example, by zooming in on a range:
@@ -86,6 +86,10 @@ FTIR spectral data can be converted between absorbance and transmittance. Only o
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
+
+## Documentation
+
+More information on all functions is available online at [https://plotftir.pages.dev/](https://plotftir.pages.dev/).
 
 ## Code of Conduct
 
@@ -158,6 +162,10 @@ Les données spectrales FTIR peuvent être converties entre l'absorbance et la t
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
+
+## Documentation
+
+Plus d'informations sur toutes les fonctions sont disponibles en ligne sur [https://plotftir.pages.dev/](https://plotftir.pages.dev/).
 
 ## Code de conduite
 
