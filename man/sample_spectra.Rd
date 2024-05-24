@@ -9,23 +9,43 @@ The data is in long format, ready for use, and as such has the
   following variables:
 
     * `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1).
-    * `absorbance` The absorbance of the sample at each specified wavenumber.
-    * `sample_id` Sample ID of the various included spectra. See below for descriptions.
+    * `absorbance` the absorbance of the sample at each specified wavenumber.
+    * `sample_id` the sample identity of the various included spectra.
+
+ Les données sont au format long, prêtes à l'emploi, et comportent à ce titre
+ les variables suivantes:
+
+   * `wavenmber` valeur du numéro d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
+   * `absorbance` l'absorbance de l'échantillon à chaque nombre d'onde spécifié.
+   * `sample_id` identité d'échantillon des différents spectres inclus.
 }
 \usage{
 sample_spectra
 }
 \description{
-This dataset holds example data from ATR type FTIR instruments.
-Solvents were collected on 5-Bounce ZnSe ATR-FTIR and solids were collected
-on a 1-Bounce Diamond ATR-FTIR.
+This dataset holds example data from Attenuated Total
+  Reflectance (ATR) type FTIR instruments. Solvents were collected on
+  5-Bounce ZnSe ATR-FTIR and solids were collected on a 1-Bounce Diamond
+  ATR-FTIR.
 
 
-The samples included in this data set are:
+  The samples included in this data set are:
    * `toluene` a FTIR spectra of toluene.
    * `isopropanol` a FTIR spectra of isopropanol.
    * `heptanes` a FTIR spectra of heptanes.
    * `paper` a FTIR spectra of a commercially available white paper.
    * `polystyrene` a FTIR spectra of polystyrene film.
+
+  Cet ensemble de données contient des exemples de données provenant
+  d'instruments IRTF de type réflectance totale atténuée (RTA). Les solvants
+  ont été collectés sur un RTA-IRTF ZnSe à 5 rebonds et les solides ont été
+  collectés sur un RTA-IRTF diamant à 1 rebond.
+
+  Les échantillons inclus dans cet ensemble de données sont :
+   * `toluene` un spectre IRTF du toluène.
+   * `isopropanol` un spectre IRTF de l'isopropanol.
+   * `heptanes` un spectre IRTF d'heptanes.
+   * `paper` un spectre IRTF d'un livre blanc disponible dans le commerce.
+   * `polystyrene` un spectre IRTF d'un film de polystyrène
 }
 \keyword{datasets}

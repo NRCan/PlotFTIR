@@ -65,7 +65,7 @@ jobs:
       - name: Commit and push changes
         run: |
           if FILES_TO_COMMIT=($(git diff-index --name-only ${{ github.sha }} \
-              | egrep --ignore-case '\.(R|[qR]md|Rmarkdown|Rnw|Rprofile)$'))
+              | egrep --ignore-case '\.(R|Rd|[qR]md|Rmarkdown|Rnw|Rprofile)$'))
           then
             git config --local user.name "$GITHUB_ACTOR"
             git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"

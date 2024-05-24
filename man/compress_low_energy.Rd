@@ -32,12 +32,12 @@ the FTIR plot as a ggplot2 object, with x axis compressed for some
   plage de nombres d'onde
 }
 \description{
-Compress the lower energy region of a plot (on the x axis) to
+Compress the lower energy region of a FTIR plot (on the x axis) to
   leave more space for the higher-energy region. This is commonly done for
   wavenumbers higher than 2000 cm^-1 as the more complex spectra at higher
   energy (lower wavenumber) is harder to see clearly.
 
-  Compressez la région d'énergie inférieure d'un tracé (sur l'axe des x) pour
+  Compressez la région d'énergie inférieure d'un tracé d'IRTF (sur l'axe des x) pour
   laisser plus d'espace à la région d'énergie supérieure. Ceci est
   généralement effectué pour les nombres d'onde supérieurs à 2000 cm^-1, car
   les spectres plus complexes à une énergie plus élevée (nombre d'onde
