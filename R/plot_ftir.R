@@ -59,7 +59,7 @@
 #'   marqueurs pour mettre en évidence les nombres d'onde importants.
 #'
 plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
-  if(!(is.data.frame(ftir))){
+  if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
   if (!("sample_id" %in% colnames(ftir) && "wavenumber" %in% colnames(ftir))) {
@@ -76,10 +76,10 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
-  if (!is.character(plot_title) | length(plot_title) > 2){
+  if (!is.character(plot_title) || length(plot_title) > 2) {
     cli::cli_abort("{.arg plot_title} must be a character string or vector of strings with length not more than two.")
   }
-  if(!is.character(legend_title) | length(legend_title) > 1){
+  if (!is.character(legend_title) || length(legend_title) > 1) {
     cli::cli_abort("{.arg legend_title} must be a single character string.")
   }
 
@@ -104,7 +104,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
     ggplot2::labs(
       title = plot_title[1],
-      subtitle = if(length(plot_title) <2) NULL else plot_title[2],  # Can't return Null from ifelse()
+      subtitle = if (length(plot_title) < 2) NULL else plot_title[2], # Can't return Null from ifelse()
       x = bquote("Wavenumber" ~ (cm^-1)),
       y = ifelse(mode == "absorbance", "Absorbance", "% Transmittance")
     ) +
@@ -147,12 +147,12 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #' plot_ftir_stacked(biodiesel)
 #'
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10) {
-  if(!(is.data.frame(ftir))){
+  if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
   if (!("sample_id" %in% colnames(ftir))) {
     cli::cli_abort(c("{.arg ftir} is missing a column.",
-                     i = "It must contain a column named {.var sample_id}."
+      i = "It must contain a column named {.var sample_id}."
     ))
   }
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
@@ -164,10 +164,10 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
-  if (!is.numeric(stack_offset) | length(stack_offset) > 1){
+  if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     cli::cli_abort("{.arg stack_offset} must be a single numeric value.")
   }
-  if(stack_offset < 0 | stack_offset > 200){
+  if (stack_offset < 0 || stack_offset > 200) {
     cli::cli_abort("{.arg stack_offset} must be between 0 and 200.")
   }
 

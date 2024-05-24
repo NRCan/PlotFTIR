@@ -64,7 +64,7 @@ absorbance_to_transmittance <- function(ftir) {
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
-  if (!"absorbance" %in% colnames(ftir)) {
+  if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort("{.arg ftir} must contain a {.var absorbance} column.")
   }
   ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
@@ -81,7 +81,7 @@ transmittance_to_absorbance <- function(ftir) {
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
-  if (!"transmittance" %in% colnames(ftir)) {
+  if (!("transmittance" %in% colnames(ftir))) {
     cli::cli_abort("{.arg ftir} must contain a {.var transmittance} column.")
   }
   ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)

@@ -16,38 +16,72 @@ test_that("Plots are generated", {
 })
 
 test_that("data is checked correctly", {
-  full_data_df <- data.frame("sample_id" = LETTERS,
-                             "wavenumber" = seq(length(LETTERS)),
-                             "absorbance" = runif(length(LETTERS)),
-                             "transmittance" = runif(length(LETTERS))*100)
+  full_data_df <- data.frame(
+    "sample_id" = LETTERS,
+    "wavenumber" = seq_along(LETTERS),
+    "absorbance" = runif(length(LETTERS)),
+    "transmittance" = runif(length(LETTERS)) * 100
+  )
 
-  expect_error(plot_ftir(ftir = "abc"),
-               "`ftir` must be a data frame. You provided a string.")
+  expect_error(
+    plot_ftir(ftir = "abc"),
+    "`ftir` must be a data frame. You provided a string."
+  )
   expect_error(plot_ftir(ftir = data.frame("a" = 1:10)),
-               "`ftir` is missing column(s)", fixed = TRUE)
+    "`ftir` is missing column(s)",
+    fixed = TRUE
+  )
+  expect_error(plot_ftir(ftir = full_data_df[, c("sample_id", "wavenumber")]),
+    "`ftir` must have one of `absorbance` or `transmittance` columns.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir(ftir = full_data_df),
-               "`ftir` cannot contain both `absorbance` and `transmittance` columns.", fixed = TRUE)
+    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
+    fixed = TRUE
+  )
 
-  expect_error(plot_ftir_stacked(ftir = "abc"),
-               "`ftir` must be a data frame. You provided a string.")
+  expect_error(
+    plot_ftir_stacked(ftir = "abc"),
+    "`ftir` must be a data frame. You provided a string."
+  )
   expect_error(plot_ftir_stacked(ftir = data.frame("a" = 1:10)),
-               "`ftir` is missing a column", fixed = TRUE)
+    "`ftir` is missing a column",
+    fixed = TRUE
+  )
+  expect_error(plot_ftir_stacked(ftir = full_data_df[, c("sample_id", "wavenumber")]),
+    "`ftir` must have one of `absorbance` or `transmittance` columns.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir_stacked(ftir = full_data_df),
-               "`ftir` cannot contain both `absorbance` and `transmittance` columns.", fixed = TRUE)
+    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
+    fixed = TRUE
+  )
 
-  colnames(full_data_df)[4]<-"logabs"
+  colnames(full_data_df)[4] <- "logabs"
   expect_error(plot_ftir(ftir = full_data_df),
-               "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.", fixed = TRUE)
+    "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir(biodiesel, 1234),
-               "`plot_title` must be a character string or vector of strings with length not more than two.", fixed = TRUE)
+    "`plot_title` must be a character string or vector of strings with length not more than two.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir(biodiesel, c("My Plot", "My Subplot", "My Extrasubplot")),
-               "`plot_title` must be a character string or vector of strings with length not more than two.", fixed = TRUE)
+    "`plot_title` must be a character string or vector of strings with length not more than two.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir(biodiesel, legend_title = 1234), "`legend_title` must be a single character string.", fixed = TRUE)
 
   expect_error(plot_ftir_stacked(ftir = full_data_df),
-               "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.", fixed = TRUE)
+    "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir_stacked(biodiesel, stack_offset = "abc"),
-               "`stack_offset` must be a single numeric value.", fixed = TRUE)
+    "`stack_offset` must be a single numeric value.",
+    fixed = TRUE
+  )
   expect_error(plot_ftir_stacked(biodiesel, stack_offset = -10),
-               "`stack_offset` must be between 0 and 200.", fixed = TRUE)
+    "`stack_offset` must be between 0 and 200.",
+    fixed = TRUE
+  )
 })
