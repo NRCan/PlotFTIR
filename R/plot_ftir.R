@@ -191,7 +191,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #' @export
 #'
 #' @examples
-#' # Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
+#' # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 #' plot_ftir(sample_spectra)
 #'
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
