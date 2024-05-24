@@ -25,9 +25,11 @@ compress_low_energy(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2)
   données}
 }
 \value{
-a ggplot2 object, with x axis compressed for some wavenumber range
+the FTIR plot as a ggplot2 object, with x axis compressed for some
+  wavenumber range
 
-  un objet ggplot2, avec l'axe x compressé pour une plage de nombres d'onde
+  le tracé FTIR en tant qu'objet ggplot2, avec l'axe x compressé pour une
+  plage de nombres d'onde
 }
 \description{
 Compress the lower energy region of a plot (on the x axis) to

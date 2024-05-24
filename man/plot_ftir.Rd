@@ -8,32 +8,37 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`,
- `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by a
- `transmittance` column for transmittance plots. The code determines the
- correct y axis units and labels the plot/adjusts the margins appropriately.
+  `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
+  a `transmittance` column for transmittance plots. The code determines the
+  correct y axis units and labels the plot/adjusts the margins appropriately.
 
- Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`, et
- `absorbance`. La colonne `absorbance` peut être remplacée par une colonne
- `transmittance` pour les tracés de transmission. Le code détermine les
- unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
- manière appropriée.}
+  Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+  et `absorbance`. La colonne `absorbance` peut être remplacée par une
+  colonne `transmittance` pour les tracés de transmission. Le code détermine
+  les unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
+  manière appropriée.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra".
 
- Un titre pour une trace. La valeur par défaut est «FTIR Spectra».}
+  Un titre pour une trace. La valeur par défaut est «FTIR Spectra».}
 
 \item{legend_title}{A title for the legend. Defaults to "Sample ID".
 
- Un titre pour la légende. La valeur par défaut est «Sample ID».}
+  Un titre pour la légende. La valeur par défaut est «Sample ID».}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
- titles are as provided, with each sample provided a different default color
- from ggplot2.
+  titles are as provided, with each sample provided a different default color
+  from ggplot2. Because this is a ggplot object, any other ggplot modifiers,
+  layers, or changes can be applied to the returned object. Further
+  manipulations can be performed by this package.
 
- un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé
- et de la légende sont tels que fournis, chaque échantillon étant doté d'une
- couleur par défaut différente de celle de ggplot2.
+  un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé et
+  de la légende sont tels que fournis, chaque échantillon étant doté d'une
+  couleur par défaut différente de celle de ggplot2. Puisqu'il s'agit d'un
+  objet ggplot, tous les autres modificateurs, calques ou modifications
+  ggplot peuvent être appliqués à l'objet renvoyé. D'autres manipulations
+  peuvent être effectuées par ce package.
 }
 \description{
 Produce a basic spectra overlay plot for all samples found in
