@@ -33,7 +33,8 @@ FTIR spectra:
 
 ``` r
 library(PlotFTIR)
-plot_ftir(sample_spectra)
+biodiesel_plot <- plot_ftir(biodiesel)
+biodiesel_plot
 ```
 
 <img src="man/figures/README-basic_plot_en-1.png" width="100%" />
@@ -42,8 +43,7 @@ We can also plot spectra in a stacked/offset manner instead of overlaid:
 
 ``` r
 # Generate a plot
-biodiesel_plot <- plot_ftir(biodiesel)
-biodiesel_plot
+plot_ftir_stacked(biodiesel)
 ```
 
 <img src="man/figures/README-stack_plot_en-1.png" width="100%" />
@@ -120,6 +120,11 @@ head(biodiesel_transm)
 #> 5   708.1942      87.47159 biodiesel_0
 #> 6   710.0579      87.77362 biodiesel_0
 ```
+
+## Documentation
+
+More information on all functions is available online at
+<https://plotftir.pages.dev/>.
 
 ## Code of Conduct
 
@@ -243,6 +248,11 @@ head(biodiesel_transm)
 #> 5   708.1942      87.47159 biodiesel_0
 #> 6   710.0579      87.77362 biodiesel_0
 ```
+
+## Documentation
+
+Plus d’informations sur toutes les fonctions sont disponibles en ligne
+sur <https://plotftir.pages.dev/>.
 
 ## Code de conduite
 
