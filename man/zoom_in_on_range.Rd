@@ -22,7 +22,7 @@ zoom_in_on_range(ftir_spectra_plot, zoom_range = c(1000, 1900))
 the FTIR plot as a ggplot2 object, with x axis limits as those supplied by
   `zoom_range`.
 
-  le tracé FTIR en tant qu'objet ggplot2, avec des limites d'axe x comme celles fournies par `zoom_range`.
+  le tracé IRTF en tant qu'objet ggplot2, avec des limites d'axe x comme celles fournies par `zoom_range`.
 }
 \description{
 It's common to be interested in only a small portion of the FTIR
@@ -30,7 +30,7 @@ It's common to be interested in only a small portion of the FTIR
   range provided.
 
   Il est courant de s'intéresser uniquement à une petite partie de la plage
-  FTIR. Dans ces cas, cette fonction zoomera sur le tracé spectral sur la
+  IRTF Dans ces cas, cette fonction zoomera sur le tracé spectral sur la
   plage fournie.
 }
 \examples{

@@ -15,7 +15,7 @@ transmittance_to_absorbance(ftir)
  converted. Can't contain both `absorbance` and `transmittance` column as the
  receiving column would be overwritten
 
- Une data.frame de données spectrales FTIR comprenant la colonne à convertir.
+ Une data.frame de données spectrales IRTF comprenant la colonne à convertir.
  Ne peut pas contenir à la fois les colonnes `absorbance` et `transmittance`,
  car la colonne de réception serait écrasée.}
 }
@@ -25,9 +25,9 @@ a data.frame of FTIR spectral data with conversion between absorbance
  since FTIR spectral data frames can't be fed into plotting functions with
  both transmittance and absorbance data included.
 
- une data.frame de données spectrales FTIR avec conversion entre
+ une data.frame de données spectrales IRTF avec conversion entre
  l'absorbance et la transmission comme demandé. Notez que la colonne de
- données d'origine est supprimée car les trames de données spectrales FTIR ne
+ données d'origine est supprimée car les trames de données spectrales IRTF ne
  peuvent pas être introduites dans les fonctions de traçage avec les données
  de transmission et d'absorbance incluses.
 }

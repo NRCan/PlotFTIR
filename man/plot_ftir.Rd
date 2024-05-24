@@ -33,7 +33,7 @@ a ggplot object containing a  FTIR spectral plot. The plot and legend
   layers, or changes can be applied to the returned object. Further
   manipulations can be performed by this package.
 
-  un objet ggplot contenant un tracé spectral FTIR. Les titres de le tracé et
+  un objet ggplot contenant un tracé spectral IRTF Les titres de le tracé et
   de la légende sont tels que fournis, chaque échantillon étant doté d'une
   couleur par défaut différente de celle de ggplot2. Puisqu'il s'agit d'un
   objet ggplot, tous les autres modificateurs, calques ou modifications
@@ -42,10 +42,10 @@ a ggplot object containing a  FTIR spectral plot. The plot and legend
 }
 \description{
 Produce a basic spectra overlay plot for all samples found in
-the ftir dataset provided.
+the FTIR dataset provided.
 
 Produisez un tracé de superposition de spectres de base pour tous les
-échantillons trouvés dans l'ensemble de données ftir fourni.
+échantillons trouvés dans l'ensemble de données IRTF fourni.
 }
 \examples{
 # Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
