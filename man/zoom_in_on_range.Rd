@@ -19,10 +19,10 @@ zoom_in_on_range(ftir_spectra_plot, zoom_range = c(1000, 1900))
   intéresse. L’ordre des limites fournies n’est pas important.}
 }
 \value{
-a ggplot2 object, with x axis limits as those supplied by
+the FTIR plot as a ggplot2 object, with x axis limits as those supplied by
   `zoom_range`.
 
-  un objet ggplot2, avec des limites d'axe x comme celles fournies par `zoom_range`.
+  le tracé FTIR en tant qu'objet ggplot2, avec des limites d'axe x comme celles fournies par `zoom_range`.
 }
 \description{
 It's common to be interested in only a small portion of the FTIR

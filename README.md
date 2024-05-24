@@ -59,7 +59,7 @@ zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 
 <img src="man/figures/README-biodiesel_zoom_en-1.png" width="100%" />
 
-Some FTIR plots have a compressed low-energy portion of the graph. We
+Some FTIR plots have a compressed low-energy portion of the graph. You
 can achieve this by the following:
 
 ``` r
@@ -69,6 +69,16 @@ compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
 <img src="man/figures/README-biodiesel_compress_en-1.png" width="100%" />
+
+You can also add marker lines (with labels) at specific wavenumbers on
+the plots, controlling their line or text properties as needed.
+
+``` r
+biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
+add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+```
+
+<img src="man/figures/README-biodiesel_labelled_en-1.png" width="100%" />
 
 ## Data Sets
 
@@ -171,7 +181,7 @@ zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 <img src="man/figures/README-biodiesel_zoom_fr-1.png" width="100%" />
 
 Certains tracés FTIR ont une partie compressée du graphique à faible
-énergie. Nous pouvons y parvenir de la manière suivante :
+énergie. Vous pouvez y parvenir de la manière suivante :
 
 ``` r
 # compresser les données avec des nombres d'onde supérieurs à 2000 (à gauche de
@@ -180,6 +190,17 @@ compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
 <img src="man/figures/README-biodiesel_compress_fr-1.png" width="100%" />
+
+Vous pouvez également ajouter des lignes de marqueur (avec des
+étiquettes) à des numéros d’onde spécifiques sur les tracés, en
+contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
+
+``` r
+biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
+add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+```
+
+<img src="man/figures/README-biodiesel_labelled_fr-1.png" width="100%" />
 
 ## Ensembles des données
 
