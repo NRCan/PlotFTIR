@@ -25,6 +25,8 @@ test_that("data is checked correctly", {
                "`ftir` must be a data frame. You provided a string.")
   expect_error(plot_ftir(ftir = data.frame("a" = 1:10)),
                "`ftir` is missing column(s)", fixed = TRUE)
+  expect_error(plot_ftir(ftir = full_data_df[,c('sample_id', 'wavenumber')]),
+               "`ftir` must have one of `absorbance` or `transmittance` columns.", fixed = TRUE)
   expect_error(plot_ftir(ftir = full_data_df),
                "`ftir` cannot contain both `absorbance` and `transmittance` columns.", fixed = TRUE)
 
@@ -32,6 +34,8 @@ test_that("data is checked correctly", {
                "`ftir` must be a data frame. You provided a string.")
   expect_error(plot_ftir_stacked(ftir = data.frame("a" = 1:10)),
                "`ftir` is missing a column", fixed = TRUE)
+  expect_error(plot_ftir_stacked(ftir = full_data_df[,c('sample_id', 'wavenumber')]),
+               "`ftir` must have one of `absorbance` or `transmittance` columns.", fixed = TRUE)
   expect_error(plot_ftir_stacked(ftir = full_data_df),
                "`ftir` cannot contain both `absorbance` and `transmittance` columns.", fixed = TRUE)
 
