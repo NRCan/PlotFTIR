@@ -64,7 +64,7 @@ compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 You can also add marker lines (with labels) at specific wavenumbers on the plots, controlling their line or text properties as needed.
 ```{r biodiesel_labelled_en}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 ```
 
 ## Data Sets
@@ -100,9 +100,9 @@ Please note that the PlotFTIR project is released with a [Contributor Code of Co
 
 ## Introduction et installation
 
-L'objectif de PlotFTIR est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (FTIR) de qualité journal dans R à l'aide de ggplot2. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ggplot2.
+L'objectif de `PlotFTIR` est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) de qualité journal dans R à l'aide de ggplot2. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ggplot2.
 
-Vous pouvez installer la version de développement de PlotFTIR depuis [GitHub](https://github.com/) avec :
+Vous pouvez installer la version de développement de `PlotFTIR` depuis [GitHub](https://github.com/) avec :
 
 ``` r
 # install.packages("devtools")
@@ -110,7 +110,7 @@ devtools::install_github("pbulsink/PlotFTIR")
 ```
 
 ## Exemples des tracés
-Ceci est un example de base qui vous montre comment tracer un ensemble prépar de spectres FTIR:
+Ceci est un example de base qui vous montre comment tracer un ensemble prépar de spectres IRTF:
 
 ```{r basic_plot_fr}
 library(PlotFTIR)
@@ -140,14 +140,14 @@ compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
 ```{r biodiesel_labelled_fr}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 ```
 
 ## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples de spectres à tracer :
 * `biodiesel` est un ensemble de diesels avec une teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de diesel connus et un inconnu.
-* `sample_spectra` est un ensemble de spectres FTIR aléatoires qui comprennent des spectres de toluène pur, d'isopropanol et d'heptanes, ainsi que du papier d'imprimante blanc et un film de polystyrène.
+* `sample_spectra` est un ensemble de spectres IRTF aléatoires qui comprennent des spectres de toluène pur, d'isopropanol et d'heptanes, ainsi que du papier d'imprimante blanc et un film de polystyrène.
 
 Un exemple de l'ensemble de données `biodiesel` est ci-dessous:
 ```{r biodiesel_head_fr}

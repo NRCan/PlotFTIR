@@ -75,7 +75,7 @@ the plots, controlling their line or text properties as needed.
 
 ``` r
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 ```
 
 <img src="man/figures/README-biodiesel_labelled_en-1.png" width="100%" />
@@ -136,13 +136,13 @@ you agree to abide by its terms.
 
 ## Introduction et installation
 
-L’objectif de PlotFTIR est de démarrer facilement et rapidement la
+L’objectif de `PlotFTIR` est de démarrer facilement et rapidement la
 production des tracés spectraux de spectroscopie infrarouge à
-transformée de Fourier (FTIR) de qualité journal dans R à l’aide de
+transformée de Fourier (IRTF) de qualité journal dans R à l’aide de
 ggplot2. Les tracés produits peuvent être publiés directement ou
 modifiés davantage par les fonctions ggplot2.
 
-Vous pouvez installer la version de développement de PlotFTIR depuis
+Vous pouvez installer la version de développement de `PlotFTIR` depuis
 [GitHub](https://github.com/) avec :
 
 ``` r
@@ -153,7 +153,7 @@ devtools::install_github("pbulsink/PlotFTIR")
 ## Exemples des tracés
 
 Ceci est un example de base qui vous montre comment tracer un ensemble
-prépar de spectres FTIR:
+prépar de spectres IRTF:
 
 ``` r
 library(PlotFTIR)
@@ -202,7 +202,7 @@ contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
 
 ``` r
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_plot, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 ```
 
 <img src="man/figures/README-biodiesel_labelled_fr-1.png" width="100%" />
@@ -213,7 +213,7 @@ Le package contient deux ensembles de données pour fournir des exemples
 de spectres à tracer : \* `biodiesel` est un ensemble de diesels avec
 une teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de
 diesel connus et un inconnu. \* `sample_spectra` est un ensemble de
-spectres FTIR aléatoires qui comprennent des spectres de toluène pur,
+spectres IRTF aléatoires qui comprennent des spectres de toluène pur,
 d’isopropanol et d’heptanes, ainsi que du papier d’imprimante blanc et
 un film de polystyrène.
 
