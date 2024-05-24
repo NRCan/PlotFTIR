@@ -23,9 +23,11 @@
 #'   les unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
 #'   manière appropriée.
 #'
-#' @param plot_title A title for a plot. Defaults to "FTIR Spectra".
+#' @param plot_title A title for a plot. Defaults to "FTIR Spectra". If a vector
+#'   length two, the second element will be used for a subtitle.
 #'
-#'   Un titre pour une trace. La valeur par défaut est «FTIR Spectra».
+#'   Un titre pour une trace. La valeur par défaut est «FTIR Spectra». Si un
+#'   vecteur mesure deux, le deuxième élément sera utilisé pour un sous-titre.
 #'
 #' @param legend_title A title for the legend. Defaults to "Sample ID".
 #'
@@ -57,16 +59,28 @@
 #'   marqueurs pour mettre en évidence les nombres d'onde importants.
 #'
 plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
+  if(!(is.data.frame(ftir))){
+    cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
+  }
   if (!("sample_id" %in% colnames(ftir) && "wavenumber" %in% colnames(ftir))) {
     cli::cli_abort(c("{.arg ftir} is missing column(s).",
       i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."
     ))
+  }
+  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+    cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
   }
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
+  }
+  if (!is.character(plot_title) | length(plot_title) > 2){
+    cli::cli_abort("{.arg plot_title} must be a character string or vector of strings with length not more than two.")
+  }
+  if(!is.character(legend_title) | length(legend_title) > 1){
+    cli::cli_abort("{.arg legend_title} must be a single character string.")
   }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
@@ -89,8 +103,10 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   p <- p +
     ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
     ggplot2::labs(
-      title = plot_title, x = bquote("Wavenumber" ~ (cm^-1)),
-      y = ifelse(mode == "absorbance", "Absorbance", "Transmission")
+      title = plot_title[1],
+      subtitle = if(length(plot_title) <2) NULL else plot_title[2],  # Can't return Null from ifelse()
+      x = bquote("Wavenumber" ~ (cm^-1)),
+      y = ifelse(mode == "absorbance", "Absorbance", "% Transmittance")
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light()
@@ -131,16 +147,28 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #' plot_ftir_stacked(biodiesel)
 #'
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10) {
-  if (!("sample_id" %in% colnames(ftir) && "wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing column(s).",
-      i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."
+  if(!(is.data.frame(ftir))){
+    cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
+  }
+  if (!("sample_id" %in% colnames(ftir))) {
+    cli::cli_abort(c("{.arg ftir} is missing a column.",
+                     i = "It must contain a column named {.var sample_id}."
     ))
+  }
+  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+    cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
   }
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
     cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
   }
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
+  }
+  if (!is.numeric(stack_offset) | length(stack_offset) > 1){
+    cli::cli_abort("{.arg stack_offset} must be a single numeric value.")
+  }
+  if(stack_offset < 0 | stack_offset > 200){
+    cli::cli_abort("{.arg stack_offset} must be between 0 and 200.")
   }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
@@ -195,18 +223,6 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #' plot_ftir(sample_spectra)
 #'
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
-  if (!("sample_id" %in% colnames(ftir) && "wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing column(s).",
-      i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."
-    ))
-  }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
-  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
-    cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
-  }
-
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
 
   return(p)

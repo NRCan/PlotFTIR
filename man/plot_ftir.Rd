@@ -18,9 +18,11 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
   les unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
   manière appropriée.}
 
-\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra".
+\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra". If a vector
+  length two, the second element will be used for a subtitle.
 
-  Un titre pour une trace. La valeur par défaut est «FTIR Spectra».}
+  Un titre pour une trace. La valeur par défaut est «FTIR Spectra». Si un
+  vecteur mesure deux, le deuxième élément sera utilisé pour un sous-titre.}
 
 \item{legend_title}{A title for the legend. Defaults to "Sample ID".
 
@@ -48,7 +50,7 @@ Produisez un tracé de superposition de spectres de base pour tous les
 échantillons trouvés dans l'ensemble de données IRTF fourni.
 }
 \examples{
-# Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
+# Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 plot_ftir(sample_spectra)
 
 }

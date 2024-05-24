@@ -35,17 +35,14 @@
 #' zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided a {.cls {class ftir_spectra_plot}}")
+    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
-  if (!(length(zoom_range) == 2)) {
+  if (!(length(zoom_range) == 2) | !all(is.numeric(zoom_range))) {
     cli::cli_abort("{.arg zoom_range} must be a numeric vector of length two.")
   }
-  if (!all(is.numeric(zoom_range))) {
-    cli::cli_abort("{.arg zoom_range} must be numeric values")
-  }
 
-  if (any(zoom_range < 400) || any(zoom_range > 4000)) {
+  if (any(zoom_range < 400, zoom_range > 4000)) {
     cli::cli_abort("{.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
@@ -111,11 +108,12 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @references From https://stackoverflow.com/a/64011534
 `-.gg` <- function(plot, layer) {
-  if (missing(layer)) {
-    stop("Cannot use `-.gg()` with a single argument. Did you accidentally put - on a new line?")
+  if (is.null(layer) | missing(layer)) {
+    cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
+                     i = "Did you accidentally put {.code -} on a new line?"))
   }
   if (!ggplot2::is.ggplot(plot)) {
-    stop("Need a plot on the left side")
+    cli::cli_abort("You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}.")
   }
   plot$layers <- c(layer, plot$layers)
   plot
@@ -167,11 +165,11 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2) {
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided a {.cls {class ftir_spectra_plot}}")
+    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
   if (!is.numeric(cutoff)) {
-    cli::cli_abort("{.arg cutoff} must be a numeric value")
+    cli::cli_abort("{.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}.")
   }
 
   if (cutoff < 400 || cutoff > 4000) {
@@ -179,11 +177,11 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
   }
 
   if (!is.numeric(compression_ratio)) {
-    cli::cli_abort("{.arg compression_ratio} must be a numeric value")
+    cli::cli_abort("{.arg compression_ratio} must be a numeric value. You provided {.obj_type_friendly {compression_ratio}}.")
   }
 
-  if (cutoff < 400 || cutoff > 4000) {
-    cli::cli_alert_warning("{.arg cutoff} should be a value between 0.1 and 100.")
+  if (compression_ratio < 0.01 || compression_ratio > 100) {
+    cli::cli_abort("{.arg compression_ratio} must be a value between 0.01 and 100.")
   }
 
   p <- ftir_spectra_plot +
@@ -273,23 +271,24 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #' # Add a second marker and use a dashed line for the C-H aliphatic stretch
 #' add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
+  if (!is.numeric(wavenumber)) {
+    cli::cli_abort("{.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}.")
+  }
+
   if (!is.null(text)) {
-    if (is.data.frame(text) | is.matrix(text) | length(text) > 1) {
-      cli::cli_abort("{.arg text} should be character or numeric, you provided {.obj_type_friendly {text}}.")
+    if (is.data.frame(text) | is.matrix(text)) {
+      cli::cli_abort("{.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
     } else if (!is.numeric(text) & !is.character(text)) {
-      cli::cli_warn("{.arg text} should be character or numeric, you provided {.obj_type_friendly {text}}.")
-      text <- as.character(text)
+      cli::cli_abort("{.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+    } else if (length(text) > 1) {
+      cli::cli_abort("{.arg text} should be character or numeric, but not a vector of length greater than one.")
     }
   } else {
     text <- as.character(as.integer(wavenumber))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectral_plot}}.")
-  }
-
-  if (!is.numeric(wavenumber)) {
-    cli::cli_abort("{.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}.")
+    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
   if (wavenumber < 400 || wavenumber > 4000) {
