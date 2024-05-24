@@ -26,8 +26,8 @@ test_that("mainipulations works", {
   )
 
   expect_equal(
-      ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
-        ggplot2::ggplot_build(labelled_plot)$layout$panel_params[[1]]$x.range
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
+    ggplot2::ggplot_build(labelled_plot)$layout$panel_params[[1]]$x.range
   )
 
   expect_equal(
