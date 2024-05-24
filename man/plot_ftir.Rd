@@ -48,7 +48,7 @@ Produisez un tracé de superposition de spectres de base pour tous les
 échantillons trouvés dans l'ensemble de données IRTF fourni.
 }
 \examples{
-# Plot a basic FTIR Spectra overlay from the `sample_spectra` dataset with default titles
+# Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 plot_ftir(sample_spectra)
 
 }
