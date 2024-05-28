@@ -157,9 +157,10 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #' @export
 #'
 #' @examples
-#' # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
-#' plot_ftir_stacked(biodiesel)
-#'
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
+#'   plot_ftir_stacked(biodiesel)
+#' }
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10) {
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
@@ -233,9 +234,10 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #' @export
 #'
 #' @examples
-#' # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
-#' plot_ftir(sample_spectra)
-#'
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
+#'   plot_ftir(sample_spectra)
+#' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
 

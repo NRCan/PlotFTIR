@@ -75,6 +75,7 @@ Add a vertical line marker, at a given wavenumber, to an FTIR
   anciennes étiquettes seront remplacées par des étiquettes plus récentes.
 }
 \examples{
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
 # Generate a plot
 biodiesel_plot <- plot_ftir(biodiesel)
 
@@ -84,6 +85,7 @@ p
 
 # Add a second marker and use a dashed line for the C-H aliphatic stretch
 add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+}
 }
 \seealso{
 See `vignette("ggplot2-specs")` for more information on setting

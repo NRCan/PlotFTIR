@@ -39,6 +39,7 @@ This function permits renaming Sample IDs as shown in the legend
  noms après la création du tracé.
 }
 \examples{
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
 # Generate a plot
 p <- plot_ftir(sample_spectra)
 
@@ -48,4 +49,5 @@ new_ids <- c(
   "paper" = "White Paper", "polystyrene" = "PS Film"
 )
 rename_plot_sample_ids(p, new_ids)
+}
 }

@@ -70,7 +70,7 @@ absorbance_to_transmittance <- function(ftir) {
   ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
   ftir$absorbance <- NULL
 
-  ftir <- ftir[,c('wavenumber', 'transmittance', 'sample_id')]
+  ftir <- ftir[, c("wavenumber", "transmittance", "sample_id")]
 
   return(ftir)
 }
@@ -87,7 +87,7 @@ transmittance_to_absorbance <- function(ftir) {
   ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)
   ftir$transmittance <- NULL
 
-  ftir <- ftir[,c('wavenumber', 'absorbance', 'sample_id')]
+  ftir <- ftir[, c("wavenumber", "absorbance", "sample_id")]
 
   return(ftir)
 }
@@ -112,11 +112,13 @@ transmittance_to_absorbance <- function(ftir) {
 #'
 #' @seealso [rename_plot_sample_ids()]
 #' @examples
-#' # Prepare a plot
-#' p <- plot_ftir(biodiesel)
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Prepare a plot
+#'   p <- plot_ftir(biodiesel)
 #'
-#' # Get the Sample IDs
-#' get_plot_sample_ids <- (p)
+#'   # Get the Sample IDs
+#'   get_plot_sample_ids <- (p)
+#' }
 get_plot_sample_ids <- function(ftir_spectra_plot) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {

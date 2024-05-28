@@ -28,11 +28,13 @@
 #' @export
 #'
 #' @examples
-#' # Generate a plot
-#' biodiesel_plot <- plot_ftir(biodiesel)
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
-#' # Zoom to a specified range of 1850 to 1650 cm^-1
-#' zoom_in_on_range(biodiesel_plot, c(1650, 1850))
+#'   # Zoom to a specified range of 1850 to 1650 cm^-1
+#'   zoom_in_on_range(biodiesel_plot, c(1650, 1850))
+#' }
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -112,6 +114,7 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @return The ggplot2 `plot` object, with layer `layer` added underneath.
 #'
 #'   L'objet ggplot2 `plot`, avec le calque `layer` ajouté en dessous.
+#'
 #' @export
 #'
 #' @keywords internal
@@ -174,11 +177,13 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @export
 #'
 #' @examples
-#' # Generate a plot
-#' biodiesel_plot <- plot_ftir(biodiesel)
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
-#' # Compress below 2000 cm^-1 by a factor of 5
-#' compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+#'   # Compress below 2000 cm^-1 by a factor of 5
+#'   compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+#' }
 compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -282,15 +287,17 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #' @export
 #'
 #' @examples
-#' # Generate a plot
-#' biodiesel_plot <- plot_ftir(biodiesel)
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
-#' # Add a marker at 1742 cm^-1 for the carbonyl C=O Stretch
-#' p <- add_wavenumber_marker(biodiesel_plot, 1742, text = "C=O Stretch")
-#' p
+#'   # Add a marker at 1742 cm^-1 for the carbonyl C=O Stretch
+#'   p <- add_wavenumber_marker(biodiesel_plot, 1742, text = "C=O Stretch")
+#'   p
 #'
-#' # Add a second marker and use a dashed line for the C-H aliphatic stretch
-#' add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+#'   # Add a second marker and use a dashed line for the C-H aliphatic stretch
+#'   add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+#' }
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -363,15 +370,17 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #' @export
 #'
 #' @examples
-#' # Generate a plot
-#' p <- plot_ftir(sample_spectra)
+#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   p <- plot_ftir(sample_spectra)
 #'
-#' # Rename Samples in Legend:
-#' new_ids <- c(
-#'   "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-#'   "paper" = "White Paper", "polystyrene" = "PS Film"
-#' )
-#' rename_plot_sample_ids(p, new_ids)
+#'   # Rename Samples in Legend:
+#'   new_ids <- c(
+#'     "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
+#'     "paper" = "White Paper", "polystyrene" = "PS Film"
+#'   )
+#'   rename_plot_sample_ids(p, new_ids)
+#' }
 rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {

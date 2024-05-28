@@ -34,9 +34,11 @@ It's common to be interested in only a small portion of the FTIR
   plage fournie.
 }
 \examples{
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
 # Generate a plot
 biodiesel_plot <- plot_ftir(biodiesel)
 
 # Zoom to a specified range of 1850 to 1650 cm^-1
 zoom_in_on_range(biodiesel_plot, c(1650, 1850))
+}
 }
