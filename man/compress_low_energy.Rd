@@ -44,11 +44,11 @@ Compress the lower energy region of a FTIR plot (on the x axis) to
   inférieur) sont plus difficiles à voir clairement.
 }
 \examples{
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-# Generate a plot
-biodiesel_plot <- plot_ftir(biodiesel)
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  # Generate a plot
+  biodiesel_plot <- plot_ftir(biodiesel)
 
-# Compress below 2000 cm^-1 by a factor of 5
-compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+  # Compress below 2000 cm^-1 by a factor of 5
+  compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 }
 }

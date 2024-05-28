@@ -112,7 +112,7 @@ transmittance_to_absorbance <- function(ftir) {
 #'
 #' @seealso [rename_plot_sample_ids()]
 #' @examples
-#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Prepare a plot
 #'   p <- plot_ftir(biodiesel)
 #'

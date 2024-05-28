@@ -25,12 +25,12 @@ Get the sample IDs from a prepared plot. Useful if renaming in
   renommez dans la légende de le tracé
 }
 \examples{
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-# Prepare a plot
-p <- plot_ftir(biodiesel)
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  # Prepare a plot
+  p <- plot_ftir(biodiesel)
 
-# Get the Sample IDs
-get_plot_sample_ids <- (p)
+  # Get the Sample IDs
+  get_plot_sample_ids <- (p)
 }
 }
 \seealso{

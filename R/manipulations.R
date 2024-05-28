@@ -28,7 +28,7 @@
 #' @export
 #'
 #' @examples
-#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Generate a plot
 #'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
@@ -177,7 +177,7 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @export
 #'
 #' @examples
-#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Generate a plot
 #'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
@@ -287,7 +287,7 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #' @export
 #'
 #' @examples
-#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Generate a plot
 #'   biodiesel_plot <- plot_ftir(biodiesel)
 #'
@@ -370,7 +370,7 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #' @export
 #'
 #' @examples
-#' if (!requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Generate a plot
 #'   p <- plot_ftir(sample_spectra)
 #'

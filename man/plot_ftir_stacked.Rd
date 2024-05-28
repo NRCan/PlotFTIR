@@ -68,9 +68,9 @@ Plot the FTIR spectra in a journal prepared format. It may be
  transmission) est compensée d'une certaine quantité.
 }
 \examples{
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-# Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
-plot_ftir_stacked(biodiesel)
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
+  plot_ftir_stacked(biodiesel)
 }
 }
 \seealso{
