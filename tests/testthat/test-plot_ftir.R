@@ -70,7 +70,10 @@ test_that("data is checked correctly", {
     "`plot_title` must be a character string or vector of strings with length not more than two.",
     fixed = TRUE
   )
-  expect_error(plot_ftir(biodiesel, legend_title = 1234), "`legend_title` must be a single character string.", fixed = TRUE)
+  expect_error(plot_ftir(biodiesel, legend_title = 1234),
+    "`legend_title` must be a single character string.",
+    fixed = TRUE
+  )
 
   expect_error(plot_ftir_stacked(ftir = full_data_df),
     "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
@@ -82,6 +85,11 @@ test_that("data is checked correctly", {
   )
   expect_error(plot_ftir_stacked(biodiesel, stack_offset = -10),
     "`stack_offset` must be between 0 and 200.",
+    fixed = TRUE
+  )
+
+  expect_error(plot_ftir(rbind(biodiesel, sample_spectra)),
+    "The color palette in use works only with 12 or fewer unique samples in",
     fixed = TRUE
   )
 })

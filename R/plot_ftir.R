@@ -82,6 +82,11 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   if (!is.character(legend_title) || length(legend_title) > 1) {
     cli::cli_abort("{.arg legend_title} must be a single character string.")
   }
+  if (length(unique(ftir$sample_id)) > 12) {
+    cli::cli_abort(c("The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
+      i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+    ))
+  }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
 
@@ -102,6 +107,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 
   p <- p +
     ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
+    ggthemes::scale_color_calc() +
     ggplot2::labs(
       title = plot_title[1],
       subtitle = if (length(plot_title) < 2) NULL else plot_title[2], # Can't return Null from ifelse()
