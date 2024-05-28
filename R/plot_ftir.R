@@ -202,7 +202,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
       "offset" = seq(from = 0, by = stack_offset, length.out = nsamples)
     )
 
-    ftir <- dplyr::left_join(ftir, offset, by = "sample_id")
+    ftir <- merge(x = ftir, y = offset, by = "sample_id")
     if (mode == "absorbance") {
       ftir$absorbance <- ftir$absorbance + ftir$offset
     } else {

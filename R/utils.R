@@ -70,7 +70,7 @@ absorbance_to_transmittance <- function(ftir) {
   ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
   ftir$absorbance <- NULL
 
-  ftir <- ftir %>% dplyr::relocate("transmittance", .after = "wavenumber")
+  ftir <- ftir[,c('wavenumber', 'transmittance', 'sample_id')]
 
   return(ftir)
 }
@@ -87,7 +87,7 @@ transmittance_to_absorbance <- function(ftir) {
   ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)
   ftir$transmittance <- NULL
 
-  ftir <- ftir %>% dplyr::relocate("absorbance", .after = "wavenumber")
+  ftir <- ftir[,c('wavenumber', 'absorbance', 'sample_id')]
 
   return(ftir)
 }
