@@ -154,6 +154,9 @@ test_that("mainipulations works", {
 })
 
 test_that("-.gg is ok", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing -.gg.")
+  }
   biodiesel_plot <- plot_ftir(biodiesel)
 
   expect_error(biodiesel_plot - NULL,

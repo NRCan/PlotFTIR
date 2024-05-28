@@ -27,6 +27,10 @@ test_that("Plots are generated", {
 })
 
 test_that("data is checked correctly", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
   full_data_df <- data.frame(
     "sample_id" = LETTERS,
     "wavenumber" = seq_along(LETTERS),
