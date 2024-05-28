@@ -55,6 +55,20 @@ test_that("conversion between units works", {
 })
 
 test_that("Plot SampleID extraction is ok", {
+  # Test for ggplot2 else skip
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+
+    expect_error(
+      get_plot_sample_ids(123),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing plot production")
+  }
+
   p <- plot_ftir(biodiesel)
 
   expect_equal(get_plot_sample_ids(p), as.factor(unique(biodiesel$sample_id)))

@@ -59,6 +59,14 @@
 #'   marqueurs pour mettre en évidence les nombres d'onde importants.
 #'
 plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
+  }
+  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggthemes} package installation.")
+  }
+
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }

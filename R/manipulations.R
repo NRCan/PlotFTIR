@@ -34,6 +34,11 @@
 #' # Zoom to a specified range of 1850 to 1650 cm^-1
 #' zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun zoom_in_on_range} requires {.pkg ggplot2} package installation.")
+  }
+
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
@@ -67,6 +72,11 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 compress_trans <- function(intercept = 2000, ratio = 5) {
   # For FTIR, note that the plot has scale_x_reverse() always applied to it.
   # So, we're really talking about intercept as a -1*intercept
+
+  # Package Checks
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    cli::cli_abort("{.fun compress_trans} requires {.pkg scales} package installation.")
+  }
 
   intercept <- intercept * -1
 
@@ -108,6 +118,11 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @references From https://stackoverflow.com/a/64011534
 `-.gg` <- function(plot, layer) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun -.gg} requires {.pkg ggplot2} package installation.")
+  }
+
   if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
       i = "Did you accidentally put {.code -} on a new line?"
@@ -165,6 +180,11 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' # Compress below 2000 cm^-1 by a factor of 5
 #' compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun compress_low_energy} requires {.pkg ggplot2} package installation.")
+  }
+
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
@@ -272,6 +292,11 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #' # Add a second marker and use a dashed line for the C-H aliphatic stretch
 #' add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun add_wavenumber_marker} requires {.pkg ggplot2} package installation.")
+  }
+
   if (!is.numeric(wavenumber)) {
     cli::cli_abort("{.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}.")
   }
@@ -348,6 +373,11 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #' )
 #' rename_plot_sample_ids(p, new_ids)
 rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun rename_plot_sample_ids} requires {.pkg ggplot2} package installation.")
+  }
+
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }

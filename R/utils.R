@@ -118,6 +118,10 @@ transmittance_to_absorbance <- function(ftir) {
 #' # Get the Sample IDs
 #' get_plot_sample_ids <- (p)
 get_plot_sample_ids <- function(ftir_spectra_plot) {
+  # Package Checks
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
+  }
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }

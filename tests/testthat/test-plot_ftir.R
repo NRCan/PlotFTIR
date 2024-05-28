@@ -1,4 +1,15 @@
 test_that("Plots are generated", {
+  # Test for ggplot2 else skip
+  if (!require("ggplot2", quietly = TRUE)) {
+    expect_error(
+      plot_ftir(biodiesel),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing plot production")
+  }
+
   p1 <- plot_ftir(biodiesel)
   p2 <- plot_ftir_stacked(biodiesel)
 
