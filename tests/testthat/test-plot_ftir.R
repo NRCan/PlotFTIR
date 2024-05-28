@@ -1,4 +1,15 @@
 test_that("Plots are generated", {
+  # Test for ggplot2 else skip
+  if (!require("ggplot2", quietly = TRUE)) {
+    expect_error(
+      plot_ftir(biodiesel),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing plot production")
+  }
+
   p1 <- plot_ftir(biodiesel)
   p2 <- plot_ftir_stacked(biodiesel)
 
@@ -16,6 +27,10 @@ test_that("Plots are generated", {
 })
 
 test_that("data is checked correctly", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
   full_data_df <- data.frame(
     "sample_id" = LETTERS,
     "wavenumber" = seq_along(LETTERS),

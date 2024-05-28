@@ -1,4 +1,28 @@
 test_that("mainipulations works", {
+  # Ensure caught failure if no ggplot2, then skip remainder of tests
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+
+    expect_error(
+      zoom_in_on_range(123),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+    expect_error(
+      compress_low_energy(123),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+    expect_error(
+      add_wavenumber_marker(123, 1740, "CO Stretch"),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
@@ -130,6 +154,9 @@ test_that("mainipulations works", {
 })
 
 test_that("-.gg is ok", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing -.gg.")
+  }
   biodiesel_plot <- plot_ftir(biodiesel)
 
   expect_error(biodiesel_plot - NULL,
@@ -143,6 +170,25 @@ test_that("-.gg is ok", {
 })
 
 test_that("rename is ok", {
+  new_ids <- c(
+    "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
+    "paper" = "White Paper", "polystyrene" = "PS Film"
+  )
+
+  # Test for ggplot2 else skip
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+
+    expect_error(
+      rename_plot_sample_ids(123, sample_ids = new_ids),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing renames")
+  }
+
   p <- plot_ftir(sample_spectra)
 
   new_ids <- c(

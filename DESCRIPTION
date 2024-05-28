@@ -13,15 +13,14 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     cli,
-    dplyr,
-    ggplot2,
-    ggthemes,
-    magrittr,
-    rlang,
-    scales
+    rlang
 RoxygenNote: 7.3.1
 Depends: 
-    R (>= 2.10)
+    R (>= 3.3.0)
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    ggplot2 (>= 3.0.0),
+    ggthemes,
+    scales,
+    magrittr
 Config/testthat/edition: 3
