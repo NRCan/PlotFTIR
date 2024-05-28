@@ -87,17 +87,18 @@ be listed in the rename vector with the format
 
 ``` r
 new_names <- c(
-  "biodiesel_0" = "0.0% Biodiesel", 
-  "biodiesel_0_25" = "0.25% Biodiesel", 
+  "biodiesel_0" = "0.0% Biodiesel",
+  "biodiesel_0_25" = "0.25% Biodiesel",
   "biodiesel_0_50" = "0.50% Biodiesel",
   "biodiesel_1_0" = "1.0% Biodiesel",
   "biodiesel_2_5" = "2.5% Biodiesel",
-  "biodiesel_5_0" = "5.0% Biodiesel", 
+  "biodiesel_5_0" = "5.0% Biodiesel",
   "biodiesel_7_5" = "7.5% Biodiesel",
   "biodiesel_10_0" = "10.0% Biodiesel",
   "biodiesel_B0_5" = "Commercial B0.5",
   "biodiesel_B5" = "Commercial B5",
-  "diesel_unknown" = "Unknown Biodiesel")
+  "diesel_unknown" = "Unknown Biodiesel"
+)
 rename_plot_sample_ids(biodiesel_plot, new_names)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
@@ -137,8 +138,8 @@ provided, tidy-eval is possible.
 
 ``` r
 new_ids <- c(
-   "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-   "paper" = "White Paper", "polystyrene" = "PS Film"
+  "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
+  "paper" = "White Paper", "polystyrene" = "PS Film"
 )
 
 sample_spectra %>%
@@ -146,8 +147,8 @@ sample_spectra %>%
   plot_ftir(plot_title = "Example FTIR Spectra") %>%
   zoom_in_on_range(c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
-  add_wavenumber_marker(1495, text = "C-C Aromatic", line_aesthetics = list('linetype' = 'dashed'), label_aesthetics = list("color" = "#7e0021")) %>%
-  add_wavenumber_marker(3340, text = "O-H Alcohol", line_aesthetics = list('linetype' = 'dotted'), label_aesthetics = list("color" = "#ff420e")) %>%
+  add_wavenumber_marker(1495, text = "C-C Aromatic", line_aesthetics = list("linetype" = "dashed"), label_aesthetics = list("color" = "#7e0021")) %>%
+  add_wavenumber_marker(3340, text = "O-H Alcohol", line_aesthetics = list("linetype" = "dotted"), label_aesthetics = list("color" = "#ff420e")) %>%
   rename_plot_sample_ids(new_ids)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
@@ -267,17 +268,18 @@ renommage au format `"ancien nom" = "nouveau nom"`.
 
 ``` r
 new_names <- c(
-  "biodiesel_0" = "0,0% Biodiesel", 
-  "biodiesel_0_25" = "0,25% Biodiesel", 
+  "biodiesel_0" = "0,0% Biodiesel",
+  "biodiesel_0_25" = "0,25% Biodiesel",
   "biodiesel_0_50" = "0,50% Biodiesel",
   "biodiesel_1_0" = "1,0% Biodiesel",
   "biodiesel_2_5" = "2,5% Biodiesel",
-  "biodiesel_5_0" = "5,0% Biodiesel", 
+  "biodiesel_5_0" = "5,0% Biodiesel",
   "biodiesel_7_5" = "7,5% Biodiesel",
   "biodiesel_10_0" = "10,0% Biodiesel",
   "biodiesel_B0_5" = "B0,5 Commercial",
   "biodiesel_B5" = "B5 Commercial",
-  "diesel_unknown" = "Biodiesel Inconnu")
+  "diesel_unknown" = "Biodiesel Inconnu"
+)
 rename_plot_sample_ids(biodiesel_plot, new_names)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
@@ -290,8 +292,8 @@ documentation pour `get_plot_sample_ids()`).
 
 ``` r
 nouveaux_ids <- c(
-   "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
-   "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
+  "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
+  "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
 )
 
 sample_spectra %>%
@@ -299,8 +301,8 @@ sample_spectra %>%
   plot_ftir(plot_title = "Exemple de spectres IRTF") %>%
   zoom_in_on_range(c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
-  add_wavenumber_marker(1495, text = "C-C aromatique", line_aesthetics = list('linetype' = 'dashed'), label_aesthetics = list("color" = "#7e0021")) %>%
-  add_wavenumber_marker(3340, text = "O-H alcool", line_aesthetics = list('linetype' = 'dotted'), label_aesthetics = list("color" = "#ff420e")) %>%
+  add_wavenumber_marker(1495, text = "C-C aromatique", line_aesthetics = list("linetype" = "dashed"), label_aesthetics = list("color" = "#7e0021")) %>%
+  add_wavenumber_marker(3340, text = "O-H alcool", line_aesthetics = list("linetype" = "dotted"), label_aesthetics = list("color" = "#ff420e")) %>%
   rename_plot_sample_ids(nouveaux_ids)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.

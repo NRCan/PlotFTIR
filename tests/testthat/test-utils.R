@@ -18,26 +18,32 @@ test_that("conversion between units works", {
     fixed = TRUE
   )
 
-  example_data <- data.frame("wavenumber" = 1L,
-                             "absorbance" = c(0, .5, 1, 1.5, 2),
-                             "sample_id" = "test")
+  example_data <- data.frame(
+    "wavenumber" = 1L,
+    "absorbance" = c(0, .5, 1, 1.5, 2),
+    "sample_id" = "test"
+  )
   expect_equal(absorbance_to_transmittance(example_data)$transmittance,
     c(100, 31.62278, 10, 3.162278, 1),
     tolerance = 1e-4
   )
 
-  example_data2 <- data.frame("wavenumber" = 1L,
-                              "transmittance" = c(100, 50, 10, 5, 1),
-                              "sample_id" = "test")
+  example_data2 <- data.frame(
+    "wavenumber" = 1L,
+    "transmittance" = c(100, 50, 10, 5, 1),
+    "sample_id" = "test"
+  )
   expect_equal(transmittance_to_absorbance(example_data2)$absorbance,
     c(0, 0.30103, 1, 1.30103, 2),
     tolerance = 1e-4
   )
 
-  example_data3 <- data.frame("wavenumber" = 1L,
-                              "absorbance" = c(0, 0.5, 1, 1.5, 2),
-                              "sample_id" = "test",
-                              "transmittance" = c(100, 50, 10, 5, 1))
+  example_data3 <- data.frame(
+    "wavenumber" = 1L,
+    "absorbance" = c(0, 0.5, 1, 1.5, 2),
+    "sample_id" = "test",
+    "transmittance" = c(100, 50, 10, 5, 1)
+  )
   expect_error(absorbance_to_transmittance(example_data3),
     "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
     fixed = TRUE
