@@ -80,6 +80,34 @@ add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthet
 
 <img src="man/figures/README-biodiesel_labelled_en-1.png" width="100%" />
 
+If the need arises to rename samples listed in the legend, this is
+possible via `rename_plot_sample_ids()`. At this time, all samples must
+be listed in the rename vector with the format
+`"old name" = "new name"`.
+
+``` r
+new_names <- c(
+  "biodiesel_0" = "0.0% Biodiesel", 
+  "biodiesel_0_25" = "0.25% Biodiesel", 
+  "biodiesel_0_50" = "0.50% Biodiesel",
+  "biodiesel_1_0" = "1.0% Biodiesel",
+  "biodiesel_2_5" = "2.5% Biodiesel",
+  "biodiesel_5_0" = "5.0% Biodiesel", 
+  "biodiesel_7_5" = "7.5% Biodiesel",
+  "biodiesel_10_0" = "10.0% Biodiesel",
+  "biodiesel_B0_5" = "Commercial B0.5",
+  "biodiesel_B5" = "Commercial B5",
+  "diesel_unknown" = "Unknown Biodiesel")
+rename_plot_sample_ids(biodiesel_plot, new_names)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+```
+
+<img src="man/figures/README-biodiesel_rename_en-1.png" width="100%" />
+
+A helper function for the renaming is provided (see the documentation
+for `get_plot_sample_ids()`).
+
 ## Data Sets
 
 The package contains two datasets to provide example spectra for
@@ -101,6 +129,31 @@ head(biodiesel)
 #> 5   708.1942   0.058133 biodiesel_0
 #> 6   710.0579   0.056636 biodiesel_0
 ```
+
+## Tidy Plot Production
+
+Note that because most functions return a data type similar to what is
+provided, tidy-eval is possible.
+
+``` r
+new_ids <- c(
+   "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
+   "paper" = "White Paper", "polystyrene" = "PS Film"
+)
+
+sample_spectra %>%
+  absorbance_to_transmittance() %>%
+  plot_ftir(plot_title = "Example FTIR Spectra") %>%
+  zoom_in_on_range(c(3800, 800)) %>%
+  compress_low_energy(compression_ratio = 4) %>%
+  add_wavenumber_marker(1495, text = "C-C Aromatic", line_aesthetics = list('linetype' = 'dashed'), label_aesthetics = list("color" = "#7e0021")) %>%
+  add_wavenumber_marker(3340, text = "O-H Alcohol", line_aesthetics = list('linetype' = 'dotted'), label_aesthetics = list("color" = "#ff420e")) %>%
+  rename_plot_sample_ids(new_ids)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+```
+
+<img src="man/figures/README-tidy_en-1.png" width="100%" />
 
 ## Data Manipulation
 
@@ -206,6 +259,59 @@ add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthet
 ```
 
 <img src="man/figures/README-biodiesel_labelled_fr-1.png" width="100%" />
+
+S’il est nécessaire de renommer les échantillons répertoriés dans la
+légende, cela est possible via `rename_plot_sample_ids()`. À ce stade,
+tous les échantillons doivent être répertoriés dans le vecteur de
+renommage au format `"ancien nom" = "nouveau nom"`.
+
+``` r
+new_names <- c(
+  "biodiesel_0" = "0,0% Biodiesel", 
+  "biodiesel_0_25" = "0,25% Biodiesel", 
+  "biodiesel_0_50" = "0,50% Biodiesel",
+  "biodiesel_1_0" = "1,0% Biodiesel",
+  "biodiesel_2_5" = "2,5% Biodiesel",
+  "biodiesel_5_0" = "5,0% Biodiesel", 
+  "biodiesel_7_5" = "7,5% Biodiesel",
+  "biodiesel_10_0" = "10,0% Biodiesel",
+  "biodiesel_B0_5" = "B0,5 Commercial",
+  "biodiesel_B5" = "B5 Commercial",
+  "diesel_unknown" = "Biodiesel Inconnu")
+rename_plot_sample_ids(biodiesel_plot, new_names)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+```
+
+<img src="man/figures/README-biodiesel_rename_fr-1.png" width="100%" />
+
+Une fonction d’assistance pour le changement de nom est fournie (voir la
+documentation pour `get_plot_sample_ids()`).
+
+``` r
+nouveaux_ids <- c(
+   "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
+   "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
+)
+
+sample_spectra %>%
+  absorbance_to_transmittance() %>%
+  plot_ftir(plot_title = "Exemple de spectres IRTF") %>%
+  zoom_in_on_range(c(3800, 800)) %>%
+  compress_low_energy(compression_ratio = 4) %>%
+  add_wavenumber_marker(1495, text = "C-C aromatique", line_aesthetics = list('linetype' = 'dashed'), label_aesthetics = list("color" = "#7e0021")) %>%
+  add_wavenumber_marker(3340, text = "O-H alcool", line_aesthetics = list('linetype' = 'dotted'), label_aesthetics = list("color" = "#ff420e")) %>%
+  rename_plot_sample_ids(nouveaux_ids)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+```
+
+<img src="man/figures/README-tidy_fr-1.png" width="100%" />
+
+## Production de tracés “tidy”
+
+Notez que, comme la plupart des fonctions renvoient un type de données
+similaire à celui fourni, une “tidy-eval” est possible.
 
 ## Ensembles des données
 

@@ -15,6 +15,7 @@ Imports:
     cli,
     dplyr,
     ggplot2,
+    ggthemes,
     magrittr,
     rlang,
     scales
