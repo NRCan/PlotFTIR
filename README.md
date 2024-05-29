@@ -78,8 +78,16 @@ You can also add marker lines (with labels) at specific wavenumbers on
 the plots, controlling their line or text properties as needed.
 
 ``` r
-biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
+  wavenumber = 1742,
+  text = "C=O Stretch",
+  label_aesthetics = list("color" = "red")
+)
+add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 2920,
+  text = "C-H Stretch",
+  line_aesthetics = list("linetype" = "dashed")
+)
 ```
 
 <img src="man/figures/README-biodiesel_labelled_en-1.png" width="100%" />
@@ -112,6 +120,9 @@ rename_plot_sample_ids(biodiesel_plot, new_names)
 
 A helper function for the renaming is provided (see the documentation
 for `get_plot_sample_ids()`).
+
+Finally, plot legends are customizable (for basic changes) through a
+helper function `move_plot_legend()`.
 
 ## Data Sets
 
@@ -149,11 +160,22 @@ new_ids <- c(
 sample_spectra %>%
   absorbance_to_transmittance() %>%
   plot_ftir(plot_title = "Example FTIR Spectra") %>%
-  zoom_in_on_range(c(3800, 800)) %>%
+  zoom_in_on_range(zoom_range = c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
-  add_wavenumber_marker(1495, text = "C-C Aromatic", line_aesthetics = list("linetype" = "dashed"), label_aesthetics = list("color" = "#7e0021")) %>%
-  add_wavenumber_marker(3340, text = "O-H Alcohol", line_aesthetics = list("linetype" = "dotted"), label_aesthetics = list("color" = "#ff420e")) %>%
-  rename_plot_sample_ids(new_ids)
+  add_wavenumber_marker(
+    wavenumber = 1495,
+    text = "C-C Aromatic",
+    line_aesthetics = list("linetype" = "dashed"),
+    label_aesthetics = list("color" = "#7e0021")
+  ) %>%
+  add_wavenumber_marker(
+    wavenumber = 3340,
+    text = "O-H Alcohol",
+    line_aesthetics = list("linetype" = "dotted"),
+    label_aesthetics = list("color" = "#ff420e")
+  ) %>%
+  rename_plot_sample_ids(sample_ids = new_ids) %>%
+  move_plot_legend(position = "bottom", direction = "horizontal")
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
 ```
@@ -259,8 +281,16 @@ Vous pouvez également ajouter des lignes de marqueur (avec des
 contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
 
 ``` r
-biodiesel_marked <- add_wavenumber_marker(biodiesel_plot, 1742, "C=O Stretch", label_aesthetics = list("color" = "red"))
-add_wavenumber_marker(biodiesel_marked, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
+  wavenumber = 1742,
+  text = "C=O étirement",
+  label_aesthetics = list("color" = "red")
+)
+add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 2920,
+  text = "C-H étirement",
+  line_aesthetics = list("linetype" = "dashed")
+)
 ```
 
 <img src="man/figures/README-biodiesel_labelled_fr-1.png" width="100%" />
@@ -294,6 +324,15 @@ rename_plot_sample_ids(biodiesel_plot, new_names)
 Une fonction d’assistance pour le changement de nom est fournie (voir la
 documentation pour `get_plot_sample_ids()`).
 
+Enfin, les légendes des tracés sont personnalisables (pour les
+modifications de base) via une fonction d’assistance
+`move_plot_legend()`.
+
+## Production de tracés “tidy”
+
+Notez que, comme la plupart des fonctions renvoient un type de données
+similaire à celui fourni, une “tidy-eval” est possible.
+
 ``` r
 nouveaux_ids <- c(
   "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
@@ -303,21 +342,27 @@ nouveaux_ids <- c(
 sample_spectra %>%
   absorbance_to_transmittance() %>%
   plot_ftir(plot_title = "Exemple de spectres IRTF") %>%
-  zoom_in_on_range(c(3800, 800)) %>%
+  zoom_in_on_range(zoom_range = c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
-  add_wavenumber_marker(1495, text = "C-C aromatique", line_aesthetics = list("linetype" = "dashed"), label_aesthetics = list("color" = "#7e0021")) %>%
-  add_wavenumber_marker(3340, text = "O-H alcool", line_aesthetics = list("linetype" = "dotted"), label_aesthetics = list("color" = "#ff420e")) %>%
-  rename_plot_sample_ids(nouveaux_ids)
+  add_wavenumber_marker(
+    wavenumber = 1495,
+    text = "C-C aromatique",
+    line_aesthetics = list("linetype" = "dashed"),
+    label_aesthetics = list("color" = "#7e0021")
+  ) %>%
+  add_wavenumber_marker(
+    wavenumber = 3340,
+    text = "O-H alcool",
+    line_aesthetics = list("linetype" = "dotted"),
+    label_aesthetics = list("color" = "#ff420e")
+  ) %>%
+  rename_plot_sample_ids(sample_ids = nouveaux_ids) %>%
+  move_plot_legend(position = "bottom", direction = "horizontal")
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
 ```
 
 <img src="man/figures/README-tidy_fr-1.png" width="100%" />
-
-## Production de tracés “tidy”
-
-Notez que, comme la plupart des fonctions renvoient un type de données
-similaire à celui fourni, une “tidy-eval” est possible.
 
 ## Ensembles des données
 
