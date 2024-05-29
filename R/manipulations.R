@@ -296,8 +296,10 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #'   p
 #'
 #'   # Add a second marker and use a dashed line for the C-H aliphatic stretch
-#'   add_wavenumber_marker(p, 2920, text = "C-H Stretch",
-#'     line_aesthetics = list("linetype" = "dashed"))
+#'   add_wavenumber_marker(p, 2920,
+#'     text = "C-H Stretch",
+#'     line_aesthetics = list("linetype" = "dashed")
+#'   )
 #' }
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
   # Package Checks
@@ -467,7 +469,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
 #'   # Move legend to bottom:
 #'   move_plot_legend(p, position = "bottom", direction = "horizontal")
 #' }
-move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification = NULL, direction = NULL, legend_title_position = NULL){
+move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification = NULL, direction = NULL, legend_title_position = NULL) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     cli::cli_abort("{.fun rename_plot_sample_ids} requires {.pkg ggplot2} package installation.")
@@ -475,25 +477,25 @@ move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification =
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
     cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
-  if(!is.null(position)){
+  if (!is.null(position)) {
     allowed_positions <- c("none", "left", "right", "bottom", "top")
     if (!(position %in% allowed_positions)) {
       cli::cli_abort("{.arg position} must be one of {.or {.val {allowed_positions}}}, or NULL.")
     }
   }
-  if(!is.null(justification)){
+  if (!is.null(justification)) {
     allowed_justifications <- c("top", "bottom", "center", "left", "right")
     if (!(justification %in% allowed_justifications)) {
       cli::cli_abort("{.arg justification} must be one of {.or {.val {allowed_justifications}}}, or NULL.")
     }
   }
-  if(!is.null(direction)){
+  if (!is.null(direction)) {
     allowed_directions <- c("horizontal", "vertical")
     if (!(direction %in% allowed_directions)) {
       cli::cli_abort("{.arg direction} must be one of {.or {.val {allowed_directions}}}, or NULL.")
     }
   }
-  if(!is.null(legend_title_position)){
+  if (!is.null(legend_title_position)) {
     allowed_title_pos <- c("top", "bottom", "left", "right")
     if (!(legend_title_position %in% allowed_title_pos)) {
       cli::cli_abort("{.arg legend_title_position} must be one of {.or {.val {allowed_title_pos}}}, or NULL.")
@@ -501,10 +503,12 @@ move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification =
   }
 
   p <- ftir_spectra_plot +
-    ggplot2::theme(legend.position = position,
-                   legend.justification = justification,
-                   legend.direction = direction,
-                   legend.title.position = legend_title_position)
+    ggplot2::theme(
+      legend.position = position,
+      legend.justification = justification,
+      legend.direction = direction,
+      legend.title.position = legend_title_position
+    )
 
   return(p)
 }
