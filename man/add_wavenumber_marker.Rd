@@ -84,7 +84,8 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
   p
 
   # Add a second marker and use a dashed line for the C-H aliphatic stretch
-  add_wavenumber_marker(p, 2920, text = "C-H Stretch", line_aesthetics = list("linetype" = "dashed"))
+  add_wavenumber_marker(p, 2920, text = "C-H Stretch",
+    line_aesthetics = list("linetype" = "dashed"))
 }
 }
 \seealso{
