@@ -27,17 +27,16 @@
 #'    * `paper` un spectre IRTF d'un livre blanc disponible dans le commerce.
 #'    * `polystyrene` un spectre IRTF d'un film de polystyrène
 #'
-#' @format The data is in long format, ready for use, and as such has the
+#' @format The data is in a long format data.frame, ready for use, and with the
 #'   following variables:
 #'
 #'     * `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1).
 #'     * `absorbance` the absorbance of the sample at each specified wavenumber.
 #'     * `sample_id` the sample identity of the various included spectra.
 #'
-#'  Les données sont au format long, prêtes à l'emploi, et comportent à ce titre
-#'  les variables suivantes:
+#'   Les données sont dans un format long data.frame, prêt à l'emploi, et avec les variables suivantes:
 #'
-#'    * `wavenmber` valeur du numéro d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
+#'    * `wavenmber` valeur du nombre d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
 #'    * `absorbance` l'absorbance de l'échantillon à chaque nombre d'onde spécifié.
 #'    * `sample_id` identité d'échantillon des différents spectres inclus.
 "sample_spectra"
@@ -65,7 +64,7 @@
 #'
 #'
 #'   Cet ensemble de données contient des exemples de données provenant d'un
-#'   instrument FTIR à réflectance totale atténuée (ATR) ZnSe à 5 rebonds
+#'   instrument IRTF à réflectance totale atténuée (RTA) ZnSe à 5 rebonds
 #'   collectées pour l'analyse du biodiesel. Les échantillons de biodiesel
 #'   étaient des étalons d'étalonnage achetés ou disponibles sur le marché
 #'   commercial canadien en 2024.
@@ -83,17 +82,16 @@
 #'     * `biodiesel_B5` Un échantillon disponible dans le commerce contenant environ 5,0 % de biodiesel.
 #'     * `diesel_unknown` Un échantillon disponible dans le commerce avec une teneur en biodiesel inconnue.
 #'
-#' @format The data is in long format, ready for use, and as such has the
+#' @format The data is in a long format data.frame, ready for use, and with the
 #'   following variables:
 #'
 #'     * `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1).
 #'     * `absorbance` the absorbance of the sample at each specified wavenumber.
 #'     * `sample_id` the sample identity of the various included spectra.
 #'
-#'   Les données sont au format long, prêtes à l'emploi, et comportent à ce
-#'   titre les variables suivantes:
+#'   Les données sont dans un format long data.frame, prêt à l'emploi, et avec les variables suivantes:
 #'
-#'    * `wavenmber` valeur du numéro d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
+#'    * `wavenmber` valeur du nombre d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
 #'    * `absorbance` l'absorbance de l'échantillon à chaque nombre d'onde spécifié.
 #'    * `sample_id` identité d'échantillon des différents spectres inclus.
 "biodiesel"

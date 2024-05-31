@@ -216,14 +216,14 @@ you agree to abide by its terms.
 
 ## Introduction et installation
 
-L’objectif de `PlotFTIR` est de démarrer facilement et rapidement la
-production des tracés spectraux de spectroscopie infrarouge à
-transformée de Fourier (IRTF) de qualité journal dans R à l’aide de
+Le but de `PlotFTIR` est de lancer facilement et rapidement la
+production des tracés de spectres de spectroscopie infrarouge à
+transformée de Fourier (IRTF) de qualité journal dans R en utilisant
 ggplot2. Les tracés produits peuvent être publiés directement ou
-modifiés davantage par les fonctions ggplot2.
+modifiés par les fonctions ggplot2.
 
 Vous pouvez installer la version de développement de `PlotFTIR` depuis
-[GitHub](https://github.com/) avec :
+[GitHub](https://github.com/) avec:
 
 ``` r
 # install.packages("devtools")
@@ -367,10 +367,10 @@ sample_spectra %>%
 ## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples
-de spectres à tracer : \* `biodiesel` est un ensemble de diesels avec
-une teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de
-diesel connus et un inconnu. \* `sample_spectra` est un ensemble de
-spectres IRTF aléatoires qui comprennent des spectres de toluène pur,
+de spectres à tracer: \* `biodiesel` est un ensemble de diesels avec une
+teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de diesel
+connus et un inconnu. \* `sample_spectra` est un ensemble de spectres
+IRTF aléatoires qui comprennent des spectres de toluène pur,
 d’isopropanol et d’heptanes, ainsi que du papier d’imprimante blanc et
 un film de polystyrène.
 

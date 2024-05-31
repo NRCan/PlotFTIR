@@ -5,17 +5,16 @@
 \alias{sample_spectra}
 \title{FTIR example data}
 \format{
-The data is in long format, ready for use, and as such has the
+The data is in a long format data.frame, ready for use, and with the
   following variables:
 
     * `wavenumber` wavenumber (x axis) value for each point. In units of wavenumbers (cm^-1).
     * `absorbance` the absorbance of the sample at each specified wavenumber.
     * `sample_id` the sample identity of the various included spectra.
 
- Les données sont au format long, prêtes à l'emploi, et comportent à ce titre
- les variables suivantes:
+  Les données sont dans un format long data.frame, prêt à l'emploi, et avec les variables suivantes:
 
-   * `wavenmber` valeur du numéro d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
+   * `wavenmber` valeur du nombre d'onde (axe x) pour chaque point. En unités de nombres d'ondes (cm^-1).
    * `absorbance` l'absorbance de l'échantillon à chaque nombre d'onde spécifié.
    * `sample_id` identité d'échantillon des différents spectres inclus.
 }

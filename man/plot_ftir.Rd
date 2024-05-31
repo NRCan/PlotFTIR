@@ -15,7 +15,7 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
   et `absorbance`. La colonne `absorbance` peut être remplacée par une
   colonne `transmittance` pour les tracés de transmission. Le code détermine
-  les unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
+  les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
   manière appropriée.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra". If a vector
@@ -30,23 +30,23 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
-  titles are as provided, with each sample provided a different default color
-  from ggplot2. Because this is a ggplot object, any other ggplot modifiers,
+  titles are as provided, with each sample provided a different default color.
+  Because this is a ggplot object, any other ggplot modifiers,
   layers, or changes can be applied to the returned object. Further
   manipulations can be performed by this package.
 
-  un objet ggplot contenant un tracé spectral IRTF Les titres de le tracé et
-  de la légende sont tels que fournis, chaque échantillon étant doté d'une
-  couleur par défaut différente de celle de ggplot2. Puisqu'il s'agit d'un
-  objet ggplot, tous les autres modificateurs, calques ou modifications
-  ggplot peuvent être appliqués à l'objet renvoyé. D'autres manipulations
+  un objet ggplot contenant un tracé spectral IRTF. Les titres de le tracé et
+  de la légende sont tels que fournis, avec une couleur par défaut différente
+  pour chaque échantillon. Puisqu'il s'agit d'un
+  objet ggplot, tous les autres modificateurs, calques ou changements
+  ggplot peuvent être appliqués à l'objet retourné. D'autres manipulations
   peuvent être effectuées par ce package.
 }
 \description{
 Produce a basic spectra overlay plot for all samples found in
 the FTIR dataset provided.
 
-Produisez un tracé de superposition de spectres de base pour tous les
+Produisez un tracé de base de superposition de spectres pour tous les
 échantillons trouvés dans l'ensemble de données IRTF fourni.
 }
 \examples{

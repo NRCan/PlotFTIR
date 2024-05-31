@@ -20,7 +20,7 @@ plot_ftir_stacked(
   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
   et `absorbance`. La colonne `absorbance` peut être remplacée par une
   colonne `transmittance` pour les tracés de transmission. Le code détermine
-  les unités correctes de l'axe Y et étiquette le tracé/ajuste les marges de
+  les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
   manière appropriée.}
 
 \item{plot_title}{A title for a plot. Defaults to "FTIR Spectra". If a vector
@@ -38,34 +38,34 @@ plot_ftir_stacked(
  this is about 0.2 absorbance units.
 
  Le montant en pourcentage de décalage d'empilement à utiliser. Pour
- transmittance ceci est directement lié aux unités de l'axe Y, pour
+ transmittance, cette valeur est directement liée aux unités de l'axe y, pour
  l'absorbance cela représente environ 0,2 unités d'absorbance.}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
-  titles are as provided, with each sample provided a different default color
-  from ggplot2. Because this is a ggplot object, any other ggplot modifiers,
+  titles are as provided, with each sample provided a different default color.
+  Because this is a ggplot object, any other ggplot modifiers,
   layers, or changes can be applied to the returned object. Further
   manipulations can be performed by this package.
 
-  un objet ggplot contenant un tracé spectral IRTF Les titres de le tracé et
-  de la légende sont tels que fournis, chaque échantillon étant doté d'une
-  couleur par défaut différente de celle de ggplot2. Puisqu'il s'agit d'un
-  objet ggplot, tous les autres modificateurs, calques ou modifications
-  ggplot peuvent être appliqués à l'objet renvoyé. D'autres manipulations
+  un objet ggplot contenant un tracé spectral IRTF. Les titres de le tracé et
+  de la légende sont tels que fournis, avec une couleur par défaut différente
+  pour chaque échantillon. Puisqu'il s'agit d'un
+  objet ggplot, tous les autres modificateurs, calques ou changements
+  ggplot peuvent être appliqués à l'objet retourné. D'autres manipulations
   peuvent être effectuées par ce package.
 }
 \description{
 Plot the FTIR spectra in a journal prepared format. It may be
  desirable to plot spectra 'stacked and offset' by a certain amount. In this
- case the Y axis becomes non-labelled and each charts baseline (0 for
+ case the y axis becomes non-labelled and each charts baseline (0 for
  absorbance or 100 for transmittance) is offset by a certain amount.
 
- Tracez les spectres IRTF dans un format préparé par un journal. C'est
- possible souhaitable pour tracer les spectres 'empilés et décalés' d'une
- certaine quantité. Dans ce cas l'axe Y devient non étiqueté et
+ Tracez les spectres IRTF dans un format préparé par un journal. Il peut être
+ souhaitable de tracer les spectres 'empilés et décalés' d'une
+ certaine quantité. Dans ce cas l'axe y devient non étiqueté et
  chaque ligne de base du graphique (0 pour absorbance ou 100 pour la
- transmission) est compensée d'une certaine quantité.
+ transmittance) est décalée d'une certaine quantité.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -76,11 +76,12 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 \seealso{
 [zoom_in_on_range()] to 'zoom' into a specified range,
   [compress_low_energy()] to make the x axis non-linear (compressing lower
-  energy regions), and [add_wavenumber_marker()] to add markers to highlight
-  important wavenumbers.
+  energy regions), [add_wavenumber_marker()] to add markers to highlight
+  important wavenumbers, and [move_plot_legend()] to modify the legend position.
 
-  [zoom_in_on_range()] pour 'zoomer' sur une zone spécifiée,
-  [compress_low_energy()] pour rendre l'axe x non linéaire (compression des
-  régions à basse énergie) et [add_wavenumber_marker()] pour ajouter des
-  marqueurs pour mettre en évidence les nombres d'onde importants.
+  [zoom_in_on_range()] pour 'zoomer' sur une gamme spécifiée,
+  [compress_low_energy()] pour rendre l'axe x non linéaire (en compression les
+  régions à basse énergie), [add_wavenumber_marker()] pour ajouter des marqueurs
+  afin de mettre en évidence les nombres d'ondes importants, et [move_plot_legend()]
+  pour modifier la position de la légende.
 }
