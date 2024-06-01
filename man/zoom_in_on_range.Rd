@@ -15,23 +15,24 @@ zoom_in_on_range(ftir_spectra_plot, zoom_range = c(1000, 1900))
 \item{zoom_range}{A vector of length two, with the wavenumber range of
   interest. Order of provided limits is not important.
 
-  Un vecteur de longueur deux, avec la plage de nombres d'onde qui nous
-  intéresse. L’ordre des limites fournies n’est pas important.}
+  Un vecteur de longueur deux, avec la gamme de nombres d'ondes de d'intérêt.
+  L'ordre des limites fournies n'est pas important.}
 }
 \value{
 the FTIR plot as a ggplot2 object, with x axis limits as those supplied by
   `zoom_range`.
 
-  le tracé IRTF en tant qu'objet ggplot2, avec des limites d'axe x comme celles fournies par `zoom_range`.
+  le tracé IRTF en tant qu'objet ggplot2, avec des limites d'axe x comme
+  celles fournies par `zoom_range`.
 }
 \description{
 It's common to be interested in only a small portion of the FTIR
   range. In these cases, this function will zoom the spectral plot to the
   range provided.
 
-  Il est courant de s'intéresser uniquement à une petite partie de la plage
-  IRTF Dans ces cas, cette fonction zoomera sur le tracé spectral sur la
-  plage fournie.
+  Il est courant de s'intéresser uniquement à une petite partie de la gamme
+  IRTF. Dans ces cas, cette fonction permet de zoomer sur le tracé spectral
+  sur la gamme fournie.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {

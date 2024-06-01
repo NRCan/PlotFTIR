@@ -15,8 +15,8 @@ compress_low_energy(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2)
 \item{cutoff}{The wavenumber whereat those at lower energy will be
   compressed, but those above will be shown normally.
 
-  Le nombre d'onde auquel ceux à énergie au-desous seront compressés, mais
-  ceux au-dessus seront affichés normalement.}
+  Le nombre d'ondes où celles à faible énergie seront comprimées,
+  mais celles au-dessus seront affichées normalement.}
 
 \item{compression_ratio}{A numeric value indicating the ratio by which to
   squeeze the data
@@ -28,8 +28,8 @@ compress_low_energy(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2)
 the FTIR plot as a ggplot2 object, with x axis compressed for some
   wavenumber range
 
-  le tracé FTIR en tant qu'objet ggplot2, avec l'axe x compressé pour une
-  plage de nombres d'onde
+  le tracé IRTF en tant qu'objet ggplot2, avec l'axe des x comprimé pour
+  une certaine gamme de nombres d'ondes
 }
 \description{
 Compress the lower energy region of a FTIR plot (on the x axis) to
@@ -37,11 +37,11 @@ Compress the lower energy region of a FTIR plot (on the x axis) to
   wavenumbers higher than 2000 cm^-1 as the more complex spectra at higher
   energy (lower wavenumber) is harder to see clearly.
 
-  Compressez la région d'énergie inférieure d'un tracé d'IRTF (sur l'axe des x) pour
-  laisser plus d'espace à la région d'énergie supérieure. Ceci est
-  généralement effectué pour les nombres d'onde supérieurs à 2000 cm^-1, car
-  les spectres plus complexes à une énergie plus élevée (nombre d'onde
-  inférieur) sont plus difficiles à voir clairement.
+  Compressez la région de basse énergie d'un tracé d'IRTF (sur l'axe des x) pour
+  laisser plus d'espace à la région de haute énergie. Cette opération
+  généralement réalisée pour les nombres d'onde supérieurs à 2000 cm^-1, car
+  les spectres plus complexes à houte énergie (nombre d'onde
+  plus faible) sont plus difficiles à voir clairement.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {

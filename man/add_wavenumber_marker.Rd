@@ -20,15 +20,15 @@ add_wavenumber_marker(
 
 \item{wavenumber}{the wavenumber at which the marker should be placed.
 
-  le numéro d'onde auquel la compression commence}
+  le nombre d'ondes auquel le marqueur doit être placé.}
 
 \item{text}{The text of the label over the marker (optional). If no text is
-  provided, the marker will show the wavenumber (rounded to the nearest whole
+  provided, the label will show the wavenumber (rounded to the nearest whole
   number).
 
-  Le texte de l'étiquette sur le marqueur (facultatif). Si aucun texte n'est
-  fourni, le marqueur affichera le numéro d'onde (arrondi au nombre entier le
-  plus proche).}
+  Le texte de l'étiquette au-dessus du marqueur (facultatif). Si aucun texte
+  n'est fourni, l'étiquette indiquera le nombre d'ondes (arrondi au nombre
+  entier le plus proche).}
 
 \item{line_aesthetics}{A named `list` of aesthetics to pass to ggplot for
   creating the vertical line. See `[ggplot2::geom_path()]`'s aesthetics
@@ -38,7 +38,8 @@ add_wavenumber_marker(
   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer la ligne
   verticale. Voir la section esthétique de `[ggplot2::geom_path()]` pour plus
   d'informations. Plus précisément, `alpha`, `color`, `linetype` et
-  `linewidth`` sont autorisés.L’esthétique du positionnement sera supprimée.}
+  `linewidth`` sont autorisés. Les aspects esthétiques du positionnement
+  seront supprimés.}
 
 \item{label_aesthetics}{A named `list` of aesthetics to pass to ggplot for
   creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
@@ -48,31 +49,33 @@ add_wavenumber_marker(
   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
   l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
   plus d'informations. Plus précisément, `alpha`, `color`, `family`, `fill`,
-  `fontface` et `size` sont autorisés. L’esthétique du positionnement sera
-  supprimée.}
+  `fontface` et `size` sont autorisés. Les aspects esthétiques du
+  positionnement seront supprimés.}
 }
 \value{
 the FTIR plot as a ggplot2 object, with a marker added at the
   specified wavenumber.
 
-  le tracé IRTF en tant qu'objet ggplot2, avec un marqueur ajouté au numéro
-  d'onde spécifié.
+  le tracé IRTF en tant qu'objet ggplot2, avec un marqueur ajouté au nombre
+  d'ondes spécifié.
 }
 \description{
 Add a vertical line marker, at a given wavenumber, to an FTIR
-  plot, and label at the top of the plot with a provided text (or default the
-  wavenumber of the marker). This is useful for noting important wavenumbers.
+  plot, and label at the top of the plot with a provided text (or by default
+  the wavenumber of the marker). This is useful for noting important
+  wavenumbers.
 
   This function can be called repeatedly. Note that older labels will be
-  overwritten by newer labels.
+  covered by newer labels if they overlap.
 
-  Ajoutez un marqueur de ligne verticale, à un numéro d'onde donné, a un
-  tracé d'IRTF et étiquetez en haut du tracé avec un texte fourni (ou par
-  défaut le numéro d'onde du marqueur). Ceci est utile pour noter les nombres
-  d’onde importants.
+  Ajoutez un marqueur de ligne verticale, à un nombre d'ondes donné, à un
+  tracé FTIR, et l'étiquette en haut du tracé avec un texte fourni (ou par
+  défaut le nombre d'ondes du marqueur). Cette fonction est utile pour noter
+  les nombres d'ondes importants. Cette fonction peut être appelée plusieurs
+  fois.
 
-  Cette fonction peut être appelée à plusieurs reprises. Notez que les
-  anciennes étiquettes seront remplacées par des étiquettes plus récentes.
+  Notez que les vieux labels seront couverts par les nouveaux s'ils se
+  chevauchent.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {
