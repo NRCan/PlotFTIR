@@ -237,7 +237,7 @@ prépar de spectres IRTF:
 
 ``` r
 library(PlotFTIR)
-plot_ftir(sample_spectra)
+plot_ftir(sample_spectra, plot_title = "Tracé IRTF")
 ```
 
 <img src="man/figures/README-basic_plot_fr-1.png" width="100%" />
@@ -256,7 +256,7 @@ plage :
 
 ``` r
 # Générer un tracé
-biodiesel_trace <- plot_ftir(biodiesel)
+biodiesel_trace <- plot_ftir(biodiesel, plot_title = "Tracé IRTF")
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
@@ -271,7 +271,7 @@ Certains tracés FTIR ont une partie compressée du graphique à faible
 ``` r
 # compresser les données avec des nombres d'onde supérieurs à 2000 (à gauche de
 # 2000 sur le tracé) d'un facteur 5
-compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
 <img src="man/figures/README-biodiesel_compress_fr-1.png" width="100%" />
@@ -281,12 +281,12 @@ Vous pouvez également ajouter des lignes de marqueur (avec des
 contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
 
 ``` r
-biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
+biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
 )
-add_wavenumber_marker(biodiesel_marked,
+add_wavenumber_marker(biodiesel_trace,
   wavenumber = 2920,
   text = "C-H étirement",
   line_aesthetics = list("linetype" = "dashed")
@@ -314,7 +314,7 @@ new_names <- c(
   "biodiesel_B5" = "B5 Commercial",
   "diesel_unknown" = "Biodiesel Inconnu"
 )
-rename_plot_sample_ids(biodiesel_plot, new_names)
+rename_plot_sample_ids(biodiesel_trace, new_names)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
 ```

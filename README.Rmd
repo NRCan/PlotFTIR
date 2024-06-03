@@ -177,7 +177,7 @@ Ceci est un example de base qui vous montre comment tracer un ensemble prépar d
 
 ```{r basic_plot_fr}
 library(PlotFTIR)
-plot_ftir(sample_spectra)
+plot_ftir(sample_spectra, plot_title = "Tracé IRTF")
 ```
 
 Nous pouvons également tracer les spectres de manière empilée/décalée au lieu de les superposer :
@@ -188,7 +188,7 @@ plot_ftir_stacked(biodiesel)
 Les tracés peuvent être manipulés, par exemple, en zoomant sur une plage :
 ```{r biodiesel_zoom_fr}
 # Générer un tracé
-biodiesel_trace <- plot_ftir(biodiesel)
+biodiesel_trace <- plot_ftir(biodiesel, plot_title = "Tracé IRTF")
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 ```
@@ -197,17 +197,17 @@ Certains tracés FTIR ont une partie compressée du graphique à faible énergie
 ```{r biodiesel_compress_fr}
 # compresser les données avec des nombres d'onde supérieurs à 2000 (à gauche de
 # 2000 sur le tracé) d'un facteur 5
-compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
+compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
 Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
 ```{r biodiesel_labelled_fr}
-biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
+biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
 )
-add_wavenumber_marker(biodiesel_marked,
+add_wavenumber_marker(biodiesel_trace,
   wavenumber = 2920,
   text = "C-H étirement",
   line_aesthetics = list("linetype" = "dashed")
@@ -230,7 +230,7 @@ new_names <- c(
   "biodiesel_B5" = "B5 Commercial",
   "diesel_unknown" = "Biodiesel Inconnu"
 )
-rename_plot_sample_ids(biodiesel_plot, new_names)
+rename_plot_sample_ids(biodiesel_trace, new_names)
 ```
 
 Une fonction d'assistance pour le changement de nom est fournie (voir la documentation pour `get_plot_sample_ids()`).
