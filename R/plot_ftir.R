@@ -111,18 +111,18 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 
   lang <- rlang::arg_match(lang, values = c("en", "english", "anglais", "fr", "french", "francais", "français"), multiple = FALSE)
   l <- substr(lang, 0, 2)
-  if(l == 'fr'){
-    if(plot_title == "FTIR Spectra"){
+  if (l == "fr") {
+    if (plot_title == "FTIR Spectra") {
       plot_title <- "Spectres IRTF"
     }
-    if(legend_title == "Sample ID"){
+    if (legend_title == "Sample ID") {
       legend_title <- "ID de l'échantillon"
     }
   }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
 
-  if(l == 'fr'){
+  if (l == "fr") {
     xtitle <- bquote("Nombre d'onde" ~ (cm^-1))
   } else {
     xtitle <- bquote("Wavenumber" ~ (cm^-1))
@@ -193,7 +193,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #'   plot_ftir_stacked(biodiesel)
 #' }
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = 'en') {
+plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") {
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
@@ -270,7 +270,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 #'   plot_ftir(sample_spectra)
 #' }
-plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = 'en') {
+plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)

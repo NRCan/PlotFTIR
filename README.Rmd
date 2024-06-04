@@ -181,12 +181,12 @@ Ceci est un example de base qui vous montre comment tracer un ensemble prépar d
 
 ```{r basic_plot_fr}
 library(PlotFTIR)
-plot_ftir(sample_spectra, lang = 'fr')
+plot_ftir(sample_spectra, lang = "fr")
 ```
 
 Nous pouvons également tracer les spectres de manière empilée/décalée au lieu de les superposer :
 ```{r stack_plot_fr}
-plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = 'fr')
+plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = "fr")
 ```
 
 Notez que les titres par défaut de tracé et du légende sont en anglais, mais qu'ils peuvent être automatiquement modifiés en français en fournissant l'argument `lang = 'fr'` aux fonctions de création de tracés.
@@ -194,7 +194,7 @@ Notez que les titres par défaut de tracé et du légende sont en anglais, mais 
 Les tracés peuvent être manipulés, par exemple, en zoomant sur une plage :
 ```{r biodiesel_zoom_fr}
 # Générer un tracé
-biodiesel_trace <- plot_ftir(biodiesel, lang = 'fr')
+biodiesel_trace <- plot_ftir(biodiesel, lang = "fr")
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 ```
@@ -257,7 +257,7 @@ nouveaux_ids <- c(
 
 sample_spectra %>%
   absorbance_to_transmittance() %>%
-  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = 'fr') %>%
+  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = "fr") %>%
   zoom_in_on_range(zoom_range = c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
   add_wavenumber_marker(

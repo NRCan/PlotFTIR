@@ -244,7 +244,7 @@ prépar de spectres IRTF:
 
 ``` r
 library(PlotFTIR)
-plot_ftir(sample_spectra, lang = 'fr')
+plot_ftir(sample_spectra, lang = "fr")
 ```
 
 <img src="man/figures/README-basic_plot_fr-1.png" width="100%" />
@@ -253,7 +253,7 @@ Nous pouvons également tracer les spectres de manière empilée/décalée au
 lieu de les superposer :
 
 ``` r
-plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = 'fr')
+plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = "fr")
 ```
 
 <img src="man/figures/README-stack_plot_fr-1.png" width="100%" />
@@ -268,7 +268,7 @@ plage :
 
 ``` r
 # Générer un tracé
-biodiesel_trace <- plot_ftir(biodiesel, lang = 'fr')
+biodiesel_trace <- plot_ftir(biodiesel, lang = "fr")
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
@@ -357,7 +357,7 @@ nouveaux_ids <- c(
 
 sample_spectra %>%
   absorbance_to_transmittance() %>%
-  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = 'fr') %>%
+  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = "fr") %>%
   zoom_in_on_range(zoom_range = c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
   add_wavenumber_marker(
