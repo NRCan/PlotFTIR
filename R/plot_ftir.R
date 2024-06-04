@@ -32,33 +32,46 @@
 #'
 #'   Un titre pour la légende. La valeur par défaut est «Sample ID».
 #'
+#' @param lang An optional argument for language. If set to one of `fr`,
+#'   `french`, `francais`, or `français` the axis and default plot and legend
+#'   titles will change to french. If non-default legend or plot titles are
+#'   provided they are used as-is. Can also provide `en`, `english` or
+#'   `anglais`.
+#'
+#'   Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
+#'   ou `Français`, l'axe et les titres par défaut de le tracé et du légende
+#'   seront en français. Si des titres du légende ou de tracé autres que ceux
+#'   par défaut sont fournis, ils seront utilisés tels quels.
+#'
 #' @keywords internal
 #'
 #' @return a ggplot object containing a  FTIR spectral plot. The plot and legend
-#'   titles are as provided, with each sample provided a different default color.
-#'   Because this is a ggplot object, any other ggplot modifiers,
-#'   layers, or changes can be applied to the returned object. Further
-#'   manipulations can be performed by this package.
+#'   titles are as provided, with each sample provided a different default
+#'   color. Because this is a ggplot object, any other ggplot modifiers, layers,
+#'   or changes can be applied to the returned object. Further manipulations can
+#'   be performed by this package. Peut également fournir `en`, `english` ou
+#'   `anglais`.
 #'
 #'   un objet ggplot contenant un tracé spectral IRTF. Les titres de le tracé et
 #'   de la légende sont tels que fournis, avec une couleur par défaut différente
-#'   pour chaque échantillon. Puisqu'il s'agit d'un
-#'   objet ggplot, tous les autres modificateurs, calques ou changements
-#'   ggplot peuvent être appliqués à l'objet retourné. D'autres manipulations
-#'   peuvent être effectuées par ce package.
+#'   pour chaque échantillon. Puisqu'il s'agit d'un objet ggplot, tous les
+#'   autres modificateurs, calques ou changements ggplot peuvent être appliqués
+#'   à l'objet retourné. D'autres manipulations peuvent être effectuées par ce
+#'   package.
 #'
 #' @seealso [zoom_in_on_range()] to 'zoom' into a specified range,
 #'   [compress_low_energy()] to make the x axis non-linear (compressing lower
 #'   energy regions), [add_wavenumber_marker()] to add markers to highlight
-#'   important wavenumbers, and [move_plot_legend()] to modify the legend position.
+#'   important wavenumbers, and [move_plot_legend()] to modify the legend
+#'   position.
 #'
 #'   [zoom_in_on_range()] pour 'zoomer' sur une gamme spécifiée,
-#'   [compress_low_energy()] pour rendre l'axe x non linéaire (en compression les
-#'   régions à basse énergie), [add_wavenumber_marker()] pour ajouter des marqueurs
-#'   afin de mettre en évidence les nombres d'ondes importants, et [move_plot_legend()]
-#'   pour modifier la position de la légende.
+#'   [compress_low_energy()] pour rendre l'axe x non linéaire (en compression
+#'   les régions à basse énergie), [add_wavenumber_marker()] pour ajouter des
+#'   marqueurs afin de mettre en évidence les nombres d'ondes importants, et
+#'   [move_plot_legend()] pour modifier la position de la légende.
 #'
-plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
+plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
@@ -96,7 +109,26 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
+  lang <- rlang::arg_match(lang, values = c("en", "english", "anglais", "fr", "french", "francais", "français"), multiple = FALSE)
+  l <- substr(lang, 0, 2)
+  if(l == 'fr'){
+    if(plot_title == "FTIR Spectra"){
+      plot_title <- "Spectres IRTF"
+    }
+    if(legend_title == "Sample ID"){
+      legend_title <- "ID de l'échantillon"
+    }
+  }
+
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+
+  if(l == 'fr'){
+    xtitle <- bquote("Nombre d'onde" ~ (cm^-1))
+  } else {
+    xtitle <- bquote("Wavenumber" ~ (cm^-1))
+  }
+
+  ytitle <- ifelse(mode == "absorbance", "Absorbance", "% Transmittance")
 
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
@@ -119,8 +151,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ggplot2::labs(
       title = plot_title[1],
       subtitle = if (length(plot_title) < 2) NULL else plot_title[2], # Can't return Null from ifelse()
-      x = bquote("Wavenumber" ~ (cm^-1)),
-      y = ifelse(mode == "absorbance", "Absorbance", "% Transmittance")
+      x = xtitle,
+      y = ytitle
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light()
@@ -161,7 +193,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #'   plot_ftir_stacked(biodiesel)
 #' }
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10) {
+plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = 'en') {
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
@@ -212,7 +244,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
     ftir$offset <- NULL
   }
 
-  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
+  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   p <- p + ggplot2::theme(
     axis.text.y = ggplot2::element_blank()
@@ -238,8 +270,8 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 #'   plot_ftir(sample_spectra)
 #' }
-plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
-  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title)
+plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = 'en') {
+  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)
 }

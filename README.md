@@ -52,6 +52,10 @@ plot_ftir_stacked(biodiesel)
 
 <img src="man/figures/README-stack_plot_en-1.png" width="100%" />
 
+Note the default plot and legend titles are in english but can be
+automatically changed to french defaults by supplying the `lang = 'fr'`
+argument to plot creation functions.
+
 Plots can be manipulated, for example, by zooming in on a range:
 
 ``` r
@@ -127,7 +131,7 @@ helper function `move_plot_legend()`.
 ## Data Sets
 
 The package contains two datasets to provide example spectra for
-plotting: \* `biodiesel` is a set of diesels with 0 to 10 % FAMES
+plotting: \* `biodiesel` is a set of diesels with 0 to 10 % FAMEs
 (biodiesel) content, plus two known and one unknown diesel spectra. \*
 `sample_spectra` is a set of random FTIR spectra which includes spectra
 of pure toluene, isopropanol, and heptanes, as well as white printer
@@ -149,9 +153,12 @@ head(biodiesel)
 ## Tidy Plot Production
 
 Note that because most functions return a data type similar to what is
-provided, tidy-eval is possible.
+provided, tidy-eval is possible (using the [`magrittr` pipe
+function](https://magrittr.tidyverse.org/reference/pipe) `%>%`).
 
 ``` r
+library(magrittr)
+
 new_ids <- c(
   "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
   "paper" = "White Paper", "polystyrene" = "PS Film"
@@ -237,7 +244,7 @@ prépar de spectres IRTF:
 
 ``` r
 library(PlotFTIR)
-plot_ftir(sample_spectra, plot_title = "Tracé IRTF")
+plot_ftir(sample_spectra, lang = 'fr')
 ```
 
 <img src="man/figures/README-basic_plot_fr-1.png" width="100%" />
@@ -246,17 +253,22 @@ Nous pouvons également tracer les spectres de manière empilée/décalée au
 lieu de les superposer :
 
 ``` r
-plot_ftir_stacked(biodiesel)
+plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = 'fr')
 ```
 
 <img src="man/figures/README-stack_plot_fr-1.png" width="100%" />
+
+Notez que les titres par défaut de tracé et du légende sont en anglais,
+mais qu’ils peuvent être automatiquement modifiés en français en
+fournissant l’argument `lang = 'fr'` aux fonctions de création de
+tracés.
 
 Les tracés peuvent être manipulés, par exemple, en zoomant sur une
 plage :
 
 ``` r
 # Générer un tracé
-biodiesel_trace <- plot_ftir(biodiesel, plot_title = "Tracé IRTF")
+biodiesel_trace <- plot_ftir(biodiesel, lang = 'fr')
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 #> Warning: Removed 18304 rows containing missing values or values outside the scale range
@@ -330,10 +342,14 @@ modifications de base) via une fonction d’assistance
 
 ## Production de tracés “tidy”
 
-Notez que, comme la plupart des fonctions renvoient un type de données
-similaire à celui fourni, une “tidy-eval” est possible.
+Notez que comme la plupart des fonctions renvoient un type de données
+similaire à celui qui est fourni, l’évaluation des données est possible
+(en utilisant [la fonction `magrittr`
+tuyau](https://magrittr.tidyverse.org/reference/pipe) `%>%`).
 
 ``` r
+library(magrittr)
+
 nouveaux_ids <- c(
   "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
   "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
@@ -341,7 +357,7 @@ nouveaux_ids <- c(
 
 sample_spectra %>%
   absorbance_to_transmittance() %>%
-  plot_ftir(plot_title = "Exemple de spectres IRTF") %>%
+  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = 'fr') %>%
   zoom_in_on_range(zoom_range = c(3800, 800)) %>%
   compress_low_energy(compression_ratio = 4) %>%
   add_wavenumber_marker(
@@ -368,7 +384,7 @@ sample_spectra %>%
 
 Le package contient deux ensembles de données pour fournir des exemples
 de spectres à tracer: \* `biodiesel` est un ensemble de diesels avec une
-teneur en FAMES (biodiesel) de 0 à 10 %, plus deux spectres de diesel
+teneur en EMAGs (biodiesel) de 0 à 10 %, plus deux spectres de diesel
 connus et un inconnu. \* `sample_spectra` est un ensemble de spectres
 IRTF aléatoires qui comprennent des spectres de toluène pur,
 d’isopropanol et d’heptanes, ainsi que du papier d’imprimante blanc et
@@ -389,7 +405,7 @@ head(biodiesel)
 
 ## Manipulation de données
 
-Les données spectrales FTIR peuvent être converties entre l’absorbance
+Les données spectrales IRTF peuvent être converties entre l’absorbance
 et la transmission. Un seul type de données peut exister dans un
 data.frame et être tracé. Les fonctions `absorbance_to_transmittance()`
 et `transmittance_to_absorbance()` effectuent ces conversions.

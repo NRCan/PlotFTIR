@@ -108,3 +108,23 @@ test_that("data is checked correctly", {
     fixed = TRUE
   )
 })
+
+test_that("Language settings work", {
+  expect_error(plot_ftir(biodiesel, lang = 'bob'),
+               "`lang` must be one of ",
+               fixed = TRUE)
+  expect_error(plot_ftir_stacked(biodiesel, lang = 'bob'),
+               "`lang` must be one of ",
+               fixed = TRUE)
+
+  p <- plot_ftir(biodiesel, lang = 'fr')
+
+  expect_equal(p$labels$title, "Spectres IRTF")
+  expect_equal(p$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
+
+  p2 <- plot_ftir(biodiesel, lang = "fr", plot_title = "My Plot")
+  expect_equal(p2$labels$title, "My Plot")
+  expect_equal(p2$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
+
+
+})

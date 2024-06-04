@@ -4,7 +4,12 @@
 \alias{plot_ftir}
 \title{Plot FTIR Spectra Overlaid}
 \usage{
-plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
+plot_ftir(
+  ftir,
+  plot_title = "FTIR Spectra",
+  legend_title = "Sample ID",
+  lang = "en"
+)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`,
@@ -27,20 +32,32 @@ plot_ftir(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID")
 \item{legend_title}{A title for the legend. Defaults to "Sample ID".
 
   Un titre pour la légende. La valeur par défaut est «Sample ID».}
+
+\item{lang}{An optional argument for language. If set to one of `fr`,
+  `french`, `francais`, or `français` the axis and default plot and legend
+  titles will change to french. If non-default legend or plot titles are
+  provided they are used as-is. Can also provide `en`, `english` or
+  `anglais`.
+
+  Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
+  ou `Français`, l'axe et les titres par défaut de le tracé et du légende
+  seront en français. Si des titres du légende ou de tracé autres que ceux
+  par défaut sont fournis, ils seront utilisés tels quels.}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
-  titles are as provided, with each sample provided a different default color.
-  Because this is a ggplot object, any other ggplot modifiers,
-  layers, or changes can be applied to the returned object. Further
-  manipulations can be performed by this package.
+  titles are as provided, with each sample provided a different default
+  color. Because this is a ggplot object, any other ggplot modifiers, layers,
+  or changes can be applied to the returned object. Further manipulations can
+  be performed by this package. Peut également fournir `en`, `english` ou
+  `anglais`.
 
   un objet ggplot contenant un tracé spectral IRTF. Les titres de le tracé et
   de la légende sont tels que fournis, avec une couleur par défaut différente
-  pour chaque échantillon. Puisqu'il s'agit d'un
-  objet ggplot, tous les autres modificateurs, calques ou changements
-  ggplot peuvent être appliqués à l'objet retourné. D'autres manipulations
-  peuvent être effectuées par ce package.
+  pour chaque échantillon. Puisqu'il s'agit d'un objet ggplot, tous les
+  autres modificateurs, calques ou changements ggplot peuvent être appliqués
+  à l'objet retourné. D'autres manipulations peuvent être effectuées par ce
+  package.
 }
 \description{
 Produce a basic spectra overlay plot for all samples found in
