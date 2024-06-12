@@ -408,7 +408,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
     cli::cli_abort("All {.arg ftir_spectra_plot} 'old names' must be in the provided {.arg sample_ids} vector.")
   }
 
-  if(!requireNamespace("ggthemes", quietly = TRUE)){
+  if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- ftir_spectra_plot +
       ggplot2::scale_color_discrete(labels = sample_ids)
   } else {

@@ -121,7 +121,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light()
 
-  if(!requireNamespace("ggthemes", quietly = TRUE)){
+  if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- p +
       ggplot2::scale_color_discrete()
   } else {
