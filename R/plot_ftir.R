@@ -63,9 +63,6 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
   }
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggthemes} package installation.")
-  }
 
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
@@ -115,7 +112,6 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 
   p <- p +
     ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
-    ggthemes::scale_color_calc() +
     ggplot2::labs(
       title = plot_title[1],
       subtitle = if (length(plot_title) < 2) NULL else plot_title[2], # Can't return Null from ifelse()
@@ -124,6 +120,14 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light()
+
+  if(!requireNamespace("ggthemes", quietly = TRUE)){
+    p <- p +
+      ggplot2::scale_color_discrete()
+  } else {
+    p <- p +
+      ggthemes::scale_color_calc()
+  }
 
   return(p)
 }
