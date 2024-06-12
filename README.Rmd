@@ -162,6 +162,13 @@ More information on all functions is available online at [https://plotftir.pages
 
 Please note that the PlotFTIR project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
 
+## Citing This Package
+
+Please cite this package in any journal articles containing images produced by way of the package. If installed from GitHub or CRAN the date field will be properly filled with the publishing year.
+
+```{r cite-en, warning=FALSE}
+citation("PlotFTIR")
+```
 
 ([English](#introduction-and-installation))
 
@@ -303,3 +310,12 @@ Plus d'informations sur toutes les fonctions sont disponibles en ligne sur [http
 ## Code de conduite
 
 Veuillez noter que le projet PlotFTIR est publié avec un [Code de conduite pour le projet](CODE_OF_CONDUCT.md). En contribuant à ce projet, vous acceptez d'en respecter les termes.
+
+
+## Citer ce paquet
+
+Veuillez citer ce paquet dans tout article de journal contenant des images produites à l'aide de ce paquet. Si le paquet est installé à partir de GitHub ou de CRAN, le texte de la date sera correctement rempli avec l'année de publication.
+
+```{r cite-fr, warning=FALSE}
+citation("PlotFTIR")
+```

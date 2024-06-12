@@ -219,6 +219,28 @@ Please note that the PlotFTIR project is released with a [Contributor
 Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project,
 you agree to abide by its terms.
 
+## Citing This Package
+
+Please cite this package in any journal articles containing images
+produced by way of the package. If installed from GitHub or CRAN the
+date field will be properly filled with the publishing year.
+
+``` r
+citation("PlotFTIR")
+#> To cite package 'PlotFTIR' in publications use:
+#> 
+#>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
+#>   0.1.0.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {PlotFTIR: Plot FTIR Spectra},
+#>     author = {Philip Bulsink},
+#>     note = {R package version 0.1.0},
+#>   }
+```
+
 ([English](#introduction-and-installation))
 
 ## Introduction et installation
@@ -432,3 +454,26 @@ sur <https://plotftir.pages.dev/>.
 Veuillez noter que le projet PlotFTIR est publié avec un [Code de
 conduite pour le projet](CODE_OF_CONDUCT.md). En contribuant à ce
 projet, vous acceptez d’en respecter les termes.
+
+## Citer ce paquet
+
+Veuillez citer ce paquet dans tout article de journal contenant des
+images produites à l’aide de ce paquet. Si le paquet est installé à
+partir de GitHub ou de CRAN, le texte de la date sera correctement
+rempli avec l’année de publication.
+
+``` r
+citation("PlotFTIR")
+#> To cite package 'PlotFTIR' in publications use:
+#> 
+#>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
+#>   0.1.0.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {PlotFTIR: Plot FTIR Spectra},
+#>     author = {Philip Bulsink},
+#>     note = {R package version 0.1.0},
+#>   }
+```
