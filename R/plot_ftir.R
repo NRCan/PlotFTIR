@@ -109,14 +109,14 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
-  lang <- rlang::arg_match(lang, values = c("en", "english", "anglais", "fr", "french", "francais", "français"), multiple = FALSE)
+  lang <- rlang::arg_match(lang, values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"), multiple = FALSE)
   l <- substr(lang, 0, 2)
   if (l == "fr") {
     if (plot_title == "FTIR Spectra") {
       plot_title <- "Spectres IRTF"
     }
     if (legend_title == "Sample ID") {
-      legend_title <- "ID de l'échantillon"
+      legend_title <- "ID de l'\u00e9chantillon"
     }
   }
 
