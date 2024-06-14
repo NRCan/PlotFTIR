@@ -15,7 +15,7 @@
 #'    * `paper` a FTIR spectra of a commercially available white paper.
 #'    * `polystyrene` a FTIR spectra of polystyrene film.
 #'
-#'   Cet ensemble de données contient des exemples de données provenant
+#'   Ce donnée contient des exemples de données provenant
 #'   d'instruments IRTF de type réflectance totale atténuée (RTA). Les solvants
 #'   ont été collectés sur un RTA-IRTF ZnSe à 5 rebonds et les solides ont été
 #'   collectés sur un RTA-IRTF diamant à 1 rebond.
@@ -63,7 +63,7 @@
 #'     * `diesel_unknown` A commercially available sample with unknown biodiesel content.
 #'
 #'
-#'   Cet ensemble de données contient des exemples de données provenant d'un
+#'   Ce donnée contient des exemples de données provenant d'un
 #'   instrument IRTF à réflectance totale atténuée (RTA) ZnSe à 5 rebonds
 #'   collectées pour l'analyse du biodiesel. Les échantillons de biodiesel
 #'   étaient des étalons d'étalonnage achetés ou disponibles sur le marché

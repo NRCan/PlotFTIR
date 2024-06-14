@@ -67,8 +67,8 @@ zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 
 <img src="man/figures/README-biodiesel_zoom_en-1.png" width="100%" />
 
-Some FTIR plots have a compressed low-energy portion of the graph. You
-can achieve this by the following:
+Some FTIR plots have a compressed low-energy portion of the graph which
+you might wish to zoom in on. You can achieve this by the following:
 
 ``` r
 # compress the data with wavenumbers above 2000 (to the left of 2000 on the
@@ -247,9 +247,9 @@ citation("PlotFTIR")
 
 Le but de `PlotFTIR` est de lancer facilement et rapidement la
 production des tracés de spectres de spectroscopie infrarouge à
-transformée de Fourier (IRTF) de qualité journal dans R en utilisant
-ggplot2. Les tracés produits peuvent être publiés directement ou
-modifiés par les fonctions ggplot2.
+transformée de Fourier (IRTF) de qualité de revues scientifiques dans le
+system R en utilisant ggplot2. Les tracés produits peuvent être publiés
+directement ou modifiés par les fonctions ggplot2.
 
 Vous pouvez installer la version de développement de `PlotFTIR` depuis
 [GitHub](https://github.com/) avec:
@@ -262,7 +262,7 @@ devtools::install_github("pbulsink/PlotFTIR")
 ## Exemples des tracés
 
 Ceci est un example de base qui vous montre comment tracer un ensemble
-prépar de spectres IRTF:
+de spectres IRTF dejà preparé:
 
 ``` r
 library(PlotFTIR)
@@ -271,7 +271,7 @@ plot_ftir(sample_spectra, lang = "fr")
 
 <img src="man/figures/README-basic_plot_fr-1.png" width="100%" />
 
-Nous pouvons également tracer les spectres de manière empilée/décalée au
+Vous pouvez également tracer les spectres de manière empilée/décalée au
 lieu de les superposer :
 
 ``` r
@@ -299,8 +299,8 @@ zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 
 <img src="man/figures/README-biodiesel_zoom_fr-1.png" width="100%" />
 
-Certains tracés FTIR ont une partie compressée du graphique à faible
-énergie. Vous pouvez y parvenir de la manière suivante :
+Certains tracés IRTF ont une partie compressée du graphique à faible
+énergie qui peuvent etre agrandie de la manière suivante :
 
 ``` r
 # compresser les données avec des nombres d'onde supérieurs à 2000 (à gauche de
@@ -335,7 +335,7 @@ tous les échantillons doivent être répertoriés dans le vecteur de
 renommage au format `"ancien nom" = "nouveau nom"`.
 
 ``` r
-new_names <- c(
+nouveau_noms <- c(
   "biodiesel_0" = "0,0% Biodiesel",
   "biodiesel_0_25" = "0,25% Biodiesel",
   "biodiesel_0_50" = "0,50% Biodiesel",
@@ -348,7 +348,7 @@ new_names <- c(
   "biodiesel_B5" = "B5 Commercial",
   "diesel_unknown" = "Biodiesel Inconnu"
 )
-rename_plot_sample_ids(biodiesel_trace, new_names)
+rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
 ```
@@ -406,11 +406,11 @@ sample_spectra %>%
 
 Le package contient deux ensembles de données pour fournir des exemples
 de spectres à tracer: \* `biodiesel` est un ensemble de diesels avec une
-teneur en EMAGs (biodiesel) de 0 à 10 %, plus deux spectres de diesel
-connus et un inconnu. \* `sample_spectra` est un ensemble de spectres
-IRTF aléatoires qui comprennent des spectres de toluène pur,
-d’isopropanol et d’heptanes, ainsi que du papier d’imprimante blanc et
-un film de polystyrène.
+teneur en esters méthyliques d’acides gras (EMAGs) (ou biodiesel) de 0 à
+10 %, plus deux spectres de diesel connus et un inconnu. \*
+`sample_spectra` est un ensemble de spectres IRTF aléatoires qui
+comprennent des spectres de toluène pur, d’isopropanol et d’heptanes,
+ainsi que du papier d’imprimante blanc et un film de polystyrène.
 
 Un exemple de l’ensemble de données `biodiesel` est ci-dessous:
 
@@ -453,7 +453,7 @@ sur <https://plotftir.pages.dev/>.
 
 Veuillez noter que le projet PlotFTIR est publié avec un [Code de
 conduite pour le projet](CODE_OF_CONDUCT.md). En contribuant à ce
-projet, vous acceptez d’en respecter les termes.
+projet, vous acceptez de respecter ces conditions.
 
 ## Citer ce paquet
 

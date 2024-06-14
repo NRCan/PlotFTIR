@@ -42,7 +42,7 @@ This dataset holds example data from an 5-Bounce ZnSe Attenuated
     * `diesel_unknown` A commercially available sample with unknown biodiesel content.
 
 
-  Cet ensemble de données contient des exemples de données provenant d'un
+  Ce donnée contient des exemples de données provenant d'un
   instrument IRTF à réflectance totale atténuée (RTA) ZnSe à 5 rebonds
   collectées pour l'analyse du biodiesel. Les échantillons de biodiesel
   étaient des étalons d'étalonnage achetés ou disponibles sur le marché
