@@ -35,7 +35,7 @@ This dataset holds example data from Attenuated Total
    * `paper` a FTIR spectra of a commercially available white paper.
    * `polystyrene` a FTIR spectra of polystyrene film.
 
-  Cet ensemble de données contient des exemples de données provenant
+  Ce donnée contient des exemples de données provenant
   d'instruments IRTF de type réflectance totale atténuée (RTA). Les solvants
   ont été collectés sur un RTA-IRTF ZnSe à 5 rebonds et les solides ont été
   collectés sur un RTA-IRTF diamant à 1 rebond.

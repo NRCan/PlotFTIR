@@ -8,7 +8,8 @@ plot_ftir_stacked(
   ftir,
   plot_title = "FTIR Spectra",
   legend_title = "Sample ID",
-  stack_offset = 10
+  stack_offset = 10,
+  lang = "en"
 )
 }
 \arguments{
@@ -40,20 +41,32 @@ plot_ftir_stacked(
  Le montant en pourcentage de décalage d'empilement à utiliser. Pour
  transmittance, cette valeur est directement liée aux unités de l'axe y, pour
  l'absorbance cela représente environ 0,2 unités d'absorbance.}
+
+\item{lang}{An optional argument for language. If set to one of `fr`,
+  `french`, `francais`, or `français` the axis and default plot and legend
+  titles will change to french. If non-default legend or plot titles are
+  provided they are used as-is. Can also provide `en`, `english` or
+  `anglais`.
+
+  Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
+  ou `Français`, l'axe et les titres par défaut de le tracé et du légende
+  seront en français. Si des titres du légende ou de tracé autres que ceux
+  par défaut sont fournis, ils seront utilisés tels quels.}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
-  titles are as provided, with each sample provided a different default color.
-  Because this is a ggplot object, any other ggplot modifiers,
-  layers, or changes can be applied to the returned object. Further
-  manipulations can be performed by this package.
+  titles are as provided, with each sample provided a different default
+  color. Because this is a ggplot object, any other ggplot modifiers, layers,
+  or changes can be applied to the returned object. Further manipulations can
+  be performed by this package. Peut également fournir `en`, `english` ou
+  `anglais`.
 
   un objet ggplot contenant un tracé spectral IRTF. Les titres de le tracé et
   de la légende sont tels que fournis, avec une couleur par défaut différente
-  pour chaque échantillon. Puisqu'il s'agit d'un
-  objet ggplot, tous les autres modificateurs, calques ou changements
-  ggplot peuvent être appliqués à l'objet retourné. D'autres manipulations
-  peuvent être effectuées par ce package.
+  pour chaque échantillon. Puisqu'il s'agit d'un objet ggplot, tous les
+  autres modificateurs, calques ou changements ggplot peuvent être appliqués
+  à l'objet retourné. D'autres manipulations peuvent être effectuées par ce
+  package.
 }
 \description{
 Plot the FTIR spectra in a journal prepared format. It may be
@@ -77,11 +90,12 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 [zoom_in_on_range()] to 'zoom' into a specified range,
   [compress_low_energy()] to make the x axis non-linear (compressing lower
   energy regions), [add_wavenumber_marker()] to add markers to highlight
-  important wavenumbers, and [move_plot_legend()] to modify the legend position.
+  important wavenumbers, and [move_plot_legend()] to modify the legend
+  position.
 
   [zoom_in_on_range()] pour 'zoomer' sur une gamme spécifiée,
-  [compress_low_energy()] pour rendre l'axe x non linéaire (en compression les
-  régions à basse énergie), [add_wavenumber_marker()] pour ajouter des marqueurs
-  afin de mettre en évidence les nombres d'ondes importants, et [move_plot_legend()]
-  pour modifier la position de la légende.
+  [compress_low_energy()] pour rendre l'axe x non linéaire (en compression
+  les régions à basse énergie), [add_wavenumber_marker()] pour ajouter des
+  marqueurs afin de mettre en évidence les nombres d'ondes importants, et
+  [move_plot_legend()] pour modifier la position de la légende.
 }
