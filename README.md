@@ -43,7 +43,8 @@ biodiesel_plot
 
 <img src="man/figures/README-basic_plot_en-1.png" width="100%" />
 
-We can also plot spectra in a stacked/offset manner instead of overlaid:
+You can also plot spectra in a stacked/offset manner instead of
+overlaid:
 
 ``` r
 # Generate a plot
@@ -131,11 +132,11 @@ helper function `move_plot_legend()`.
 ## Data Sets
 
 The package contains two datasets to provide example spectra for
-plotting: \* `biodiesel` is a set of diesels with 0 to 10 % FAMEs
-(biodiesel) content, plus two known and one unknown diesel spectra. \*
-`sample_spectra` is a set of random FTIR spectra which includes spectra
-of pure toluene, isopropanol, and heptanes, as well as white printer
-paper and a polystyrene film.
+plotting: \* `biodiesel` is a set of diesels with 0 to 10 % FAMEs (fatty
+acid methyl esters; biodiesel) content, plus two known and one unknown
+diesel spectra. \* `sample_spectra` is a set of random FTIR spectra
+which includes spectra of pure toluene, isopropanol, and heptanes, as
+well as white printer paper and a polystyrene film.
 
 An example of the `biodiesel` data set is below:
 
