@@ -33,7 +33,7 @@
 #'   converted. Can't contain both `absorbance` and `transmittance` column as
 #'   the receiving column would be overwritten
 #'
-#'   Un data.frame de données spectrales FTIR incluant la colonne à convertir.
+#'   Un data.frame de données spectrales IRTF incluant la colonne à convertir.
 #'   Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
 #'   colonne de réception serait écrasée.
 #'
