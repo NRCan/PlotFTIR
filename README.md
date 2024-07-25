@@ -154,7 +154,8 @@ head(biodiesel)
 ## Tidy Plot Production
 
 Note that because most functions return a data type similar to what is
-provided, tidy-eval is possible (using the [`magrittr` pipe
+provided, tidy-eval is possible (using the base R pipe `|>` or
+[`magrittr` pipe
 function](https://magrittr.tidyverse.org/reference/pipe) `%>%`).
 
 ``` r
@@ -165,24 +166,24 @@ new_ids <- c(
   "paper" = "White Paper", "polystyrene" = "PS Film"
 )
 
-sample_spectra %>%
-  absorbance_to_transmittance() %>%
-  plot_ftir(plot_title = "Example FTIR Spectra") %>%
-  zoom_in_on_range(zoom_range = c(3800, 800)) %>%
-  compress_low_energy(compression_ratio = 4) %>%
+sample_spectra |>
+  absorbance_to_transmittance() |>
+  plot_ftir(plot_title = "Example FTIR Spectra") |>
+  zoom_in_on_range(zoom_range = c(3800, 800)) |>
+  compress_low_energy(compression_ratio = 4) |>
   add_wavenumber_marker(
     wavenumber = 1495,
     text = "C-C Aromatic",
     line_aesthetics = list("linetype" = "dashed"),
     label_aesthetics = list("color" = "#7e0021")
-  ) %>%
+  ) |>
   add_wavenumber_marker(
     wavenumber = 3340,
     text = "O-H Alcohol",
     line_aesthetics = list("linetype" = "dotted"),
     label_aesthetics = list("color" = "#ff420e")
-  ) %>%
-  rename_plot_sample_ids(sample_ids = new_ids) %>%
+  ) |>
+  rename_plot_sample_ids(sample_ids = new_ids) |>
   move_plot_legend(position = "bottom", direction = "horizontal")
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.
@@ -378,24 +379,24 @@ nouveaux_ids <- c(
   "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
 )
 
-sample_spectra %>%
-  absorbance_to_transmittance() %>%
-  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = "fr") %>%
-  zoom_in_on_range(zoom_range = c(3800, 800)) %>%
-  compress_low_energy(compression_ratio = 4) %>%
+sample_spectra |>
+  absorbance_to_transmittance() |>
+  plot_ftir(plot_title = "Exemple de spectres IRTF", lang = "fr") |>
+  zoom_in_on_range(zoom_range = c(3800, 800)) |>
+  compress_low_energy(compression_ratio = 4) |>
   add_wavenumber_marker(
     wavenumber = 1495,
     text = "C-C aromatique",
     line_aesthetics = list("linetype" = "dashed"),
     label_aesthetics = list("color" = "#7e0021")
-  ) %>%
+  ) |>
   add_wavenumber_marker(
     wavenumber = 3340,
     text = "O-H alcool",
     line_aesthetics = list("linetype" = "dotted"),
     label_aesthetics = list("color" = "#ff420e")
-  ) %>%
-  rename_plot_sample_ids(sample_ids = nouveaux_ids) %>%
+  ) |>
+  rename_plot_sample_ids(sample_ids = nouveaux_ids) |>
   move_plot_legend(position = "bottom", direction = "horizontal")
 #> Scale for colour is already present.
 #> Adding another scale for colour, which will replace the existing scale.

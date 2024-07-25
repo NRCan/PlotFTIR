@@ -3,6 +3,7 @@
 S3method("-",gg)
 export(absorbance_to_transmittance)
 export(add_wavenumber_marker)
+export(average_spectra)
 export(compress_low_energy)
 export(get_plot_sample_ids)
 export(move_plot_legend)
