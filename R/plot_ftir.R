@@ -170,6 +170,11 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
       i = "It must contain a column named {.var sample_id}."
     ))
   }
+  if (!("wavenumber" %in% colnames(ftir))) {
+    cli::cli_abort(c("{.arg ftir} is missing a column.",
+                     i = "It must contain a column named {.var wavenumber}."
+    ))
+  }
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
     cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
   }
