@@ -37,28 +37,8 @@
 #'
 #' average_spectra(biodiesel, c("biodiesel_5_0", "biodiesel_B5", "diesel_unknown"))
 average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectra") {
-  if (!(is.data.frame(ftir))) {
-    cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
-  }
-  if (!("sample_id" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing a column.",
-      i = "It must contain a column named {.var sample_id}."
-    ))
-  }
-  if (!("wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing a column.",
-      i = "It must contain a column named {.var wavenumber}."
-    ))
-  }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
-  }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
-  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
-    cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
-  }
+  check_ftir_data(ftir, "PlotFTIR::average_spectra")
+
 
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) | is.null(sample_ids) | length(sample_ids) == 0) {
