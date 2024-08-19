@@ -1,4 +1,4 @@
-test_that("average_spectra works", {
+test_that("average_spectra works - balanced spectra", {
   # Mock data for FTIR spectra
   ftir_data <- data.frame(
     sample_id = c("A", "A", "B", "B", "C", "C"),
@@ -53,6 +53,26 @@ test_that("average_spectra works", {
   expect_error(average_spectra(ftir_data, average_id = 10))
 
   ftir_data_mismatch <- ftir_data
-  ftir_data_mismatch$wavenumber[ftir_data_mismatch$sample_id == "C"] <- 1200
-  expect_error(average_spectra(ftir_data_mismatch, sample_ids = c("A", "C")))
+  ftir_data_mismatch$wavenumber[ftir_data_mismatch$sample_id == "C"] <- c(1001, 1051)
+
+  expect_warning(average_spectra(ftir_data_mismatch, sample_ids = c("A", "C")), regexp = "There is a mismatch in the wavenumber axis between sample_ids", fixed = TRUE)
+})
+
+test_that("average_spectra works unbalanced", {
+  #Prep a non-balanced data set
+  ftir_data <- biodiesel[biodiesel$sample_id %in% unique(biodiesel$sample_id)[1:3],]
+
+  #sample 2 has different wavenumbers
+  ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2],]$wavenumber <- ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2],]$wavenumber + 0.05
+
+  # sample 3 has different wavenumber range
+  ftir_data <- ftir_data[!(ftir_data$sample_id %in% unique(ftir_data$sample_id)[3] & ftir_data$wavenumber > 3500), ]
+  ftir_data <- ftir_data[!(ftir_data$sample_id %in% unique(ftir_data$sample_id)[3] & ftir_data$wavenumber < 1000), ]
+
+  expect_warning(average_spectra(ftir_data), regexp = "There is a mismatch in the wavenumber axis between sample_ids", fixed = TRUE)
+
+  suppressWarnings(avg_123 <- average_spectra(ftir_data))
+  suppressWarnings(avg_12 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[1:2]))
+  suppressWarnings(avg_13 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[c(1,3)]))
+  suppressWarnings(avg_23 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[2:3]))
 })

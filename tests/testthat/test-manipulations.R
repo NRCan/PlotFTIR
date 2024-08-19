@@ -177,7 +177,6 @@ test_that("labelled plot is ok", {
 
   expect_equal(biodiesel_plot$labels$title, labelled_plot$labels$title)
 
-
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
     ggplot2::ggplot_build(labelled_plot)$layout$panel_params[[1]]$x.range
