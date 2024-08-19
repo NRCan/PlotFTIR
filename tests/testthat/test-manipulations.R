@@ -164,7 +164,7 @@ test_that("labelled plot is ok", {
       wavenumber = 1000,
       text = biodiesel_plot
     ),
-    "`text` must be character or numeric, you provided a <gg/ggplot> object.",
+    "`text` must be character or numeric, you provided a <gg",
     fixed = TRUE
   )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 5000),

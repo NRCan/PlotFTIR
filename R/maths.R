@@ -94,9 +94,9 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 
     #make average
     if("absorbance" %in% names(ftir)){
-      avg_spectra <- aggregate(absorbance ~ wavenumber, data = ftir, FUN = mean)
+      avg_spectra <- stats::aggregate(absorbance ~ wavenumber, data = ftir, FUN = mean)
     } else {
-      avg_spectra <- aggregate(transmittance ~ wavenumber, data = ftir, FUN = mean)
+      avg_spectra <- stats::aggregate(transmittance ~ wavenumber, data = ftir, FUN = mean)
     }
 
     avg_spectra$sample_id <- average_id

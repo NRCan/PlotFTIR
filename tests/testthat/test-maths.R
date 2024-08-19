@@ -27,6 +27,21 @@ test_that("average_spectra works", {
   expect_equal(average$sample_id[1], "averaged_spectra") # Expect default ID
   expect_equal(average$absorbance[average$wavenumber == 1000], 0.3) # Expect mean absorbance
 
+  #Test Transmittance
+  ftir_transmittance <- ftir_data
+  colnames(ftir_transmittance)[3] <- 'transmittance'
+  avg_trans <- average_spectra(ftir_transmittance)
+
+  expect_equal(nrow(avg_trans), 2) # Expect 3 rows (unique wavenumbers)
+  expect_equal(avg_trans$sample_id[1], "averaged_spectra") # Expect default ID
+  expect_equal(avg_trans$transmittance[avg_trans$wavenumber == 1000], 0.3) # Expect mean absorbance
+  expect_equal(average[,c('sample_id', 'wavenumber')], avg_trans[,c('sample_id', 'wavenumber')])
+  expect_equal(average$absorbance, avg_trans$transmittance)
+
+  expect_equal(nrow(average), 2) # Expect 3 rows (unique wavenumbers)
+  expect_equal(average$sample_id[1], "averaged_spectra") # Expect default ID
+  expect_equal(average$absorbance[average$wavenumber == 1000], 0.3) # Expect mean absorbance
+
   expect_error(average_spectra("not_a_data_frame"))
 
   expect_error(average_spectra(ftir_data[,c('wavenumber', 'absorbance')]), regexp = "is missing a column", fixed = TRUE)
