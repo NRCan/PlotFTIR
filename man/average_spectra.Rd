@@ -36,7 +36,7 @@ Calculates an average of two or more spectra. Spectra must have identical x axis
   des x (nombre d'ondes).
 }
 \examples{
-#Calculate the average of biodiesel B5 spectra and the unknown spectra
+# Calculate the average of biodiesel B5 spectra and the unknown spectra
 
 average_spectra(biodiesel, c("biodiesel_5_0", "biodiesel_B5", "diesel_unknown"))
 }
