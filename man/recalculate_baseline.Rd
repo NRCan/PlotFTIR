@@ -36,9 +36,9 @@ Une des trois valeurs :
 * Si l'ajustement se fait par la moyenne d'une gamme, fournir `"average"`.
 * Si l'ajustement se fait par le minimum (pour l'absorbance) ou le maximum (pour la transmittance) d'une gamme ou de spectres, indiquez `"minimum"` ou `"maximum"`, la transformation appropriée sera effectuée en fonction du type de spectre.}
 
-\item{individually}{If adjusting all samples by the same amount, specify `TRUE`, else specify `FALSE` for unique adjustments.
+\item{individually}{If adjusting all samples by the same amount, specify `TRUE`, else specify `FALSE` for unique adjustments. When `TRUE`, the smallest absolute individual sample adjustment to achieve baseline will be applied to all named samples.
 
-Si vous ajustez tous les échantillons de la même manière, spécifiez `TRUE`, sinon spécifiez `FALSE` pour des ajustements uniques.}
+Si vous ajustez tous les échantillons de la même manière, spécifiez `TRUE`, sinon spécifiez `FALSE` pour des ajustements uniques. Si `TRUE`, le plus petit ajustement absolu d'un échantillon individuel pour atteindre la ligne de base sera appliqué à tous les échantillons nommés.}
 }
 \value{
 A data.frame containing the adjusted FTIR spectra.
@@ -77,5 +77,5 @@ Pour effectuer exactement le même ajustement de la ligne de base sur tous les �
 }
 \examples{
 # Adjust the biodiesel spectra to minimum for each sample
-recalculate_baseline(biodiesel, method = minimum, individually = TRUE)
+recalculate_baseline(biodiesel, method = "minimum", individually = TRUE)
 }

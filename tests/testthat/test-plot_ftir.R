@@ -43,7 +43,7 @@ test_that("data is checked correctly", {
     "`ftir` must be a data frame. You provided a string."
   )
   expect_error(plot_ftir(ftir = data.frame("a" = 1:10)),
-    "`ftir` is missing column(s)",
+    "It must contain a column named",
     fixed = TRUE
   )
   expect_error(plot_ftir(ftir = full_data_df[, c("sample_id", "wavenumber")]),
