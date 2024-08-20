@@ -1,6 +1,6 @@
 ## Holds functions to do maths on spectra Currently: average like spectra
 ##
-## Plans: rebaseline (scalar subtraction, subtract minimum, subtract wavelength value, average over wavelength range)
+## Plans: rebaseline (scalar subtraction, subtract minimum, subtract wavenumber's value, average over wavenumber range)
 
 #' Average FTIR Spectra
 #'
@@ -333,8 +333,8 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
     } else {
       adj <- 1e10
       for(i in seq_along(sample_ids)){
-        if(is.na(wavelength_range)) {
-          wavelength_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
+        if(is.na(wavenumber_range)) {
+          wavenumber_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
         }
         if('absorbance' %in% colnames(ftir)) {
           adj_i <- ftir[ftir$sample_id == sample_ids[i],]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
@@ -356,29 +356,29 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
     }
     if(individually) {
       for(i in seq_along(sample_ids)){
-        if(is.na(wavelength_range)) {
+        if(is.na(wavenumber_range)) {
           cli::cli_warn(c("Adjusting spectra baseline by the average of all values is not analytically useful",
                           i = "Provide a wavenumber range to adjust by the average in that spectral region."))
-          wavelength_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
+          wavenumber_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
         }
         if('absorbance' %in% colnames(ftir)) {
-          adj <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$absorbance)
+          adj <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
           ftir[ftir$sample_id == sample_ids[i],]$absorbance <- ftir[ftir$sample_id == sample_ids[i],]$absorbance- adj
         } else {
-          adj <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$transmittance)
+          adj <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
           ftir[ftir$sample_id == sample_ids[i],]$transmittance <- ftir[ftir$sample_id == sample_ids[i],]$transmittance + adj
         }
       }
     } else {
       adj <- 1e10
       for(i in seq_along(sample_ids)){
-        if(is.na(wavelength_range)) {
-          wavelength_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
+        if(is.na(wavenumber_range)) {
+          wavenumber_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
         }
         if('absorbance' %in% colnames(ftir)) {
-          adj_i <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$absorbance)
+          adj_i <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
         } else {
-          adj_i <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$transmittance)
+          adj_i <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
         }
         adj <- c(adj, adj_i)[which.min(abs(c(adj, adj_i)))] # returns absolute minimum but keeps the sign
       }
@@ -392,27 +392,27 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
     # method %in% c("minimum", "maximum")
     if(individually) {
       for(i in seq_along(sample_ids)){
-        if(is.na(wavelength_range)) {
-          wavelength_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
+        if(is.na(wavenumber_range)) {
+          wavenumber_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
         }
         if('absorbance' %in% colnames(ftir)) {
-          adj <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$absorbance)
+          adj <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
           ftir[ftir$sample_id == sample_ids[i],]$absorbance <- ftir[ftir$sample_id == sample_ids[i],]$absorbance- adj
         } else {
-          adj <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$transmittance)
+          adj <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
           ftir[ftir$sample_id == sample_ids[i],]$transmittance <- ftir[ftir$sample_id == sample_ids[i],]$transmittance + adj
         }
       }
     } else {
       adj <- 1e10
       for(i in seq_along(sample_ids)){
-        if(is.na(wavelength_range)) {
-          wavelength_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
+        if(is.na(wavenumber_range)) {
+          wavenumber_range <- range(ftir[ftir$sample_id == sample_ids[i],]$absorbance)
         }
         if('absorbance' %in% colnames(ftir)) {
-          adj_i <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$absorbance)
+          adj_i <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
         } else {
-          adj_i <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavelength_range) & ftir$wavenumber <= max(wavelength_range),]$transmittance)
+          adj_i <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
         }
         adj <- c(adj, adj_i)[which.min(abs(c(adj, adj_i)))] # returns absolute minimum but keeps the sign
       }

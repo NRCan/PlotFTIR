@@ -134,3 +134,56 @@ test_that("add_subtract_scalar_value works", {
 })
 
 
+test_that("Baseline error checking works", {
+
+})
+
+test_that("Baseline - average works", {
+  ftir_data <- data.frame(
+    sample_id = c("A", "A", "A", "B", "B", "B", "C", "C", "C"),
+    wavenumber = c(1000, 1025, 1050, 1000, 1025, 1050, 1000, 1025, 1050),
+    absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
+  )
+
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = TRUE)
+  expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.1, 0, 0.1))
+
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = FALSE)
+  expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
+
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = TRUE)
+  expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.05, 0.05, 0.15))
+
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = FALSE)
+  expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.05, 0.15, 0.25))
+
+  recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = TRUE)
+  recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = FALSE)
+
+  recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = TRUE)
+  recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = FALSE)
+})
+
+test_that("Baseline - point works", {
+  ftir_data <- data.frame(
+    sample_id = c("A", "A", "A", "B", "B", "B", "C", "C", "C"),
+    wavenumber = c(1000, 1025, 1050, 1000, 1025, 1050, 1000, 1025, 1050),
+    absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
+  )
+})
+
+test_that("Baseline - minimum/maximum works", {
+  ftir_data <- data.frame(
+    sample_id = c("A", "A", "A", "B", "B", "B", "C", "C", "C"),
+    wavenumber = c(1000, 1025, 1050, 1000, 1025, 1050, 1000, 1025, 1050),
+    absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
+  )
+})
