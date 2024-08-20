@@ -121,6 +121,44 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 }
 
 
+#' Add or Subtract Scalar Value
+#'
+#' @description
+#' Add or subtract a constant (scalar) value to each data point in a FTIR spectra. Shifts the plot up or down on the y axis by the specified amount without any other change.
+#'
+#' Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des y de la valeur spécifiée sans aucune autre modification.
+#'
+#' @param ftir A data.frame of FTIR spectral data including spectra to be shifted.
+#'
+#'   Un data.frame de données spectrales IRTF comprenant les spectres à décalés.
+#'
+#' @param sample_ids A vector of sample IDs to be shifted. All sample IDs must be present in the `ftir`
+#'   data.frame. If modifying all spectra, provide NA or NULL.
+#'
+#'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être décalée. Tous les identifiants des
+#'   échantillons doivent être présents dans le data.frame `ftir`. Si modifiez tous les spectres,
+#'   indiquez NA ou NULL.
+#'
+#' @param value The numeric value to add or subtract.
+#'
+#' Le valeur numerique d'ajute ou soustrait.
+#'
+#' @return A data.frame containing the adjusted FTIR spectra.
+#'
+#'   Un data.frame contenant les spectres IRTF ajustee.
+#'
+#' @examples
+#' # Add 0.1 to each spectra in biodiesel
+#' add_scalar_value(biodiesel, 0.1)
+#'
+#' # Subtract 0.05 from biodiesel_0 and biodiesel_0_25
+#' subtract_scalar_value(biodiesel, 0.05, sample_ids = c('biodiesel_0', 'biodiesel_0_25'))
+#'
+#' @name add_subtract_scalar
+NULL
+
+#' @export
+#' @rdname add_subtract_scalar
 add_scalar_value <- function(ftir, value, sample_ids = NA) {
   check_ftir_data(ftir, "PlotFTIR::add_scalar_value")
 
@@ -148,11 +186,14 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
   } else {
     ftir[ftir$sample_id %in% sample_ids, ]$transmittance <- ftir[ftir$sample_id %in% sample_ids, ]$transmittance + value
   }
+
+  return(ftir)
 }
 
+#' @export
+#' @rdname add_subtract_scalar
 subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
   check_ftir_data(ftir, "PlotFTIR::subtract_scalar_value")
-
 
   if (!is.numeric(value)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric.",

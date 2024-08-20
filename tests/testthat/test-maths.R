@@ -75,4 +75,62 @@ test_that("average_spectra works unbalanced", {
   suppressWarnings(avg_12 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[1:2]))
   suppressWarnings(avg_13 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[c(1,3)]))
   suppressWarnings(avg_23 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[2:3]))
+
+  # For now, just trying to test performance is consistent
+  expect_equal(avg_123$wavenumber[1], 1000.7902)
+  expect_equal(avg_12$wavenumber[1], 700.7895)
+  expect_equal(tail(avg_12$wavenumber, 1), 3997.6198)
+  expect_equal(tail(avg_123$wavenumber, 1), 3498.1066)
+
+  expect_equal(nrow(avg_123), 1341)
+  expect_equal(nrow(avg_12), 1770)
+  expect_equal(nrow(avg_23), 1341)
+  expect_equal(nrow(avg_13), 1340)
+
+  expect_equal(mean(avg_12$absorbance), 0.04881436, tolerance = 1e-7)
+  expect_equal(mean(avg_13$absorbance), 0.05684917, tolerance = 1e-7)
+  expect_equal(mean(avg_23$absorbance), 0.05677168, tolerance = 1e-7)
+  expect_equal(mean(avg_123$absorbance), 0.05678947, tolerance = 1e-7)
+
 })
+
+test_that("add_subtract_scalar_value works", {
+  # Mock data for FTIR spectra
+  ftir_data <- data.frame(
+    sample_id = c("A", "A", "B", "B", "C"),
+    wavenumber = c(1000, 1050, 1000, 1050, 1100),
+    absorbance = c(0.1, 0.2, 0.3, 0.4, 0.5)
+  )
+
+  # Add 0.5 to absorbance of all samples
+  modified_data <- add_scalar_value(ftir_data, value = 0.5)
+
+  expect_equal(nrow(modified_data), nrow(ftir_data))  # Expect same number of rows
+  expect_equal(modified_data$wavenumber, ftir_data$wavenumber)  # Expect unchanged wavenumbers
+  expect_equal(modified_data$absorbance, c(0.6, 0.7, 0.8, 0.9, 1.0))  # Expect modified absorbance
+
+  # Add 1.0 to absorbance of samples A and B
+  modified_data <- add_scalar_value(ftir_data, value = 1.0, sample_ids = c("A", "B"))
+
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "A"], c(1.1, 1.2))  # Expect modified absorbance for A
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "B"], c(1.3, 1.4))  # Expect modified absorbance for B
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "C"], 0.5)  # Expect unchanged absorbance for C
+
+  expect_error(add_scalar_value(ftir_data, value = "invalid"), "Provided `value` must be numeric", fixed = TRUE)
+
+  expect_error(add_scalar_value(ftir_data, value = 0.5, sample_ids = "invalid_id"), "All provided `sample_ids` must be in `ftir` data", fixed = TRUE)
+
+  # Modify ftir_data to have transmittance instead of absorbance
+  ftir_data_transmittance <- ftir_data
+  ftir_data_transmittance$absorbance <- NULL
+  ftir_data_transmittance$transmittance <- c(0.9, 0.8, 0.7, 0.6, 0.5)
+
+  modified_data <- add_scalar_value(ftir_data_transmittance, value = 0.1)
+
+  expect_equal(modified_data$transmittance, c(1.0, 0.9, 0.8, 0.7, 0.6))  # Expect modified transmittance
+
+  modified_data <- subtract_scalar_value(ftir_data_transmittance, value = 0.1)
+  expect_equal(modified_data$transmittance, c(0.8, 0.7, 0.6, 0.5, 0.4))
+})
+
+
