@@ -179,6 +179,11 @@ head(biodiesel_transm)
 #> 6   710.0579      87.77362 biodiesel_0
 ```
 
+Functions are provided for adjusting the baseline of spectra, adding or
+subtracting scalar values from entire spectra, and averaging spectra,
+see: \* `recalculate_baseline()` \* `add_scalar_value()` and
+`subtract_scalar_value()` \* `average_spectra()`
+
 ## Documentation
 
 More information on all functions is available online at
@@ -360,6 +365,11 @@ head(biodiesel_transm)
 #> 5   708.1942      87.47159 biodiesel_0
 #> 6   710.0579      87.77362 biodiesel_0
 ```
+
+Des fonctions sont fournies pour ajuster la ligne de base des spectres,
+ajouter ou soustraire des valeurs scalaires de spectres entiers, et
+calculer la moyenne des spectres, voir : \* `recalculate_baseline()` \*
+`add_scalar_value()` et `subtract_scalar_value()` \* `average_spectra()`
 
 ## Documentation
 
