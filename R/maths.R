@@ -41,7 +41,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 
 
   if (length(sample_ids) <= 1) {
-    if (is.na(sample_ids) | is.null(sample_ids) | length(sample_ids) == 0) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
       sample_ids <- unique(ftir$sample_id)
     } else if (sample_ids %in% unique(ftir$sample_id)) {
       # Just one sampleID provided, return with new name
@@ -68,7 +68,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
   # check wavenumbers matches
   first_wavenumbers <- ftir[ftir$sample_id == sample_ids[1], "wavenumber"]
   other_wavenumbers <- ftir[ftir$sample_id != sample_ids[1], "wavenumber"]
-  if (all(first_wavenumbers %in% other_wavenumbers) & all(other_wavenumbers %in% first_wavenumbers)) {
+  if (all(first_wavenumbers %in% other_wavenumbers) && all(other_wavenumbers %in% first_wavenumbers)) {
     # make average - when all wavenumbers are present in all samples
     if ("absorbance" %in% names(ftir)) {
       avg_spectra <- stats::aggregate(absorbance ~ wavenumber, data = ftir, FUN = mean)
@@ -89,7 +89,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 
     first_wavenumbers <- ftir[ftir$sample_id == sample_ids[1] & ftir$wavenumber < min_max & ftir$wavenumber > max_min, "wavenumber"]
     other_wavenumbers <- ftir[ftir$sample_id != sample_ids[1] & ftir$wavenumber < min_max & ftir$wavenumber > max_min, "wavenumber"]
-    if (length(first_wavenumbers) > 1 & length(other_wavenumbers) > 1 & all(first_wavenumbers %in% other_wavenumbers) & all(other_wavenumbers %in% first_wavenumbers)) {
+    if (length(first_wavenumbers) > 1 && length(other_wavenumbers) > 1 && all(first_wavenumbers %in% other_wavenumbers) && all(other_wavenumbers %in% first_wavenumbers)) {
       # make average - now wavenumbers are present in all samples for the reduced range
       ftir <- ftir[ftir$wavenumber < min_max & ftir$wavenumber > max_min, ]
       # RECURSION FTW
@@ -98,7 +98,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
       # Determine the biggest step size in the data. Most FTIR is resolved to 4 wavenumbers but not all
       wavenumber_step <- max(sapply(sample_ids, function(x) mean(diff(ftir[ftir$sample_id == x, "wavenumber"])), simplify = TRUE, USE.NAMES = FALSE))
       interpolated_wavenumbers <- seq(from = max_min, to = min_max, by = wavenumber_step)
-      interp_ftir <- data.frame(wavenumber <- numeric(), sample_id <- character(), signal <- numeric())
+      interp_ftir <- data.frame(wavenumber = numeric(), sample_id = character(), signal = numeric())
       colnames(interp_ftir)[colnames(interp_ftir) == "signal"] <- colnames(ftir)[!(colnames(ftir) %in% c("wavenumber", "sample_id"))]
 
       for (i in seq_along(sample_ids)) {
@@ -163,7 +163,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
   check_ftir_data(ftir, "PlotFTIR::add_scalar_value")
 
   if (length(sample_ids) <= 1) {
-    if (is.na(sample_ids) | is.null(sample_ids) | length(sample_ids) == 0) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
       sample_ids <- unique(ftir$sample_id)
     }
   }
@@ -275,7 +275,7 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
 
 
   if (length(sample_ids) <= 1) {
-    if (is.na(sample_ids) | is.null(sample_ids) | length(sample_ids) == 0) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
       sample_ids <- unique(ftir$sample_id)
     }
   }
@@ -287,10 +287,10 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
     ))
   }
 
-  if (length(wavenumber_range) < 1 | length(wavenumber_range) > 2) {
+  if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2."))
   }
-  if (!(all(is.na(wavenumber_range)) | all(is.numeric(wavenumber_range)))) {
+  if (!(all(is.na(wavenumber_range)) || all(is.numeric(wavenumber_range)))) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
       x = "You provided a {.obj_type_friendly wavenumber_range}."
     ))
@@ -303,18 +303,18 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
   }
 
   permitted_methods <- c("point", "average", "minimum", "maximum")
-  if (length(method) != 1 | !(method %in% permitted_methods)) {
+  if (length(method) != 1 || !(method %in% permitted_methods)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg method} must be a string.",
       i = "{.arg method} must be one of {.val {permitted_methods}}."
     ))
   }
 
-  if (method == "point" & length(wavenumber_range) == 2) {
+  if (method == "point" && length(wavenumber_range) == 2) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
       i = "The value at the provided wavenumber will be used to baseline adjust data."
     ))
   }
-  if (method %in% c("minimum", "maximum") & all(length(wavenumber_range) == 1, !is.na(wavenumber_range))) {
+  if (method %in% c("minimum", "maximum") && all(length(wavenumber_range) == 1, !is.na(wavenumber_range))) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
       i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
       i = "To adjust by a single point, call the function with {.code method = 'point'}"
@@ -322,7 +322,7 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
   }
 
   if (method == "point") {
-    if (length(wavenumber_range) != 1 | is.na(wavenumber_range)) {
+    if (length(wavenumber_range) != 1 || is.na(wavenumber_range)) {
       cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
         i = "The value at the provided wavenumber will be used to baseline adjust data."
       ))
@@ -330,7 +330,7 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
     if (individually) {
       for (i in seq_along(sample_ids)) {
         if ("absorbance" %in% colnames(ftir)) {
-          if (wavenumber_range < min(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) | wavenumber_range > max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)) {
+          if (wavenumber_range < min(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) || wavenumber_range > max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)) {
             cli::cli_warn(c("Warning in {.fn PlotFTIR::recalculate_baseline}. Provided wavenumber is not within spectral range.",
               i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
             ))
@@ -403,7 +403,7 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
       }
     }
   } else {
-    # method %in% c("minimum", "maximum")
+    # method is in c("minimum", "maximum")
     if (all(is.na(wavenumber_range))) {
       wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids, ]$wavenumber)
     }
