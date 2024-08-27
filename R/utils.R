@@ -119,10 +119,12 @@ transmittance_to_absorbance <- function(ftir) {
 get_plot_sample_ids <- function(ftir_spectra_plot) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    ))
   }
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort("Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
   return(as.factor(unique(ftir_spectra_plot$data$sample_id)))
 }
@@ -140,18 +142,18 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #'
 #' @return invisible TRUE if ok, typically called for effect of failure.
 #' @keywords internal
-check_ftir_data <- function(ftir, fn){
+check_ftir_data <- function(ftir, fn) {
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
   if (!("sample_id" %in% colnames(ftir))) {
     cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
-                     i = "It must contain a column named {.var sample_id}."
+      i = "It must contain a column named {.var sample_id}."
     ))
   }
   if (!("wavenumber" %in% colnames(ftir))) {
     cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
-                     i = "It must contain a column named {.var wavenumber}."
+      i = "It must contain a column named {.var wavenumber}."
     ))
   }
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {

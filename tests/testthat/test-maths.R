@@ -27,15 +27,15 @@ test_that("average_spectra works - balanced spectra", {
   expect_equal(average$sample_id[1], "averaged_spectra") # Expect default ID
   expect_equal(average$absorbance[average$wavenumber == 1000], 0.3) # Expect mean absorbance
 
-  #Test Transmittance
+  # Test Transmittance
   ftir_transmittance <- ftir_data
-  colnames(ftir_transmittance)[3] <- 'transmittance'
+  colnames(ftir_transmittance)[3] <- "transmittance"
   avg_trans <- average_spectra(ftir_transmittance)
 
   expect_equal(nrow(avg_trans), 2) # Expect 3 rows (unique wavenumbers)
   expect_equal(avg_trans$sample_id[1], "averaged_spectra") # Expect default ID
   expect_equal(avg_trans$transmittance[avg_trans$wavenumber == 1000], 0.3) # Expect mean absorbance
-  expect_equal(average[,c('sample_id', 'wavenumber')], avg_trans[,c('sample_id', 'wavenumber')])
+  expect_equal(average[, c("sample_id", "wavenumber")], avg_trans[, c("sample_id", "wavenumber")])
   expect_equal(average$absorbance, avg_trans$transmittance)
 
   expect_equal(nrow(average), 2) # Expect 3 rows (unique wavenumbers)
@@ -44,9 +44,9 @@ test_that("average_spectra works - balanced spectra", {
 
   expect_error(average_spectra("not_a_data_frame"))
 
-  expect_error(average_spectra(ftir_data[,c('wavenumber', 'absorbance')]), regexp = "is missing a column", fixed = TRUE)
-  expect_error(average_spectra(ftir_data[,c('wavenumber', 'sample_id')]), regexp = "must have one of", fixed = TRUE)
-  expect_error(average_spectra(ftir_data[,c('sample_id', 'absorbance')]), regexp = "is missing a column", fixed = TRUE)
+  expect_error(average_spectra(ftir_data[, c("wavenumber", "absorbance")]), regexp = "is missing a column", fixed = TRUE)
+  expect_error(average_spectra(ftir_data[, c("wavenumber", "sample_id")]), regexp = "must have one of", fixed = TRUE)
+  expect_error(average_spectra(ftir_data[, c("sample_id", "absorbance")]), regexp = "is missing a column", fixed = TRUE)
 
   expect_error(average_spectra(ftir_data, sample_ids = "invalid_id"), regexp = "All provided", fixed = TRUE)
 
@@ -59,11 +59,11 @@ test_that("average_spectra works - balanced spectra", {
 })
 
 test_that("average_spectra works unbalanced", {
-  #Prep a non-balanced data set
-  ftir_data <- biodiesel[biodiesel$sample_id %in% unique(biodiesel$sample_id)[1:3],]
+  # Prep a non-balanced data set
+  ftir_data <- biodiesel[biodiesel$sample_id %in% unique(biodiesel$sample_id)[1:3], ]
 
-  #sample 2 has different wavenumbers
-  ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2],]$wavenumber <- ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2],]$wavenumber + 0.05
+  # sample 2 has different wavenumbers
+  ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2], ]$wavenumber <- ftir_data[ftir_data$sample_id == unique(ftir_data$sample_id)[2], ]$wavenumber + 0.05
 
   # sample 3 has different wavenumber range
   ftir_data <- ftir_data[!(ftir_data$sample_id %in% unique(ftir_data$sample_id)[3] & ftir_data$wavenumber > 3500), ]
@@ -73,7 +73,7 @@ test_that("average_spectra works unbalanced", {
 
   suppressWarnings(avg_123 <- average_spectra(ftir_data))
   suppressWarnings(avg_12 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[1:2]))
-  suppressWarnings(avg_13 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[c(1,3)]))
+  suppressWarnings(avg_13 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[c(1, 3)]))
   suppressWarnings(avg_23 <- average_spectra(ftir_data, sample_ids = unique(ftir_data$sample_id)[2:3]))
 
   # For now, just trying to test performance is consistent
@@ -91,7 +91,6 @@ test_that("average_spectra works unbalanced", {
   expect_equal(mean(avg_13$absorbance), 0.05684917, tolerance = 1e-7)
   expect_equal(mean(avg_23$absorbance), 0.05677168, tolerance = 1e-7)
   expect_equal(mean(avg_123$absorbance), 0.05678947, tolerance = 1e-7)
-
 })
 
 test_that("add_subtract_scalar_value works", {
@@ -105,16 +104,16 @@ test_that("add_subtract_scalar_value works", {
   # Add 0.5 to absorbance of all samples
   modified_data <- add_scalar_value(ftir_data, value = 0.5)
 
-  expect_equal(nrow(modified_data), nrow(ftir_data))  # Expect same number of rows
-  expect_equal(modified_data$wavenumber, ftir_data$wavenumber)  # Expect unchanged wavenumbers
-  expect_equal(modified_data$absorbance, c(0.6, 0.7, 0.8, 0.9, 1.0))  # Expect modified absorbance
+  expect_equal(nrow(modified_data), nrow(ftir_data)) # Expect same number of rows
+  expect_equal(modified_data$wavenumber, ftir_data$wavenumber) # Expect unchanged wavenumbers
+  expect_equal(modified_data$absorbance, c(0.6, 0.7, 0.8, 0.9, 1.0)) # Expect modified absorbance
 
   # Add 1.0 to absorbance of samples A and B
   modified_data <- add_scalar_value(ftir_data, value = 1.0, sample_ids = c("A", "B"))
 
-  expect_equal(modified_data$absorbance[modified_data$sample_id == "A"], c(1.1, 1.2))  # Expect modified absorbance for A
-  expect_equal(modified_data$absorbance[modified_data$sample_id == "B"], c(1.3, 1.4))  # Expect modified absorbance for B
-  expect_equal(modified_data$absorbance[modified_data$sample_id == "C"], 0.5)  # Expect unchanged absorbance for C
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "A"], c(1.1, 1.2)) # Expect modified absorbance for A
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "B"], c(1.3, 1.4)) # Expect modified absorbance for B
+  expect_equal(modified_data$absorbance[modified_data$sample_id == "C"], 0.5) # Expect unchanged absorbance for C
 
   expect_error(add_scalar_value(ftir_data, value = "invalid"), "Provided `value` must be numeric", fixed = TRUE)
 
@@ -127,7 +126,7 @@ test_that("add_subtract_scalar_value works", {
 
   modified_data <- add_scalar_value(ftir_data_transmittance, value = 0.1)
 
-  expect_equal(modified_data$transmittance, c(1.0, 0.9, 0.8, 0.7, 0.6))  # Expect modified transmittance
+  expect_equal(modified_data$transmittance, c(1.0, 0.9, 0.8, 0.7, 0.6)) # Expect modified transmittance
 
   modified_data <- subtract_scalar_value(ftir_data_transmittance, value = 0.1)
   expect_equal(modified_data$transmittance, c(0.8, 0.7, 0.6, 0.5, 0.4))
@@ -143,11 +142,11 @@ test_that("Baseline error checking works", {
 
   expect_error(recalculate_baseline(biodiesel, sample_ids = "A"), regex = "All provided `sample_ids` must be in `ftir` data.", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c(1,2,3)), regex = "must be of length 1 or 2", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c(1, 2, 3)), regex = "must be of length 1 or 2", fixed = TRUE)
 
   expect_error(recalculate_baseline(biodiesel, wavenumber_range = c("one", "two")), regex = "`wavenumber_range` must be `numeric` or `NA`.", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, method = "point", wavenumber_range = c(1,2)), regex = "must be one numeric value", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "point", wavenumber_range = c(1, 2)), regex = "must be one numeric value", fixed = TRUE)
 
   expect_error(recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1), regex = "or two numeric values if `method = 'minimum'`", fixed = TRUE)
   expect_error(recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1), regex = "or two numeric values if `method = 'maximum'`", fixed = TRUE)
@@ -160,101 +159,102 @@ test_that("Baseline - average works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  expect_warning(recalculate_baseline(ftir_data, method = 'average', individually = TRUE),
-                 regexp = "Adjusting spectra baseline by the average of all values is not analytically useful", fixed = TRUE)
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = TRUE))
+  expect_warning(recalculate_baseline(ftir_data, method = "average", individually = TRUE),
+    regexp = "Adjusting spectra baseline by the average of all values is not analytically useful", fixed = TRUE
+  )
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.1, 0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(-0.1, 0, 0.1))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = FALSE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", wavenumber_range = c(1000, 1025), individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.05, 0.05, 0.15))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.05, 0.05, 0.15))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(-0.05, 0.05, 0.15))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", wavenumber_range = c(1000, 1025), individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.05, 0.05, 0.15))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.05, 0.15, 0.25))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.15, 0.25, 0.35))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.05, 0.05, 0.15))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.05, 0.15, 0.25))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.15, 0.25, 0.35))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = TRUE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0.00, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0.00, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = FALSE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0.0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0.0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
 
   suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0.0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.1, 0.0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0.0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(-0.1, 0.0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
   suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.1, 0.0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.1, 0.0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  ftir_data$transmittance <- c(100,90,80, 90, 80, 70, 80, 70, 60)
+  ftir_data$transmittance <- c(100, 90, 80, 90, 80, 70, 80, 70, 60)
   ftir_data$absorbance <- NULL
 
-  expect_warning(recalculate_baseline(ftir_data, method = 'average', individually = TRUE),
-                 regexp = "Adjusting spectra baseline by the average of all values is not analytically useful", fixed = TRUE)
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = TRUE))
+  expect_warning(recalculate_baseline(ftir_data, method = "average", individually = TRUE),
+    regexp = "Adjusting spectra baseline by the average of all values is not analytically useful", fixed = TRUE
+  )
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(110, 100, 90))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', individually = FALSE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", wavenumber_range = c(1000, 1025), individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(105, 95, 85))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(105, 95, 85))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(105, 95, 85))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(105, 95, 85))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(105, 95, 85))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(105, 95, 85))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'average', wavenumber_range = c(1000, 1025), individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "average", wavenumber_range = c(1000, 1025), individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(105, 95, 85))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(95, 85, 75))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(85, 75, 65))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(105, 95, 85))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(95, 85, 75))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(85, 75, 65))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = TRUE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
 
-  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'average', individually = FALSE))
+  suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
 
   suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = TRUE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(80, 70, 60))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(80, 70, 60))
 
   suppressWarnings(recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "average", individually = FALSE))
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(80, 70, 60))
-
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(80, 70, 60))
 })
 
 test_that("Baseline - point works", {
@@ -264,79 +264,81 @@ test_that("Baseline - point works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
 
 
-  suppressWarnings(expect_warning(recalculate_baseline(ftir_data, method = 'point', wavenumber_range = 500, individually = TRUE),
-                 regexp = "Provided wavenumber is not within spectral range", fixed = TRUE))
+  suppressWarnings(expect_warning(recalculate_baseline(ftir_data, method = "point", wavenumber_range = 500, individually = TRUE),
+    regexp = "Provided wavenumber is not within spectral range", fixed = TRUE
+  ))
 
   suppressWarnings(expect_warning(recalculate_baseline(ftir_data, method = "point", wavenumber_range = 1012.5, individually = TRUE),
-                 regexp = "No wavenumber values in spectra within 10 cm-1 of supplied point", fixed = TRUE))
+    regexp = "No wavenumber values in spectra within 10 cm-1 of supplied point", fixed = TRUE
+  ))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.1, 0.2, 0.3))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.1, 0.2, 0.3))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.1, 0.2, 0.3))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.1, 0.2, 0.3))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
   ftir_data$transmittance <- c(90, 80, 70, 80, 70, 60, 70, 60, 50)
   ftir_data$absorbance <- NULL
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(80, 70, 60))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(80, 70, 60))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(80, 70, 60))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(80, 70, 60))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'point', wavenumber_range = 1000, individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "point", wavenumber_range = 1000, individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70, 60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'point', wavenumber_range = 1000, individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "point", wavenumber_range = 1000, individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70, 60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 })
 
 test_that("Baseline - minimum/maximum works", {
@@ -346,134 +348,166 @@ test_that("Baseline - minimum/maximum works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculate_baseline(ftir_data, method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, method = 'maximum', individually = TRUE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(
+    recalculate_baseline(ftir_data, method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.1, 0.2, 0.3))
-  expect_equal(recalculate_baseline(ftir_data, method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, method = 'maximum', individually = FALSE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.1, 0.2, 0.3))
+  expect_equal(
+    recalculate_baseline(ftir_data, method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = "A", method = 'maximum', individually = TRUE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.2, 0.3, 0.4))
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = "A", method = 'maximum', individually = FALSE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.2, 0.3, 0.4))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', individually = TRUE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(0, 0.1, 0.2))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(0.1, 0.2, 0.3))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(0, 0.1, 0.2))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(0.1, 0.2, 0.3))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', individually = FALSE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), wavenumber_range = c(1030,1050), method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), wavenumber_range = c(1030, 1050), method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.2, -0.1, 0.0))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.2, -0.1, 0.0))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.2, -0.1, 0.0))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(-0.2, -0.1, 0.0))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', wavenumber_range = c(1030,1050), individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', wavenumber_range = c(1030,1050), individually = TRUE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", wavenumber_range = c(1030, 1050), individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", wavenumber_range = c(1030, 1050), individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), wavenumber_range = c(1030,1050), method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), wavenumber_range = c(1030, 1050), method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$absorbance, c(-0.2, -0.1, 0.0))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$absorbance, c(-0.1, 0.0, 0.1))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$absorbance, c(0.3, 0.4, 0.5))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$absorbance, c(-0.2, -0.1, 0.0))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$absorbance, c(-0.1, 0.0, 0.1))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$absorbance, c(0.3, 0.4, 0.5))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', wavenumber_range = c(1030,1050), individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', wavenumber_range = c(1030,1050), individually = FALSE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", wavenumber_range = c(1030, 1050), individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", wavenumber_range = c(1030, 1050), individually = FALSE)
+  )
 
   ftir_data$transmittance <- c(90, 80, 70, 80, 70, 60, 70, 60, 50)
   ftir_data$absorbance <- NULL
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculate_baseline(ftir_data, method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, method = 'maximum', individually = TRUE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
+  expect_equal(
+    recalculate_baseline(ftir_data, method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
-  expect_equal(recalculate_baseline(ftir_data, method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, method = 'maximum', individually = FALSE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
+  expect_equal(
+    recalculate_baseline(ftir_data, method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(80, 70, 60))
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = "A", method = 'maximum', individually = TRUE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(80, 70, 60))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(80, 70, 60))
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = "A", method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = "A", method = 'maximum', individually = FALSE))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(80, 70, 60))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = "A", method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70, 60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', individually = TRUE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(100, 90, 80))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(90, 80, 70))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70, 60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(100, 90, 80))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(90, 80, 70))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', individually = FALSE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", individually = FALSE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), wavenumber_range = c(1030,1050), method = 'minimum', individually = TRUE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), wavenumber_range = c(1030, 1050), method = "minimum", individually = TRUE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(120, 110, 100))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(120, 110, 100))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70,60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(120, 110, 100))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(120, 110, 100))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', wavenumber_range = c(1030,1050), individually = TRUE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', wavenumber_range = c(1030,1050), individually = TRUE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", wavenumber_range = c(1030, 1050), individually = TRUE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", wavenumber_range = c(1030, 1050), individually = TRUE)
+  )
 
-  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A","B"), wavenumber_range = c(1030,1050), method = 'minimum', individually = FALSE)
+  recalculated_ftir <- recalculate_baseline(ftir_data, sample_ids = c("A", "B"), wavenumber_range = c(1030, 1050), method = "minimum", individually = FALSE)
   expect_equal(nrow(recalculated_ftir), nrow(ftir_data))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A",]$transmittance, c(120, 110, 100))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B",]$transmittance, c(110, 100, 90))
-  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C",]$transmittance, c(70, 60, 50))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "A", ]$transmittance, c(120, 110, 100))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "B", ]$transmittance, c(110, 100, 90))
+  expect_equal(recalculated_ftir[recalculated_ftir$sample_id == "C", ]$transmittance, c(70, 60, 50))
 
-  expect_equal(recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'minimum', wavenumber_range = c(1030,1050), individually = FALSE),
-               recalculate_baseline(ftir_data, sample_ids = c("A","B"), method = 'maximum', wavenumber_range = c(1030,1050), individually = FALSE))
+  expect_equal(
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "minimum", wavenumber_range = c(1030, 1050), individually = FALSE),
+    recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", wavenumber_range = c(1030, 1050), individually = FALSE)
+  )
 })

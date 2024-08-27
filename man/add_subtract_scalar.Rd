@@ -41,6 +41,6 @@ Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données 
 add_scalar_value(biodiesel, 0.1)
 
 # Subtract 0.05 from biodiesel_0 and biodiesel_0_25
-subtract_scalar_value(biodiesel, 0.05, sample_ids = c('biodiesel_0', 'biodiesel_0_25'))
+subtract_scalar_value(biodiesel, 0.05, sample_ids = c("biodiesel_0", "biodiesel_0_25"))
 
 }

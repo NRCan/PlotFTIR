@@ -61,21 +61,25 @@
 plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID") {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    ))
   }
   if (!requireNamespace("ggthemes", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggthemes} package installation.")
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggthemes} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggthemes')}"
+    ))
   }
 
   check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
   if (!is.character(plot_title) || length(plot_title) > 2) {
-    cli::cli_abort("{.arg plot_title} must be a character string or vector of strings with length not more than two.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
   }
   if (!is.character(legend_title) || length(legend_title) > 1) {
-    cli::cli_abort("{.arg legend_title} must be a single character string.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.")
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    cli::cli_abort(c("The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
+    cli::cli_abort(c("Error in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
       i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
     ))
   }
@@ -149,10 +153,10 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
   check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
-    cli::cli_abort("{.arg stack_offset} must be a single numeric value.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
   }
   if (stack_offset < 0 || stack_offset > 200) {
-    cli::cli_abort("{.arg stack_offset} must be between 0 and 200.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.")
   }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")

@@ -152,7 +152,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 #' add_scalar_value(biodiesel, 0.1)
 #'
 #' # Subtract 0.05 from biodiesel_0 and biodiesel_0_25
-#' subtract_scalar_value(biodiesel, 0.05, sample_ids = c('biodiesel_0', 'biodiesel_0_25'))
+#' subtract_scalar_value(biodiesel, 0.05, sample_ids = c("biodiesel_0", "biodiesel_0_25"))
 #'
 #' @name add_subtract_scalar
 NULL
@@ -171,7 +171,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
     cli::cli_abort(c("All provided {.arg sample_ids} must be in {.arg ftir} data.",
-                     x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
     ))
   }
 
@@ -283,145 +283,154 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
-                     x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
     ))
   }
 
-  if(length(wavenumber_range) < 1 | length(wavenumber_range) > 2){
+  if (length(wavenumber_range) < 1 | length(wavenumber_range) > 2) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2."))
   }
-  if(!(all(is.na(wavenumber_range)) | all(is.numeric(wavenumber_range)))){
+  if (!(all(is.na(wavenumber_range)) | all(is.numeric(wavenumber_range)))) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
-                     x = "You provided a {.obj_type_friendly wavenumber_range}."))
+      x = "You provided a {.obj_type_friendly wavenumber_range}."
+    ))
   }
 
-  if(!is.logical(individually)){
+  if (!is.logical(individually)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg individually} must be a boolean value.",
-                     x = "You provided a {.obj_type_friendly individually}."))
+      x = "You provided a {.obj_type_friendly individually}."
+    ))
   }
 
-  permitted_methods <- c('point', 'average', 'minimum', 'maximum')
-  if(length(method) != 1 | !(method %in% permitted_methods)) {
+  permitted_methods <- c("point", "average", "minimum", "maximum")
+  if (length(method) != 1 | !(method %in% permitted_methods)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg method} must be a string.",
-                     i = "{.arg method} must be one of {.val {permitted_methods}}."))
+      i = "{.arg method} must be one of {.val {permitted_methods}}."
+    ))
   }
 
-  if(method == "point" & length(wavenumber_range) == 2) {
+  if (method == "point" & length(wavenumber_range) == 2) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
-                     i = "The value at the provided wavenumber will be used to baseline adjust data."))
+      i = "The value at the provided wavenumber will be used to baseline adjust data."
+    ))
   }
-  if(method %in% c('minimum', 'maximum') & all(length(wavenumber_range) == 1, !is.na(wavenumber_range))){
+  if (method %in% c("minimum", "maximum") & all(length(wavenumber_range) == 1, !is.na(wavenumber_range))) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
-                     i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
-                     i = "To adjust by a single point, call the function with {.code method = 'point'}"))
+      i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
+      i = "To adjust by a single point, call the function with {.code method = 'point'}"
+    ))
   }
 
-  if(method == "point") {
-    if(length(wavenumber_range) != 1 | is.na(wavenumber_range)) {
+  if (method == "point") {
+    if (length(wavenumber_range) != 1 | is.na(wavenumber_range)) {
       cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
-                       i = "The value at the provided wavenumber will be used to baseline adjust data."))
+        i = "The value at the provided wavenumber will be used to baseline adjust data."
+      ))
     }
-    if(individually) {
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          if(wavenumber_range < min(ftir[ftir$sample_id == sample_ids[i],]$wavenumber) | wavenumber_range > max(ftir[ftir$sample_id == sample_ids[i],]$wavenumber)){
+    if (individually) {
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          if (wavenumber_range < min(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) | wavenumber_range > max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)) {
             cli::cli_warn(c("Warning in {.fn PlotFTIR::recalculate_baseline}. Provided wavenumber is not within spectral range.",
-                          i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."))
-          } else if(min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)) > 10) {
+              i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
+            ))
+          } else if (min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)) > 10) {
             cli::cli_warn(c("Warning in {.fn PlotFTIR::recalculate_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
-                            i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."))
-
+              i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
+            ))
           }
-          adj <- ftir[ftir$sample_id == sample_ids[i],]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
-          ftir[ftir$sample_id == sample_ids[i],]$absorbance <- ftir[ftir$sample_id == sample_ids[i],]$absorbance- adj
+          adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)))]
+          ftir[ftir$sample_id == sample_ids[i], ]$absorbance <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance - adj
         } else {
-          adj <- 100-ftir[ftir$sample_id == sample_ids[i],]$transmittance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
-          ftir[ftir$sample_id == sample_ids[i],]$transmittance <- ftir[ftir$sample_id == sample_ids[i],]$transmittance + adj
+          adj <- 100 - ftir[ftir$sample_id == sample_ids[i], ]$transmittance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)))]
+          ftir[ftir$sample_id == sample_ids[i], ]$transmittance <- ftir[ftir$sample_id == sample_ids[i], ]$transmittance + adj
         }
       }
     } else {
       adj <- 1e10
-      if(all(is.na(wavenumber_range))) {
-        wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids,]$wavenumber)
+      if (all(is.na(wavenumber_range))) {
+        wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids, ]$wavenumber)
       }
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          adj_i <- ftir[ftir$sample_id == sample_ids[i],]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          adj_i <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)))]
         } else {
-          adj_i <- 100-ftir[ftir$sample_id == sample_ids[i],]$transmittance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
+          adj_i <- 100 - ftir[ftir$sample_id == sample_ids[i], ]$transmittance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)))]
         }
         adj <- c(adj, adj_i)[which.min(abs(c(adj, adj_i)))] # returns absolute minimum but keeps the sign
       }
-      if('absorbance' %in% colnames(ftir)){
-        ftir[ftir$sample_id %in% sample_ids,]$absorbance <- ftir[ftir$sample_id %in% sample_ids,]$absorbance - adj
+      if ("absorbance" %in% colnames(ftir)) {
+        ftir[ftir$sample_id %in% sample_ids, ]$absorbance <- ftir[ftir$sample_id %in% sample_ids, ]$absorbance - adj
       } else {
-        ftir[ftir$sample_id %in% sample_ids,]$transmittance <- ftir[ftir$sample_id %in% sample_ids,]$transmittance + adj
+        ftir[ftir$sample_id %in% sample_ids, ]$transmittance <- ftir[ftir$sample_id %in% sample_ids, ]$transmittance + adj
       }
     }
   } else if (method == "average") {
-    if(all(is.na(wavenumber_range))) {
+    if (all(is.na(wavenumber_range))) {
       cli::cli_warn(c("Adjusting spectra baseline by the average of all values is not analytically useful",
-                      i = "Provide a wavenumber range to adjust by the average in that spectral region."))
-      wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids,]$wavenumber)
+        i = "Provide a wavenumber range to adjust by the average in that spectral region."
+      ))
+      wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids, ]$wavenumber)
     } else if (length(wavenumber_range) != 2) {
       cli::cli_abort(c("Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be two numeric values.",
-                       i = "The average value between the provided wavenumbers will be used to baseline adjust data."))
+        i = "The average value between the provided wavenumbers will be used to baseline adjust data."
+      ))
     }
-    if(individually) {
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          adj <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
-          ftir[ftir$sample_id == sample_ids[i],]$absorbance <- ftir[ftir$sample_id == sample_ids[i],]$absorbance - adj
+    if (individually) {
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          adj <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$absorbance)
+          ftir[ftir$sample_id == sample_ids[i], ]$absorbance <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance - adj
         } else {
-          adj <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
-          ftir[ftir$sample_id == sample_ids[i],]$transmittance <- ftir[ftir$sample_id == sample_ids[i],]$transmittance + adj
+          adj <- 100 - mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$transmittance)
+          ftir[ftir$sample_id == sample_ids[i], ]$transmittance <- ftir[ftir$sample_id == sample_ids[i], ]$transmittance + adj
         }
       }
     } else {
       adj <- 1e10
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          adj_i <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          adj_i <- mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$absorbance)
         } else {
-          adj_i <- 100-mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
+          adj_i <- 100 - mean(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$transmittance)
         }
         adj <- c(adj, adj_i)[which.min(abs(c(adj, adj_i)))] # returns absolute minimum but keeps the sign
       }
-      if('absorbance' %in% colnames(ftir)){
-        ftir[ftir$sample_id %in% sample_ids,]$absorbance <- ftir[ftir$sample_id %in% sample_ids,]$absorbance - adj
+      if ("absorbance" %in% colnames(ftir)) {
+        ftir[ftir$sample_id %in% sample_ids, ]$absorbance <- ftir[ftir$sample_id %in% sample_ids, ]$absorbance - adj
       } else {
-        ftir[ftir$sample_id %in% sample_ids,]$transmittance <- ftir[ftir$sample_id %in% sample_ids,]$transmittance + adj
+        ftir[ftir$sample_id %in% sample_ids, ]$transmittance <- ftir[ftir$sample_id %in% sample_ids, ]$transmittance + adj
       }
     }
   } else {
     # method %in% c("minimum", "maximum")
-    if(all(is.na(wavenumber_range))) {
-      wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids,]$wavenumber)
+    if (all(is.na(wavenumber_range))) {
+      wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids, ]$wavenumber)
     }
-    if(individually) {
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          adj <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
-          ftir[ftir$sample_id == sample_ids[i],]$absorbance <- ftir[ftir$sample_id == sample_ids[i],]$absorbance- adj
+    if (individually) {
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          adj <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$absorbance)
+          ftir[ftir$sample_id == sample_ids[i], ]$absorbance <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance - adj
         } else {
-          adj <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
-          ftir[ftir$sample_id == sample_ids[i],]$transmittance <- ftir[ftir$sample_id == sample_ids[i],]$transmittance + adj
+          adj <- 100 - max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$transmittance)
+          ftir[ftir$sample_id == sample_ids[i], ]$transmittance <- ftir[ftir$sample_id == sample_ids[i], ]$transmittance + adj
         }
       }
     } else {
       adj <- 1e10
-      for(i in seq_along(sample_ids)){
-        if('absorbance' %in% colnames(ftir)) {
-          adj_i <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$absorbance)
+      for (i in seq_along(sample_ids)) {
+        if ("absorbance" %in% colnames(ftir)) {
+          adj_i <- min(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$absorbance)
         } else {
-          adj_i <- 100-max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range),]$transmittance)
+          adj_i <- 100 - max(ftir[ftir$sample_id == sample_ids[i] & ftir$wavenumber >= min(wavenumber_range) & ftir$wavenumber <= max(wavenumber_range), ]$transmittance)
         }
         adj <- c(adj, adj_i)[which.min(abs(c(adj, adj_i)))] # returns absolute minimum but keeps the sign
       }
-      if('absorbance' %in% colnames(ftir)){
-        ftir[ftir$sample_id %in% sample_ids,]$absorbance <- ftir[ftir$sample_id %in% sample_ids,]$absorbance - adj
+      if ("absorbance" %in% colnames(ftir)) {
+        ftir[ftir$sample_id %in% sample_ids, ]$absorbance <- ftir[ftir$sample_id %in% sample_ids, ]$absorbance - adj
       } else {
-        ftir[ftir$sample_id %in% sample_ids,]$transmittance <- ftir[ftir$sample_id %in% sample_ids,]$transmittance + adj
+        ftir[ftir$sample_id %in% sample_ids, ]$transmittance <- ftir[ftir$sample_id %in% sample_ids, ]$transmittance + adj
       }
     }
   }
