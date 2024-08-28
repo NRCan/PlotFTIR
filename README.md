@@ -210,6 +210,11 @@ head(biodiesel_transm)
 #> 6   710.0579      87.77362 biodiesel_0
 ```
 
+Functions are provided for adjusting the baseline of spectra, adding or
+subtracting scalar values from entire spectra, and averaging spectra,
+see: \* `recalculate_baseline()` \* `add_scalar_value()` and
+`subtract_scalar_value()` \* `average_spectra()`
+
 ## Reading Files
 
 PlotFTIR can read .csv and .asp file types. The .csv file should contain
@@ -411,6 +416,11 @@ sample_spectra |>
 
 <img src="man/figures/README-tidy_fr-1.png" width="100%" />
 
+## Production de tracés “tidy”
+
+Notez que, comme la plupart des fonctions renvoient un type de données
+similaire à celui fourni, une “tidy-eval” est possible.
+
 ## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples
@@ -452,6 +462,11 @@ head(biodiesel_transm)
 #> 5   708.1942      87.47159 biodiesel_0
 #> 6   710.0579      87.77362 biodiesel_0
 ```
+
+Des fonctions sont fournies pour ajuster la ligne de base des spectres,
+ajouter ou soustraire des valeurs scalaires de spectres entiers, et
+calculer la moyenne des spectres, voir : \* `recalculate_baseline()` \*
+`add_scalar_value()` et `subtract_scalar_value()` \* `average_spectra()`
 
 ## Lecture des fichiers
 

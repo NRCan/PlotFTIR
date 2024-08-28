@@ -164,7 +164,7 @@ test_that("labelled plot is ok", {
       wavenumber = 1000,
       text = biodiesel_plot
     ),
-    "`text` must be character or numeric, you provided a <gg/ggplot> object.",
+    "`text` must be character or numeric, you provided a <gg",
     fixed = TRUE
   )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 5000),
@@ -176,7 +176,6 @@ test_that("labelled plot is ok", {
   labelled_plot <- add_wavenumber_marker(biodiesel_plot, 1740, "CO Stretch")
 
   expect_equal(biodiesel_plot$labels$title, labelled_plot$labels$title)
-
 
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,

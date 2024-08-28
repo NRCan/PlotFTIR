@@ -74,34 +74,26 @@
 plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
-  }
-
-  if (!(is.data.frame(ftir))) {
-    cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
-  }
-  if (!("sample_id" %in% colnames(ftir) && "wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing column(s).",
-      i = "It must contain columns named both {.var sample_id} and {.var wavenumber}."
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
     ))
   }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
+
+  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggthemes} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggthemes')}"
+    ))
   }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
-  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
-    cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
-  }
+
+  check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
   if (!is.character(plot_title) || length(plot_title) > 2) {
-    cli::cli_abort("{.arg plot_title} must be a character string or vector of strings with length not more than two.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
   }
   if (!is.character(legend_title) || length(legend_title) > 1) {
-    cli::cli_abort("{.arg legend_title} must be a single character string.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.")
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    cli::cli_abort(c("The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
+    cli::cli_abort(c("Error in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
       i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
     ))
   }
@@ -198,28 +190,13 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   plot_ftir_stacked(biodiesel)
 #' }
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") {
-  if (!(is.data.frame(ftir))) {
-    cli::cli_abort("{.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
-  }
-  if (!("sample_id" %in% colnames(ftir))) {
-    cli::cli_abort(c("{.arg ftir} is missing a column.",
-      i = "It must contain a column named {.var sample_id}."
-    ))
-  }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort("{.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
-  }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
-  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
-    cli::cli_abort("{.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
-  }
+  check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
-    cli::cli_abort("{.arg stack_offset} must be a single numeric value.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
   }
   if (stack_offset < 0 || stack_offset > 200) {
-    cli::cli_abort("{.arg stack_offset} must be between 0 and 200.")
+    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.")
   }
 
   mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
@@ -275,6 +252,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   plot_ftir(sample_spectra)
 #' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
+    check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)

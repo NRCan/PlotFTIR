@@ -116,6 +116,7 @@ head(biodiesel)
 ## Tidy Plot Production
 
 Note that because most functions return a data type similar to what is provided, tidy-eval is possible (using the base R pipe `|>` or [`magrittr` pipe function](https://magrittr.tidyverse.org/reference/pipe) `%>%`). 
+
 ```{r tidy_en, warning=FALSE}
 library(magrittr)
 
@@ -153,6 +154,11 @@ FTIR spectral data can be converted between absorbance and transmittance. Only o
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
+
+Functions are provided for adjusting the baseline of spectra, adding or subtracting scalar values from entire spectra, and averaging spectra, see:
+* `recalculate_baseline()`
+* `add_scalar_value()` and `subtract_scalar_value()`
+* `average_spectra()`
 
 ## Reading Files
 
@@ -287,6 +293,10 @@ sample_spectra |>
   move_plot_legend(position = "bottom", direction = "horizontal")
 ```
 
+## Production de tracés "tidy" 
+
+Notez que, comme la plupart des fonctions renvoient un type de données similaire à celui fourni, une "tidy-eval" est possible.
+
 ## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples de spectres à tracer:
@@ -306,6 +316,11 @@ Les données spectrales IRTF peuvent être converties entre l'absorbance et la t
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
+
+Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter ou soustraire des valeurs scalaires de spectres entiers, et calculer la moyenne des spectres, voir :
+* `recalculate_baseline()`
+* `add_scalar_value()` et `subtract_scalar_value()`
+* `average_spectra()`
 
 ## Lecture des fichiers
 
