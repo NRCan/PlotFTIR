@@ -61,11 +61,9 @@ NULL
 #' @export
 #' @rdname conversion
 absorbance_to_transmittance <- function(ftir) {
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
+  check_ftir_data(ftir, "PlotFTIR::absorbance_to_transmittance")
   if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort("{.arg ftir} must contain a {.var absorbance} column.")
+    cli::cli_abort("Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must contain a {.var absorbance} column.")
   }
   ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
   ftir$absorbance <- NULL
@@ -78,12 +76,11 @@ absorbance_to_transmittance <- function(ftir) {
 #' @export
 #' @rdname conversion
 transmittance_to_absorbance <- function(ftir) {
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("{.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
-  }
+  check_ftir_data(ftir, "PlotFTIR::transmittance_to_absorbance")
   if (!("transmittance" %in% colnames(ftir))) {
-    cli::cli_abort("{.arg ftir} must contain a {.var transmittance} column.")
+    cli::cli_abort("Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must contain a {.var transmittance} column.")
   }
+
   ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)
   ftir$transmittance <- NULL
 
@@ -122,10 +119,52 @@ transmittance_to_absorbance <- function(ftir) {
 get_plot_sample_ids <- function(ftir_spectra_plot) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun plot_ftir} requires {.pkg ggplot2} package installation.")
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    ))
   }
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("{.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort("Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
   return(as.factor(unique(ftir_spectra_plot$data$sample_id)))
+}
+
+#' @title Check FTIR Data
+#'
+#' @description Check provided FTIR dataframe is appropriate for manipulation or plotting
+#' Not typically called directly, but as a function in data integrety check process before
+#' further calculation or plotting happens
+#'
+#' @param ftir A data.frame of FTIR spectral data including column to be
+#'  converted. Can't contain both `absorbance` and `transmittance` column.
+#'
+#' @param fn The name of the function, used in printing error codes.
+#'
+#' @return invisible TRUE if ok, typically called for effect of failure.
+#' @keywords internal
+check_ftir_data <- function(ftir, fn) {
+  if (!(is.data.frame(ftir))) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
+  }
+  if (!("sample_id" %in% colnames(ftir))) {
+    cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+      i = "It must contain a column named {.var sample_id}."
+    ))
+  }
+  if (!("wavenumber" %in% colnames(ftir))) {
+    cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+      i = "It must contain a column named {.var wavenumber}."
+    ))
+  }
+  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
+  }
+  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
+  }
+  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
+  }
+
+  invisible(TRUE)
 }
