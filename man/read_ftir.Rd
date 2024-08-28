@@ -4,7 +4,7 @@
 \alias{read_ftir}
 \title{Read FTIR file}
 \usage{
-read_ftir(path = ".", file, sample_name = NA)
+read_ftir(path = ".", file, sample_name = NA, ...)
 }
 \arguments{
 \item{path}{Path to the file. Default is the current working directory, as ".".
@@ -18,6 +18,10 @@ Nom du fichier, obligatoire.}
 \item{sample_name}{Name for sample_id column in the returned data.frame. If not provided, the file name is used without the extension.
 
 Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, le nom du fichier est utilisé sans l'extension.}
+
+\item{...}{Additional parameters to pass to the file reading function. For CSV files, see \code{\link[utils:read.table]{utils::read.csv()}}, it may be wise to pass \code{col.names} to disambiguate the input data.
+
+Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir \code{\link[utils:read.table]{utils::read.csv()}}, il peut être judicieux de passer \code{col.names} pour désambiguïser les données d'entrée.}
 }
 \value{
 a data.frame containing the spectral data from the file.
@@ -30,6 +34,6 @@ Reads a provided file and returns a data.frame in the proper format for PlotFTIR
 \examples{
 \dontrun{
 # Read a .csv file from the working directory and call it `sample1`
-read_ftir(".", "ftir_sample_1.csv","sample1")
+read_ftir(".", "ftir_sample_1.csv", "sample1")
 }
 }
