@@ -215,6 +215,13 @@ subtracting scalar values from entire spectra, and averaging spectra,
 see: \* `recalculate_baseline()` \* `add_scalar_value()` and
 `subtract_scalar_value()` \* `average_spectra()`
 
+## Reading Files
+
+PlotFTIR can read .csv and .asp file types. The .csv file should contain
+only one spectra, with columns for `wavenumber` and `absorbance` or
+`transmittance.` The .asp files should be according to the file
+specifications (not modified by the user).
+
 ## Documentation
 
 More information on all functions is available online at
@@ -409,6 +416,11 @@ sample_spectra |>
 
 <img src="man/figures/README-tidy_fr-1.png" width="100%" />
 
+## Production de tracés “tidy”
+
+Notez que, comme la plupart des fonctions renvoient un type de données
+similaire à celui fourni, une “tidy-eval” est possible.
+
 ## Ensembles des données
 
 Le package contient deux ensembles de données pour fournir des exemples
@@ -455,6 +467,14 @@ Des fonctions sont fournies pour ajuster la ligne de base des spectres,
 ajouter ou soustraire des valeurs scalaires de spectres entiers, et
 calculer la moyenne des spectres, voir : \* `recalculate_baseline()` \*
 `add_scalar_value()` et `subtract_scalar_value()` \* `average_spectra()`
+
+## Lecture des fichiers
+
+PlotFTIR peut lire les fichiers de type .csv et .asp. Le fichier .csv ne
+doit contenir qu’un seul spectre, avec des colonnes pour le `wavenumber`
+et `absorbance` ou `transmittance`. Les fichiers .asp doivent être
+conformes aux spécifications du fichier (non modifiées par
+l’utilisateur).
 
 ## Documentation
 
