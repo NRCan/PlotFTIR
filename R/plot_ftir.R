@@ -189,9 +189,9 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #'   plot_ftir_stacked(biodiesel)
 #' }
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") 
+plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") {
   check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
-  
+
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
   }
