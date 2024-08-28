@@ -210,6 +210,13 @@ head(biodiesel_transm)
 #> 6   710.0579      87.77362 biodiesel_0
 ```
 
+## Reading Files
+
+PlotFTIR can read .csv and .asp file types. The .csv file should contain
+only one spectra, with columns for `wavenumber` and `absorbance` or
+`transmittance.` The .asp files should be according to the file
+specifications (not modified by the user).
+
 ## Documentation
 
 More information on all functions is available online at
@@ -445,6 +452,14 @@ head(biodiesel_transm)
 #> 5   708.1942      87.47159 biodiesel_0
 #> 6   710.0579      87.77362 biodiesel_0
 ```
+
+## Lecture des fichiers
+
+PlotFTIR peut lire les fichiers de type .csv et .asp. Le fichier .csv ne
+doit contenir qu’un seul spectre, avec des colonnes pour le `wavenumber`
+et `absorbance` ou `transmittance`. Les fichiers .asp doivent être
+conformes aux spécifications du fichier (non modifiées par
+l’utilisateur).
 
 ## Documentation
 
