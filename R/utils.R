@@ -1,52 +1,52 @@
 #' Convert Between Absorbance and Transmittance
 #'
-#' @description These functions allow for the convenient conversion between \%
-#'  Transmittance and Absorbance units for the Y axis.
+#' @description These functions allow for the convenient conversion between
+#'   \%Transmittance and Absorbance units for the Y axis.
 #'
-#'  Converting between %Transmittance and absorbance units for the Y axis is not
-#'  a simple flipping of axis or inversion. Instead we know that the two are
-#'  related by the following formulas:
+#'   Converting between \%Transmittance and absorbance units for the Y axis is
+#'   not a simple flipping of axis or inversion. Instead, the two are related by
+#'   the following formulas:
+#'
 #' \deqn{
 #'  A=-log_{10}(\tfrac{\%T}{100})
 #' }
-#'  and
+#'   and
 #' \deqn{
 #'  \%T=10^{-A}\cdot 100
 #' }.
 #'
-#'  Ces fonctions permettent une conversion pratique entre les unités \% de
-#'  transmission et d'absorption pour l'axe Y.
-#'
-#'  La conversion entre les unités de \% de transmission et d'absorbance pour
-#'  l'axe Y n'est pas un simple retournement d'axe ou une inversion. Au lieu de
-#'  cela, nous savons que les deux sont liés par les formules suivantes:
+#'   Ces fonctions permettent une conversion pratique entre les unités
+#'   \%Transmittance et Absorbance pour l'axe Y. La conversion entre les unités
+#'   \%Transmittance et Absorbance pour l'axe Y n'est pas un simple retournement
+#'   d'axe ou une inversion. Au lieu de cela, les deux sont liés par les
+#'   formules suivantes :
 #'
 #' \deqn{
 #'  A=-log_{10}(\tfrac{\%T}{100})
 #' }
-#'  and
+#'   and
 #' \deqn{
 #'  \%T=10^{-A}\cdot 100
 #' }
 #'
 #' @param ftir A data.frame of FTIR spectral data including column to be
-#'  converted. Can't contain both `absorbance` and `transmittance` column as the
-#'  receiving column would be overwritten
+#'   converted. Can't contain both `absorbance` and `transmittance` column as
+#'   the receiving column would be overwritten
 #'
-#'  Une data.frame de données spectrales IRTF comprenant la colonne à convertir.
-#'  Ne peut pas contenir à la fois les colonnes `absorbance` et `transmittance`,
-#'  car la colonne de réception serait écrasée.
+#'   Un data.frame de données spectrales IRTF incluant la colonne à convertir.
+#'   Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
+#'   colonne de réception serait écrasée.
 #'
 #' @return a data.frame of FTIR spectral data with conversion between absorbance
-#'  and transmittance as requested. Note the original data column is removed
-#'  since FTIR spectral data frames can't be fed into plotting functions with
-#'  both transmittance and absorbance data included.
+#'   or transmittance as requested. Note the original data column is removed
+#'   since FTIR spectral data frames can't be fed into plotting functions with
+#'   both transmittance and absorbance data included.
 #'
-#'  une data.frame de données spectrales IRTF avec conversion entre
-#'  l'absorbance et la transmission comme demandé. Notez que la colonne de
-#'  données d'origine est supprimée car les trames de données spectrales IRTF ne
-#'  peuvent pas être introduites dans les fonctions de traçage avec les données
-#'  de transmission et d'absorbance incluses.
+#'   un data.frame de données spectrales IRTF avec conversion entre l'absorbance
+#'   ou la transmittance comme demandé. Notez que la colonne de données
+#'   d'origine est supprimée car les trames de données spectrales IRTF ne
+#'   peuvent pas être introduites dans les fonctions de tracé avec les données
+#'   de transmittance et d'absorbance incluses.
 #'
 #' @examples
 #' # Convert from absorbance to transmittance
