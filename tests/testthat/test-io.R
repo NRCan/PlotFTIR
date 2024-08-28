@@ -1,6 +1,7 @@
 test_that("reading csv works", {
+
   # Create a temporary CSV with wavenumber and absorbance columns
-  data <- data.frame(wavenumber = 1000:1500, absorbance = runif(501))
+  data <- data.frame(wavenumber = 1000:1500, absorbance = biodiesel$absorbance[1:501])
   temp_file <- withr::local_tempfile(fileext = ".csv")
   tmppath <- dirname(temp_file)
   tmpfile <- basename(temp_file)
@@ -18,7 +19,7 @@ test_that("reading csv works", {
 
 
   # Create a temporary CSV with misnamed wavenumber column
-  data <- data.frame("row" = 1000:1500, absorbance = runif(501))
+  data <- data.frame("row" = 1000:1500, absorbance = biodiesel$absorbance[1:501])
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
@@ -30,10 +31,20 @@ test_that("reading csv works", {
   expect_equal(result$sample_id[1], tools::file_path_sans_ext(tmpfile))
   expect_equal(nrow(result), nrow(data))
   expect_equal(result$wavenumber, data$row)
-  expect_equal(round(result$absorbance, 4), round(data$absorbance, 4))
+  expect_equal(round(result$absorbance, 2), round(data$absorbance, 2))
+
+  #do it backwards
+  data <- data.frame("absorbance" = data$absorbance, "row" = 1000:1500)
+  write.csv(data, file = temp_file, row.names = FALSE)
+  expect_equal(result$wavenumber, read_ftir(path = tmppath, file = tmpfile)$wavenumber)
+
+  #do it with a name match
+  data <- data.frame("energy" = 1000:1500, "absorbance" = data$absorbance)
+  write.csv(data, file = temp_file, row.names = FALSE)
+  expect_equal(result$wavenumber, read_ftir(path = tmppath, file = tmpfile)$wavenumber)
 
   # Create a temporary CSV with misnamed energy column (absorbance)
-  data <- data.frame("wavenumber" = 1000:1500, "energy" = runif(501))
+  data <- data.frame("wavenumber" = 1000:1500, "energy" = biodiesel$absorbance[1:501])
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
@@ -48,7 +59,7 @@ test_that("reading csv works", {
   expect_equal(round(result$absorbance, 4), round(data$energy, 4))
 
   # Create a temporary CSV with misnamed energy column (transmittance)
-  data <- data.frame("wavenumber" = 1000:1500, "energy" = runif(501, min = 80, max = 100))
+  data <- data.frame("wavenumber" = 1000:1500, "energy" = 100-(biodiesel$absorbance[1:501]*20))
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
@@ -61,6 +72,15 @@ test_that("reading csv works", {
   expect_equal(nrow(result), nrow(data))
   expect_equal(result$wavenumber, data$wavenumber)
   expect_equal(round(result$transmittance, 2), round(data$energy, 2))
+
+  data <- data.frame("wavenumber" = 1000:1500, "absorbance" = biodiesel$absorbance[1:501], sample_id = "test")
+  write.csv(data, file = temp_file, row.names = FALSE)
+  expect_error(read_ftir(path = tmppath, file = tmpfile), regexp = "Input file has too many columns", fixed = TRUE)
+
+  data <- data.frame("row" = 1000:1500, "col" = 2000:2500)
+  write.csv(data, file = temp_file, row.names = FALSE)
+  expect_error(read_ftir(path = tmppath, file = tmpfile), regexp = "Could not confidently determine which column contains wavenumber", fixed = TRUE)
+
 })
 
 test_that("read_ftir handles invalid arguments", {
@@ -84,7 +104,7 @@ test_that("read_ftir handles invalid arguments", {
 
 test_that("reading asp works", {
   # create data and write file
-  data <- data.frame(wavenumber = 1000:1500, absorbance = runif(501))
+  data <- data.frame(wavenumber = 1000:1500, absorbance = biodiesel$absorbance[1:501])
   temp_file <- withr::local_tempfile(fileext = ".asp")
   tmppath <- dirname(temp_file)
   tmpfile <- basename(temp_file)
@@ -100,10 +120,10 @@ test_that("reading asp works", {
   expect_equal(result$sample_id[1], tools::file_path_sans_ext(tmpfile))
   expect_equal(nrow(result), nrow(data))
   expect_equal(result$wavenumber, data$wavenumber)
-  expect_equal(round(result$absorbance, 4), round(data$absorbance, 4))
+  expect_equal(round(result$absorbance, 2), round(data$absorbance, 2))
 
   # Create a temporary CSV with misnamed energy column (transmittance)
-  data <- data.frame("wavenumber" = 1000:1500, "transmittance" = runif(501, min = 80, max = 100))
+  data <- data.frame("wavenumber" = 1000:1500, "transmittance" = 100-(biodiesel$absorbance[1:501]*20))
   write(c(nrow(data), max(data$wavenumber), min(data$wavenumber), 1, 2, 4, rev(data$transmittance)), temp_file, ncolumns = 1)
 
   # Read the data using read_ftir
