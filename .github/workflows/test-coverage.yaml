@@ -78,6 +78,7 @@ jobs:
           cache: false
           extra-packages: |
             any::covr
+            any::xml2
             any::testthat
           needs: check
 
