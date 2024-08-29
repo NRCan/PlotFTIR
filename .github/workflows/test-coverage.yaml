@@ -77,11 +77,8 @@ jobs:
           dependencies: '"hard"'
           cache: false
           extra-packages: |
-            any::rcmdcheck
+            any::covr
             any::testthat
-            any::knitr
-            any::rmarkdown
-            any::markdown
           needs: check
 
       - name: Test coverage
