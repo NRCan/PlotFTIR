@@ -115,9 +115,10 @@ test_that("add_subtract_scalar_value works", {
   expect_equal(modified_data$absorbance[modified_data$sample_id == "B"], c(1.3, 1.4)) # Expect modified absorbance for B
   expect_equal(modified_data$absorbance[modified_data$sample_id == "C"], 0.5) # Expect unchanged absorbance for C
 
-  expect_error(add_scalar_value(ftir_data, value = "invalid"), "Provided `value` must be numeric", fixed = TRUE)
+  expect_error(add_scalar_value(ftir_data, value = "invalid"), regexp = "Provided `value` must be numeric", fixed = TRUE)
+  expect_error(subtract_scalar_value(ftir_data, value = "invalid"), regexp = "Provided `value` must be numeric", fixed = TRUE)
 
-  expect_error(add_scalar_value(ftir_data, value = 0.5, sample_ids = "invalid_id"), "All provided `sample_ids` must be in `ftir` data", fixed = TRUE)
+  expect_error(add_scalar_value(ftir_data, value = 0.5, sample_ids = "invalid_id"), regexp = "All provided `sample_ids` must be in `ftir` data", fixed = TRUE)
 
   # Modify ftir_data to have transmittance instead of absorbance
   ftir_data_transmittance <- ftir_data
@@ -134,22 +135,25 @@ test_that("add_subtract_scalar_value works", {
 
 
 test_that("Baseline error checking works", {
-  expect_error(recalculate_baseline("not_a_dataframe"), regex = "must be a data frame. You provided a string", fixed = TRUE)
+  expect_error(recalculate_baseline("not_a_dataframe"), regexp = "must be a data frame. You provided a string", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, method = "failure"), regex = "must be a string", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "failure"), regexp = "must be a string", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, individually = "failure"), regex = "must be a boolean value", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, individually = "failure"), regexp = "must be a boolean value", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, sample_ids = "A"), regex = "All provided `sample_ids` must be in `ftir` data.", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, sample_ids = "A"), regexp = "All provided `sample_ids` must be in `ftir` data.", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c(1, 2, 3)), regex = "must be of length 1 or 2", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c(1, 2, 3)), regexp = "must be of length 1 or 2", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c("one", "two")), regex = "`wavenumber_range` must be `numeric` or `NA`.", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, wavenumber_range = c("one", "two")), regexp = "`wavenumber_range` must be `numeric` or `NA`.", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, method = "point", wavenumber_range = c(1, 2)), regex = "must be one numeric value", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "point", wavenumber_range = c(1, 2)), regexp = "must be one numeric value", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "point", wavenumber_range = NA), regexp = "must be a single numeric value", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1), regex = "or two numeric values if `method = 'minimum'`", fixed = TRUE)
-  expect_error(recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1), regex = "or two numeric values if `method = 'maximum'`", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1), regexp = "or two numeric values if `method = 'minimum'`", fixed = TRUE)
+  expect_error(recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1), regexp = "or two numeric values if `method = 'maximum'`", fixed = TRUE)
+
+  expect_error(recalculate_baseline(biodiesel, method = "average", wavenumber_range = 1500, regexp = "must be two numeric values", fixed = TRUE))
 })
 
 test_that("Baseline - average works", {

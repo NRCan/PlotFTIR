@@ -75,8 +75,14 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           dependencies: '"hard"'
-          extra-packages: any::covr, any::xml2
-          needs: coverage
+          cache: false
+          extra-packages: |
+            any::rcmdcheck
+            any::testthat
+            any::knitr
+            any::rmarkdown
+            any::markdown
+          needs: check
 
       - name: Test coverage
         run: |

@@ -348,9 +348,6 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
       }
     } else {
       adj <- 1e10
-      if (all(is.na(wavenumber_range))) {
-        wavenumber_range <- range(ftir[ftir$sample_id %in% sample_ids, ]$wavenumber)
-      }
       for (i in seq_along(sample_ids)) {
         if ("absorbance" %in% colnames(ftir)) {
           adj_i <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)))]
