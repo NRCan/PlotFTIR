@@ -110,6 +110,10 @@ test_that("data is checked correctly", {
 })
 
 test_that("Language settings work", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing language integration")
+  }
+
   expect_error(plot_ftir(biodiesel, lang = "bob"),
     "`lang` must be one of ",
     fixed = TRUE
