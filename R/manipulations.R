@@ -78,13 +78,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
   # For FTIR, note that the plot has scale_x_reverse() always applied to it.
   # So, we're really talking about intercept as a -1*intercept
 
-  # Package Checks
-  if (!requireNamespace("scales", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg scales} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('scales')}"
-    ))
-  }
-
   intercept <- intercept * -1
 
   scales::trans_new("compress",
@@ -126,10 +119,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @references From https://stackoverflow.com/a/64011534
 `-.gg` <- function(plot, layer) {
-  # Package Checks
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun -.gg} requires {.pkg ggplot2} package installation.")
-  }
 
   if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",

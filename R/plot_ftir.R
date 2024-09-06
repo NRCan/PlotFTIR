@@ -79,12 +79,6 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggthemes} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggthemes')}"
-    ))
-  }
-
   check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
   if (!is.character(plot_title) || length(plot_title) > 2) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
