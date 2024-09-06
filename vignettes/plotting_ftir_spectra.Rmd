@@ -1,0 +1,89 @@
+---
+title: "Plotting FTIR Spectra"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{plotting_ftir_spectra}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dpi=300
+)
+
+tempdir <- withr::local_dir()
+
+for(i in seq_along(unique(sample_spectra$sample_id))){
+  write.csv(sample_spectra[sample_spectra$sample_id == unique(sample_spectra$sample_id)[i], c('wavenumber', 'absorbance')], 
+            file = file.path(tempdir, paste0(unique(sample_spectra$sample_id)[i], ".csv")), 
+            row.names = FALSE)
+}
+```
+
+# PLotting FTIR Spectra
+
+([Français](#introduction-et-installation))
+
+## Introduction
+
+Many chemists use Fourier Transform Infra-red spectroscopy (FTIR) to analyze chemicals and materials in their laboratories. They may test for purity, composition of mixtures, changes in functional groups, or evaluate other properties. These spectra are sometimes included in journal articles but, as of yet, R has not had a convenient tool for plotting spectra.
+
+In this document we'll be using the built-in data in the `PlotFTIR` package to demonstrate loading data, modifying it, and plotting the resulting spectra. While the package doesn't have raw data files, we will simulate this portion by reading the built-in data from disk.
+
+## Installing PlotFTIR
+
+To read FTIR files into R, the `PlotFTIR` package must be installed and loaded. Installation of the stable version of the package can be from CRAN.
+
+```{r installation_Cran, echo=TRUE, eval = FALSE}
+install.packages('PlotFTIR')
+```
+
+If you want to install the development version of this package, this can be done using the `devtools` package:
+
+```{r installation_github, echo = TRUE, eval = FALSE}
+devtools::install_github("pbulsink/PlotFTIR")
+```
+
+Once installed by any method, the package needs to be activated in R before use. 
+
+```{r library_call}
+library(PlotFTIR)
+```
+
+## Reading Data
+
+This document presumes you have FTIR spectra files in .csv, .txt (comma delimited), or .asp format. Additional file types may be supported in the future. We can read files individually using the `read_ftir()` function, or (as we're about to do) you can read any number of files in a directory. Our data is stored in a `file_directory` variable, but you can provide your own location (such as "C:/Users/[userid]/FTIR/Data" or wherever your files are stored).
+
+```{r read_files_en}
+spectra <- read_ftir_directory(path = file_directory, 
+                               files = c("toluene.csv", "heptanes.csv", "isopropanol.csv", "paper.csv", "polystyrene.csv"), 
+                               sample_names = c("toluene", "heptanes", "isopropanol", "paper", "polystyrene"))
+
+head(spectra)
+```
+
+Having loaded the data, we can see that it has a structure of three columns, named `wavenumber`, `absorbance` and `sample_id`. We've read a few files in so all of the spectra are included in the one `spectra` object. 
+
+## Plotting
+
+The loaded spectra can be plotted (with reasonable defaults) in just one line of code:
+```{r baseplot_en}
+plot_ftir(spectra)
+```
+
+We can modify this plot a number of ways:
+
+### Compress Low Energy Region
+
+The lower energy region of a FTIR plot may not be of much interest. We can compress those to both save graphical space and enhance the view of the more complex fingerprint region at higher energy. 
+
+```{r compress_en}
+plot_ftir(spectra) |>
+  compress_low_energy(cutoff = 2000, compression_ratio = 5)
+```
+
+> You'll see the usage of `|>` - this indicates that the output of this command is being passed to the first argument of the next command. More information on the pipe can be found in the valuable book [R for Data Science (2e)](https://r4ds.hadley.nz/workflow-style.html#sec-pipes) by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund.  Alternatively you can capture the output of each line of code in a variable and pass that variable on to the next function called.
+
