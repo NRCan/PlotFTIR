@@ -17,6 +17,8 @@ test_that("reading csv works", {
   expect_equal(result$wavenumber, data$wavenumber)
   expect_equal(round(result$absorbance, 4), round(data$absorbance, 4))
 
+  # Make sure single file paths work
+  expect_equal(result, read_ftir(path = file.path(tmppath, tmpfile), file = NA))
 
   # Create a temporary CSV with misnamed wavenumber column
   data <- data.frame("row" = 1000:1500, absorbance = biodiesel$absorbance[1:501])
@@ -90,7 +92,7 @@ test_that("read_ftir handles invalid arguments", {
   expect_error(read_ftir(path = "path", file = c("file1.csv", "file2.csv")), regexp = "must be a single string value", fixed = TRUE)
   expect_error(read_ftir(path = ".", file = "file.csv", sample_name = c("name1", "name2")), regexp = "must be a single string value or single", fixed = TRUE)
   expect_error(read_ftir(path = ".", file = "file.csv", sample_name = 123), regexp = "must be a string value", fixed = TRUE)
-  expect_error(read_ftir(path = ".", file = "nonexistent_file.csv"), regexp = "does not appear to exist", fixed = TRUE)
+  expect_error(read_ftir(path = ".", file = "nonexistent_file.csv"), regexp = 'nonexistent_file.csv" does not appear to exist', fixed = TRUE)
   tempfile <- withr::local_tempfile(fileext = ".docx")
   file.create(tempfile)
   expect_error(read_ftir(path = dirname(tempfile), file = basename(tempfile)), regexp = "could not be processed", fixed = TRUE)
@@ -136,4 +138,57 @@ test_that("reading asp works", {
   expect_equal(nrow(result), nrow(data))
   expect_equal(result$wavenumber, data$wavenumber)
   expect_equal(round(result$transmittance, 2), round(data$transmittance, 2))
+})
+
+# Check reading multiple files
+test_that("Reading multiple files works", {
+  #Prep some files
+  data <- data.frame(wavenumber = 1000:1500, absorbance = biodiesel$absorbance[1:501])
+  tmppath <- withr::local_tempdir()
+  temp_file1 <- withr::local_tempfile(tmpdir = tmppath, fileext = ".csv")
+  temp_file2 <- withr::local_tempfile(tmpdir = tmppath, fileext = ".csv")
+  tmpfile1 <- basename(temp_file1)
+  tmpfile2 <- basename(temp_file2)
+  write.csv(data, file = file.path(tmppath, tmpfile1), row.names = FALSE)
+  write.csv(data, file = file.path(tmppath, tmpfile2), row.names = FALSE)
+
+  # Read the data using read_ftir
+  result <- read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2), sample_names = c("one", "two"))
+
+  # Check the result
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_equal(result$sample_id[1], "one")
+  expect_equal(result$sample_id[nrow(result)], "two")
+  expect_equal(nrow(result), nrow(data)*2)
+  expect_equal(result$wavenumber, rep(data$wavenumber, 2))
+  expect_equal(round(result$absorbance, 4), rep(round(data$absorbance, 4), 2))
+
+  # Read the data using read_ftir
+  result <- read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2))
+
+  # Check the result (no sample names)
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_equal(result$sample_id[1], tools::file_path_sans_ext(tmpfile1))
+  expect_equal(result$sample_id[nrow(result)], tools::file_path_sans_ext(tmpfile2))
+  expect_equal(nrow(result), nrow(data)*2)
+  expect_equal(result$wavenumber, rep(data$wavenumber, 2))
+  expect_equal(round(result$absorbance, 4), rep(round(data$absorbance, 4), 2))
+
+
+  # Checking for issues
+  expect_error(suppressWarnings(read_ftir_directory(path = tmppath, files = c("fake.csv", "fake2.csv"))),
+               regexp = "No spectral data was read from files", fixed = TRUE)
+  expect_warning(read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2, "fake.csv")),
+                 regexp = 'fake.csv" does not appear to exist', fixed = TRUE)
+  suppressWarnings(result2 <- read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2, "fake.csv")))
+
+  expect_equal(result, result2)
+
+  expect_error(read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2), sample_names = c("One", "Two", "Extra")),
+               regexp = "You provided 3 `sample_names` and 2 `files`", fixed = TRUE)
+
+  expect_error(read_ftir_directory(path = c(tmppath, tmppath), files = c(tmpfile1, tmpfile2)),
+               regexp = "must be a single string value", fixed = TRUE)
+  expect_error(read_ftir_directory(path = tmppath, files = c(tmpfile1, as.data.frame(tmpfile2))),
+               regexp = "must be a vector of string values", fixed = TRUE)
 })

@@ -4,16 +4,16 @@
 \alias{read_ftir}
 \title{Read FTIR file}
 \usage{
-read_ftir(path = ".", file, sample_name = NA, ...)
+read_ftir(path = ".", file = NA, sample_name = NA, ...)
 }
 \arguments{
-\item{path}{Path to the file. Default is the current working directory, as ".".
+\item{path}{Path to the file. Default is the current working directory, as \code{"."}. Can include the filename, in which case provide \code{NA} as the filename.
 
-Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme ".".}
+Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme \code{"."}. Peut inclure le nom du fichier, auquel cas il faut fournir \code{NA} comme nom de fichier.}
 
-\item{file}{File name, required.
+\item{file}{File name, required. If the file and path are provided together as \code{path}, then \code{NA} is accepted.
 
-Nom du fichier, obligatoire.}
+Nom du fichier, obligatoire. Si le fichier et le chemin sont fournis ensemble en tant que \code{chemin}, alors \code{NA} est accepté.}
 
 \item{sample_name}{Name for sample_id column in the returned data.frame. If not provided, the file name is used without the extension.
 
@@ -30,10 +30,15 @@ un data.frame contenant les données spectrales du fichier.
 }
 \description{
 Reads a provided file and returns a data.frame in the proper format for PlotFTIR functions.
+
+Lit un fichier fourni et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 }
 \examples{
 \dontrun{
 # Read a .csv file from the working directory and call it `sample1`
 read_ftir(".", "ftir_sample_1.csv", "sample1")
 }
+}
+\seealso{
+\code{\link[=read_ftir_directory]{read_ftir_directory()}}
 }
