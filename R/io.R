@@ -1,16 +1,19 @@
 #' Read FTIR file
 #'
-#' @description Reads a provided file and returns a data.frame in the proper format for PlotFTIR functions.
+#' @description
+#' Reads a provided file and returns a data.frame in the proper format for PlotFTIR functions.
+#'
+#' Lit un fichier fourni et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 #'
 #' @param path
-#' Path to the file. Default is the current working directory, as ".".
+#' Path to the file. Default is the current working directory, as `"."`. Can include the filename, in which case provide `NA` as the filename.
 #'
-#' Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme ".".
+#' Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme `"."`. Peut inclure le nom du fichier, auquel cas il faut fournir `NA` comme nom de fichier.
 #'
 #' @param file
-#' File name, required.
+#' File name, required. If the file and path are provided together as `path`, then `NA` is accepted.
 #'
-#' Nom du fichier, obligatoire.
+#' Nom du fichier, obligatoire. Si le fichier et le chemin sont fournis ensemble en tant que `chemin`, alors `NA` est accepté.
 #'
 #' @param sample_name
 #' Name for sample_id column in the returned data.frame. If not provided, the file name is used without the extension.
@@ -34,12 +37,17 @@
 #' read_ftir(".", "ftir_sample_1.csv", "sample1")
 #' }
 #' @md
-read_ftir <- function(path = ".", file, sample_name = NA, ...) {
+#' @seealso [read_ftir_directory()]
+read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
   # Check inputs
-  if (length(path) != 1 || is.na(path)) {
+  if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value.")
   }
-  if (length(file) != 1 || is.na(file)) {
+  if(any(is.na(file), is.null(file)) & (tools::file_ext(path) %in% c('txt', 'csv', 'spc', 'a2r', 'asp'))) {
+    file <- basename(path)
+    path <- dirname(path)
+  }
+  if (length(file) != 1 || !is.character(file)) {
     cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. {.arg file} must be a single string value.")
   }
   if (length(sample_name) != 1) {
@@ -51,7 +59,7 @@ read_ftir <- function(path = ".", file, sample_name = NA, ...) {
 
   # check file exists
   if (!file.exists(file.path(path, file))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. File {.val file.path(path, file)} does not appear to exist.")
+    cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. File {.val {file.path(path, file)}} does not appear to exist.")
   }
 
   # Dispatch
@@ -71,6 +79,84 @@ read_ftir <- function(path = ".", file, sample_name = NA, ...) {
     ))
   }
 }
+
+#' Read FTIR file
+#'
+#' @description
+#' Reads provided files and returns a data.frame in the proper format for PlotFTIR functions.
+#'
+#' Lit les fichiers fournis et renvoie un data.frame au format approprié pour les fonctions PlotFTIR.
+#'
+#' @param path
+#' Path to the file. Default is the current working directory, as `"."`.
+#'
+#' Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme `"."`.
+#'
+#' @param files
+#' File names, required.
+#'
+#' Noms de fichiers, obligatoires.
+#'
+#' @param sample_names
+#' Name for sample_id column in the returned data.frame. If not provided, the file names are used without the extension.
+#'
+#' Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, les noms de fichiers sont utilisés sans l'extension.
+#'
+#' @param ...
+#' Additional parameters to pass to the file reading function. For CSV files, see [utils::read.csv()], it may be wise to pass `col.names` to disambiguate the input data.
+#'
+#' Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir [utils::read.csv()], il peut être judicieux de passer `col.names` pour désambiguïser les données d'entrée.
+#'
+#' @return
+#' a data.frame containing the spectral data from the files.
+#'
+#' un data.frame contenant les données spectrales des fichiers.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Read .csv files from the working directory and call them `sample-1` and `sample-2`
+#' read_ftir(".", c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))
+#' }
+#' @md
+#' @seealso [read_ftir()]
+read_ftir_directory <- function(path, files, sample_names = NA, ...) {
+  # Check inputs
+  if (length(path) != 1 || !is.character(path)) {
+    cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}. {.arg path} must be a single string value.",
+                     i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."))
+  }
+
+  if (!all(is.character(files))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::read_ftir_directory}. {.arg file} must be a vector of string values.")
+  }
+
+  if(!all(is.na(sample_names))){
+    if(length(sample_names) != length(files)) {
+      cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}: If providing {.arg sample_names} the same number of names as the number of {.arg files} must be provided.",
+                     i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"))
+    }
+  } else {
+    sample_names <-rep(NA, length(files))
+  }
+
+  ftir <- data.frame()
+  for (i in seq_along(files)){
+    tryCatch({
+      f <- read_ftir(path, files[i], sample_names[i])
+      ftir <- rbind(ftir, f)
+    },
+    error = function(e) cli::cli_warn(c("{e}", i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."))
+    )
+  }
+  if(nrow(ftir) > 0){
+    return(ftir)
+  } else {
+    cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}: No spectral data was read from files.",
+                   i = "Check input file list and directory."))
+  }
+}
+
 
 read_ftir_csv <- function(path, file, sample_name = NA, ...) {
   input_file <- utils::read.csv(file = file.path(path, file), ...)
@@ -124,6 +210,7 @@ read_ftir_csv <- function(path, file, sample_name = NA, ...) {
   return(input_file)
 }
 
+
 read_ftir_asp <- function(path, file, sample_name = NA, ...) {
   input_file <- readLines(con = file.path(path, file))
   data_rows <- as.numeric(input_file[1])
@@ -153,11 +240,13 @@ read_ftir_asp <- function(path, file, sample_name = NA, ...) {
   return(ftir_data)
 }
 
+
 read_ftir_spc <- function(path, file, sample_name = NA, ...) {
   cli::cli_abort(c("Error in {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR is not (yet) able to read .spc files.",
     i = "The {.pkg hyperSpec} package may be able to read this file."
   ))
 }
+
 
 read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
   cli::cli_abort(c("Error in {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR is not (yet) able to read .a2r files.",
