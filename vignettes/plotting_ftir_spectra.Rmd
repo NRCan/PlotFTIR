@@ -11,7 +11,9 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  dpi=300
+  dpi=300,
+  warning = FALSE,
+  message = FALSE
 )
 
 tempdir <- withr::local_dir()
@@ -70,20 +72,71 @@ Having loaded the data, we can see that it has a structure of three columns, nam
 ## Plotting
 
 The loaded spectra can be plotted (with reasonable defaults) in just one line of code:
-```{r baseplot_en}
+```{r basicplot_en}
 plot_ftir(spectra)
+```
+
+If plotting multiple samples (as we are here), you can offset the samples in the y axis to be able to more clearly see differences where they may have otherwise overlapped near the baseline:
+
+```{r offsetplot_en}
+plot_ftir_stacked(spectra)
 ```
 
 We can modify this plot a number of ways:
 
+### Title & Subtitle
+
+The plot title and subtitle, and the legend title are all customization. The location of the legend can be changed too. To add a subtitle, pass a two-element string vector to the `plot_title` argument of `plot_ftir()`.
+
+```{r titles_en}
+plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with PlotFTIR"), legend_title = "Samples") |>
+  move_plot_legend(position = "bottom")
+```
 ### Compress Low Energy Region
 
 The lower energy region of a FTIR plot may not be of much interest. We can compress those to both save graphical space and enhance the view of the more complex fingerprint region at higher energy. 
 
 ```{r compress_en}
 plot_ftir(spectra) |>
-  compress_low_energy(cutoff = 2000, compression_ratio = 5)
+  compress_low_energy(cutoff = 1850, compression_ratio = 5)
 ```
 
 > You'll see the usage of `|>` - this indicates that the output of this command is being passed to the first argument of the next command. More information on the pipe can be found in the valuable book [R for Data Science (2e)](https://r4ds.hadley.nz/workflow-style.html#sec-pipes) by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund.  Alternatively you can capture the output of each line of code in a variable and pass that variable on to the next function called.
+
+### Limit Wavenumber Range
+
+You can limit wavenumber range (zoom in) to any plot. If we want to look at the OH & CH stretch region, we can limit the spectra to that range.
+
+```{r r_zoom_en}
+plot_ftir(spectra) |>
+  zoom_in_on_range(c(3600, 2600))
+```
+
+You might notice the plot itself could be adjusted - a section later discusses modifications using the `ggplot2` functions that underpin the `PlotFTIR` package.
+
+### Add Markers
+
+We can add markers at any specific wavenumber, to indicate significant peaks or areas of interest. For example, the 1495 wavenumber peak corresponds with a carbon-carbon bond (aromatic) vibration. This marker's label can be coloured or styled in any way, and the line can be modified as well.
+
+```{r markers_en}
+plot_ftir(spectra) |>
+  add_wavenumber_marker(
+    wavenumber = 1495,
+    text = "C-C Aromatic",
+    line_aesthetics = list("linetype" = "dashed"),
+    label_aesthetics = list("color" = "#7e0021")
+  ) 
+```
+
+Note that any number of markers can be added, before or after other transformations of the spectral plot. The text of multiple markers may overlap.
+
+## Mathematical modifications
+
+### Conversion Between Transmittance and Absorbance
+
+```{r transmittance_en}
+transmittance_spectra <- transmittance_to_absorbance(spectra)
+
+plot_ftir(transmittance_spectra)
+```
 
