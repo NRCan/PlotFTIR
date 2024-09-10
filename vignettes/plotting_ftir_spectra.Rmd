@@ -185,7 +185,7 @@ biodiesel |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
-Of course, if you aren't careful with baselining you can get some weird results. If we didn't pay attention and tried to adjust by the point at 1250 cm-1 individually, we'd get a mess of a plot:
+Of course, if you aren't careful with baselining you can get some weird results. If we didn't pay attention and tried to adjust by the point at 1250 cm-1 individually, we'd get a plot that's not useful in most situations (even if it looks cool).
 
 ```{r plot_biodiesel_baseline_2_en}
 biodiesel |>
@@ -194,3 +194,21 @@ biodiesel |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
+Instead, it might be more useful to adjust all of the spectra by the minimum point in a range (the minimum of each sample's minimum in the range). This puts that region close to zero, without removing what might be otherwise useful differences in absorbance.
+
+```{r plot_biodiesel_baseline_3_en}
+biodiesel |>
+  recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
+  plot_ftir() |>
+  zoom_in_on_range(c(2000, 1000))
+```
+
+## Saving Spectral Plots
+
+The `PlotFTIR` package contains convenient functions for saving spectra plots to disk. This wraps the `ggplot2` graphics package function, so much more specific information can be found [in their documentation](https://ggplot2.tidyverse.org/reference/ggsave.html). Options for filetypes include "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (on windows only). More options as described in the documentation for `ggplot::ggsave()` above can be passed to the function to tune your output file (options such as resolution, size, etc. )
+
+```{r save_spectra, eval = FALSE}
+biodiesel |>
+  ploft_ftir() |>
+  save_plot(filename = "my_ftir_plot.png", filetype = ".png")
+```
