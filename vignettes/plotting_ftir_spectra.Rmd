@@ -161,6 +161,10 @@ shifted_spectra <- add_scalar_value(ftir = spectra, value = 0.2, sample_ids = c(
 plot_ftir(shifted_spectra)
 ```
 
+### Averaging Multiple Spectra
+
+Sometimes you may have analyzed samples in replicate and wish to average their results together. In this situation, it may be easier to see an average of the spectra instead of all of those available. Our sample spectra doesn't include any replecate analysis, but this can be performed by calling `average_spectra()`. This returns a `data.frame` which includes *only* the resulting average, even if you've only averaged a few of the samples (this is important to note, because if we averaged `"toluene"` and `"heptanes"` from the sample spectra set, the resulting data.frame wouldn't include `"isopropanol"`, `"paper"` or `"polystyrene"` spectra, so they would be lost by this process).
+
 ### Shift Baselines
 
 It's possible to adjust baselines by a few different mechanisms in `PlotFTIR.` The baseline can be adjusted at a single point (i.e. set that point to 0 absorbance or 100 transmittance and shift the rest of the spectra accordingly), at a minimum (or maximum for transmittance) across a certain range, or the whole spectra, or by an average of values across a range. 
