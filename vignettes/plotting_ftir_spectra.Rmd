@@ -16,13 +16,15 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 
-tempdir <- withr::local_dir()
+tempdir <- withr::local_tempdir()
 
 for(i in seq_along(unique(sample_spectra$sample_id))){
   write.csv(sample_spectra[sample_spectra$sample_id == unique(sample_spectra$sample_id)[i], c('wavenumber', 'absorbance')], 
             file = file.path(tempdir, paste0(unique(sample_spectra$sample_id)[i], ".csv")), 
             row.names = FALSE)
 }
+
+file_directory <- tempdir
 ```
 
 # PLotting FTIR Spectra
@@ -39,13 +41,13 @@ In this document we'll be using the built-in data in the `PlotFTIR` package to d
 
 To read FTIR files into R, the `PlotFTIR` package must be installed and loaded. Installation of the stable version of the package can be from CRAN.
 
-```{r installation_Cran, echo=TRUE, eval = FALSE}
+```{r installation_Cran, eval = FALSE}
 install.packages('PlotFTIR')
 ```
 
 If you want to install the development version of this package, this can be done using the `devtools` package:
 
-```{r installation_github, echo = TRUE, eval = FALSE}
+```{r installation_github, eval = FALSE}
 devtools::install_github("pbulsink/PlotFTIR")
 ```
 
@@ -89,7 +91,7 @@ We can modify this plot a number of ways:
 The plot title and subtitle, and the legend title are all customization. The location of the legend can be changed too! To add a subtitle, pass a two-element string vector to the `plot_title` argument of `plot_ftir()`.
 
 ```{r titles_en}
-plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with PlotFTIR"), legend_title = "Samples") |>
+plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with PlotFTIR"), legend_title = "Samples:") |>
   move_plot_legend(position = "bottom")
 ```
 
