@@ -57,7 +57,16 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
-  suppressMessages(p <- ftir_spectra_plot + ggplot2::scale_x_reverse(limits = c(max(zoom_range), min(zoom_range))))
+  data<-ftir_spectra_plot$data
+
+  if('transmittance' %in% data){
+    yrange <- c(0, 100)
+  } else {
+    yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
+  }
+
+  suppressMessages(p <- ftir_spectra_plot + ggplot2::coord_cartesian(xlim = c(max(zoom_range), min(zoom_range)),
+                                                                     ylim = yrange))
 
   return(p)
 }

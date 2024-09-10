@@ -125,7 +125,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id))) +
-      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20))
+      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20)) +
+      ggplot2::coord_cartesian(ylim = c(0, 100))
   }
 
   p <- p +

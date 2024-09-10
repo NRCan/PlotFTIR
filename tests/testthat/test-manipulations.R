@@ -48,9 +48,11 @@ test_that("zoom in is ok", {
     )
   )
 
-  expect_equal(
-    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
-    ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
+  expect_false(
+    all(
+      ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range ==
+      ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
+    )
   )
 })
 
