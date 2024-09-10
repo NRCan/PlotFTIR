@@ -36,6 +36,7 @@
 #'   # Zoom to a specified range of 1850 to 1650 cm^-1
 #'   zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 #' }
+#' @md
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -118,6 +119,8 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @keywords internal
 #'
 #' @references From https://stackoverflow.com/a/64011534
+#'
+#' @md
 `-.gg` <- function(plot, layer) {
 
   if (is.null(layer) || missing(layer)) {
@@ -300,6 +303,7 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #'     line_aesthetics = list("linetype" = "dashed")
 #'   )
 #' }
+#' @md
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -387,6 +391,7 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #'   )
 #'   rename_plot_sample_ids(p, new_ids)
 #' }
+#' @md
 rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {

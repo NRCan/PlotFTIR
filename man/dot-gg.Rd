@@ -9,25 +9,25 @@
 \arguments{
 \item{plot}{The plot to which the layer should be added.
 
-  Le tracé auquel le calque doit être ajouté.}
+Le tracé auquel le calque doit être ajouté.}
 
 \item{layer}{The layer to add to the plot.
 
 La couche à ajouter au tracé.}
 }
 \value{
-The ggplot2 `plot` object, with layer `layer` added underneath.
+The ggplot2 \code{plot} object, with layer \code{layer} added underneath.
 
-  L'objet ggplot2 `plot`, avec le calque `layer` ajouté en dessous.
+L'objet ggplot2 \code{plot}, avec le calque \code{layer} ajouté en dessous.
 }
 \description{
-Inserts a layer *underneath* the existing layers on a ggplot
-  object simply by calling `plot` - `layer` instead of the usual `plot` +
-  `layer`.
+Inserts a layer \emph{underneath} the existing layers on a ggplot
+object simply by calling \code{plot} - \code{layer} instead of the usual \code{plot} +
+\code{layer}.
 
-  Insère un calque *sous* les calques existants sur un objet ggplot
-  simplement en appelant `plot` - `layer` au lieu de l'habituel `plot` +
-  `layer`.
+Insère un calque \emph{sous} les calques existants sur un objet ggplot
+simplement en appelant \code{plot} - \code{layer} au lieu de l'habituel \code{plot} +
+\code{layer}.
 }
 \references{
 From https://stackoverflow.com/a/64011534

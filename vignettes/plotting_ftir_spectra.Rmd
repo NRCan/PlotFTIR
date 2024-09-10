@@ -86,12 +86,22 @@ We can modify this plot a number of ways:
 
 ### Title & Subtitle
 
-The plot title and subtitle, and the legend title are all customization. The location of the legend can be changed too. To add a subtitle, pass a two-element string vector to the `plot_title` argument of `plot_ftir()`.
+The plot title and subtitle, and the legend title are all customization. The location of the legend can be changed too! To add a subtitle, pass a two-element string vector to the `plot_title` argument of `plot_ftir()`.
 
 ```{r titles_en}
 plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with PlotFTIR"), legend_title = "Samples") |>
   move_plot_legend(position = "bottom")
 ```
+
+### Rename the Plotted Samples
+
+Once a plot has been produced, it' easy to rename the samples in the legend. This might be useful when moving from exploratory analysis to a final output product, or if the sample names in the raw data are very long and you have short-forms that you want to show on the plot. The format for the renaming is `"new_name"` = `"old_name"`. Not all `sample_id` need to be matched, samples without a rename given will retain the name they currently have.
+
+```{r rename_samples_en}
+plot_ftir(spectra) |>
+  rename_plot_sample_ids("Methylbenzene" = "toluene", "C7" = "heptanes")
+```
+
 ### Compress Low Energy Region
 
 The lower energy region of a FTIR plot may not be of much interest. We can compress those to both save graphical space and enhance the view of the more complex fingerprint region at higher energy. 
@@ -134,9 +144,53 @@ Note that any number of markers can be added, before or after other transformati
 
 ### Conversion Between Transmittance and Absorbance
 
+Some instruments collect data in transmittance units, others in absorbance units. It could also be required to plot FTIR spectra in some specific units for a journal or report, or to compare to other existing literature. Fortunately, the two are related by a simple mathematical function. Two functions exist in this package to easily swap between the two y-axis units. We'll use `absorbance_to_transmittance()` but the inverse `transmittance_to_absorbance()` is available as well.
 ```{r transmittance_en}
-transmittance_spectra <- transmittance_to_absorbance(spectra)
+transmittance_spectra <- absorbance_to_transmittance(spectra)
 
 plot_ftir(transmittance_spectra)
+```
+
+### Adding or Subtracting Numerical Values
+
+It may be desired to shift a sample's result on the plotted spectra by a certain numerical amount. This can be done by adding or subtracting a `scalar` value - a single value of a set magnitude. We can use the `add_scalar_value()` or `subtract_scalar_value()` function to do that addition or subtraction to the data prior to plotting. These functions can act on all the spectra in the data set, or only on specific sample_ids as provided.
+
+```{r scalar_en}
+shifted_spectra <- add_scalar_value(ftir = spectra, value = 0.2, sample_ids = c("heptanes", "toluene"))
+
+plot_ftir(shifted_spectra)
+```
+
+### Shift Baselines
+
+It's possible to adjust baselines by a few different mechanisms in `PlotFTIR.` The baseline can be adjusted at a single point (i.e. set that point to 0 absorbance or 100 transmittance and shift the rest of the spectra accordingly), at a minimum (or maximum for transmittance) across a certain range, or the whole spectra, or by an average of values across a range. 
+
+This can be done on a single sample in the data set, on each sample individually (where the amount of shift could be different for each sample), or the amount of baseline shift can be applied to all of the samples at once (i.e. where the same shift is applied to all of the samples).
+
+All of these shifts are achieved by calling the `recalculate_baseline()` function.
+
+For this demonstration, we'll use the `biodiesel` data contained in the package. It's a set of spectra of diesel samples containing increasing amount of biodiesel. 
+
+```{r plot_biodiesel_en}
+plot_ftir(biodiesel) |>
+  zoom_in_on_range(c(2000, 1000))
+```
+
+If you look closely, all of the spectra are floating just above the 0 absorbance line. We can adjust those down then plot the same. We'll recalculate based on the average (`method = "average"`) across the `wavenumber_range = c(2000, 1900)`, and move all of the samples by their own calculated amount (i.e. `individually = TRUE`).
+
+```{r plot_biodiesel_baseline_1_en}
+biodiesel |>
+  recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
+  plot_ftir() |>
+  zoom_in_on_range(c(2000, 1000))
+```
+
+Of course, if you aren't careful with baselining you can get some weird results. If we didn't pay attention and tried to adjust by the point at 1250 cm-1 individually, we'd get a mess of a plot:
+
+```{r plot_biodiesel_baseline_2_en}
+biodiesel |>
+  recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
+  plot_ftir() |>
+  zoom_in_on_range(c(2000, 1000))
 ```
 
