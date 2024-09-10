@@ -4,30 +4,28 @@
 
 #' Average FTIR Spectra
 #'
-#' @description Calculates an average of two or more spectra. Spectra must have identical x axis (wavenumber) data
-#'   points.
+#' @description Calculates an average of two or more spectra.
 #'
-#'   Calcule la moyenne de deux spectres ou plus. Les spectres doivent avoir des points de données identiques sur l'axe
-#'   des x (nombre d'ondes).
+#'   Calcule la moyenne de deux spectres ou plus.
 #'
 #' @param ftir A data.frame of FTIR spectral data including spectra to be converted.
 #'
 #'   Un data.frame de données spectrales IRTF comprenant les spectres à convertir.
 #'
 #' @param sample_ids A vector of sample IDs to be averaged together. All sample IDs must be present in the `ftir`
-#'   data.frame. If averaging all spectra, provide NA or NULL.
+#'   data.frame. If averaging all spectra, provide `NA` or `NULL.`
 #'
 #'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être calculée.. Tous les identifiants des
 #'   échantillons doivent être présents dans le data.frame `ftir`. Si la moyenne est calculée pour tous les spectres,
-#'   indiquez NA ou NULL.
+#'   indiquez `NA` ou `NULL.`
 #'
-#' @param average_id The name to be used as sample_id for the averaged spectra.
+#' @param average_id The name to be used as `sample_id` for the averaged spectra.
 #'
-#'   Le nom à utiliser en tant qu'identifiant d'échantillon pour les spectres moyennés.
+#'   Le nom à utiliser en tant que `sample_id` pour les spectres moyennés.
 #'
-#' @return A data.frame containing the averaged FTIR spectra, with sample_id corresponding to the provided `average_id`.
+#' @return A data.frame containing the averaged FTIR spectra, with `sample_id` corresponding to the provided `average_id`.
 #'
-#'   Un data.frame contenant les spectres IRTF moyennés, l'identifiant de l'échantillon correspondant à l'identifiant
+#'   Un data.frame contenant les spectres IRTF moyennés, avec `sample_id` correspondant à l'identifiant
 #'   `average_id` fourni.
 #'
 #' @export
@@ -36,6 +34,7 @@
 #' # Calculate the average of biodiesel B5 spectra and the unknown spectra
 #'
 #' average_spectra(biodiesel, c("biodiesel_5_0", "biodiesel_B5", "diesel_unknown"))
+#' @md
 average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectra") {
   check_ftir_data(ftir, "PlotFTIR::average_spectra")
 
@@ -159,6 +158,7 @@ NULL
 
 #' @export
 #' @rdname add_subtract_scalar
+#' @md
 add_scalar_value <- function(ftir, value, sample_ids = NA) {
   check_ftir_data(ftir, "PlotFTIR::add_scalar_value")
 

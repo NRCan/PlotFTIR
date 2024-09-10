@@ -36,6 +36,7 @@
 #'   # Zoom to a specified range of 1850 to 1650 cm^-1
 #'   zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 #' }
+#' @md
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -78,13 +79,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
   # For FTIR, note that the plot has scale_x_reverse() always applied to it.
   # So, we're really talking about intercept as a -1*intercept
 
-  # Package Checks
-  if (!requireNamespace("scales", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg scales} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('scales')}"
-    ))
-  }
-
   intercept <- intercept * -1
 
   scales::trans_new("compress",
@@ -125,11 +119,9 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @keywords internal
 #'
 #' @references From https://stackoverflow.com/a/64011534
+#'
+#' @md
 `-.gg` <- function(plot, layer) {
-  # Package Checks
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort("{.fun -.gg} requires {.pkg ggplot2} package installation.")
-  }
 
   if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
@@ -311,6 +303,7 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #'     line_aesthetics = list("linetype" = "dashed")
 #'   )
 #' }
+#' @md
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -398,6 +391,7 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #'   )
 #'   rename_plot_sample_ids(p, new_ids)
 #' }
+#' @md
 rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {

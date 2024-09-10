@@ -192,3 +192,28 @@ test_that("Reading multiple files works", {
   expect_error(read_ftir_directory(path = tmppath, files = c(tmpfile1, as.data.frame(tmpfile2))),
                regexp = "must be a vector of string values", fixed = TRUE)
 })
+
+test_that("plot saves", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+
+    expect_error(
+      save_plot(123),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+    testthat::skip("ggplot2 not available for testing file saving")
+  }
+
+  temp_file <- withr::local_tempfile(fileext = ".png")
+
+  expect_false(file.exists(temp_file))
+  save_plot(plot_ftir(biodiesel), filename = temp_file)
+  expect_true(file.exists(temp_file))
+
+  # test arg checks.
+  expect_error(save_plot("abc", filename = temp_file),
+               "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+               fixed = TRUE)
+})

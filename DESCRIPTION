@@ -24,5 +24,8 @@ Suggests:
     testthat (>= 3.0.0),
     withr,
     ggplot2 (>= 3.0.0),
-    ggthemes
+    ggthemes,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
+VignetteBuilder: knitr
