@@ -81,7 +81,7 @@ add_wavenumber_marker(biodiesel_marked,
 )
 ```
 
-If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. At this time, all samples must be listed in the rename vector with the format `"old name" = "new name"`. 
+If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. Samples must be listed in the rename vector with the format `"new name" = "old name"`. 
 ```{r biodiesel_rename_en}
 new_names <- c(
   "biodiesel_0" = "0.0% Biodiesel",
@@ -122,8 +122,8 @@ Note that because most functions return a data type similar to what is provided,
 library(magrittr)
 
 new_ids <- c(
-  "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-  "paper" = "White Paper", "polystyrene" = "PS Film"
+  "Toluene" = "toluene", "C7 Alkane" = "heptanes", "IPA" = "isopropanol",
+  "White Paper" = "paper", "PS Film" = "polystyrene"
 )
 
 sample_spectra |>
@@ -238,7 +238,7 @@ add_wavenumber_marker(biodiesel_trace,
 )
 ```
 
-S'il est nécessaire de renommer les échantillons répertoriés dans la légende, cela est possible via `rename_plot_sample_ids()`. À ce stade, tous les échantillons doivent être répertoriés dans le vecteur de renommage au format `"ancien nom" = "nouveau nom"`.
+S'il est nécessaire de renommer les échantillons répertoriés dans la légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de renommage doit avoir le format `"nouveau nom" = "ancien nom"`.
 
 ```{r biodiesel_rename_fr}
 nouveau_noms <- c(
@@ -269,8 +269,8 @@ Notez que comme la plupart des fonctions renvoient un type de données similaire
 library(magrittr)
 
 nouveaux_ids <- c(
-  "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
-  "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
+  "Toluène" = "toluene", "C7 alcane" = "heptanes", "alcool isopropylique" = "isopropanol",
+  "papier blanc" = "paper", "film de polystyrène" = "polystyrene"
 )
 
 sample_spectra |>
