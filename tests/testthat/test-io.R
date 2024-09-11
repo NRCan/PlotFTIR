@@ -1,5 +1,4 @@
 test_that("reading csv works", {
-
   # Create a temporary CSV with wavenumber and absorbance columns
   data <- data.frame(wavenumber = 1000:1500, absorbance = biodiesel$absorbance[1:501])
   temp_file <- withr::local_tempfile(fileext = ".csv")
@@ -35,12 +34,12 @@ test_that("reading csv works", {
   expect_equal(result$wavenumber, data$row)
   expect_equal(round(result$absorbance, 2), round(data$absorbance, 2))
 
-  #do it backwards
+  # do it backwards
   data <- data.frame("absorbance" = data$absorbance, "row" = 1000:1500)
   write.csv(data, file = temp_file, row.names = FALSE)
   expect_equal(result$wavenumber, read_ftir(path = tmppath, file = tmpfile)$wavenumber)
 
-  #do it with a name match
+  # do it with a name match
   data <- data.frame("energy" = 1000:1500, "absorbance" = data$absorbance)
   write.csv(data, file = temp_file, row.names = FALSE)
   expect_equal(result$wavenumber, read_ftir(path = tmppath, file = tmpfile)$wavenumber)
@@ -61,7 +60,7 @@ test_that("reading csv works", {
   expect_equal(round(result$absorbance, 4), round(data$energy, 4))
 
   # Create a temporary CSV with misnamed energy column (transmittance)
-  data <- data.frame("wavenumber" = 1000:1500, "energy" = 100-(biodiesel$absorbance[1:501]*20))
+  data <- data.frame("wavenumber" = 1000:1500, "energy" = 100 - (biodiesel$absorbance[1:501] * 20))
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
@@ -82,7 +81,6 @@ test_that("reading csv works", {
   data <- data.frame("row" = 1000:1500, "col" = 2000:2500)
   write.csv(data, file = temp_file, row.names = FALSE)
   expect_error(read_ftir(path = tmppath, file = tmpfile), regexp = "Could not confidently determine which column contains wavenumber", fixed = TRUE)
-
 })
 
 test_that("read_ftir handles invalid arguments", {
@@ -125,7 +123,7 @@ test_that("reading asp works", {
   expect_equal(round(result$absorbance, 2), round(data$absorbance, 2))
 
   # Create a temporary CSV with misnamed energy column (transmittance)
-  data <- data.frame("wavenumber" = 1000:1500, "transmittance" = 100-(biodiesel$absorbance[1:501]*20))
+  data <- data.frame("wavenumber" = 1000:1500, "transmittance" = 100 - (biodiesel$absorbance[1:501] * 20))
   write(c(nrow(data), max(data$wavenumber), min(data$wavenumber), 1, 2, 4, rev(data$transmittance)), temp_file, ncolumns = 1)
 
   # Read the data using read_ftir
@@ -142,7 +140,7 @@ test_that("reading asp works", {
 
 # Check reading multiple files
 test_that("Reading multiple files works", {
-  #Prep some files
+  # Prep some files
   data <- data.frame(wavenumber = 1000:1500, absorbance = biodiesel$absorbance[1:501])
   tmppath <- withr::local_tempdir()
   temp_file1 <- withr::local_tempfile(tmpdir = tmppath, fileext = ".csv")
@@ -159,7 +157,7 @@ test_that("Reading multiple files works", {
   expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
   expect_equal(result$sample_id[1], "one")
   expect_equal(result$sample_id[nrow(result)], "two")
-  expect_equal(nrow(result), nrow(data)*2)
+  expect_equal(nrow(result), nrow(data) * 2)
   expect_equal(result$wavenumber, rep(data$wavenumber, 2))
   expect_equal(round(result$absorbance, 4), rep(round(data$absorbance, 4), 2))
 
@@ -170,27 +168,32 @@ test_that("Reading multiple files works", {
   expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
   expect_equal(result$sample_id[1], tools::file_path_sans_ext(tmpfile1))
   expect_equal(result$sample_id[nrow(result)], tools::file_path_sans_ext(tmpfile2))
-  expect_equal(nrow(result), nrow(data)*2)
+  expect_equal(nrow(result), nrow(data) * 2)
   expect_equal(result$wavenumber, rep(data$wavenumber, 2))
   expect_equal(round(result$absorbance, 4), rep(round(data$absorbance, 4), 2))
 
 
   # Checking for issues
   expect_error(suppressWarnings(read_ftir_directory(path = tmppath, files = c("fake.csv", "fake2.csv"))),
-               regexp = "No spectral data was read from files", fixed = TRUE)
+    regexp = "No spectral data was read from files", fixed = TRUE
+  )
   expect_warning(read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2, "fake.csv")),
-                 regexp = 'fake.csv" does not appear to exist', fixed = TRUE)
+    regexp = 'fake.csv" does not appear to exist', fixed = TRUE
+  )
   suppressWarnings(result2 <- read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2, "fake.csv")))
 
   expect_equal(result, result2)
 
   expect_error(read_ftir_directory(path = tmppath, files = c(tmpfile1, tmpfile2), sample_names = c("One", "Two", "Extra")),
-               regexp = "You provided 3 `sample_names` and 2 `files`", fixed = TRUE)
+    regexp = "You provided 3 `sample_names` and 2 `files`", fixed = TRUE
+  )
 
   expect_error(read_ftir_directory(path = c(tmppath, tmppath), files = c(tmpfile1, tmpfile2)),
-               regexp = "must be a single string value", fixed = TRUE)
+    regexp = "must be a single string value", fixed = TRUE
+  )
   expect_error(read_ftir_directory(path = tmppath, files = c(tmpfile1, as.data.frame(tmpfile2))),
-               regexp = "must be a vector of string values", fixed = TRUE)
+    regexp = "must be a vector of string values", fixed = TRUE
+  )
 })
 
 test_that("plot saves", {
@@ -214,6 +217,7 @@ test_that("plot saves", {
 
   # test arg checks.
   expect_error(save_plot("abc", filename = temp_file),
-               "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-               fixed = TRUE)
+    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fixed = TRUE
+  )
 })

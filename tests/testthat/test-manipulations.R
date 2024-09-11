@@ -51,7 +51,7 @@ test_that("zoom in is ok", {
   expect_false(
     all(
       ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range ==
-      ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
+        ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
     )
   )
 })
@@ -229,7 +229,7 @@ test_that("rename is ok", {
   p <- plot_ftir(sample_spectra)
 
   new_ids <- c(
-    "Toluene" = "toluene", "C7 Alkane" = "heptanes", "IPA" = "isopropanol" ,
+    "Toluene" = "toluene", "C7 Alkane" = "heptanes", "IPA" = "isopropanol",
     "White Paper" = "paper", "PS Film" = "polystyrene"
   )
 

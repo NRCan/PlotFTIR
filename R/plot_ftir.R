@@ -247,7 +247,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   plot_ftir(sample_spectra)
 #' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
-    check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)

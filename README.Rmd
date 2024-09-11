@@ -9,8 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%",
-  dpi=300
+  out.width = "66.67%",
+  dpi = 300
 )
 library(magrittr)
 ```
@@ -84,17 +84,17 @@ add_wavenumber_marker(biodiesel_marked,
 If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. Samples must be listed in the rename vector with the format `"new name" = "old name"`. 
 ```{r biodiesel_rename_en}
 new_names <- c(
-  "biodiesel_0" = "0.0% Biodiesel",
-  "biodiesel_0_25" = "0.25% Biodiesel",
-  "biodiesel_0_50" = "0.50% Biodiesel",
-  "biodiesel_1_0" = "1.0% Biodiesel",
-  "biodiesel_2_5" = "2.5% Biodiesel",
-  "biodiesel_5_0" = "5.0% Biodiesel",
-  "biodiesel_7_5" = "7.5% Biodiesel",
-  "biodiesel_10_0" = "10.0% Biodiesel",
-  "biodiesel_B0_5" = "Commercial B0.5",
-  "biodiesel_B5" = "Commercial B5",
-  "diesel_unknown" = "Unknown Biodiesel"
+  "0.0% Biodiesel" = "biodiesel_0",
+  "0.25% Biodiesel" = "biodiesel_0_25",
+  "0.50% Biodiesel" = "biodiesel_0_50",
+  "1.0% Biodiesel" = "biodiesel_1_0",
+  "2.5% Biodiesel" = "biodiesel_2_5",
+  "5.0% Biodiesel" = "biodiesel_5_0",
+  "7.5% Biodiesel" = "biodiesel_7_5",
+  "10.0% Biodiesel" = "biodiesel_10_0",
+  "Commercial B0.5" = "biodiesel_B0_5",
+  "Commercial B5" = "biodiesel_B5",
+  "Unknown Biodiesel" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_plot, new_names)
 ```
@@ -242,17 +242,17 @@ S'il est nécessaire de renommer les échantillons répertoriés dans la légend
 
 ```{r biodiesel_rename_fr}
 nouveau_noms <- c(
-  "biodiesel_0" = "0,0% Biodiesel",
-  "biodiesel_0_25" = "0,25% Biodiesel",
-  "biodiesel_0_50" = "0,50% Biodiesel",
-  "biodiesel_1_0" = "1,0% Biodiesel",
-  "biodiesel_2_5" = "2,5% Biodiesel",
-  "biodiesel_5_0" = "5,0% Biodiesel",
-  "biodiesel_7_5" = "7,5% Biodiesel",
-  "biodiesel_10_0" = "10,0% Biodiesel",
-  "biodiesel_B0_5" = "B0,5 Commercial",
-  "biodiesel_B5" = "B5 Commercial",
-  "diesel_unknown" = "Biodiesel Inconnu"
+  "0,0% Biodiesel" = "biodiesel_0",
+  "0,25% Biodiesel" = "biodiesel_0_25",
+  "0,50% Biodiesel" = "biodiesel_0_50",
+  "1,0% Biodiesel" = "biodiesel_1_0",
+  "2,5% Biodiesel" = "biodiesel_2_5",
+  "5,0% Biodiesel" = "biodiesel_5_0",
+  "7,5% Biodiesel" = "biodiesel_7_5",
+  "10,0% Biodiesel" = "biodiesel_10_0",
+  "B0,5 Commercial" = "biodiesel_B0_5",
+  "B5 Commercial" = "biodiesel_B5",
+  "Biodiesel Inconnu" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
 ```

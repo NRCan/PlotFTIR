@@ -57,16 +57,18 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
-  data<-ftir_spectra_plot$data
+  data <- ftir_spectra_plot$data
 
-  if('transmittance' %in% data){
+  if ("transmittance" %in% data) {
     yrange <- c(0, 100)
   } else {
     yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
   }
 
-  suppressMessages(p <- ftir_spectra_plot + ggplot2::coord_cartesian(xlim = c(max(zoom_range), min(zoom_range)),
-                                                                     ylim = yrange))
+  suppressMessages(p <- ftir_spectra_plot + ggplot2::coord_cartesian(
+    xlim = c(max(zoom_range), min(zoom_range)),
+    ylim = yrange
+  ))
 
   return(p)
 }
@@ -131,7 +133,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @md
 `-.gg` <- function(plot, layer) {
-
   if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
       i = "Did you accidentally put {.code -} on a new line?"
@@ -416,7 +417,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   preexisting_sampleids <- as.vector(get_plot_sample_ids(ftir_spectra_plot))
 
   if (!(all(sample_ids %in% preexisting_sampleids))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided {.arg sample_ids} 'old names' must be in the {.arg ftir_spectra_plot}.")
+    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided 'old names' must be in the {.arg ftir_spectra_plot}.")
   }
 
   if (!(all(preexisting_sampleids %in% sample_ids))) {

@@ -43,7 +43,7 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
   if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value.")
   }
-  if(any(is.na(file), is.null(file)) & (tools::file_ext(path) %in% c('txt', 'csv', 'spc', 'a2r', 'asp'))) {
+  if (any(is.na(file), is.null(file)) & (tools::file_ext(path) %in% c("txt", "csv", "spc", "a2r", "asp"))) {
     file <- basename(path)
     path <- dirname(path)
   }
@@ -124,36 +124,40 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
   # Check inputs
   if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}. {.arg path} must be a single string value.",
-                     i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."))
+      i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."
+    ))
   }
 
   if (!all(is.character(files))) {
     cli::cli_abort("Error in {.fn PlotFTIR::read_ftir_directory}. {.arg file} must be a vector of string values.")
   }
 
-  if(!all(is.na(sample_names))){
-    if(length(sample_names) != length(files)) {
+  if (!all(is.na(sample_names))) {
+    if (length(sample_names) != length(files)) {
       cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}: If providing {.arg sample_names} the same number of names as the number of {.arg files} must be provided.",
-                     i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"))
+        i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"
+      ))
     }
   } else {
-    sample_names <-rep(NA, length(files))
+    sample_names <- rep(NA, length(files))
   }
 
   ftir <- data.frame()
-  for (i in seq_along(files)){
-    tryCatch({
-      f <- read_ftir(path, files[i], sample_names[i])
-      ftir <- rbind(ftir, f)
-    },
-    error = function(e) cli::cli_warn(c("{e}", i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."))
+  for (i in seq_along(files)) {
+    tryCatch(
+      {
+        f <- read_ftir(path, files[i], sample_names[i])
+        ftir <- rbind(ftir, f)
+      },
+      error = function(e) cli::cli_warn(c("{e}", i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."))
     )
   }
-  if(nrow(ftir) > 0){
+  if (nrow(ftir) > 0) {
     return(ftir)
   } else {
     cli::cli_abort(c("Error in {.fn PlotFTIR::read_ftir_directory}: No spectral data was read from files.",
-                   i = "Check input file list and directory."))
+      i = "Check input file list and directory."
+    ))
   }
 }
 
@@ -286,7 +290,7 @@ read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
 save_plot <- function(ftir_spectra_plot, filename, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-                     i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
     ))
   }
 
