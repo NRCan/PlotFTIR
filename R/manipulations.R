@@ -433,7 +433,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # removing the old scales prevents the warning message from printing
   ftir_spectra_plot$scales$scales <- list()
 
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+  if (!requireNamespace("ggthemes", quietly = TRUE) | length(unique(ftir$sample_id)) > 15) {
     p <- ftir_spectra_plot +
       ggplot2::scale_color_viridis_d(labels = new_ids)
   } else {
