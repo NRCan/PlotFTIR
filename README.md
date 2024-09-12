@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# PlotFTIR
+# PlotFTIR <img src='man/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
 <!-- badges: start -->
 
@@ -114,8 +114,6 @@ new_names <- c(
   "Unknown Biodiesel" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_plot, new_names)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
 <img src="man/figures/README-biodiesel_rename_en-1.png" width="66.67%" />
@@ -184,8 +182,6 @@ sample_spectra |>
   move_plot_legend(position = "bottom", direction = "horizontal")
 #> Coordinate system already present. Adding new coordinate system, which will
 #> replace the existing one.
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
 <img src="man/figures/README-tidy_en-1.png" width="66.67%" />
@@ -359,8 +355,6 @@ nouveau_noms <- c(
   "Biodiesel Inconnu" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
 <img src="man/figures/README-biodiesel_rename_fr-1.png" width="66.67%" />
@@ -408,8 +402,6 @@ sample_spectra |>
   move_plot_legend(position = "bottom", direction = "horizontal")
 #> Coordinate system already present. Adding new coordinate system, which will
 #> replace the existing one.
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
 <img src="man/figures/README-tidy_fr-1.png" width="66.67%" />
