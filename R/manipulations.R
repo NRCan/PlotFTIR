@@ -57,7 +57,18 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between 400 and 4000 cm^-1.")
   }
 
-  suppressMessages(p <- ftir_spectra_plot + ggplot2::scale_x_reverse(limits = c(max(zoom_range), min(zoom_range))))
+  data <- ftir_spectra_plot$data
+
+  if ("transmittance" %in% data) {
+    yrange <- c(0, 100)
+  } else {
+    yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
+  }
+
+  suppressMessages(p <- ftir_spectra_plot + ggplot2::coord_cartesian(
+    xlim = c(max(zoom_range), min(zoom_range)),
+    ylim = yrange
+  ))
 
   return(p)
 }
@@ -122,7 +133,6 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'
 #' @md
 `-.gg` <- function(plot, layer) {
-
   if (is.null(layer) || missing(layer)) {
     cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
       i = "Did you accidentally put {.code -} on a new line?"
@@ -362,11 +372,11 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #'
 #'   Un tracé généré par [plot_ftir()] ou [plot_ftir_stacked()].
 #'
-#' @param sample_ids A named vector of format `"old name" = "new name"`. Must
+#' @param sample_ids A named vector of format `"new name" = "old name"`. Must
 #'   include *all* sample ID old names (a pair of `"old name" = "old name"` is
 #'   permissible and results in no renaming for that sample).
 #'
-#'   Un vecteur nommé du format `"ancien nom" = "nouveau nom"`. Doit inclure
+#'   Un vecteur nommé du format `"nouveau nom" = "ancien nom"`. Doit inclure
 #'   *tous* les anciens noms d'ID d'échantillon (une paire de `"ancien nom" =
 #'   "ancien nom"` est autorisée et n'entraîne aucun changement de nom pour cet
 #'   échantillon).
@@ -386,8 +396,8 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 #'
 #'   # Rename Samples in Legend:
 #'   new_ids <- c(
-#'     "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-#'     "paper" = "White Paper", "polystyrene" = "PS Film"
+#'     "Toluene" = "toluene", "C7 Alkanes" = "heptanes", "IPA" = "isopropanol",
+#'     "White Paper" = "paper", "PS Film" = "polystyrene"
 #'   )
 #'   rename_plot_sample_ids(p, new_ids)
 #' }
@@ -406,19 +416,29 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
 
   preexisting_sampleids <- as.vector(get_plot_sample_ids(ftir_spectra_plot))
 
-  if (!(all(names(sample_ids) %in% preexisting_sampleids))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided {.arg sample_ids} 'old names' must be in the {.arg ftir_spectra_plot}.")
+  if (!(all(sample_ids %in% preexisting_sampleids))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided 'old names' must be in the {.arg ftir_spectra_plot}.")
   }
-  if (!(all(preexisting_sampleids %in% names(sample_ids)))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All {.arg ftir_spectra_plot} 'old names' must be in the provided {.arg sample_ids} vector.")
+
+  if (!(all(preexisting_sampleids %in% sample_ids))) {
+    # cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All {.arg ftir_spectra_plot} 'old names' must be in the provided {.arg sample_ids} vector.")
+    additional_sampleids <- preexisting_sampleids[!(preexisting_sampleids %in% sample_ids)]
+    names(additional_sampleids) <- additional_sampleids
+    sample_ids <- c(sample_ids, additional_sampleids)
   }
+
+  new_ids <- names(sample_ids)
+  names(new_ids) <- unname(sample_ids)
+
+  # removing the old scales prevents the warning message from printing
+  ftir_spectra_plot$scales$scales <- list()
 
   if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- ftir_spectra_plot +
-      ggplot2::scale_color_discrete(labels = sample_ids)
+      ggplot2::scale_color_discrete(labels = new_ids)
   } else {
     p <- ftir_spectra_plot +
-      ggthemes::scale_color_calc(labels = sample_ids)
+      ggthemes::scale_color_calc(labels = new_ids)
   }
 
   return(p)

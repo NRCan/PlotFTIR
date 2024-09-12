@@ -125,7 +125,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id))) +
-      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20))
+      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20)) +
+      ggplot2::coord_cartesian(ylim = c(0, 100))
   }
 
   p <- p +
@@ -246,7 +247,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   plot_ftir(sample_spectra)
 #' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
-    check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)
