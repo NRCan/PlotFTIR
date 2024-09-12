@@ -12,11 +12,11 @@ rename_plot_sample_ids(ftir_spectra_plot, sample_ids)
 
 Un tracé généré par \code{\link[=plot_ftir]{plot_ftir()}} ou \code{\link[=plot_ftir_stacked]{plot_ftir_stacked()}}.}
 
-\item{sample_ids}{A named vector of format \code{"old name" = "new name"}. Must
+\item{sample_ids}{A named vector of format \code{"new name" = "old name"}. Must
 include \emph{all} sample ID old names (a pair of \code{"old name" = "old name"} is
 permissible and results in no renaming for that sample).
 
-Un vecteur nommé du format \code{"ancien nom" = "nouveau nom"}. Doit inclure
+Un vecteur nommé du format \code{"nouveau nom" = "ancien nom"}. Doit inclure
 \emph{tous} les anciens noms d'ID d'échantillon (une paire de \code{"ancien nom" = "ancien nom"} est autorisée et n'entraîne aucun changement de nom pour cet
 échantillon).}
 }
@@ -45,8 +45,8 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
   # Rename Samples in Legend:
   new_ids <- c(
-    "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-    "paper" = "White Paper", "polystyrene" = "PS Film"
+    "Toluene" = "toluene", "C7 Alkanes" = "heptanes", "IPA" = "isopropanol",
+    "White Paper" = "paper", "PS Film" = "polystyrene"
   )
   rename_plot_sample_ids(p, new_ids)
 }

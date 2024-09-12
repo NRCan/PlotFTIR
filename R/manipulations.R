@@ -430,6 +430,9 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   new_ids <- names(sample_ids)
   names(new_ids) <- unname(sample_ids)
 
+  # removing the old scales prevents the warning message from printing
+  ftir_spectra_plot$scales$scales <- list()
+
   if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- ftir_spectra_plot +
       ggplot2::scale_color_discrete(labels = new_ids)

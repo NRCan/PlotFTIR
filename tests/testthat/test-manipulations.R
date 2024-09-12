@@ -241,7 +241,7 @@ test_that("rename is ok", {
   )
 
   expect_error(rename_plot_sample_ids(p, c(new_ids, "test" = "failure")),
-    "All provided `sample_ids` 'old names' must be in the `ftir_spectra_plot`.",
+    "All provided 'old names' must be in the `ftir_spectra_plot`.",
     fixed = TRUE
   )
 })
