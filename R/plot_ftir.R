@@ -87,7 +87,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.")
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    cli::cli_abort(c("Error in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works only with 12 or fewer unique samples in {.arg ftir}.",
+    cli::cli_warn(c("Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
       i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
     ))
   }
@@ -140,9 +140,9 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light()
 
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+  if (!requireNamespace("ggthemes", quietly = TRUE) | length(unique(ftir$sample_id)) > 15) {
     p <- p +
-      ggplot2::scale_color_discrete()
+      ggplot2::scale_color_viridis_d()
   } else {
     p <- p +
       ggthemes::scale_color_calc()

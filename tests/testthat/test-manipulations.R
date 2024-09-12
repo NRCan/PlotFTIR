@@ -54,6 +54,17 @@ test_that("zoom in is ok", {
         ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
     )
   )
+
+  # Check that y range hasn't moved for transmittance plots
+  transmittance_plot <- plot_ftir(absorbance_to_transmittance(biodiesel))
+  zoomed_transmittance <- zoom_in_on_range(transmittance_plot, c(2000, 2600))
+
+  expect_true(
+    all(
+      ggplot2::ggplot_build(transmittance_plot)$layout$panel_params[[1]]$y.range ==
+        ggplot2::ggplot_build(zoomed_transmittance)$layout$panel_params[[1]]$y.range
+    )
+  )
 })
 
 test_that("compress region is ok", {
@@ -233,7 +244,10 @@ test_that("rename is ok", {
     "White Paper" = "paper", "PS Film" = "polystyrene"
   )
 
-  expect_true(ggplot2::is.ggplot(rename_plot_sample_ids(p, new_ids)))
+  rp <- rename_plot_sample_ids(p, new_ids)
+  expect_true(ggplot2::is.ggplot(rp))
+  expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
+  expect_true("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 
   expect_error(rename_plot_sample_ids(sample_spectra, new_ids),
     "`ftir_spectra_plot` must be a ggplot object. You provided ",
@@ -244,6 +258,12 @@ test_that("rename is ok", {
     "All provided 'old names' must be in the `ftir_spectra_plot`.",
     fixed = TRUE
   )
+
+  #check only partial names still makes a plot
+  rp <- rename_plot_sample_ids(p, new_ids[1])
+  expect_true(ggplot2::is.ggplot(rp))
+  expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
+  expect_false("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 })
 
 test_that("legend moving is ok", {

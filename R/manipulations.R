@@ -59,7 +59,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 
   data <- ftir_spectra_plot$data
 
-  if ("transmittance" %in% data) {
+  if ("transmittance" %in% colnames(data)) {
     yrange <- c(0, 100)
   } else {
     yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
@@ -433,9 +433,9 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # removing the old scales prevents the warning message from printing
   ftir_spectra_plot$scales$scales <- list()
 
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+  if (!requireNamespace("ggthemes", quietly = TRUE) | length(unique(ftir_spectra_plot$sample_id)) > 15) {
     p <- ftir_spectra_plot +
-      ggplot2::scale_color_discrete(labels = new_ids)
+      ggplot2::scale_color_viridis_d(labels = new_ids)
   } else {
     p <- ftir_spectra_plot +
       ggthemes::scale_color_calc(labels = new_ids)
