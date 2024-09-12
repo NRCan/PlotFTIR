@@ -98,3 +98,54 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+  R-CMD-check-half-hard:
+    # NOTE: This workflow only directly installs "hard" dependencies, i.e. Depends,
+    # Imports, and LinkingTo dependencies. Notably, Suggests dependencies are never
+    # installed, with the exception of testthat, knitr, and rmarkdown. The cache is
+    # never used to avoid accidentally restoring a cache containing a suggested
+    # dependency.
+
+    # This half-hard version installs ggplot2 but not ggthemes, it checks failover to scale_color_discrete
+
+    runs-on: ${{ matrix.config.os }}
+
+    name: CMD Check Half HARD - ${{ matrix.config.os }} (R ${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,   r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"hard"'
+          cache: false
+          extra-packages: |
+            any::rcmdcheck
+            any::testthat
+            any::knitr
+            any::rmarkdown
+            any::markdown
+            any::ggplot2
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
