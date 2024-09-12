@@ -435,7 +435,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
 
   if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- ftir_spectra_plot +
-      ggplot2::scale_color_discrete(labels = new_ids)
+      ggplot2::scale_color_viridis_d(labels = new_ids)
   } else {
     p <- ftir_spectra_plot +
       ggthemes::scale_color_calc(labels = new_ids)

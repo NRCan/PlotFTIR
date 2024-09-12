@@ -142,7 +142,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 
   if (!requireNamespace("ggthemes", quietly = TRUE)) {
     p <- p +
-      ggplot2::scale_color_discrete()
+      ggplot2::scale_color_viridis_d()()
   } else {
     p <- p +
       ggthemes::scale_color_calc()
