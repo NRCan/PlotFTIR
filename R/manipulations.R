@@ -59,7 +59,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 
   data <- ftir_spectra_plot$data
 
-  if ("transmittance" %in% data) {
+  if ("transmittance" %in% colnames(data)) {
     yrange <- c(0, 100)
   } else {
     yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
