@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# PlotFTIR
+# PlotFTIR <img src='man/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
 <!-- badges: start -->
 
@@ -41,7 +41,7 @@ biodiesel_plot <- plot_ftir(biodiesel)
 biodiesel_plot
 ```
 
-<img src="man/figures/README-basic_plot_en-1.png" width="100%" />
+<img src="man/figures/README-basic_plot_en-1.png" width="66.67%" />
 
 You can also plot spectra in a stacked/offset manner instead of
 overlaid:
@@ -51,7 +51,7 @@ overlaid:
 plot_ftir_stacked(biodiesel)
 ```
 
-<img src="man/figures/README-stack_plot_en-1.png" width="100%" />
+<img src="man/figures/README-stack_plot_en-1.png" width="66.67%" />
 
 Note the default plot and legend titles are in english but can be
 automatically changed to french defaults by supplying the `lang = 'fr'`
@@ -62,11 +62,9 @@ Plots can be manipulated, for example, by zooming in on a range:
 ``` r
 # Zoom to a specified range of 1850 to 1650 cm^-1
 zoom_in_on_range(biodiesel_plot, c(1650, 1850))
-#> Warning: Removed 18304 rows containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
-<img src="man/figures/README-biodiesel_zoom_en-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_zoom_en-1.png" width="66.67%" />
 
 Some FTIR plots have a compressed low-energy portion of the graph which
 you might wish to zoom in on. You can achieve this by the following:
@@ -77,7 +75,7 @@ you might wish to zoom in on. You can achieve this by the following:
 compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
-<img src="man/figures/README-biodiesel_compress_en-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_compress_en-1.png" width="66.67%" />
 
 You can also add marker lines (with labels) at specific wavenumbers on
 the plots, controlling their line or text properties as needed.
@@ -95,33 +93,30 @@ add_wavenumber_marker(biodiesel_marked,
 )
 ```
 
-<img src="man/figures/README-biodiesel_labelled_en-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_labelled_en-1.png" width="66.67%" />
 
 If the need arises to rename samples listed in the legend, this is
-possible via `rename_plot_sample_ids()`. At this time, all samples must
-be listed in the rename vector with the format
-`"old name" = "new name"`.
+possible via `rename_plot_sample_ids()`. Samples must be listed in the
+rename vector with the format `"new name" = "old name"`.
 
 ``` r
 new_names <- c(
-  "biodiesel_0" = "0.0% Biodiesel",
-  "biodiesel_0_25" = "0.25% Biodiesel",
-  "biodiesel_0_50" = "0.50% Biodiesel",
-  "biodiesel_1_0" = "1.0% Biodiesel",
-  "biodiesel_2_5" = "2.5% Biodiesel",
-  "biodiesel_5_0" = "5.0% Biodiesel",
-  "biodiesel_7_5" = "7.5% Biodiesel",
-  "biodiesel_10_0" = "10.0% Biodiesel",
-  "biodiesel_B0_5" = "Commercial B0.5",
-  "biodiesel_B5" = "Commercial B5",
-  "diesel_unknown" = "Unknown Biodiesel"
+  "0.0% Biodiesel" = "biodiesel_0",
+  "0.25% Biodiesel" = "biodiesel_0_25",
+  "0.50% Biodiesel" = "biodiesel_0_50",
+  "1.0% Biodiesel" = "biodiesel_1_0",
+  "2.5% Biodiesel" = "biodiesel_2_5",
+  "5.0% Biodiesel" = "biodiesel_5_0",
+  "7.5% Biodiesel" = "biodiesel_7_5",
+  "10.0% Biodiesel" = "biodiesel_10_0",
+  "Commercial B0.5" = "biodiesel_B0_5",
+  "Commercial B5" = "biodiesel_B5",
+  "Unknown Biodiesel" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_plot, new_names)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
-<img src="man/figures/README-biodiesel_rename_en-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_rename_en-1.png" width="66.67%" />
 
 A helper function for the renaming is provided (see the documentation
 for `get_plot_sample_ids()`).
@@ -162,8 +157,8 @@ function](https://magrittr.tidyverse.org/reference/pipe) `%>%`).
 library(magrittr)
 
 new_ids <- c(
-  "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-  "paper" = "White Paper", "polystyrene" = "PS Film"
+  "Toluene" = "toluene", "C7 Alkane" = "heptanes", "IPA" = "isopropanol",
+  "White Paper" = "paper", "PS Film" = "polystyrene"
 )
 
 sample_spectra |>
@@ -185,11 +180,11 @@ sample_spectra |>
   ) |>
   rename_plot_sample_ids(sample_ids = new_ids) |>
   move_plot_legend(position = "bottom", direction = "horizontal")
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
+#> Coordinate system already present. Adding new coordinate system, which will
+#> replace the existing one.
 ```
 
-<img src="man/figures/README-tidy_en-1.png" width="100%" />
+<img src="man/figures/README-tidy_en-1.png" width="66.67%" />
 
 ## Data Manipulation
 
@@ -278,7 +273,7 @@ library(PlotFTIR)
 plot_ftir(sample_spectra, lang = "fr")
 ```
 
-<img src="man/figures/README-basic_plot_fr-1.png" width="100%" />
+<img src="man/figures/README-basic_plot_fr-1.png" width="66.67%" />
 
 Vous pouvez également tracer les spectres de manière empilée/décalée au
 lieu de les superposer :
@@ -287,7 +282,7 @@ lieu de les superposer :
 plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = "fr")
 ```
 
-<img src="man/figures/README-stack_plot_fr-1.png" width="100%" />
+<img src="man/figures/README-stack_plot_fr-1.png" width="66.67%" />
 
 Notez que les titres par défaut de tracé et du légende sont en anglais,
 mais qu’ils peuvent être automatiquement modifiés en français en
@@ -302,11 +297,9 @@ plage :
 biodiesel_trace <- plot_ftir(biodiesel, lang = "fr")
 # Zoom sur une plage spécifiée de 1850 à 1650 cm^-1
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
-#> Warning: Removed 18304 rows containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
-<img src="man/figures/README-biodiesel_zoom_fr-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_zoom_fr-1.png" width="66.67%" />
 
 Certains tracés IRTF ont une partie compressée du graphique à faible
 énergie qui peuvent etre agrandie de la manière suivante :
@@ -317,7 +310,7 @@ Certains tracés IRTF ont une partie compressée du graphique à faible
 compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
-<img src="man/figures/README-biodiesel_compress_fr-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_compress_fr-1.png" width="66.67%" />
 
 Vous pouvez également ajouter des lignes de marqueur (avec des
 étiquettes) à des numéros d’onde spécifiques sur les tracés, en
@@ -336,33 +329,30 @@ add_wavenumber_marker(biodiesel_trace,
 )
 ```
 
-<img src="man/figures/README-biodiesel_labelled_fr-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_labelled_fr-1.png" width="66.67%" />
 
 S’il est nécessaire de renommer les échantillons répertoriés dans la
-légende, cela est possible via `rename_plot_sample_ids()`. À ce stade,
-tous les échantillons doivent être répertoriés dans le vecteur de
-renommage au format `"ancien nom" = "nouveau nom"`.
+légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de
+renommage doit avoir le format `"nouveau nom" = "ancien nom"`.
 
 ``` r
 nouveau_noms <- c(
-  "biodiesel_0" = "0,0% Biodiesel",
-  "biodiesel_0_25" = "0,25% Biodiesel",
-  "biodiesel_0_50" = "0,50% Biodiesel",
-  "biodiesel_1_0" = "1,0% Biodiesel",
-  "biodiesel_2_5" = "2,5% Biodiesel",
-  "biodiesel_5_0" = "5,0% Biodiesel",
-  "biodiesel_7_5" = "7,5% Biodiesel",
-  "biodiesel_10_0" = "10,0% Biodiesel",
-  "biodiesel_B0_5" = "B0,5 Commercial",
-  "biodiesel_B5" = "B5 Commercial",
-  "diesel_unknown" = "Biodiesel Inconnu"
+  "0,0% Biodiesel" = "biodiesel_0",
+  "0,25% Biodiesel" = "biodiesel_0_25",
+  "0,50% Biodiesel" = "biodiesel_0_50",
+  "1,0% Biodiesel" = "biodiesel_1_0",
+  "2,5% Biodiesel" = "biodiesel_2_5",
+  "5,0% Biodiesel" = "biodiesel_5_0",
+  "7,5% Biodiesel" = "biodiesel_7_5",
+  "10,0% Biodiesel" = "biodiesel_10_0",
+  "B0,5 Commercial" = "biodiesel_B0_5",
+  "B5 Commercial" = "biodiesel_B5",
+  "Biodiesel Inconnu" = "diesel_unknown"
 )
 rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
-<img src="man/figures/README-biodiesel_rename_fr-1.png" width="100%" />
+<img src="man/figures/README-biodiesel_rename_fr-1.png" width="66.67%" />
 
 Une fonction d’assistance pour le changement de nom est fournie (voir la
 documentation pour `get_plot_sample_ids()`).
@@ -382,8 +372,8 @@ tuyau](https://magrittr.tidyverse.org/reference/pipe) `%>%`).
 library(magrittr)
 
 nouveaux_ids <- c(
-  "toluene" = "Toluène", "heptanes" = "C7 alcane", "isopropanol" = "alcool isopropylique",
-  "paper" = "papier blanc", "polystyrene" = "film de polystyrène"
+  "Toluène" = "toluene", "C7 alcane" = "heptanes", "alcool isopropylique" = "isopropanol",
+  "papier blanc" = "paper", "film de polystyrène" = "polystyrene"
 )
 
 sample_spectra |>
@@ -405,11 +395,11 @@ sample_spectra |>
   ) |>
   rename_plot_sample_ids(sample_ids = nouveaux_ids) |>
   move_plot_legend(position = "bottom", direction = "horizontal")
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
+#> Coordinate system already present. Adding new coordinate system, which will
+#> replace the existing one.
 ```
 
-<img src="man/figures/README-tidy_fr-1.png" width="100%" />
+<img src="man/figures/README-tidy_fr-1.png" width="66.67%" />
 
 ## Production de tracés “tidy”
 

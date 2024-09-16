@@ -48,9 +48,22 @@ test_that("zoom in is ok", {
     )
   )
 
-  expect_equal(
-    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
-    ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
+  expect_false(
+    all(
+      ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range ==
+        ggplot2::ggplot_build(zoomed_plot)$layout$panel_params[[1]]$y.range
+    )
+  )
+
+  # Check that y range hasn't moved for transmittance plots
+  transmittance_plot <- plot_ftir(absorbance_to_transmittance(biodiesel))
+  zoomed_transmittance <- zoom_in_on_range(transmittance_plot, c(2000, 2600))
+
+  expect_true(
+    all(
+      ggplot2::ggplot_build(transmittance_plot)$layout$panel_params[[1]]$y.range ==
+        ggplot2::ggplot_build(zoomed_transmittance)$layout$panel_params[[1]]$y.range
+    )
   )
 })
 
@@ -227,23 +240,30 @@ test_that("rename is ok", {
   p <- plot_ftir(sample_spectra)
 
   new_ids <- c(
-    "toluene" = "Toluene", "heptanes" = "C7 Alkane", "isopropanol" = "IPA",
-    "paper" = "White Paper", "polystyrene" = "PS Film"
+    "Toluene" = "toluene", "C7 Alkane" = "heptanes", "IPA" = "isopropanol",
+    "White Paper" = "paper", "PS Film" = "polystyrene"
   )
-  expect_true(ggplot2::is.ggplot(rename_plot_sample_ids(p, new_ids)))
+
+  rp <- rename_plot_sample_ids(p, new_ids)
+  expect_true(ggplot2::is.ggplot(rp))
+  expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
+  expect_true("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 
   expect_error(rename_plot_sample_ids(sample_spectra, new_ids),
     "`ftir_spectra_plot` must be a ggplot object. You provided ",
     fixed = TRUE
   )
-  expect_error(rename_plot_sample_ids(p, new_ids[1:4]),
-    "All `ftir_spectra_plot` 'old names' must be in the provided `sample_ids` vector.",
-    fixed = TRUE
-  )
+
   expect_error(rename_plot_sample_ids(p, c(new_ids, "test" = "failure")),
-    "All provided `sample_ids` 'old names' must be in the `ftir_spectra_plot`.",
+    "All provided 'old names' must be in the `ftir_spectra_plot`.",
     fixed = TRUE
   )
+
+  #check only partial names still makes a plot
+  rp <- rename_plot_sample_ids(p, new_ids[1])
+  expect_true(ggplot2::is.ggplot(rp))
+  expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
+  expect_false("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 })
 
 test_that("legend moving is ok", {
