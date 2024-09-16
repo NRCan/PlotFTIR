@@ -165,10 +165,6 @@ Functions are provided for adjusting the baseline of spectra, adding or subtract
 
 PlotFTIR can read .csv and .asp file types. The .csv file should contain only one spectra, with columns for `wavenumber` and `absorbance` or `transmittance.` The .asp files should be according to the file specifications (not modified by the user).
 
-## Documentation
-
-More information on all functions is available online at [https://plotftir.pages.dev/](https://plotftir.pages.dev/).
-
 ## Code of Conduct
 
 Please note that the PlotFTIR project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
@@ -326,10 +322,6 @@ Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter 
 ## Lecture des fichiers
 
 PlotFTIR peut lire les fichiers de type .csv et .asp. Le fichier .csv ne doit contenir qu'un seul spectre, avec des colonnes pour le `wavenumber` et `absorbance` ou `transmittance`. Les fichiers .asp doivent être conformes aux spécifications du fichier (non modifiées par l'utilisateur).
-
-## Documentation
-
-Plus d'informations sur toutes les fonctions sont disponibles en ligne sur [https://plotftir.pages.dev/](https://plotftir.pages.dev/).
 
 ## Code de conduite
 

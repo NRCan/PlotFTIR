@@ -222,11 +222,6 @@ only one spectra, with columns for `wavenumber` and `absorbance` or
 `transmittance.` The .asp files should be according to the file
 specifications (not modified by the user).
 
-## Documentation
-
-More information on all functions is available online at
-<https://plotftir.pages.dev/>.
-
 ## Code of Conduct
 
 Please note that the PlotFTIR project is released with a [Contributor
@@ -475,11 +470,6 @@ doit contenir qu’un seul spectre, avec des colonnes pour le `wavenumber`
 et `absorbance` ou `transmittance`. Les fichiers .asp doivent être
 conformes aux spécifications du fichier (non modifiées par
 l’utilisateur).
-
-## Documentation
-
-Plus d’informations sur toutes les fonctions sont disponibles en ligne
-sur <https://plotftir.pages.dev/>.
 
 ## Code de conduite
 
