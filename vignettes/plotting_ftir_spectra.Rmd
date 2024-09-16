@@ -16,6 +16,10 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+library(PlotFTIR)
+
 tempdir <- withr::local_tempdir()
 
 for(i in seq_along(unique(sample_spectra$sample_id))){
@@ -27,11 +31,10 @@ for(i in seq_along(unique(sample_spectra$sample_id))){
 file_directory <- tempdir
 ```
 
-# PLotting FTIR Spectra
 
-([Français](#introduction-et-installation))
+(Version français ci-dessous)
 
-## Introduction
+## Introduction to PlotFTIR
 
 Many chemists use Fourier Transform Infra-red spectroscopy (FTIR) to analyze chemicals and materials in their laboratories. They may test for purity, composition of mixtures, changes in functional groups, or evaluate other properties. These spectra are sometimes included in journal articles but, as of yet, R has not had a convenient tool for plotting spectra.
 
@@ -101,7 +104,7 @@ Once a plot has been produced, it' easy to rename the samples in the legend. Thi
 
 ```{r rename_samples_en}
 plot_ftir(spectra) |>
-  rename_plot_sample_ids("Methylbenzene" = "toluene", "C7" = "heptanes")
+  rename_plot_sample_ids(sample_ids = c("Methylbenzene" = "toluene", "C7" = "heptanes"))
 ```
 
 ### Compress Low Energy Region
@@ -218,3 +221,10 @@ biodiesel |>
   ploft_ftir() |>
   save_plot(filename = "my_ftir_plot.png", filetype = ".png")
 ```
+
+
+## Introduction à PlotFTIR
+
+De nombreux chimistes utilisent la spectroscopie infrarouge à transformée de Fourier (IRTF) pour analyser les produits chimiques et les matériaux dans leurs laboratoires. Ils peuvent tester la pureté, la composition des mélanges, les changements dans les groupes fonctionnels ou évaluer d'autres propriétés. Ces spectres sont parfois inclus dans des articles de journaux mais, jusqu'à présent, R ne dispose pas d'un outil pratique pour tracer les spectres.
+
+Dans ce document, nous utiliserons les données intégrées dans le package `PlotFTIR` pour démontrer le chargement des données, leur modification et le tracé des spectres résultants. Bien que le paquetage ne dispose pas de fichiers de données brutes, nous simulerons cette partie en lisant les données intégrées à partir du disque.
