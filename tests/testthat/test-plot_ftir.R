@@ -24,6 +24,11 @@ test_that("Plots are generated", {
   expect_true(ggplot2::is.ggplot(p3))
   expect_true(ggplot2::is.ggplot(p4))
   expect_equal(p3$label$y, "% Transmittance")
+
+  # ensure lots of samples can be plotted with rollover to viridis palette.
+  p5 <- suppressWarnings(plot_ftir(rbind(biodiesel, sample_spectra)))
+  expect_true(ggplot2::is.ggplot(p5))
+  expect_equal(p1$labels$y, "Absorbance")
 })
 
 test_that("data is checked correctly", {
@@ -103,8 +108,8 @@ test_that("data is checked correctly", {
     fixed = TRUE
   )
 
-  expect_error(plot_ftir(rbind(biodiesel, sample_spectra)),
-    "The color palette in use works only with 12 or fewer unique samples in",
+  expect_warning(plot_ftir(rbind(biodiesel, sample_spectra)),
+    "The color palette in use works best with 12 or fewer unique samples in",
     fixed = TRUE
   )
 })
