@@ -43,7 +43,7 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
   if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort("Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value.")
   }
-  if (any(is.na(file), is.null(file)) & (tools::file_ext(path) %in% c("txt", "csv", "spc", "a2r", "asp"))) {
+  if (any(is.na(file), is.null(file)) && (tools::file_ext(path) %in% c("txt", "csv", "spc", "a2r", "asp"))) {
     file <- basename(path)
     path <- dirname(path)
   }

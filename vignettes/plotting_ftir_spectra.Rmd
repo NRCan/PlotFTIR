@@ -1,5 +1,6 @@
 ---
 title: "Plotting FTIR Spectra"
+author: "Philip Bulsink"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{plotting_ftir_spectra}
@@ -11,7 +12,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  dpi=300,
+  dpi = 300,
   warning = FALSE,
   message = FALSE,
   out.width = "90%",
@@ -25,10 +26,11 @@ library(PlotFTIR)
 
 tempdir <- withr::local_tempdir()
 
-for(i in seq_along(unique(sample_spectra$sample_id))){
-  write.csv(sample_spectra[sample_spectra$sample_id == unique(sample_spectra$sample_id)[i], c('wavenumber', 'absorbance')], 
-            file = file.path(tempdir, paste0(unique(sample_spectra$sample_id)[i], ".csv")), 
-            row.names = FALSE)
+for (i in seq_along(unique(sample_spectra$sample_id))) {
+  write.csv(sample_spectra[sample_spectra$sample_id == unique(sample_spectra$sample_id)[i], c("wavenumber", "absorbance")],
+    file = file.path(tempdir, paste0(unique(sample_spectra$sample_id)[i], ".csv")),
+    row.names = FALSE
+  )
 }
 
 file_directory <- tempdir
@@ -48,7 +50,7 @@ In this document we'll be using the built-in data in the `PlotFTIR` package to d
 To read FTIR files into R, the `PlotFTIR` package must be installed and loaded. Installation of the stable version of the package can be from CRAN.
 
 ```{r installation_Cran, eval = FALSE}
-install.packages('PlotFTIR')
+install.packages("PlotFTIR")
 ```
 
 If you want to install the development version of this package, this can be done using the `devtools` package:
@@ -68,9 +70,11 @@ library(PlotFTIR)
 This document presumes you have FTIR spectra files in .csv, .txt (comma delimited), or .asp format. Additional file types may be supported in the future. We can read files individually using the `read_ftir()` function, or (as we're about to do) you can read any number of files in a directory. Our data is stored in a `file_directory` variable, but you can provide your own location (such as "C:/Users/[userid]/FTIR/Data" or wherever your files are stored).
 
 ```{r read_files_en}
-spectra <- read_ftir_directory(path = file_directory, 
-                               files = c("toluene.csv", "heptanes.csv", "isopropanol.csv", "paper.csv", "polystyrene.csv"), 
-                               sample_names = c("toluene", "heptanes", "isopropanol", "paper", "polystyrene"))
+spectra <- read_ftir_directory(
+  path = file_directory,
+  files = c("toluene.csv", "heptanes.csv", "isopropanol.csv", "paper.csv", "polystyrene.csv"),
+  sample_names = c("toluene", "heptanes", "isopropanol", "paper", "polystyrene")
+)
 
 head(spectra)
 ```
@@ -143,7 +147,7 @@ plot_ftir(spectra) |>
     text = "C-C Aromatic",
     line_aesthetics = list("linetype" = "dashed"),
     label_aesthetics = list("color" = "#7e0021")
-  ) 
+  )
 ```
 
 Note that any number of markers can be added, before or after other transformations of the spectral plot. The text of multiple markers may overlap.
@@ -154,11 +158,11 @@ All of the manipulations can be done in sequence to one image. This allows you t
 
 ```{r combo_en}
 plot_ftir(spectra, plot_title = c("My FTIR Plot", "Closeup of Detailed Region 1600 to 800 wavenumbers"), legend_title = "Samples:") |>
-  move_plot_legend(position = 'bottom') |>
+  move_plot_legend(position = "bottom") |>
   zoom_in_on_range(zoom_range = c(1600, 800)) |>
-  add_wavenumber_marker(wavenumber = 1495, text = "C-C Aromatic", line_aesthetics = c(color = "#7e0021", linetype = 'dotted'))|>
-  add_wavenumber_marker(wavenumber = 817, text = "C-C-O\nsymmetric", line_aesthetics = c(color = "#ff420e", linetype = 'dotted')) |>
-  add_wavenumber_marker(wavenumber = 1380, text = "CH3", line_aesthetics = c(linetype = 'dashed')) |>
+  add_wavenumber_marker(wavenumber = 1495, text = "C-C Aromatic", line_aesthetics = c(color = "#7e0021", linetype = "dotted")) |>
+  add_wavenumber_marker(wavenumber = 817, text = "C-C-O\nsymmetric", line_aesthetics = c(color = "#ff420e", linetype = "dotted")) |>
+  add_wavenumber_marker(wavenumber = 1380, text = "CH3", line_aesthetics = c(linetype = "dashed")) |>
   rename_plot_sample_ids(c("C7 Alkane" = "heptanes", "2-Propanol" = "isopropanol", "Toluene" = "toluene"))
 ```
 
@@ -243,7 +247,7 @@ biodiesel |>
 
 
 ```{r clear_en,echo = FALSE, warning=FALSE, message=FALSE}
-#This just clears out items from the environment to make sure later french code is fresh.
+# This just clears out items from the environment to make sure later french code is fresh.
 rm(spectra, shifted_spectra, transmittance_spectra)
 ```
 
@@ -264,7 +268,7 @@ Dans ce document, nous utiliserons les données intégrées dans le package `Plo
 Pour lire les fichiers IRTF dans R, le package `PlotFTIR` doit être installé et chargé. L'installation de la version stable du package peut se faire à partir de CRAN.
 
 ```{r installation_Cran_fr, eval = FALSE}
-install.packages('PlotFTIR')
+install.packages("PlotFTIR")
 ```
 
 Si vous souhaitez installer la version de développement de ce package, vous pouvez le faire en utilisant le package `devtools`:
@@ -284,9 +288,11 @@ library(PlotFTIR)
 Ce document suppose que vous disposez de fichiers de spectres IRTF au format .csv, .txt (délimité par des virgules) ou .asp. D'autres types de fichiers pourront être pris en charge à l'avenir. Nous pouvons lire les fichiers individuellement en utilisant la fonction `read_ftir()`, ou (comme nous allons le faire) vous pouvez lire n'importe quel nombre de fichiers dans un répertoire. Nos données sont stockées dans une variable `file_directory`, mais vous pouvez fournir votre propre emplacement (comme "C:/Users/[userid]/FTIR/Data" ou tout autre endroit où vos fichiers sont stockés).
 
 ```{r read_files_fr}
-spectres <- read_ftir_directory(path = file_directory, 
-                               files = c("toluene.csv", "heptanes.csv", "isopropanol.csv", "paper.csv", "polystyrene.csv"), 
-                               sample_names = c("toluene", "heptanes", "isopropanol", "paper", "polystyrene"))
+spectres <- read_ftir_directory(
+  path = file_directory,
+  files = c("toluene.csv", "heptanes.csv", "isopropanol.csv", "paper.csv", "polystyrene.csv"),
+  sample_names = c("toluene", "heptanes", "isopropanol", "paper", "polystyrene")
+)
 
 head(spectres)
 ```
@@ -298,13 +304,13 @@ Après avoir chargé les données, nous pouvons voir qu'elles ont une structure 
 Les spectres chargés peuvent être tracés (avec des valeurs par défaut raisonnables) en une seule ligne de code (notez que l'ajout de `lang = 'fr'` produit un tracé avec des titres français):
 
 ```{r basicplot_fr}
-plot_ftir(spectres, lang = 'fr')
+plot_ftir(spectres, lang = "fr")
 ```
 
 Si vous tracez plusieurs échantillons (comme nous le faisons ici), vous pouvez décaler les échantillons sur l'axe des y pour pouvoir voir plus clairement les différences là où ils auraient pu se chevaucher près de la ligne de base:
 
 ```{r offsetplot_fr}
-plot_ftir_stacked(spectres, lang = 'fr')
+plot_ftir_stacked(spectres, lang = "fr")
 ```
 
 Nous pouvons modifier ce tracé de plusieurs manières:
@@ -314,7 +320,7 @@ Nous pouvons modifier ce tracé de plusieurs manières:
 Le titre et le sous-titre du tracé, ainsi que le titre de la légende sont tous configurables. L'emplacement de la légende peut également être modifié ! Pour ajouter un sous-titre, passez un vecteur de texte à deux éléments à l'argument `plot_title` de `plot_ftir()`.
 
 ```{r titles_fr}
-plot_ftir(spectres, lang = 'fr', plot_title = c("Titre de mon tracé de spectres", "Tracé avec PlotFTIR"), legend_title = "Echantillons:") |>
+plot_ftir(spectres, lang = "fr", plot_title = c("Titre de mon tracé de spectres", "Tracé avec PlotFTIR"), legend_title = "Echantillons:") |>
   move_plot_legend(position = "bottom")
 ```
 
@@ -323,7 +329,7 @@ plot_ftir(spectres, lang = 'fr', plot_title = c("Titre de mon tracé de spectres
 Lorsque le tracé a été produit, il est facile de renommer les échantillons dans la légende. Cela peut être utile pour passer d'une analyse exploratoire à un produit final, ou si les noms des échantillons dans les données sont très longs et que vous avez des formes abrégées que vous voulez montrer sur le tracé. Le format de renommage est `"nouveau_nom" = "ancien_nom"`. Il n'est pas nécessaire de faire correspondre tous les `sample_id`, les échantillons qui n'ont pas été renommés conserveront le nom qu'ils portent actuellement.
 
 ```{r rename_samples_fr}
-plot_ftir(spectres, lang = 'fr') |>
+plot_ftir(spectres, lang = "fr") |>
   rename_plot_sample_ids(sample_ids = c("methylbenzene" = "toluene", "C7" = "heptanes"))
 ```
 
@@ -332,7 +338,7 @@ plot_ftir(spectres, lang = 'fr') |>
 La région de basse énergie d'un tracé IRTF peut ne pas présenter beaucoup d'intérêt. Nous pouvons les compresser pour économiser de l'espace graphique et améliorer la visualisation de la région plus complexe de l'empreinte digitale à plus haute énergie. 
 
 ```{r compress_fr}
-plot_ftir(spectres, lang = 'fr') |>
+plot_ftir(spectres, lang = "fr") |>
   compress_low_energy(cutoff = 1850, compression_ratio = 5)
 ```
 
@@ -343,7 +349,7 @@ plot_ftir(spectres, lang = 'fr') |>
 Vous pouvez limiter la gamme de nombres d'ondes (zoomer sur) à n'importe quel tracé. Si nous voulons examiner la région d'étirement OH & CH, nous pouvons limiter les spectres à cette gamme.
 
 ```{r r_zoom_fr}
-plot_ftir(spectres, lang = 'fr') |>
+plot_ftir(spectres, lang = "fr") |>
   zoom_in_on_range(c(3600, 2600))
 ```
 
@@ -354,13 +360,13 @@ Vous remarquerez peut-être que le tracé lui-même pourrait être ajusté - une
 Nous pouvons ajouter des marqueurs à n'importe quel nombre d'ondes spécifique, pour indiquer les pics significatifs ou les zones d'intérêt. Par exemple, le nombre d'ondes de 1495 correspond à une vibration de liaison carbone-carbone (aromatique). L'étiquette de ce marqueur peut être colorée ou stylisée à volonté, et la ligne peut également être modifiée. Voir la documentation de `ggplot2` [pour `line_aesthetics` et `label_aesthetics`](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html).
 
 ```{r markers_fr}
-plot_ftir(spectres, lang = 'fr') |>
+plot_ftir(spectres, lang = "fr") |>
   add_wavenumber_marker(
     wavenumber = 1495,
     text = "C-C aromatique",
     line_aesthetics = list("linetype" = "dashed"),
     label_aesthetics = list("color" = "#7e0021")
-  ) 
+  )
 ```
 
 Notez qu'un nombre quelconque de marqueurs peut être ajouté, avant ou après d'autres transformations du tracé spectral. Le texte de plusieurs marqueurs peut se chevaucher.
@@ -370,12 +376,12 @@ Notez qu'un nombre quelconque de marqueurs peut être ajouté, avant ou après d
 Toutes les manipulations peuvent être effectuées en séquence sur une image. Cela vous permet de produire facilement des tracés modifiés en fonction de vos échantillons et annotés selon vos besoins. 
 
 ```{r combo_fr}
-plot_ftir(spectres, lang = 'fr', plot_title = c("Mon Tracé IRTF", "Gros plan de la région détaillée de 1600 à 800 nombres d'ondes"), legend_title = "Samples:") |>
-  move_plot_legend(position = 'bottom') |>
+plot_ftir(spectres, lang = "fr", plot_title = c("Mon Tracé IRTF", "Gros plan de la région détaillée de 1600 à 800 nombres d'ondes"), legend_title = "Samples:") |>
+  move_plot_legend(position = "bottom") |>
   zoom_in_on_range(zoom_range = c(1600, 800)) |>
-  add_wavenumber_marker(wavenumber = 1495, text = "C-C aromatique", line_aesthetics = c(color = "#7e0021", linetype = 'dotted'))|>
-  add_wavenumber_marker(wavenumber = 817, text = "C-C-O\nsymétrique", line_aesthetics = c(color = "#ff420e", linetype = 'dotted')) |>
-  add_wavenumber_marker(wavenumber = 1380, text = "CH3", line_aesthetics = c(linetype = 'dashed')) |>
+  add_wavenumber_marker(wavenumber = 1495, text = "C-C aromatique", line_aesthetics = c(color = "#7e0021", linetype = "dotted")) |>
+  add_wavenumber_marker(wavenumber = 817, text = "C-C-O\nsymétrique", line_aesthetics = c(color = "#ff420e", linetype = "dotted")) |>
+  add_wavenumber_marker(wavenumber = 1380, text = "CH3", line_aesthetics = c(linetype = "dashed")) |>
   rename_plot_sample_ids(c("C7 alcane" = "heptanes", "2-Propanol" = "isopropanol", "Toluene" = "toluene"))
 ```
 
@@ -387,7 +393,7 @@ Certains instruments collectent des données en unités de transmittance, d'autr
 
 ```{r transmittance_fr}
 spectres_transmittance <- absorbance_to_transmittance(spectres)
-plot_ftir(spectres_transmittance, lang = 'fr')
+plot_ftir(spectres_transmittance, lang = "fr")
 ```
 
 ### Ajout ou soustraction de valeurs numériques
@@ -397,7 +403,7 @@ Il peut être souhaitable de décaler le résultat d'un échantillon sur les spe
 ```{r scalar_fr}
 spectres_decales <- add_scalar_value(ftir = spectres, value = 0.2, sample_ids = c("heptanes", "toluene"))
 
-plot_ftir(spectres_decales, lang = 'fr')
+plot_ftir(spectres_decales, lang = "fr")
 ```
 
 Notez que seuls les heptanes et le toluène sont décalés.
@@ -417,7 +423,7 @@ Tous ces changements sont réalisés en appelant la fonction `recalculate_baseli
 Pour cette démonstration, nous utiliserons les données `biodiesel` contenues dans le paquet. Il s'agit d'un ensemble de spectres d'échantillons de diesel contenant des quantités croissantes de biodiesel. 
 
 ```{r plot_biodiesel_fr}
-plot_ftir(biodiesel, lang = 'fr') |>
+plot_ftir(biodiesel, lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
@@ -427,7 +433,7 @@ Si vous regardez de près, tous les spectres flottent juste au-dessus de la lign
 ```{r plot_biodiesel_baseline_1_fr}
 biodiesel |>
   recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
-  plot_ftir(lang = 'fr') |>
+  plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
@@ -436,7 +442,7 @@ Bien sûr, si l'on ne fait pas attention à l'alignement de base, on peut obteni
 ```{r plot_biodiesel_baseline_2_fr}
 biodiesel |>
   recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
-  plot_ftir(lang = 'fr') |>
+  plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
@@ -445,7 +451,7 @@ Il serait plus utile d'ajuster tous les spectres en fonction du point minimum d'
 ```{r plot_biodiesel_baseline_3_fr}
 biodiesel |>
   recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
-  plot_ftir(lang = 'fr') |>
+  plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
 

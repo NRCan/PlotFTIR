@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# PlotFTIR <img src='man/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
+# PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
 <!-- badges: start -->
 

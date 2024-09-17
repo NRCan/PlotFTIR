@@ -259,7 +259,7 @@ test_that("rename is ok", {
     fixed = TRUE
   )
 
-  #check only partial names still makes a plot
+  # check only partial names still makes a plot
   rp <- rename_plot_sample_ids(p, new_ids[1])
   expect_true(ggplot2::is.ggplot(rp))
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)

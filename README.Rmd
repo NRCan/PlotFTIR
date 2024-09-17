@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 library(magrittr)
 ```
 
-# PlotFTIR <img src='man/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
+# PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml)

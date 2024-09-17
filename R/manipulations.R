@@ -421,7 +421,6 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   }
 
   if (!(all(preexisting_sampleids %in% sample_ids))) {
-    # cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All {.arg ftir_spectra_plot} 'old names' must be in the provided {.arg sample_ids} vector.")
     additional_sampleids <- preexisting_sampleids[!(preexisting_sampleids %in% sample_ids)]
     names(additional_sampleids) <- additional_sampleids
     sample_ids <- c(sample_ids, additional_sampleids)
@@ -433,7 +432,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # removing the old scales prevents the warning message from printing
   ftir_spectra_plot$scales$scales <- list()
 
-  if (!requireNamespace("ggthemes", quietly = TRUE) | length(unique(ftir_spectra_plot$sample_id)) > 15) {
+  if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir_spectra_plot$sample_id)) > 15) {
     p <- ftir_spectra_plot +
       ggplot2::scale_color_viridis_d(labels = new_ids)
   } else {
