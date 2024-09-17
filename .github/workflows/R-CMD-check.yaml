@@ -98,6 +98,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          args: 'c("--ignore-vignettes", "--no-build-vignettes","--no-vignettes")'
 
   R-CMD-check-half-hard:
     # NOTE: This workflow only directly installs "hard" dependencies, i.e. Depends,
@@ -149,3 +150,4 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          args: 'c("--ignore-vignettes", "--no-build-vignettes", "--no-vignettes")'
