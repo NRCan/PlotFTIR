@@ -133,7 +133,7 @@ test_that("Language settings work", {
   expect_equal(p$labels$title, "Spectres IRTF")
   expect_equal(p$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
 
-  p2 <- plot_ftir(biodiesel, lang = "fr", plot_title = "My Plot")
+  p2 <- plot_ftir(biodiesel, lang = "fr", plot_title = c("My Plot", "my subtitle"))
   expect_equal(p2$labels$title, "My Plot")
   expect_equal(p2$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
 })
