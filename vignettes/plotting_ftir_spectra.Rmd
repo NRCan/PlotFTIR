@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   dpi = 300,
   warning = FALSE,
   message = FALSE,
+  error = TRUE,
   out.width = "90%",
   fig.width = 6,
   fig.height = 4
