@@ -130,7 +130,6 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   }
 
   p <- p +
-    ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200)) +
     ggplot2::labs(
       title = plot_title[1],
       subtitle = if (length(plot_title) < 2) NULL else plot_title[2], # Can't return Null from ifelse()
@@ -138,7 +137,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
       y = ytitle
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
-    ggplot2::theme_light()
+    ggplot2::theme_light() +
+    ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200))
 
   if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir$sample_id)) > 15) {
     p <- p +

@@ -3,17 +3,21 @@
 
 # PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
+([Français](#introduction-et-installation))
+
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/pbulsink/PlotFTIR/graph/badge.svg?token=zrndO2tPwv)](https://codecov.io/gh/pbulsink/PlotFTIR)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-<!-- badges: end -->
 
-([Français](#introduction-et-installation))
+[![CRAN
+status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
+[![CRAN
+version](https://www.r-pkg.org/badges/version/PlotFTIR)](https://cran.r-project.org/package=PlotFTIR)
+[![](https://img.shields.io/badge/doi--green.svg)](https://doi.org/)
+<!-- badges: end -->
 
 ## Introduction and Installation
 

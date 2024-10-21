@@ -434,10 +434,12 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
 
   if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir_spectra_plot$sample_id)) > 15) {
     p <- ftir_spectra_plot +
-      ggplot2::scale_color_viridis_d(labels = new_ids)
+      ggplot2::scale_color_viridis_d(labels = new_ids) +
+      ggplot2::scale_x_reverse()
   } else {
     p <- ftir_spectra_plot +
-      ggthemes::scale_color_calc(labels = new_ids)
+      ggthemes::scale_color_calc(labels = new_ids) +
+      ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200))
   }
 
   return(p)
