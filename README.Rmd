@@ -17,14 +17,18 @@ library(magrittr)
 
 # PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
 
+([Français](#introduction-et-installation))
+
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/pbulsink/PlotFTIR/graph/badge.svg?token=zrndO2tPwv)](https://codecov.io/gh/pbulsink/PlotFTIR)
-[![CRAN status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-<!-- badges: end -->
 
-([Français](#introduction-et-installation))
+
+[![CRAN status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
+[![CRAN version](https://www.r-pkg.org/badges/version/PlotFTIR)](https://cran.r-project.org/package=PlotFTIR)
+`r badger::badge_doi("", "green")`
+<!-- badges: end -->
 
 ## Introduction and Installation
 The goal of `PlotFTIR` is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) spectral plots in R using ggplot2. The produced plots can be published directly or further modified by ggplot2 functions.
