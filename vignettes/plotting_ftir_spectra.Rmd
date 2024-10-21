@@ -57,7 +57,7 @@ install.packages("PlotFTIR")
 If you want to install the development version of this package, this can be done using the `devtools` package:
 
 ```{r installation_github, eval = FALSE}
-devtools::install_github("pbulsink/PlotFTIR")
+devtools::install_github("NRCan/PlotFTIR")
 ```
 
 Once installed by any method, the package needs to be activated in R before use. 
@@ -275,7 +275,7 @@ install.packages("PlotFTIR")
 Si vous souhaitez installer la version de développement de ce package, vous pouvez le faire en utilisant le package `devtools`:
 
 ```{r installation_github_fr, eval = FALSE}
-devtools::install_github("pbulsink/PlotFTIR")
+devtools::install_github("NRCan/PlotFTIR")
 ```
 
 Une fois installé (par n'importe quelle méthode), le package doit être activé dans R avant utilisation.

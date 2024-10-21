@@ -7,8 +7,8 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pbulsink/PlotFTIR/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/gh/pbulsink/PlotFTIR/graph/badge.svg?token=zrndO2tPwv)](https://codecov.io/gh/pbulsink/PlotFTIR)
+[![R-CMD-check](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/gh/NRCan/PlotFTIR/graph/badge.svg?token=zrndO2tPwv)](https://codecov.io/gh/NRCan/PlotFTIR)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
@@ -31,7 +31,7 @@ You can install the development version of PlotFTIR from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("pbulsink/PlotFTIR")
+devtools::install_github("NRCan/PlotFTIR")
 ```
 
 ## Example Plots
@@ -264,7 +264,7 @@ Vous pouvez installer la version de développement de `PlotFTIR` depuis
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("pbulsink/PlotFTIR")
+devtools::install_github("NRCan/PlotFTIR")
 ```
 
 ## Exemples des tracés
