@@ -264,7 +264,7 @@ test_that("Interface to ChemoSpec is ok", {
     expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires ChemoSpec package installation for this function.", fixed = TRUE)
   }
 
-  if(!requireNamespace("R.utils", quietly = TRUE) && requireNamespace("ChemoSpec", quietly = TRUE)) {
+  if(!requireNamespace("R.utils", quietly = TRUE)) {
     expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires R.utils package installation for this function.", fixed = TRUE)
   }
 

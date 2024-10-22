@@ -145,6 +145,7 @@ jobs:
             any::rmarkdown
             any::markdown
             any::ggplot2
+            any::R.utils
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
