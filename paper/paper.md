@@ -28,7 +28,7 @@ absorbance values and can be used to confirm the identity of a chemical or the c
 These infra-red absorbance measurements are commonly performed on Fourier Transform Infra-red (FTIR) instruments. Scientists
 and researchers may compare different FTIR spectra to observe changes in concentration of components, or changes in the
 bond properties in a sample after a manipulation in the laboratory. These comparisons may be simple graphical comparisons, 
-or advanced statistical comparisons such as PCA/PCR or chemometrics to deduce properties. Regardless of the analysis, 
+or use advanced statistical tools such as PCA/PCR or chemometrics to deduce properties. Regardless of the analysis, 
 scientists and researchers often need to publish FTIR spectra in journal articles. 
 
 This package provides a convenient and reproducible workflow option for the production of graphics with minor spectra
@@ -36,10 +36,10 @@ manipulation capabilities.
 
 # Statement of need
 
-`PlotFTIR` is a package that takes input data and produces high-quality, journal-article ready graphics, *reproducibly*\autoref{fig:example}. 
-Scientists often rely on manual processes in software (such as Excel) to produce graphics for journals, but these can be 
-cumbersome and slow, requiring manual changes as new data is produced, or difficult manipulations if the researcher needs 
-to perform even simple manipulations (such as shifting spectra or averaging results).
+`PlotFTIR` is a package that takes input data and produces high-quality, journal-article ready graphics, *reproducibly* 
+(\autoref{fig:example}). Scientists and researchers often rely on manual processes in software (such as Excel) to produce 
+graphics for journals, but these can be cumbersome and slow, requiring manual changes as new data is produced, or difficult 
+manipulations if the researcher needs to perform even simple manipulations (such as shifting spectra or averaging results).
 
 ![Example FTIR spectra produced by `PlotFTIR`.\label{fig:example}](./paper-biodiesel.png)
 
@@ -51,8 +51,8 @@ a few functions to visualize important elements during exploratory data analysis
 multiple linear baselining functions, and conversion between absorbance and transmittance units (both commonly used in 
 FTIR studies, but each preferred by different scientific applications).
 
-More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir``[@teickner:2022]` or 
-`ChemoSpec` `[@hanson:2024]`. To facilitate collaboration between packages, `PlotFTIR` contains functions which can convert 
+More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir`[@teickner:2022] or 
+`ChemoSpec` [@hanson:2024]. To facilitate collaboration between packages, `PlotFTIR` contains functions which can convert 
 data to or from the format specified by these other packages. This permits complex baseline, smoothing, or derivative 
 calculations in `ir`, or detailed statistics such as PCA, clustering, or ANOVA in `ChemoSpec`, and pretty plotting in 
 `PlotFTIR` all in one workflow. 
@@ -62,13 +62,12 @@ functions, and output options. It also provides logical default graphical parame
 axis labels, color palettes, and the inversion of the x-axis typical of IR spectral images. It does this in contrast to 
 the other `R` packages for FTIR  which focus on spectra statistics or processing, but ignore the graphical requirements 
 of publishing journal articles or reports (i.e. producing plots with normal x-axis orientation, default ggplot2 colour 
-palettes and labels, no support for annotation beyond ggplot functions, etc.) `[@teickner:2022;hanson:2024]`. 
+palettes and labels, no support for annotation beyond ggplot functions, etc.) [@teickner:2022;hanson:2024]. 
 
 Since `PlotFTIR` produces graphics using `ggplot2`, it enables novice users to produce graphics easily without preventing 
-advanced users from performing customization using ggplot2 or other add-on packages `[@wickham:2016]`. 
-
-Graphical functions in `PlotFTIR` are designed to be used in a traditional step-wise or piped fashion, where multiple 
-graphical manipulations can be performed sequentially. 
+advanced users from performing customization using ggplot2 or other add-on packages [@wickham:2016]. Graphical functions 
+in `PlotFTIR` are designed to be used in a traditional step-wise or piped fashion, where multiple graphical manipulations 
+can be performed sequentially. 
 
 The documentation for `PlotFTIR` is available in English and French.
 
