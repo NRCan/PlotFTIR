@@ -1,5 +1,5 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'PlotFTIR: Plotting FTIR Spectra'
 tags:
   - R
   - Spectroscopy
@@ -13,7 +13,7 @@ authors:
 affiliations:
  - name: CanmetENERGY-Ottawa, Natural Resources Canada
    index: 1
-date: `r format(Sys.Date(), "%e %B %Y")`
+date: 22 October 2024
 bibliography: paper.bib
 ---
 
@@ -32,7 +32,7 @@ or advanced statistical comparisons such as PCA/PCR or chemometrics to deduce pr
 scientists and researchers often need to publish FTIR spectra in journal articles. 
 
 This package provides a convenient and reproducible workflow option for the production of graphics with minor spectra
-manipulation capabilities. This package works on raw data from 
+manipulation capabilities.
 
 # Statement of need
 
@@ -41,7 +41,7 @@ Scientists often rely on manual processes in software (such as Excel) to produce
 cumbersome and slow, requiring manual changes as new data is produced, or difficult manipulations if the researcher needs 
 to perform even simple manipulations (such as shifting spectra or averaging results).
 
-![Example FTIR spectra produced by `PlotFTIR`.\label{fig:example}](man/figures/paper-biodiesel.png)
+![Example FTIR spectra produced by `PlotFTIR`.\label{fig:example}](./paper-biodiesel.png)
 
 `PlotFTIR` is designed with a repeatable, object-oriented workflow in mind, enabling reproducible workflows from loading 
 data through saving graphical files. Users can easily run a short script on their data set to produce graphics, or use 
@@ -51,16 +51,26 @@ a few functions to visualize important elements during exploratory data analysis
 multiple linear baselining functions, and conversion between absorbance and transmittance units (both commonly used in 
 FTIR studies, but each preferred by different scientific applications).
 
+More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir``[@teickner:2022]` or 
+`ChemoSpec` `[@hanson:2024]`. To facilitate collaboration between packages, `PlotFTIR` contains functions which can convert 
+data to or from the format specified by these other packages. This permits complex baseline, smoothing, or derivative 
+calculations in `ir`, or detailed statistics such as PCA, clustering, or ANOVA in `ChemoSpec`, and pretty plotting in 
+`PlotFTIR` all in one workflow. 
+
 `PlotFTIR` supports annotation of graphics with markers and labels, simple title and legend changes, sample renaming
-functions, and output options. It also determines logical default graphical parameters, including titles, legends, 
-axis labels, color palettes, and the inversion of the x-axis. It does this in contrast to other `R` packages for FTIR 
-which focus on spectra statistics or processing, but ignore the graphical requirements of publishing journal articles 
-or reports (i.e. normal x-axis, default ggplot2 colour palettes and labels, no support for annotation beyond ggplot 
-functions, etc.) `[@teickner2022;hanson2024]`. 
+functions, and output options. It also provides logical default graphical parameters, including titles, legends, 
+axis labels, color palettes, and the inversion of the x-axis typical of IR spectral images. It does this in contrast to 
+the other `R` packages for FTIR  which focus on spectra statistics or processing, but ignore the graphical requirements 
+of publishing journal articles or reports (i.e. producing plots with normal x-axis orientation, default ggplot2 colour 
+palettes and labels, no support for annotation beyond ggplot functions, etc.) `[@teickner:2022;hanson:2024]`. 
+
 Since `PlotFTIR` produces graphics using `ggplot2`, it enables novice users to produce graphics easily without preventing 
 advanced users from performing customization using ggplot2 or other add-on packages `[@wickham:2016]`. 
 
-`PlotFTIR`
+Graphical functions in `PlotFTIR` are designed to be used in a traditional step-wise or piped fashion, where multiple 
+graphical manipulations can be performed sequentially. 
+
+The documentation for `PlotFTIR` is available in English and French.
 
 # Acknowledgements
 
