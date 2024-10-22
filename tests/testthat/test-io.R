@@ -224,8 +224,8 @@ test_that("plot saves", {
 
 test_that("interface to ir is ok", {
   if (!requireNamespace("ir", quietly = TRUE)) {
-    expect_error(ir_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
-    expect_error(ir_to_df(data.frame("testdata" = LETTERS)), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
+    expect_error(ir_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires ir package installation for this function.", fixed = TRUE)
+    expect_error(ir_to_df(data.frame("testdata" = LETTERS)), regexp = "requires ir package installation for this function.", fixed = TRUE)
     expect_error(plotftir_to_ir(biodiesel), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
     testthat::skip("ir not available for testing interface")
   }
@@ -260,12 +260,12 @@ test_that("interface to ir is ok", {
 
 test_that("Interface to ChemoSpec is ok", {
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
-    expect_error(chemospec_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires `ChemoSpec` package installation for this function.", fixed = TRUE)
-    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires `ChemoSpec` package installation for this function.", fixed = TRUE)
+    expect_error(chemospec_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires ChemoSpec package installation for this function.", fixed = TRUE)
+    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires ChemoSpec package installation for this function.", fixed = TRUE)
   }
 
-  if(!requireNamespace("R.utils", quietly = TRUE)) {
-    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires `R.utils` package installation for this function.", fixed = TRUE)
+  if(!requireNamespace("R.utils", quietly = TRUE) && requireNamespace("ChemoSpec", quietly = TRUE)) {
+    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires R.utils package installation for this function.", fixed = TRUE)
   }
 
   if(!requireNamespace("ChemoSpec", quietly = TRUE) || !requireNamespace("R.utils", quietly = TRUE)){

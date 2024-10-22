@@ -631,7 +631,7 @@ chemospec_to_plotftir <- function(csdata) {
   # Package checks
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
-      i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
+      i = "Install {.pkg ChemoSpec} with {.code install.packages('ChemoSpec')}"
     ))
   }
 
