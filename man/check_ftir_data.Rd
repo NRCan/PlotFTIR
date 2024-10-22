@@ -13,7 +13,7 @@ converted. Can't contain both `absorbance` and `transmittance` column.}
 \item{fn}{The name of the function, used in printing error codes.}
 }
 \value{
-invisible TRUE if ok, typically called for effect of failure.
+invisible ftir data if ok, typically called for effect of failure.
 }
 \description{
 Check provided FTIR dataframe is appropriate for manipulation or plotting

@@ -26,7 +26,10 @@ Suggests:
     ggplot2 (>= 3.0.0),
     ggthemes,
     knitr,
-    rmarkdown
+    rmarkdown,
+    ir,
+    ChemoSpec,
+    R.utils
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://https://github.com/NRCan/PlotFTIR/issues

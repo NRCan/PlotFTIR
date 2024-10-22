@@ -16,7 +16,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
 [![CRAN
 version](https://www.r-pkg.org/badges/version/PlotFTIR)](https://cran.r-project.org/package=PlotFTIR)
-[![](https://img.shields.io/badge/doi--green.svg)](https://doi.org/)
+[![](https://img.shields.io/badge/doi--blue.svg)](https://doi.org/)
 <!-- badges: end -->
 
 ## Introduction and Installation
@@ -26,7 +26,7 @@ production of journal-quality Fourier Transform Infra-Red (FTIR)
 spectral plots in R using ggplot2. The produced plots can be published
 directly or further modified by ggplot2 functions.
 
-You can install the development version of PlotFTIR from
+You can install the development version of `PlotFTIR` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -216,14 +216,26 @@ see: \* `recalculate_baseline()` \* `add_scalar_value()` and
 
 ## Reading Files
 
-PlotFTIR can read .csv and .asp file types. The .csv file should contain
-only one spectra, with columns for `wavenumber` and `absorbance` or
-`transmittance.` The .asp files should be according to the file
+`PlotFTIR` can read .csv and .asp file types. The .csv file should
+contain only one spectra, with columns for `wavenumber` and `absorbance`
+or `transmittance.` The .asp files should be according to the file
 specifications (not modified by the user).
+
+## Interfacing With `ir` and `ChemoSpec` Packages
+
+`PlotFTIR` has functions to interface with the `ir` package by Henning
+Teickner. This package offers complex baseline capabilities, smoothing,
+and more data analysis tools. More information on the `ir` package is
+available in their [documetation (via
+CRAN)](https://cran.r-project.org/package=ir). There is also
+capabilities to interface with `ChemoSpec` package by Bryan Hanson,
+which supports advanced statistics and chemometrics of spectral data.
+More information at [the `ChemoSpec`
+documentation](https://bryanhanson.github.io/ChemoSpec/index.html).
 
 ## Code of Conduct
 
-Please note that the PlotFTIR project is released with a [Contributor
+Please note that the `PlotFTIR` project is released with a [Contributor
 Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project,
 you agree to abide by its terms.
 
@@ -459,15 +471,27 @@ calculer la moyenne des spectres, voir : \* `recalculate_baseline()` \*
 
 ## Lecture des fichiers
 
-PlotFTIR peut lire les fichiers de type .csv et .asp. Le fichier .csv ne
-doit contenir qu’un seul spectre, avec des colonnes pour le `wavenumber`
-et `absorbance` ou `transmittance`. Les fichiers .asp doivent être
-conformes aux spécifications du fichier (non modifiées par
+`PlotFTIR` peut lire les fichiers de type .csv et .asp. Le fichier .csv
+ne doit contenir qu’un seul spectre, avec des colonnes pour le
+`wavenumber` et `absorbance` ou `transmittance`. Les fichiers .asp
+doivent être conformes aux spécifications du fichier (non modifiées par
 l’utilisateur).
+
+## Interfaçage avec le paquetage `ir`
+
+`PlotFTIR` possède des fonctions pour s’interfacer avec le paquet `ir`
+de Teickner. Ce package offre des capacités de lignes de base complexes,
+de lissage, et plus d’outils d’analyse de données. Plus d’informations
+sur le paquet `ir` sont disponibles dans leur \[documetation (via
+CRAN)\] (<https://cran.r-project.org/package=ir>). Il est également
+possible de s’interfacer avec le paquet `ChemoSpec` de Bryan Hanson, qui
+prend en charge les statistiques avancées et la chimiométrie des données
+spectrales. Plus d’informations sur \[la documentation de `ChemoSpec`\]
+(<https://bryanhanson.github.io/ChemoSpec/index.html>).
 
 ## Code de conduite
 
-Veuillez noter que le projet PlotFTIR est publié avec un [Code de
+Veuillez noter que le projet `PlotFTIR` est publié avec un [Code de
 conduite pour le projet](CODE_OF_CONDUCT.md). En contribuant à ce
 projet, vous acceptez de respecter ces conditions.
 
