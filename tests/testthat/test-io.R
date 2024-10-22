@@ -259,17 +259,15 @@ test_that("interface to ir is ok", {
 })
 
 test_that("Interface to ChemoSpec is ok", {
+  if(!requireNamespace("R.utils", quietly = TRUE)) {
+    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires R.utils package installation for this function.", fixed = TRUE)
+    testthat::skip("R.utils not available for testing interface")
+  }
+
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     expect_error(chemospec_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires ChemoSpec package installation for this function.", fixed = TRUE)
     expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires ChemoSpec package installation for this function.", fixed = TRUE)
-  }
-
-  if(!requireNamespace("R.utils", quietly = TRUE)) {
-    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires R.utils package installation for this function.", fixed = TRUE)
-  }
-
-  if(!requireNamespace("ChemoSpec", quietly = TRUE) || !requireNamespace("R.utils", quietly = TRUE)){
-    testthat::skip("ChemoSpec or R.utils not available for testing interface")
+    testthat::skip("ChemoSpec not available for testing interface")
   }
 
   data("SrE.IR", package = "ChemoSpec", envir = environment())
