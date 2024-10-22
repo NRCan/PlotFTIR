@@ -542,14 +542,15 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
 #' }
 plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto", description = "FTIR Study") {
   # Package checks
-  if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
-      i = "Install {.pkg ChemoSpec} with {.code install.packages('ChemoSpec')}"
-    ))
-  }
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} and {.pkg ChemoSpec} requires {.pkg R.utils} package installation for this function.",
                      i = "Install {.pkg R.utils} with {.code install.packages('R.utils')}"
+    ))
+  }
+
+  if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
+      i = "Install {.pkg ChemoSpec} with {.code install.packages('ChemoSpec')}"
     ))
   }
 
