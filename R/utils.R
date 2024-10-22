@@ -61,7 +61,7 @@ NULL
 #' @export
 #' @rdname conversion
 absorbance_to_transmittance <- function(ftir) {
-  check_ftir_data(ftir, "PlotFTIR::absorbance_to_transmittance")
+  ftir <- check_ftir_data(ftir, "PlotFTIR::absorbance_to_transmittance")
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must contain a {.var absorbance} column.")
   }
@@ -76,7 +76,7 @@ absorbance_to_transmittance <- function(ftir) {
 #' @export
 #' @rdname conversion
 transmittance_to_absorbance <- function(ftir) {
-  check_ftir_data(ftir, "PlotFTIR::transmittance_to_absorbance")
+  ftir <- check_ftir_data(ftir, "PlotFTIR::transmittance_to_absorbance")
   if (!("transmittance" %in% colnames(ftir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must contain a {.var transmittance} column.")
   }
@@ -140,9 +140,19 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #'
 #' @param fn The name of the function, used in printing error codes.
 #'
-#' @return invisible TRUE if ok, typically called for effect of failure.
+#' @return invisible ftir data if ok, typically called for effect of failure.
 #' @keywords internal
 check_ftir_data <- function(ftir, fn) {
+  if ("ir" %in% class(ftir)) {
+    cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
+    ftir <- ir_to_plotftir(ftir)
+  }
+
+  if ("Spectra" %in% class(ftir)) {
+    cli::cli_inform("Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure.")
+    ftir <- chemospec_to_plotftir(ftir)
+  }
+
   if (!(is.data.frame(ftir))) {
     cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
   }
@@ -166,5 +176,5 @@ check_ftir_data <- function(ftir, fn) {
     cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
 
-  invisible(TRUE)
+  invisible(ftir)
 }

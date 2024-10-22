@@ -79,7 +79,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
-  check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
+  ftir <- check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
   if (!is.character(plot_title) || length(plot_title) > 2) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
   }
@@ -120,7 +120,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id))) +
-      ggplot2::scale_y_continuous(breaks = scales::breaks_width(0.2))
+      ggplot2::scale_y_continuous()
   } else {
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
@@ -185,7 +185,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   plot_ftir_stacked(biodiesel)
 #' }
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") {
-  check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
@@ -247,7 +247,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   plot_ftir(sample_spectra)
 #' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
-  check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)
