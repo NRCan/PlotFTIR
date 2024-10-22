@@ -170,7 +170,7 @@ check_ftir_data <- function(ftir, fn) {
 }
 
 
-#' `ir` to `PlotFTIR` data format
+#' Convert `ir` to `PlotFTIR` data format
 #'
 #' @description
 #' convert data from the `ir` package to a structure that will work with `PlotFTIR`.
@@ -189,42 +189,42 @@ check_ftir_data <- function(ftir, fn) {
 #' un data.frame compatible avec les fonctions `PlotFTIR`.
 #' @export
 #'
-#' @seealso [ir::ir_get_spectrum()]
-#' @examples
-#' if (requireNamespace("ir", quietly = TRUE)) {
+#' @seealso [ir::ir_get_spectrum()] for information on how ir passes out data.
+#'
+#' @examples if (requireNamespace("ir", quietly = TRUE)) {
 #'   # Convert samples 1 & 4 to PlotFTIR format
-#'   ir_to_plot_ftir(ir::ir_sample_data, c(1, 4))
+#'   ir_to_plotftir(ir::ir_sample_data, c(1, 4))
 #' }
 #'
-ir_to_plot_ftir <- function(ir_data, what = NA) {
+ir_to_plotftir <- function(ir_data, what = NA) {
   # Package Checks
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
     ))
   }
 
   # Param checks
 
-  if (!('ir' %in% class(ir_data))){
-    cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plot_ftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}.")
+  if (!("ir" %in% class(ir_data))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}.")
   }
 
-  if(all(is.na(what))){
+  if (all(is.na(what))) {
     what <- seq_along(ir_data$spectra)
   }
 
-  if(any(is.na(as.numeric(what)))){
-    if(all(what %in% ir_data$id_sample)){
+  if (suppressWarnings(any(is.na(as.numeric(what))))) {
+    if (all(what %in% ir_data$id_sample)) {
       what <- which(what %in% ir_data$id_sample)
     } else {
-      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plot_ftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
+      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
     }
   }
 
-  if(all(is.numeric(what))){
-    if(max(what) > nrow(ir_data) || min(what) < 1){
-      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plot_ftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
+  if (all(is.numeric(what))) {
+    if (max(what) > nrow(ir_data) || min(what) < 1) {
+      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
     }
   }
 
@@ -232,45 +232,45 @@ ir_to_plot_ftir <- function(ir_data, what = NA) {
   return(ir_to_df(ir = ir_data, what = what))
 }
 
-ir_to_df <- function (ir, what) {
-  # Internal function for ir_to_plot_ftir()
+ir_to_df <- function(ir, what) {
+  # Internal function for ir_to_plotftir()
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
     ))
   }
 
   # Param checks
 
-  if (!('ir' %in% class(ir))){
+  if (!("ir" %in% class(ir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}.")
   }
 
   irdata <- ir::ir_get_spectrum(ir, what = what)
-  irdata <- mapply(cbind, irdata, "sample_id"=names(irdata), SIMPLIFY=F)
+  irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = F)
   irdata <- dplyr::bind_rows(irdata) |>
     dplyr::rename("wavenumber" = "x")
 
   intensity <- NA
   ftir <- data.frame()
-  for(s in seq_along(unique(irdata$sample_id))){
+  for (s in seq_along(unique(irdata$sample_id))) {
     id <- unique(irdata$sample_id)[s]
-    sampleir <- irdata[irdata$sample_id == id,]
-    if(max(sampleir$y) < 10){
-      sample_intensity <- 'absorbance'
-      colnames(sampleir)[colnames(sampleir) == 'y'] <- 'absorbance'
+    sampleir <- irdata[irdata$sample_id == id, ]
+    if (max(sampleir$y) < 10) {
+      sample_intensity <- "absorbance"
+      colnames(sampleir)[colnames(sampleir) == "y"] <- "absorbance"
     } else {
-      sample_intensity <- 'transmittance'
-      colnames(sampleir)[colnames(sampleir) == 'y'] <- 'transmittance'
+      sample_intensity <- "transmittance"
+      colnames(sampleir)[colnames(sampleir) == "y"] <- "transmittance"
     }
-    if(is.na(intensity)){
+    if (is.na(intensity)) {
       intensity <- sample_intensity
     }
 
-    if(intensity == sample_intensity) {
+    if (intensity == sample_intensity) {
       ftir <- rbind(ftir, sampleir)
     } else {
-      if(intensity == 'absorbance'){
+      if (intensity == "absorbance") {
         ftir <- rbind(ftir, transmittance_to_absorbance(sampleir))
       } else {
         ftir <- rbind(ftir, absorbance_to_transmittance(sampleir))
@@ -282,10 +282,69 @@ ir_to_df <- function (ir, what) {
 }
 
 
-plotftir_to_ir <- function(ftir){
+#' Convert `PlotFTIR` data to `ir`
+#'
+#' @param ftir
+#'   A data.frame in long format with columns `sample_id`,
+#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
+#'   a `transmittance` column for transmittance plots. The code determines the
+#'   correct y axis units and labels the plot/adjusts the margins appropriately.
+#'
+#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
+#'   colonne `transmittance` pour les tracés de transmission. Le code détermine
+#'   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
+#'   manière appropriée.
+#'
+#' @param metadata
+#'   Additional data to pass to `ir` to include as metadata. Should be structured
+#'   as a data.frame.
+#'
+#'   Données supplémentaires à transmettre à `ir` pour les inclure dans les métadonnées.
+#'   Doit être structuré comme un data.frame.
+#'
+#' @seealso [ir::ir_new_ir()] for information on how ir takes in data.
+#'
+#' @return
+#' an `ir` classed data.frame structured for use in that package.
+#'
+#' un data.frame de classe `ir` structuré pour être utilisé dans ce paquet.
+#' @export
+#'
+#' @examples
+#' if (requireNamespace("ir", quietly = TRUE)) {
+#'   # convert biodiesel to a `ir` object
+#'   plotftir_to_ir(ir::ir_sample_data, c(1, 4))
+#' }
+plotftir_to_ir <- function(ftir, metadata = NA) {
+  # Package checks
+  if (!requireNamespace("ir", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
+    ))
+  }
+
+  # Param Checks
+  check_ftir_data(ftir, "PlotFTIR::plotftir_to_ir")
+  if (!all(is.na(metadata))) {
+    if (!is.data.frame(metadata)) {
+      cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} must be either {.code NA} or a {.cls data.frame}.")
+    }
+  }
+
   samples <- unique(ftir$sample_id)
-  colnames(ftir)[colnames(ftir) == 'wavenumber'] <- 'x'
-  colnames(ftir)[colnames(ftir) %in% c('transmittance', 'absorbance', 'intensity')] <- 'y'
-  ftir_ir <- lapply(samples, FUN =  function(x) ftir[ftir$sample_id == x, c('x', 'y'), ])
-  ir::ir_new_ir(ftir_ir)
+  colnames(ftir)[colnames(ftir) == "wavenumber"] <- "x"
+  colnames(ftir)[colnames(ftir) %in% c("transmittance", "absorbance", "intensity")] <- "y"
+  ftir_ir <- lapply(samples, FUN = function(x) ftir[ftir$sample_id == x, c("x", "y"), ])
+  names(ftir_ir) <- samples
+  if (all(is.na(metadata)) || !is.data.frame(metadata)) {
+    metadata <- data.frame("id_sample" = samples)
+  } else {
+    if (!("id_sample" %in% colnames(metadata))) {
+      metadata$id_sample <- samples
+    }
+  }
+  irdata <- ir::ir_new_ir(spectra = ftir_ir, metadata = metadata)
+
+  return(irdata)
 }
