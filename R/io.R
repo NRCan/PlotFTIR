@@ -302,7 +302,124 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
 }
 
 
+#' Convert `ir` to `PlotFTIR` data format
+#'
+#' @description
+#' convert data from the `ir` package to a structure that will work with `PlotFTIR`.
+#'
+#' convertir les données du paquet `ir` en une structure qui fonctionnera avec `PlotFTIR`.
+#'
+#' @param ir_data data of class `ir` from `ir` package
+#'
+#' données de la classe `ir` du paquet `ir`.
+#' @param what which samples to convert to `PlotFTIR` format. Defaults to all available spectra.
+#'
+#' les échantillons à convertir au format `PlotFTIR`. Par défaut, tous les spectres disponibles
+#'
+#' @return a data.frame compatible with `PlotFTIR` functions
+#'
+#' un data.frame compatible avec les fonctions `PlotFTIR`.
+#' @export
+#'
+#' @seealso [ir::ir_get_spectrum()] for information on how ir passes out data.
+#'
+#' @examples if (requireNamespace("ir", quietly = TRUE)) {
+#'   # Convert samples 1 & 4 to PlotFTIR format
+#'   ir_to_plotftir(ir::ir_sample_data, c(1, 4))
+#' }
+#'
+ir_to_plotftir <- function(ir_data, what = NA) {
+  # Package Checks
+  if (!requireNamespace("ir", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
+                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+    ))
+  }
+
+  # Param checks
+
+  if (!("ir" %in% class(ir_data))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}.")
+  }
+
+  if (all(is.na(what))) {
+    what <- seq_along(ir_data$spectra)
+  }
+
+  if (suppressWarnings(any(is.na(as.numeric(what))))) {
+    if (all(what %in% ir_data$id_sample)) {
+      what <- which(what %in% ir_data$id_sample)
+    } else {
+      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
+    }
+  }
+
+  if (all(is.numeric(what))) {
+    if (max(what) > nrow(ir_data) || min(what) < 1) {
+      cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
+    }
+  }
+
+  # Call function
+  return(ir_to_df(ir = ir_data, what = what))
+}
+
+ir_to_df <- function(ir, what) {
+  # Internal function for ir_to_plotftir()
+  if (!requireNamespace("ir", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
+                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+    ))
+  }
+
+  # Param checks
+
+  if (!("ir" %in% class(ir))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}.")
+  }
+
+  irdata <- ir::ir_get_spectrum(ir, what = what)
+  irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = F)
+  irdata <- dplyr::bind_rows(irdata) |>
+    dplyr::rename("wavenumber" = "x")
+
+  intensity <- NA
+  ftir <- data.frame()
+  for (s in seq_along(unique(irdata$sample_id))) {
+    id <- unique(irdata$sample_id)[s]
+    sampleir <- irdata[irdata$sample_id == id, ]
+    if (max(sampleir$y) < 10) {
+      sample_intensity <- "absorbance"
+      colnames(sampleir)[colnames(sampleir) == "y"] <- "absorbance"
+    } else {
+      sample_intensity <- "transmittance"
+      colnames(sampleir)[colnames(sampleir) == "y"] <- "transmittance"
+    }
+    if (is.na(intensity)) {
+      intensity <- sample_intensity
+    }
+
+    if (intensity == sample_intensity) {
+      ftir <- rbind(ftir, sampleir)
+    } else {
+      if (intensity == "absorbance") {
+        ftir <- rbind(ftir, transmittance_to_absorbance(sampleir))
+      } else {
+        ftir <- rbind(ftir, absorbance_to_transmittance(sampleir))
+      }
+    }
+  }
+
+  return(ftir)
+}
+
+
 #' Convert `PlotFTIR` data to `ir`
+#'
+#' @description
+#' Converts `PlotFTIR` data to that ready to use by the `ir` package.
+#'
+#' Convertit les données `PlotFTIR` en données prêtes à être utilisées par le paquet `ir`.
 #'
 #' @param ftir
 #'   A data.frame in long format with columns `sample_id`,
