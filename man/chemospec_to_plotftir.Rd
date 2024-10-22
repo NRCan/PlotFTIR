@@ -23,7 +23,7 @@ Convertit les données `ChemoSpec` en données prêtes à être utilisées par `
 \examples{
 if (requireNamespace("ChemoSpec", quietly = TRUE)) {
   # convert `chemospec` to PlotFTIR data
-  SrE.IR <- data("SrE.IR", package = "ChemoSpec")
+  data("SrE.IR", package = "ChemoSpec", envir = environment())
   chemospec_to_plotftir(SrE.IR)
 }
 }

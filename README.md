@@ -221,13 +221,17 @@ contain only one spectra, with columns for `wavenumber` and `absorbance`
 or `transmittance.` The .asp files should be according to the file
 specifications (not modified by the user).
 
-## Interfacing With `ir` Package
+## Interfacing With `ir` and `ChemoSpec` Packages
 
-`PlotFTIR` has functions to interface with the `ir` package by Teickner.
-This package offers complex baseline capabilities, smoothing, and more
-data analysis tools. More information on the `ir` package is available
-in their [documetation (via
-CRAN)](https://cran.r-project.org/package=ir).
+`PlotFTIR` has functions to interface with the `ir` package by Henning
+Teickner. This package offers complex baseline capabilities, smoothing,
+and more data analysis tools. More information on the `ir` package is
+available in their [documetation (via
+CRAN)](https://cran.r-project.org/package=ir). There is also
+capabilities to interface with `ChemoSpec` package by Bryan Hanson,
+which supports advanced statistics and chemometrics of spectral data.
+More information at [the `ChemoSpec`
+documentation](https://bryanhanson.github.io/ChemoSpec/index.html).
 
 ## Code of Conduct
 
@@ -479,7 +483,11 @@ l’utilisateur).
 de Teickner. Ce package offre des capacités de lignes de base complexes,
 de lissage, et plus d’outils d’analyse de données. Plus d’informations
 sur le paquet `ir` sont disponibles dans leur \[documetation (via
-CRAN)\] (<https://cran.r-project.org/package=ir>).
+CRAN)\] (<https://cran.r-project.org/package=ir>). Il est également
+possible de s’interfacer avec le paquet `ChemoSpec` de Bryan Hanson, qui
+prend en charge les statistiques avancées et la chimiométrie des données
+spectrales. Plus d’informations sur \[la documentation de `ChemoSpec`\]
+(<https://bryanhanson.github.io/ChemoSpec/index.html>).
 
 ## Code de conduite
 

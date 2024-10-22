@@ -37,7 +37,8 @@ Convertit les données `PlotFTIR` en données prêtes à être utilisées par le
 \examples{
 if (requireNamespace("ir", quietly = TRUE)) {
   # convert biodiesel to a `ir` object
-  plotftir_to_ir(biodiesel, metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
+  plotftir_to_ir(biodiesel,
+    metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
 }
 }
 \seealso{

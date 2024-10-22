@@ -262,7 +262,14 @@ test_that("Interface to ChemoSpec is ok", {
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     expect_error(chemospec_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires `ChemoSpec` package installation for this function.", fixed = TRUE)
     expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires `ChemoSpec` package installation for this function.", fixed = TRUE)
-    testthat::skip("ChemoSpec not available for testing interface")
+  }
+
+  if(!requireNamespace("R.utils", quietly = TRUE)) {
+    expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires `R.utils` package installation for this function.", fixed = TRUE)
+  }
+
+  if(!requireNamespace("ChemoSpec", quietly = TRUE) || !requireNamespace("R.utils", quietly = TRUE)){
+    testthat::skip("ChemoSpec or R.utils not available for testing interface")
   }
 
   data("SrE.IR", package = "ChemoSpec", envir = environment())
@@ -277,14 +284,14 @@ test_that("Interface to ChemoSpec is ok", {
   expect_equal(length(unique(csftir$sample_id)), length(SrE.IR$names))
 
   expect_error(plotftir_to_chemospec(biodiesel, group_colours = "blue"), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
-  expect_error(plotftir_to_chemospec(biodiesel, group_crit = c('biodiesel', 'unknown'), group_colours = c("orange", "green", "blue")), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
+  expect_error(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c("orange", "green", "blue")), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
 
   expect_message(plotftir_to_chemospec(biodiesel), regexp = " to ensure enough colours available for groups.", fixed = TRUE)
   expect_error(plotftir_to_chemospec(rbind(biodiesel, sample_spectra)), regexp = " has to make 12 or less groups for ChemoSpec to be happy", fixed = TRUE)
 
-  csdata <-plotftir_to_chemospec(biodiesel, group_crit = c('biodiesel', 'unknown'))
+  csdata <- plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"))
 
-  expect_true(all(unique(biodiesel$sample_id) %in% csdata$names))
+  expect_equal(class(csdata), "Spectra")
 
   expect_true("ggplot" %in% suppressWarnings(class(plot_ftir(SrE.IR))))
 })

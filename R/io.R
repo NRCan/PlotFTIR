@@ -194,7 +194,7 @@ read_ftir_csv <- function(path, file, sample_name = NA, ...) {
     }
   }
   if (!("absorbance" %in% colnames(input_file)) && !("transmittance" %in% colnames(input_file))) {
-    if (max(input_file[, colnames(input_file) != "wavenumber"]) > 10) {
+    if (max(input_file[, colnames(input_file) != "wavenumber"], na.rm = TRUE) > 10) {
       # must be intensity = transmittance
       cli::cli_inform("{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val transmittance}.")
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "transmittance"
@@ -231,7 +231,7 @@ read_ftir_asp <- function(path, file, sample_name = NA, ...) {
     "sample_id" = sample_name
   )
 
-  if (max(ftir_data$intensity) > 10) {
+  if (max(ftir_data$intensity, na.rm = TRUE) > 10) {
     # must be intensity = transmittance
     cli::cli_inform("{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units.")
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "transmittance"
@@ -334,7 +334,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
   # Package Checks
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
     ))
   }
 
@@ -357,7 +357,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
   }
 
   if (all(is.numeric(what))) {
-    if (max(what) > nrow(ir_data) || min(what) < 1) {
+    if (max(what, na.rm = TRUE) > nrow(ir_data) || min(what) < 1) {
       cli::cli_abort("Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.")
     }
   }
@@ -370,27 +370,26 @@ ir_to_df <- function(ir, what) {
   # Internal function for ir_to_plotftir()
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
     ))
   }
 
   # Param checks
-
   if (!("ir" %in% class(ir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}.")
   }
 
   irdata <- ir::ir_get_spectrum(ir, what = what)
-  irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = F)
-  irdata <- dplyr::bind_rows(irdata) |>
-    dplyr::rename("wavenumber" = "x")
+  irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = FALSE)
+  irdata <- do.call(rbind, irdata)
+  colnames(irdata)[colnames(irdata)=='x'] <- "wavenumber"
 
   intensity <- NA
   ftir <- data.frame()
   for (s in seq_along(unique(irdata$sample_id))) {
     id <- unique(irdata$sample_id)[s]
     sampleir <- irdata[irdata$sample_id == id, ]
-    if (max(sampleir$y) < 10) {
+    if (max(sampleir$y, na.rm = TRUE) < 10) {
       sample_intensity <- "absorbance"
       colnames(sampleir)[colnames(sampleir) == "y"] <- "absorbance"
     } else {
@@ -454,13 +453,14 @@ ir_to_df <- function(ir, what) {
 #' @examples
 #' if (requireNamespace("ir", quietly = TRUE)) {
 #'   # convert biodiesel to a `ir` object
-#'   plotftir_to_ir(biodiesel, metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
+#'   plotftir_to_ir(biodiesel,
+#'     metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
 #' }
 plotftir_to_ir <- function(ftir, metadata = NA) {
   # Package checks
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+      i = "Install {.pkg ir} with {.code install.packages('ir')}"
     ))
   }
 
@@ -514,7 +514,7 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
 #'
 #' Un vecteur de chaînes de caractères. Correspond au paramètre `gr.crit` de [ChemoSpec::files2SpectraObject()].
 #'
-#' @param group_colors
+#' @param group_colours
 #' Group colours. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.cols` parameter.
 #'
 #' Couleurs du groupe. Correspond au paramètre `gr.cols` de [ChemoSpec::files2SpectraObject()].
@@ -540,52 +540,59 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
 #'   # convert biodiesel to a `chemospec` object
 #'   plotftir_to_chemospec(biodiesel)
 #' }
-plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto", description = "FTIR Study"){
+plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto", description = "FTIR Study") {
   # Package checks
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
+      i = "Install {.pkg ChemoSpec} with {.code install.packages('ChemoSpec')}"
+    ))
+  }
+  if (!requireNamespace("R.utils", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} and {.pkg ChemoSpec} requires {.pkg R.utils} package installation for this function.",
+                     i = "Install {.pkg R.utils} with {.code install.packages('R.utils')}"
     ))
   }
 
   # Param Checks
   ftir <- check_ftir_data(ftir, "PlotFTIR::plotftir_to_chemospec")
 
-  if (nchar(description) > 40){
+  if (nchar(description) > 40) {
     cli::cli_alert_warning("{.pkg ChemoSpec} advises that {.param description} is 40 characters or less. Your description is {nchar(description)} characters.")
   }
 
-  if(length(group_colours) == 1){
-    if(!group_colours %in% c('auto', 'Col7', 'Col8', 'Col12')){
+  if (length(group_colours) == 1) {
+    if (!group_colours %in% c("auto", "Col7", "Col8", "Col12")) {
       cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}.")
     }
-  } else if (length(group_colours) != length(group_crit)){
+  } else if (length(group_colours) != length(group_crit)) {
     cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}.")
   }
 
-  if(all(is.na(group_crit))){
+  if (all(is.na(group_crit))) {
     group_crit <- unique(ftir$sample_id)
   }
 
-  if(length(group_crit) > 8 && length(group_crit) <= 12 && length(group_colours) == 1){
+  if (length(group_crit) > 8 && length(group_crit) <= 12 && length(group_colours) == 1) {
     cli::cli_alert_warning("Setting group_colours to {.code 'Col12'} to ensure enough colours available for groups.")
     group_colours <- "Col12"
   }
 
-  if(length(group_crit) > 12) {
+  if (length(group_crit) > 12) {
     cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_crit} has to make 12 or less groups for {.pkg ChemoSpec} to be happy.")
   }
 
   intensity <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
-  withr::with_dir(
-    tempdir(),{
-      for(i in seq_along(unique(ftir$sample_id))){
-        sid <- unique(ftir$sample_id)[i]
-        write.csv(ftir[ftir$sample_id == sid,], file = paste0("./",sid,".csv"))
-      }
-      cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = 'wavenumber',int.unit = intensity, fileExt = ".csv", descrip = description)
-    }
-  )
+  currentwd <- getwd()
+  dir<-tempdir()
+  setwd(dir)
+
+  for (i in seq_along(unique(ftir$sample_id))) {
+    sid <- unique(ftir$sample_id)[i]
+    utils::write.csv(ftir[ftir$sample_id == sid, c('wavenumber', intensity)], file = paste0("./", sid, ".csv"))
+  }
+  cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = "wavenumber", int.unit = intensity, fileExt = ".csv", descrip = description)
+
+  setwd(currentwd)
 
   return(cs_ftir)
 }
@@ -617,14 +624,14 @@ plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto",
 #' @examples
 #' if (requireNamespace("ChemoSpec", quietly = TRUE)) {
 #'   # convert `chemospec` to PlotFTIR data
-#'   SrE.IR <- data("SrE.IR", package = "ChemoSpec")
+#'   data("SrE.IR", package = "ChemoSpec", envir = environment())
 #'   chemospec_to_plotftir(SrE.IR)
 #' }
-chemospec_to_plotftir <- function(csdata){
+chemospec_to_plotftir <- function(csdata) {
   # Package checks
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
-                     i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
+      i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
     ))
   }
 
@@ -638,17 +645,19 @@ chemospec_to_plotftir <- function(csdata){
 
   ftir <- data.frame()
   allunits <- NA
-  for (i in seq_along(csdata$names)){
-    df <- data.frame("wavenumber" = csdata$freq,
-                     "intensity" = csdata$data[i,],
-                     "sample_id" = csdata$names[i])
-    sample_units <- ifelse(max(df$intensity, na.rm = T) > 10, "transmittance", "absorbance")
-    colnames(df)[colnames(df) == "intensity"]<-sample_units
-    if(is.na(allunits)){
+  for (i in seq_along(csdata$names)) {
+    df <- data.frame(
+      "wavenumber" = csdata$freq,
+      "intensity" = csdata$data[i, ],
+      "sample_id" = csdata$names[i]
+    )
+    sample_units <- ifelse(max(df$intensity, na.rm = TRUE) > 10, "transmittance", "absorbance")
+    colnames(df)[colnames(df) == "intensity"] <- sample_units
+    if (is.na(allunits)) {
       all_units <- sample_units
     }
-    if(all_units != sample_units){
-      if(all_units == "absorbance") {
+    if (all_units != sample_units) {
+      if (all_units == "absorbance") {
         df <- transmittance_to_absorbance(df)
       } else {
         df <- absorbance_to_transmittance(df)
@@ -659,4 +668,3 @@ chemospec_to_plotftir <- function(csdata){
 
   return(ftir)
 }
-

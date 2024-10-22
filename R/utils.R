@@ -143,12 +143,12 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' @return invisible ftir data if ok, typically called for effect of failure.
 #' @keywords internal
 check_ftir_data <- function(ftir, fn) {
-  if("ir" %in% class(ftir)){
+  if ("ir" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
     ftir <- ir_to_plotftir(ftir)
   }
 
-  if("Spectra" %in% class(ftir)){
+  if ("Spectra" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure.")
     ftir <- chemospec_to_plotftir(ftir)
   }

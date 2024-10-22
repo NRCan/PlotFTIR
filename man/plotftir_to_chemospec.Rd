@@ -27,13 +27,13 @@ plotftir_to_chemospec(
 
 Un vecteur de chaînes de caractères. Correspond au paramètre `gr.crit` de [ChemoSpec::files2SpectraObject()].}
 
+\item{group_colours}{Group colours. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.cols` parameter.
+
+Couleurs du groupe. Correspond au paramètre `gr.cols` de [ChemoSpec::files2SpectraObject()].}
+
 \item{description}{A description of the experiment. Corresponds to [ChemoSpec::files2SpectraObject()] `descrip` parameter.
 
 Description de l'expérience. Correspond au paramètre `descrip` de [ChemoSpec::files2SpectraObject()].}
-
-\item{group_colors}{Group colours. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.cols` parameter.
-
-Couleurs du groupe. Correspond au paramètre `gr.cols` de [ChemoSpec::files2SpectraObject()].}
 }
 \value{
 A `ChemoSpec` data object
