@@ -51,18 +51,18 @@ a few functions to visualize important elements during exploratory data analysis
 multiple linear baselining functions, and conversion between absorbance and transmittance units (both commonly used in 
 FTIR studies, but each preferred by different scientific applications).
 
-More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir`[@teickner:2022] or 
+More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir` [@teickner:2022] or 
 `ChemoSpec` [@hanson:2024]. To facilitate collaboration between packages, `PlotFTIR` contains functions which can convert 
 data to or from the format specified by these other packages. This permits complex baseline, smoothing, or derivative 
 calculations in `ir`, or detailed statistics such as PCA, clustering, or ANOVA in `ChemoSpec`, and pretty plotting in 
-`PlotFTIR` all in one workflow. 
+`PlotFTIR`, all in one workflow. 
 
 `PlotFTIR` supports annotation of graphics with markers and labels, simple title and legend changes, sample renaming
 functions, and output options. It also provides logical default graphical parameters, including titles, legends, 
 axis labels, color palettes, and the inversion of the x-axis typical of IR spectral images. It does this in contrast to 
 the other `R` packages for FTIR  which focus on spectra statistics or processing, but ignore the graphical requirements 
 of publishing journal articles or reports (i.e. producing plots with normal x-axis orientation, default ggplot2 colour 
-palettes and labels, no support for annotation beyond ggplot functions, etc.) [@teickner:2022;hanson:2024]. 
+palettes and labels, no support for annotation beyond ggplot functions, etc.) [@teickner:2022; @hanson:2024]. 
 
 Since `PlotFTIR` produces graphics using `ggplot2`, it enables novice users to produce graphics easily without preventing 
 advanced users from performing customization using ggplot2 or other add-on packages [@wickham:2016]. Graphical functions 
