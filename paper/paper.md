@@ -2,13 +2,12 @@
 title: 'PlotFTIR: Plotting FTIR Spectra'
 tags:
   - R
-  - Spectroscopy
-  - Visualization
+  - spectroscopy
+  - visualisation
+  - chemometrics
 authors:
   - name: Philip Bulsink
     orcid: 0000-0001-9668-2429
-    affiliation: 1
-  - name: Ulrich Makanda
     affiliation: 1
 affiliations:
  - name: CanmetENERGY-Ottawa, Natural Resources Canada
@@ -73,7 +72,8 @@ The documentation for `PlotFTIR` is available in English and French.
 
 # Acknowledgements
 
-The authors declare no competing financial interest.
+The author would like to thank Ulrich Makanda for translation of documentation and feedback on the manuscript. 
+
+The author declares no competing financial interest.
 
 # References
-
