@@ -27,7 +27,8 @@ Suggests:
     ggthemes,
     knitr,
     rmarkdown,
-    ir
+    ir,
+    ChemoSpec
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://https://github.com/NRCan/PlotFTIR/issues

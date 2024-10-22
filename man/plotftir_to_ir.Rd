@@ -30,12 +30,14 @@ an `ir` classed data.frame structured for use in that package.
 un data.frame de classe `ir` structuré pour être utilisé dans ce paquet.
 }
 \description{
-Convert `PlotFTIR` data to `ir`
+Converts `PlotFTIR` data to that ready to use by the `ir` package.
+
+Convertit les données `PlotFTIR` en données prêtes à être utilisées par le paquet `ir`.
 }
 \examples{
 if (requireNamespace("ir", quietly = TRUE)) {
   # convert biodiesel to a `ir` object
-  plotftir_to_ir(ir::ir_sample_data, c(1, 4))
+  plotftir_to_ir(biodiesel, metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
 }
 }
 \seealso{

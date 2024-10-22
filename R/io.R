@@ -316,9 +316,11 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
 #'
 #' les échantillons à convertir au format `PlotFTIR`. Par défaut, tous les spectres disponibles
 #'
-#' @return a data.frame compatible with `PlotFTIR` functions
+#' @return
+#' a data.frame compatible with `PlotFTIR` functions
 #'
 #' un data.frame compatible avec les fonctions `PlotFTIR`.
+#'
 #' @export
 #'
 #' @seealso [ir::ir_get_spectrum()] for information on how ir passes out data.
@@ -446,12 +448,13 @@ ir_to_df <- function(ir, what) {
 #' an `ir` classed data.frame structured for use in that package.
 #'
 #' un data.frame de classe `ir` structuré pour être utilisé dans ce paquet.
+#'
 #' @export
 #'
 #' @examples
 #' if (requireNamespace("ir", quietly = TRUE)) {
 #'   # convert biodiesel to a `ir` object
-#'   plotftir_to_ir(ir::ir_sample_data, c(1, 4))
+#'   plotftir_to_ir(biodiesel, metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
 #' }
 plotftir_to_ir <- function(ftir, metadata = NA) {
   # Package checks
@@ -462,7 +465,7 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
   }
 
   # Param Checks
-  check_ftir_data(ftir, "PlotFTIR::plotftir_to_ir")
+  ftir <- check_ftir_data(ftir, "PlotFTIR::plotftir_to_ir")
   if (!all(is.na(metadata))) {
     if (!is.data.frame(metadata)) {
       cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} must be either {.code NA} or a {.cls data.frame}.")
@@ -485,3 +488,175 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
 
   return(irdata)
 }
+
+
+#' Convert `PlotFTIR` data to `ChemoSpec` format
+#'
+#' @description
+#' Converts `PlotFTIR` data to that ready to use by the `ChemoSpec` package.
+#'
+#' Convertit les données `PlotFTIR` en données prêtes à être utilisées par le paquet `ChemoSpec`.
+#'
+#' @param ftir
+#'   A data.frame in long format with columns `sample_id`,
+#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
+#'   a `transmittance` column for transmittance plots. The code determines the
+#'   correct y axis units and labels the plot/adjusts the margins appropriately.
+#'
+#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
+#'   colonne `transmittance` pour les tracés de transmission. Le code détermine
+#'   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
+#'   manière appropriée.
+#'
+#' @param group_crit
+#' A vector of character strings. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.crit` parameter.
+#'
+#' Un vecteur de chaînes de caractères. Correspond au paramètre `gr.crit` de [ChemoSpec::files2SpectraObject()].
+#'
+#' @param group_colors
+#' Group colours. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.cols` parameter.
+#'
+#' Couleurs du groupe. Correspond au paramètre `gr.cols` de [ChemoSpec::files2SpectraObject()].
+#'
+#' @param description
+#' A description of the experiment. Corresponds to [ChemoSpec::files2SpectraObject()] `descrip` parameter.
+#'
+#' Description de l'expérience. Correspond au paramètre `descrip` de [ChemoSpec::files2SpectraObject()].
+#'
+#' @return
+#' A `ChemoSpec` data object
+#'
+#' Un objet de données `ChemoSpec`
+#' @export
+#'
+#' @seealso
+#' [ChemoSpec::files2SpectraObject()] for import requirements, and [chemospec_to_plotftir()] for converting to `PlotFTIR` format.
+#'
+#' [ChemoSpec::files2SpectraObject()] pour les conditions d'importation, et [chemospec_to_plotftir()] pour la conversion au format `PlotFTIR`.
+#'
+#' @examples
+#' if (requireNamespace("ChemoSpec", quietly = TRUE) && interactive()) {
+#'   # convert biodiesel to a `chemospec` object
+#'   plotftir_to_chemospec(biodiesel)
+#' }
+plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto", description = "FTIR Study"){
+  # Package checks
+  if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
+                     i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
+    ))
+  }
+
+  # Param Checks
+  ftir <- check_ftir_data(ftir, "PlotFTIR::plotftir_to_chemospec")
+
+  if (nchar(description) > 40){
+    cli::cli_alert_warning("{.pkg ChemoSpec} advises that {.param description} is 40 characters or less. Your description is {nchar(description)} characters.")
+  }
+
+  if(length(group_colours) == 1){
+    if(!group_colours %in% c('auto', 'Col7', 'Col8', 'Col12')){
+      cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}.")
+    }
+  } else if (length(group_colours) != length(group_crit)){
+    cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}.")
+  }
+
+  if(all(is.na(group_crit))){
+    group_crit <- unique(ftir$sample_id)
+  }
+
+  if(length(group_crit) > 8 && length(group_crit) <= 12 && length(group_colours) == 1){
+    cli::cli_alert_warning("Setting group_colours to {.code 'Col12'} to ensure enough colours available for groups.")
+    group_colours <- "Col12"
+  }
+
+  if(length(group_crit) > 12) {
+    cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_crit} has to make 12 or less groups for {.pkg ChemoSpec} to be happy.")
+  }
+
+  intensity <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+  withr::with_dir(
+    tempdir(),{
+      for(i in seq_along(unique(ftir$sample_id))){
+        sid <- unique(ftir$sample_id)[i]
+        write.csv(ftir[ftir$sample_id == sid,], file = paste0("./",sid,".csv"))
+      }
+      cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = 'wavenumber',int.unit = intensity, fileExt = ".csv", descrip = description)
+    }
+  )
+
+  return(cs_ftir)
+}
+
+
+#' `ChemoSec` to `PlotFTIR` conversions
+#'
+#' @description
+#' Converts `ChemoSpec` data to that ready to use by `PlotFTIR`.
+#'
+#' Convertit les données `ChemoSpec` en données prêtes à être utilisées par `PlotFTIR`.
+#'
+#' @param csdata
+#' `ChemoSpec` data to convert to `PlotFTIR.`
+#' Données `ChemoSpec` a convertir à `PlotFTIR`.
+#'
+#' @return
+#' a data.frame compatible with `PlotFTIR` functions
+#'
+#' un data.frame compatible avec les fonctions `PlotFTIR`.
+#'
+#' @export
+#'
+#' @seealso
+#' [ChemoSpec::files2SpectraObject()] for import requirements, and [chemospec_to_plotftir()] for converting to `PlotFTIR` format.
+#'
+#' [ChemoSpec::files2SpectraObject()] pour les conditions d'importation, et [chemospec_to_plotftir()] pour la conversion au format `PlotFTIR`.
+#'
+#' @examples
+#' if (requireNamespace("ChemoSpec", quietly = TRUE)) {
+#'   # convert `chemospec` to PlotFTIR data
+#'   SrE.IR <- data("SrE.IR", package = "ChemoSpec")
+#'   chemospec_to_plotftir(SrE.IR)
+#' }
+chemospec_to_plotftir <- function(csdata){
+  # Package checks
+  if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ChemoSpec} package installation for this function.",
+                     i = "Install {.pkg ir} with {.code install.packages('ChemoSpec')}"
+    ))
+  }
+
+  # Param Checks
+  if (!("Spectra" %in% class(csdata))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} must be of class {.cls Spectra}, produced by the {.pkg ChemoSpec} package. You provided {.obj_type_friendly {csdata}}.")
+  }
+  if (!("wavenumber" %in% csdata$unit)) {
+    cli::cli_abort("Error in {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} must be of IR spectra, this data appears to be from another instrument.")
+  }
+
+  ftir <- data.frame()
+  allunits <- NA
+  for (i in seq_along(csdata$names)){
+    df <- data.frame("wavenumber" = csdata$freq,
+                     "intensity" = csdata$data[i,],
+                     "sample_id" = csdata$names[i])
+    sample_units <- ifelse(max(df$intensity, na.rm = T) > 10, "transmittance", "absorbance")
+    colnames(df)[colnames(df) == "intensity"]<-sample_units
+    if(is.na(allunits)){
+      all_units <- sample_units
+    }
+    if(all_units != sample_units){
+      if(all_units == "absorbance") {
+        df <- transmittance_to_absorbance(df)
+      } else {
+        df <- absorbance_to_transmittance(df)
+      }
+    }
+    ftir <- rbind(ftir, df)
+  }
+
+  return(ftir)
+}
+
