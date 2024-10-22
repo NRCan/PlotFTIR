@@ -300,3 +300,71 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
 
   ggplot2::ggsave(filename = filename, plot = ftir_spectra_plot, ...)
 }
+
+
+#' Convert `PlotFTIR` data to `ir`
+#'
+#' @param ftir
+#'   A data.frame in long format with columns `sample_id`,
+#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
+#'   a `transmittance` column for transmittance plots. The code determines the
+#'   correct y axis units and labels the plot/adjusts the margins appropriately.
+#'
+#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
+#'   colonne `transmittance` pour les tracés de transmission. Le code détermine
+#'   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
+#'   manière appropriée.
+#'
+#' @param metadata
+#'   Additional data to pass to `ir` to include as metadata. Should be structured
+#'   as a data.frame.
+#'
+#'   Données supplémentaires à transmettre à `ir` pour les inclure dans les métadonnées.
+#'   Doit être structuré comme un data.frame.
+#'
+#' @seealso [ir::ir_new_ir()] for information on how ir takes in data.
+#'
+#' @return
+#' an `ir` classed data.frame structured for use in that package.
+#'
+#' un data.frame de classe `ir` structuré pour être utilisé dans ce paquet.
+#' @export
+#'
+#' @examples
+#' if (requireNamespace("ir", quietly = TRUE)) {
+#'   # convert biodiesel to a `ir` object
+#'   plotftir_to_ir(ir::ir_sample_data, c(1, 4))
+#' }
+plotftir_to_ir <- function(ftir, metadata = NA) {
+  # Package checks
+  if (!requireNamespace("ir", quietly = TRUE)) {
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
+                     i = "Install {.pkg ir} with {.code install.packages('ir')}"
+    ))
+  }
+
+  # Param Checks
+  check_ftir_data(ftir, "PlotFTIR::plotftir_to_ir")
+  if (!all(is.na(metadata))) {
+    if (!is.data.frame(metadata)) {
+      cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} must be either {.code NA} or a {.cls data.frame}.")
+    }
+  }
+
+  samples <- unique(ftir$sample_id)
+  colnames(ftir)[colnames(ftir) == "wavenumber"] <- "x"
+  colnames(ftir)[colnames(ftir) %in% c("transmittance", "absorbance", "intensity")] <- "y"
+  ftir_ir <- lapply(samples, FUN = function(x) ftir[ftir$sample_id == x, c("x", "y"), ])
+  names(ftir_ir) <- samples
+  if (all(is.na(metadata)) || !is.data.frame(metadata)) {
+    metadata <- data.frame("id_sample" = samples)
+  } else {
+    if (!("id_sample" %in% colnames(metadata))) {
+      metadata$id_sample <- samples
+    }
+  }
+  irdata <- ir::ir_new_ir(spectra = ftir_ir, metadata = metadata)
+
+  return(irdata)
+}

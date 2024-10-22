@@ -78,37 +78,3 @@ test_that("Plot SampleID extraction is ok", {
     fixed = TRUE
   )
 })
-
-test_that("interface to ir is ok", {
-  if (!requireNamespace("ir", quietly = TRUE)) {
-    expect_error(ir_to_plotftir(data.frame("testdata" = LETTERS)), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
-    expect_error(ir_to_df(data.frame("testdata" = LETTERS)), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
-    expect_error(plotftir_to_ir(biodiesel), regexp = "requires `ir` package installation for this function.", fixed = TRUE)
-    testthat::skip("ir not available for testing interface")
-  }
-
-  irdata <- ir::ir_sample_data
-  # Param checks
-  expect_error(ir_to_plotftir(biodiesel), regexp = "must be of class <ir>, produced by the ir package.", fixed = TRUE)
-  expect_error(ir_to_plotftir(irdata, what = c(1, "two")), regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`", fixed = TRUE)
-  expect_error(ir_to_plotftir(irdata, what = c(1, 1e6)), regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`", fixed = TRUE)
-
-  allir <- ir_to_plotftir(irdata)
-  expect_equal(length(unique(allir$sample_id)), nrow(irdata))
-  expect_equal(colnames(allir), c("wavenumber", "absorbance", "sample_id"))
-
-  irnum <- ir_to_plotftir(irdata, what = c(1:5))
-  expect_equal(length(unique(irnum$sample_id)), 5)
-
-  irname <- ir_to_plotftir(irdata, what = c("GN 11-389", "GN 11-400", "GN 11-407"))
-  expect_equal(length(unique(irname$sample_id)), 3)
-
-  plotir <- plotftir_to_ir(biodiesel)
-
-  expect_equal(nrow(plotir), length(unique(biodiesel$sample_id)))
-
-  plotirmeta <- plotftir_to_ir(biodiesel, data.frame("biodiesel_content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
-
-  expect_equal(nrow(plotirmeta), length(unique(biodiesel$sample_id)))
-  expect_true("biodiesel_content" %in% colnames(plotirmeta))
-})
