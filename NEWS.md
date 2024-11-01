@@ -1,3 +1,3 @@
-# PlotFTIR 0.1.0
+# PlotFTIR 1.0.0
 
 * Initial Release & CRAN Submission.

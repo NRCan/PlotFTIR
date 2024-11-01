@@ -1,7 +1,7 @@
 Package: PlotFTIR
 Type: Package
 Title: Plot FTIR Spectra
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person(given = "Philip", family = "Bulsink", email = "philip.bulsink@nrcan-rncan.gc.ca", 
            role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9668-2429")),
