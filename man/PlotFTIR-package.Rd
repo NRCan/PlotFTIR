@@ -11,7 +11,8 @@ The goal of `PlotFTIR` is to easily and quickly kick-start the production of jou
 \seealso{
 Useful links:
 \itemize{
-  \item Report bugs at \url{https://https://github.com/NRCan/PlotFTIR/issues}
+  \item \url{https://github.com/NRCan/PlotFTIR}
+  \item Report bugs at \url{https://github.com/NRCan/PlotFTIR/issues}
 }
 
 }

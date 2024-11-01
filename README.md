@@ -8,15 +8,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/gh/NRCan/PlotFTIR/graph/badge.svg?token=zrndO2tPwv)](https://codecov.io/gh/NRCan/PlotFTIR)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-
-[![CRAN
-status](https://www.r-pkg.org/badges/version/PlotFTIR)](https://CRAN.R-project.org/package=PlotFTIR)
-[![CRAN
-version](https://www.r-pkg.org/badges/version/PlotFTIR)](https://cran.r-project.org/package=PlotFTIR)
-[![](https://img.shields.io/badge/doi--blue.svg)](https://doi.org/)
 <!-- badges: end -->
 
 ## Introduction and Installation
@@ -250,7 +243,7 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   0.1.0.
+#>   0.1.0, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -258,6 +251,7 @@ citation("PlotFTIR")
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
 #>     note = {R package version 0.1.0},
+#>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
 
@@ -507,7 +501,7 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   0.1.0.
+#>   0.1.0, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -515,5 +509,6 @@ citation("PlotFTIR")
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
 #>     note = {R package version 0.1.0},
+#>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
