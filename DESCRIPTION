@@ -32,4 +32,5 @@ Suggests:
     R.utils
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-BugReports: https://https://github.com/NRCan/PlotFTIR/issues
+BugReports: https://github.com/NRCan/PlotFTIR/issues
+URL: https://github.com/NRCan/PlotFTIR
