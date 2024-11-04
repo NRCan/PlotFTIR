@@ -439,7 +439,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   } else {
     p <- ftir_spectra_plot +
       ggthemes::scale_color_calc(labels = new_ids) +
-      ggplot2::scale_x_reverse(minor_breaks = scales::breaks_width(-200))
+      ggplot2::scale_x_reverse(breaks = scales::breaks_extended())
   }
 
   return(p)

@@ -243,14 +243,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   0.1.0, <https://github.com/NRCan/PlotFTIR>.
+#>   1.0.0, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 0.1.0},
+#>     note = {R package version 1.0.0},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
@@ -501,14 +501,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   0.1.0, <https://github.com/NRCan/PlotFTIR>.
+#>   1.0.0, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 0.1.0},
+#>     note = {R package version 1.0.0},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
