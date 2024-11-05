@@ -226,12 +226,6 @@ which supports advanced statistics and chemometrics of spectral data.
 More information at [the `ChemoSpec`
 documentation](https://bryanhanson.github.io/ChemoSpec/index.html).
 
-## Code of Conduct
-
-Please note that the `PlotFTIR` project is released with a [Contributor
-Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project,
-you agree to abide by its terms.
-
 ## Citing This Package
 
 Please cite this package in any journal articles containing images
@@ -482,12 +476,6 @@ possible de s’interfacer avec le paquet `ChemoSpec` de Bryan Hanson, qui
 prend en charge les statistiques avancées et la chimiométrie des données
 spectrales. Plus d’informations sur \[la documentation de `ChemoSpec`\]
 (<https://bryanhanson.github.io/ChemoSpec/index.html>).
-
-## Code de conduite
-
-Veuillez noter que le projet `PlotFTIR` est publié avec un [Code de
-conduite pour le projet](CODE_OF_CONDUCT.md). En contribuant à ce
-projet, vous acceptez de respecter ces conditions.
 
 ## Citer ce paquet
 
