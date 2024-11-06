@@ -290,6 +290,11 @@ test_that("Interface to ChemoSpec is ok", {
   csdata <- plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"))
 
   expect_equal(class(csdata), "Spectra")
+  expect_type(csdata$data, 'double')
+
+  csdata2 <- chemospec_to_plotftir(csdata)
+
+  expect_equal(csdata2[csdata2$sample_id == "biodiesel_0",], biodiesel[biodiesel$sample_id == "biodiesel_0",], ignore_attr = TRUE)
 
   expect_true("ggplot" %in% suppressWarnings(class(plot_ftir(SrE.IR))))
 })

@@ -32,7 +32,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Read a .csv file from the working directory and call it `sample1`
 #' read_ftir(".", "ftir_sample_1.csv", "sample1")
 #' }
@@ -114,7 +114,7 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Read .csv files from the working directory and call them `sample-1` and `sample-2`
 #' read_ftir(".", c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))
 #' }
@@ -284,7 +284,7 @@ read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' save_plot(plot_ftir(biodiesel), filename = "biodiesel_plot.png")
 #' }
 save_plot <- function(ftir_spectra_plot, filename, ...) {
@@ -589,9 +589,9 @@ plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto",
 
   for (i in seq_along(unique(ftir$sample_id))) {
     sid <- unique(ftir$sample_id)[i]
-    utils::write.csv(ftir[ftir$sample_id == sid, c('wavenumber', intensity)], file = paste0("./", sid, ".csv"))
+    utils::write.csv(ftir[ftir$sample_id == sid, c('wavenumber', intensity)], file = paste0("./", sid, ".csv"), row.names = FALSE)
   }
-  cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = "wavenumber", int.unit = intensity, fileExt = ".csv", descrip = description)
+  cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = "wavenumber", int.unit = intensity, fileExt = ".csv", descrip = description, header = TRUE, sep = ",", dec = ".")
 
   setwd(currentwd)
 

@@ -34,7 +34,7 @@ Reads a provided file and returns a data.frame in the proper format for PlotFTIR
 Lit un fichier fourni et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 }
 \examples{
-\dontrun{
+\donttest{
 # Read a .csv file from the working directory and call it `sample1`
 read_ftir(".", "ftir_sample_1.csv", "sample1")
 }
