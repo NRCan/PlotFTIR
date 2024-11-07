@@ -32,10 +32,13 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' # Read a .csv file from the working directory and call it `sample1`
-#' read_ftir(".", "ftir_sample_1.csv", "sample1")
-#' }
+#' # Writing a temporary file to read later
+#' tf <- tempfile(fileext = ".csv")
+#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
+#'           file = tf, row.names = FALSE)
+#'
+#' # Read the .csv file and call the sample `sample1`
+#' read_ftir(tf, sample_name = "sample1")
 #' @md
 #' @seealso [read_ftir_directory()]
 read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
@@ -114,10 +117,16 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' # Read .csv files from the working directory and call them `sample-1` and `sample-2`
-#' read_ftir(".", c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))
-#' }
+#' # Putting some files in a temp dir to read back into PlotFTIR:
+#' td <- tempdir()
+#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
+#'           file = file.path(td, "ftir_sample_1.csv"), row.names = FALSE)
+#' write.csv(sample_spectra[sample_spectra$sample_id == "toluene", c('wavenumber', 'absorbance')],
+#'           file = file.path(td, "ftir_sample_2.csv"), row.names = FALSE)
+#'
+#' # Read .csv files from the temp directory and call them `sample-1` and `sample-2`
+#' read_ftir_directory(td, c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))
+#'
 #' @md
 #' @seealso [read_ftir()]
 read_ftir_directory <- function(path, files, sample_names = NA, ...) {
@@ -284,8 +293,9 @@ read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' save_plot(plot_ftir(biodiesel), filename = "biodiesel_plot.png")
+#' if(requireNamespace("ggplot2", quietly = TRUE)){
+#'   td <- tempdir()
+#'   save_plot(plot_ftir(biodiesel), filename = file.path(td, "biodiesel_plot.png"))
 #' }
 save_plot <- function(ftir_spectra_plot, filename, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -325,7 +335,8 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
 #'
 #' @seealso [ir::ir_get_spectrum()] for information on how ir passes out data.
 #'
-#' @examples if (requireNamespace("ir", quietly = TRUE)) {
+#' @examples
+#' if (requireNamespace("ir", quietly = TRUE)) {
 #'   # Convert samples 1 & 4 to PlotFTIR format
 #'   ir_to_plotftir(ir::ir_sample_data, c(1, 4))
 #' }

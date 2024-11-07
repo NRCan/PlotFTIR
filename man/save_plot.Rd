@@ -29,7 +29,8 @@ Save FTIR plot object to file. Uses [ggplot2::ggsave()] to save to disk.
 Enregistrer l'objet de tracé IRTF dans un fichier. Utilise [ggplot2::ggsave()] pour enregistrer sur le disque.
 }
 \examples{
-\donttest{
-save_plot(plot_ftir(biodiesel), filename = "biodiesel_plot.png")
+if(requireNamespace("ggplot2", quietly = TRUE)){
+  td <- tempdir()
+  save_plot(plot_ftir(biodiesel), filename = file.path(td, "biodiesel_plot.png"))
 }
 }

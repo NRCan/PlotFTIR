@@ -34,10 +34,13 @@ Reads a provided file and returns a data.frame in the proper format for PlotFTIR
 Lit un fichier fourni et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 }
 \examples{
-\donttest{
-# Read a .csv file from the working directory and call it `sample1`
-read_ftir(".", "ftir_sample_1.csv", "sample1")
-}
+# Writing a temporary file to read later
+tf <- tempfile(fileext = ".csv")
+write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
+          file = tf, row.names = FALSE)
+
+# Read the .csv file and call the sample `sample1`
+read_ftir(tf, sample_name = "sample1")
 }
 \seealso{
 \code{\link[=read_ftir_directory]{read_ftir_directory()}}
