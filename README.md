@@ -10,6 +10,7 @@
 [![R-CMD-check](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Coveralls test coverage](https://coveralls.io/repos/github/NRCan/PlotFTIR/badge.svg)](https://coveralls.io/r/NRCan/PlotFTIR?branch=main)
 <!-- badges: end -->
 
 ## Introduction and Installation
