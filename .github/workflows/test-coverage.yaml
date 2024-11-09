@@ -167,7 +167,7 @@ jobs:
           path: ${{ runner.temp }}/package
 
   finish:
-    needs: test-coverage, test-coverage-hard, test-coverage-half-hard
+    needs: [test-coverage, test-coverage-hard, test-coverage-half-hard]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
