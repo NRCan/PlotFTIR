@@ -153,7 +153,7 @@ test_that("Baseline error checking works", {
   expect_error(recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1), regexp = "or two numeric values if `method = 'minimum'`", fixed = TRUE)
   expect_error(recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1), regexp = "or two numeric values if `method = 'maximum'`", fixed = TRUE)
 
-  expect_error(recalculate_baseline(biodiesel, method = "average", wavenumber_range = 1500, regexp = "must be two numeric values", fixed = TRUE))
+  expect_error(recalculate_baseline(biodiesel, method = "average", wavenumber_range = 1500), regexp = "must be two numeric values", fixed = TRUE)
 })
 
 test_that("Baseline - average works", {

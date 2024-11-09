@@ -134,6 +134,7 @@ jobs:
             any::xml2
             any::testthat
             any::ggplot2
+            any::R.utils
           needs: check
 
       - name: Test coverage

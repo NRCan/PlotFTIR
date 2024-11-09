@@ -233,8 +233,11 @@ test_that("interface to ir is ok", {
   irdata <- ir::ir_sample_data
   # Param checks
   expect_error(ir_to_plotftir(biodiesel), regexp = "must be of class <ir>, produced by the ir package.", fixed = TRUE)
+  expect_error(ir_to_df(biodiesel), regexp = "must be of class <ir>, produced by the ir package.", fixed = TRUE)
   expect_error(ir_to_plotftir(irdata, what = c(1, "two")), regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`", fixed = TRUE)
   expect_error(ir_to_plotftir(irdata, what = c(1, 1e6)), regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`", fixed = TRUE)
+
+  expect_error(plotftir_to_ir(biodiesel, metadata = "bob"), regexp = "must be either `NA` or a <data.frame>")
 
   allir <- ir_to_plotftir(irdata)
   expect_equal(length(unique(allir$sample_id)), nrow(irdata))
@@ -283,6 +286,9 @@ test_that("Interface to ChemoSpec is ok", {
 
   expect_error(plotftir_to_chemospec(biodiesel, group_colours = "blue"), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
   expect_error(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c("orange", "green", "blue")), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
+  expect_message(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c('red', 'blue'), description = "This is a very long description with 57 characters in it."),
+               regexp = "ChemoSpec advises that description is 40 characters or less. Your description is 57 characters", fixed = TRUE)
+
 
   expect_message(plotftir_to_chemospec(biodiesel), regexp = " to ensure enough colours available for groups.", fixed = TRUE)
   expect_error(plotftir_to_chemospec(rbind(biodiesel, sample_spectra)), regexp = " has to make 12 or less groups for ChemoSpec to be happy", fixed = TRUE)
