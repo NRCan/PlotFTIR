@@ -24,9 +24,9 @@ save_plot(ftir_spectra_plot, filename, ...)
 invisible `TRUE`
 }
 \description{
-Save FTIR plot object to file. Uses [ggplot2::ggsave()] to save to disk.
+Save FTIR plot object to file. Uses [ggplot2::ggsave()] to save to disk. Specify a filename ending with `.svg` for vector graphics, if requeste by a journal.
 
-Enregistrer l'objet de tracé IRTF dans un fichier. Utilise [ggplot2::ggsave()] pour enregistrer sur le disque.
+Enregistrer l'objet de tracé IRTF dans un fichier. Utilise [ggplot2::ggsave()] pour enregistrer sur le disque. Spécifier un nom de fichier se terminant par `.svg` pour les graphiques vectoriels, si un journal le demande.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {
