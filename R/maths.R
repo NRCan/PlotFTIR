@@ -1,6 +1,4 @@
 ## Holds functions to do maths on spectra Currently: average like spectra
-##
-## Plans: rebaseline (scalar subtraction, subtract minimum, subtract wavenumber's value, average over wavenumber range)
 
 #' Average FTIR Spectra
 #'
@@ -8,25 +6,31 @@
 #'
 #'   Calcule la moyenne de deux spectres ou plus.
 #'
-#' @param ftir A data.frame of FTIR spectral data including spectra to be converted.
+#' @param ftir A data.frame of FTIR spectral data including spectra to be
+#'   converted.
 #'
-#'   Un data.frame de données spectrales IRTF comprenant les spectres à convertir.
+#'   Un data.frame de données spectrales IRTF comprenant les spectres à
+#'   convertir.
 #'
-#' @param sample_ids A vector of sample IDs to be averaged together. All sample IDs must be present in the `ftir`
-#'   data.frame. If averaging all spectra, provide `NA` or `NULL.`
+#' @param sample_ids A vector of sample IDs to be averaged together. All sample
+#'   IDs must be present in the `ftir` data.frame. If averaging all spectra,
+#'   provide `NA` or `NULL.`
 #'
-#'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être calculée.. Tous les identifiants des
-#'   échantillons doivent être présents dans le data.frame `ftir`. Si la moyenne est calculée pour tous les spectres,
-#'   indiquez `NA` ou `NULL.`
+#'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être
+#'   calculée.. Tous les identifiants des échantillons doivent être présents
+#'   dans le data.frame `ftir`. Si la moyenne est calculée pour tous les
+#'   spectres, indiquez `NA` ou `NULL.`
 #'
-#' @param average_id The name to be used as `sample_id` for the averaged spectra.
+#' @param average_id The name to be used as `sample_id` for the averaged
+#'   spectra.
 #'
 #'   Le nom à utiliser en tant que `sample_id` pour les spectres moyennés.
 #'
-#' @return A data.frame containing the averaged FTIR spectra, with `sample_id` corresponding to the provided `average_id`.
+#' @return A data.frame containing the averaged FTIR spectra, with `sample_id`
+#'   corresponding to the provided `average_id`.
 #'
-#'   Un data.frame contenant les spectres IRTF moyennés, avec `sample_id` correspondant à l'identifiant
-#'   `average_id` fourni.
+#'   Un data.frame contenant les spectres IRTF moyennés, avec `sample_id`
+#'   correspondant à l'identifiant `average_id` fourni.
 #'
 #' @export
 #'
@@ -122,25 +126,30 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
 
 #' Add or Subtract Scalar Value
 #'
-#' @description
-#' Add or subtract a constant (scalar) value to each data point in a FTIR spectra. Shifts the plot up or down on the y axis by the specified amount without any other change.
+#' @description Add or subtract a constant (scalar) value to each data point in
+#' a FTIR spectra. Shifts the plot up or down on the y axis by the specified
+#' amount without any other change.
 #'
-#' Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des y de la valeur spécifiée sans aucune autre modification.
+#' Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données
+#' d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des
+#' y de la valeur spécifiée sans aucune autre modification.
 #'
-#' @param ftir A data.frame of FTIR spectral data including spectra to be shifted.
+#' @param ftir A data.frame of FTIR spectral data including spectra to be
+#'   shifted.
 #'
 #'   Un data.frame de données spectrales IRTF comprenant les spectres à décalés.
 #'
-#' @param sample_ids A vector of sample IDs to be shifted. All sample IDs must be present in the `ftir`
-#'   data.frame. If modifying all spectra, provide NA or NULL.
+#' @param sample_ids A vector of sample IDs to be shifted. All sample IDs must
+#'   be present in the `ftir` data.frame. If modifying all spectra, provide NA
+#'   or NULL.
 #'
-#'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être décalée. Tous les identifiants des
-#'   échantillons doivent être présents dans le data.frame `ftir`. Si modifiez tous les spectres,
-#'   indiquez NA ou NULL.
+#'   Un vecteur d'identifiants d'échantillons dont la moyenne doit être décalée.
+#'   Tous les identifiants des échantillons doivent être présents dans le
+#'   data.frame `ftir`. Si modifiez tous les spectres, indiquez NA ou NULL.
 #'
 #' @param value The numeric value to add or subtract.
 #'
-#' Le valeur numerique d'ajute ou soustrait.
+#'   Le valeur numerique d'ajute ou soustrait.
 #'
 #' @return A data.frame containing the adjusted FTIR spectra.
 #'
@@ -207,60 +216,100 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #' Recalculate Baseline
 #'
 #' @md
-#' @description
-#' It may be desired to shift the baseline signal (0 for absorbance or 100 for transmittance) to aid in plotting the spectra. This can be done for all samples or a subset, using the same shift for all adjusted samples or calculated individually.
+#' @description It may be desired to shift the baseline signal (0 for absorbance
+#'   or 100 for transmittance) to aid in plotting the spectra. This can be done
+#'   for all samples or a subset, using the same shift for all adjusted samples
+#'   or calculated individually.
 #'
-#' Recalculate or shift to baseline/max transmittance can be done following one of a few methods:
+#'   Recalculate or shift to baseline/max transmittance can be done following
+#'   one of a few methods:
 #'  * To shift baseline based on the value at a given wavenumber:
-#'    `recalculate_baseline(ftir, wavenumber_range = [numeric], method = 'point')`
+#'   `recalculate_baseline(ftir, wavenumber_range = [numeric], method =
+#'   'point')`
 #'  * To shift baseline based on the average value across a provided wavenumber range:
-#'    `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]), method = 'average')`
-#'  * To shift baseline based on the value at the single lowest point of absorbance (or highest point of transmittance) across the whole spectra
-#'    `recalculate_baseline(ftir, method = 'minimum')`
-#'  * To shift baseline based on the value at the single lowest point of absorbance (or highest point of transmittance) in a given range
-#'    `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]), method = 'minimum')`
+#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   method = 'average')`
+#'  * To shift baseline based on the value at the single lowest point of absorbance
+#'   (or highest point of transmittance) across the whole spectra
+#'   `recalculate_baseline(ftir, method = 'minimum')`
+#'  * To shift baseline based on the value at the single lowest point of absorbance
+#'   (or highest point of transmittance) in a given range
+#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   method = 'minimum')`
 #'
-#'  To perform the exact same baseline adjustment on all samples, specify `individually = FALSE`. To adjust with a unique determination for each sample, specify `individualy = TRUE`.
+#'   To perform the exact same baseline adjustment on all samples, specify
+#'   `individually = FALSE`. To adjust with a unique determination for each
+#'   sample, specify `individualy = TRUE`.
 #'
 #'
-#' Il peut être souhaitable de décaler le signal de la ligne de base (0 pour l'absorbance ou 100 pour la transmittance) pour faciliter le tracé des spectres. Cela peut être fait pour tous les échantillons ou un sous-ensemble, en utilisant le même décalage pour tous les échantillons ajustés ou calculés individuellement.
+#'   Il peut être souhaitable de décaler le signal de la ligne de base (0 pour
+#'   l'absorbance ou 100 pour la transmittance) pour faciliter le tracé des
+#'   spectres. Cela peut être fait pour tous les échantillons ou un
+#'   sous-ensemble, en utilisant le même décalage pour tous les échantillons
+#'   ajustés ou calculés individuellement.
 #'
-#' Le recalcul ou le décalage de la ligne de base/transmittance maximale peut être effectué en suivant l'une des méthodes suivantes :
+#'   Le recalcul ou le décalage de la ligne de base/transmittance maximale peut
+#'   être effectué en suivant l'une des méthodes suivantes :
 #' * Pour décaler la ligne de base en fonction de la valeur à un nombre d'ondes donné :
-#' `recalculate_baseline(ftir, wavenumber_range = [numeric], method = 'point')`
-#' * Pour décaler la ligne de base en fonction de la valeur moyenne sur un nombre d'ondes donné : #' `recalculate_baseline(ftir) = [numerique], method = 'point')
-#' `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]), method = 'average')`
-#' * Pour décaler la ligne de base en fonction de la valeur du point d'absorbance le plus bas (ou du point de transmittance le plus élevé) sur l'ensemble des spectres.
-#' `recalculate_baseline(ftir, method = 'minimum')`
-#' * Décaler la ligne de base en fonction de la valeur du point d'absorbance le plus bas (ou du point de transmittance le plus élevé) dans une gamme donnée.
-#' `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]), method = 'minimum')`
+#'   `recalculate_baseline(ftir, wavenumber_range = [numeric], method =
+#'   'point')`
+#' * Pour décaler la ligne de base en fonction de la valeur moyenne sur un nombre
+#' d'ondes donné : #' `recalculate_baseline(ftir) = [numerique], method = 'point')
+#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   method = 'average')`
+#' * Pour décaler la ligne de base en fonction de la valeur du point d'absorbance
+#' le plus bas (ou du point de transmittance le plus élevé) sur l'ensemble des spectres.
+#'   `recalculate_baseline(ftir, method = 'minimum')`
+#' * Décaler la ligne de base en fonction de la valeur du point d'absorbance le
+#' plus bas (ou du point de transmittance le plus élevé) dans une gamme donnée.
+#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   method = 'minimum')`
 #'
-#' Pour effectuer exactement le même ajustement de la ligne de base sur tous les échantillons, spécifiez `individually = FALSE`. Pour ajuster avec une détermination unique pour chaque échantillon, spécifiez `individualy = TRUE`.
-#' @param ftir A data.frame of FTIR spectral data including spectra to be baseline adjusted.
+#'   Pour effectuer exactement le même ajustement de la ligne de base sur tous
+#'   les échantillons, spécifiez `individually = FALSE`. Pour ajuster avec une
+#'   détermination unique pour chaque échantillon, spécifiez `individualy =
+#'   TRUE`.
+#' @param ftir A data.frame of FTIR spectral data including spectra to be
+#'   baseline adjusted.
 #'
-#'   Un data.frame de données spectrales IRTF comprenant les spectres à ajuster à la ligne de base.
+#'   Un data.frame de données spectrales IRTF comprenant les spectres à ajuster
+#'   à la ligne de base.
 #'
-#' @param sample_ids A vector of sample IDs to be ajusted All sample IDs must be present in the `ftir`
-#'   data.frame. If ajusting all spectra, provide NA or NULL. Unlisted `sample_id` from `ftir` will be left alone.
+#' @param sample_ids A vector of sample IDs to be adjusted. All sample IDs must
+#'   be present in the `ftir` data.frame. If adjusting all spectra, provide NA
+#'   or NULL. Unlisted `sample_id` from `ftir` will be left alone.
 #'
-#'   Un vecteur d'ID d'échantillons à ajuster Tous les ID d'échantillons doivent être présents dans la base de données `ftir` data.frame. Si l'ajustement concerne tous les spectres, fournir NA ou NULL. Les `sample_id` non listés de `ftir` seront laissés seuls.
+#'   Un vecteur d'ID d'échantillons à ajuster Tous les ID d'échantillons doivent
+#'   être présents dans la base de données `ftir` data.frame. Si l'ajustement
+#'   concerne tous les spectres, fournir NA ou NULL. Les `sample_id` non listés
+#'   de `ftir` seront laissés seuls.
 #'
-#' @param wavenumber_range If specifying a single point wavenumber; a single numeric value. If specifying a wavenumber range, then a vector of two numeric values.
+#' @param wavenumber_range If specifying a single point wavenumber; a single
+#'   numeric value. If specifying a wavenumber range, then a vector of two
+#'   numeric values.
 #'
-#' Si l'on spécifie un nombre d'ondes ponctuel, une seule valeur numérique. Si l'on spécifie un nombre d'ondes, alors un vecteur de deux valeurs numériques.
+#'   Si l'on spécifie un nombre d'ondes ponctuel, une seule valeur numérique. Si
+#'   l'on spécifie un nombre d'ondes, alors un vecteur de deux valeurs
+#'   numériques.
 #'
 #' @param method One of three values:
 #' * If adjusting by the value from a specific wavenumber, provide `"point"`,
 #' * If adjusting by the average from a range, provide `"average"`.
 #' * If adjusting by the minimum (for absorbance) or maximum (for transmittance) from a range or spectra, provide `"minimum"` or `"maximum"`, the appropriate transformation will be performed based on spectra type.
 #'
-#' Une des trois valeurs :
+#'   Une des trois valeurs :
 #' * Si l'ajustement se fait par la valeur d'un nombre d'ondes spécifique, fournir `"point"`,
 #' * Si l'ajustement se fait par la moyenne d'une gamme, fournir `"average"`.
 #' * Si l'ajustement se fait par le minimum (pour l'absorbance) ou le maximum (pour la transmittance) d'une gamme ou de spectres, indiquez `"minimum"` ou `"maximum"`, la transformation appropriée sera effectuée en fonction du type de spectre.
-#' @param individually If adjusting all samples by the same amount, specify `TRUE`, else specify `FALSE` for unique adjustments. When `TRUE`, the smallest absolute individual sample adjustment to achieve baseline will be applied to all named samples.
+#' @param individually If adjusting all samples by the same amount, specify
+#'   `TRUE`, else specify `FALSE` for unique adjustments. When `TRUE`, the
+#'   smallest absolute individual sample adjustment to achieve baseline will be
+#'   applied to all named samples.
 #'
-#' Si vous ajustez tous les échantillons de la même manière, spécifiez `TRUE`, sinon spécifiez `FALSE` pour des ajustements uniques. Si `TRUE`, le plus petit ajustement absolu d'un échantillon individuel pour atteindre la ligne de base sera appliqué à tous les échantillons nommés.
+#'   Si vous ajustez tous les échantillons de la même manière, spécifiez `TRUE`,
+#'   sinon spécifiez `FALSE` pour des ajustements uniques. Si `TRUE`, le plus
+#'   petit ajustement absolu d'un échantillon individuel pour atteindre la ligne
+#'   de base sera appliqué à tous les échantillons nommés.
 #'
 #' @return A data.frame containing the adjusted FTIR spectra.
 #'
@@ -430,6 +479,81 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
         ftir[ftir$sample_id %in% sample_ids, ]$transmittance <- ftir[ftir$sample_id %in% sample_ids, ]$transmittance + adj
       }
     }
+  }
+
+  return(ftir)
+}
+
+
+#' Normalize FTIR spectra
+#'
+#' @description Normalizing spectra restricts the range of absorbance values from
+#' 0 to 1 inclusive. This function shifts and scales spectra to achieve this
+#' absorbance range. It can be applied to a whole spectral set or just one
+#' sample, and across the entire spectra or by normalizing within a wavenumber
+#' region. This function does not operate on transmittance data, it will return
+#' an error.
+#'
+#' La normalisation des spectres restreint la gamme des valeurs d'absorbance de 0
+#' à 1 inclus. Cette fonction décale et met à l'échelle les spectres pour
+#' atteindre cette gamme d'absorbance. Elle peut être appliquée à un ensemble de
+#' spectres ou à un seul échantillon, et sur l'ensemble des spectres ou en
+#' normalisant dans une région de nombre d'ondes. Cette fonction ne fonctionne
+#' pas sur les données de transmittance, elle renverra une erreur.
+#'
+#' @inherit recalculate_baseline params return
+#' @export
+#' @examples
+#' # Normalize all samples in `biodiesel`
+#' normalize_spectra(biodiesel)
+#'
+#' # Normalize just `paper` and `isopropanol` spectra from 4000 to 3100 cm^-1^
+#' normalize_spectra(sample_spectra,
+#'   sample_ids = c("paper", "isopropanol"),
+#'   wavenumber_range = c(4000, 3100))
+normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
+  # Check inputs
+  ftir <- check_ftir_data(ftir, "PlotFTIR::normalize_spectra")
+  if ("transmittance" %in% colnames(ftir)) {
+    # Can't normalize transmission spectra
+    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}: Normalization of Transmittance spectra not supported.",
+      i = "Convert spectra to absorbance using {.fn transmittance_to_absorbance} then try again."
+    ))
+  }
+
+  if (length(sample_ids) <= 1) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
+      sample_ids <- unique(ftir$sample_id)
+    }
+  }
+
+  if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+    ))
+  }
+
+  if (all(is.na(wavenumber_range))) {
+    wavenumber_range <- range(ftir$wavenumber, na.rm = TRUE)
+  }
+
+  if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
+    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2."))
+  }
+  if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
+    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
+      x = "You provided a {.obj_type_friendly wavenumber_range}."
+    ))
+  }
+
+  for (i in seq_along(sample_ids)) {
+    sid <- sample_ids[i]
+    spectra <- ftir[ftir$sample_id == sid, ]
+    spectra_range <- range(spectra[spectra$wavenumber >= min(wavenumber_range) & spectra$wavenumber <= max(wavenumber_range), ]$absorbance)
+    spectra$absorbance <- spectra$absorbance - spectra_range[1]
+    spectra$absorbance <- spectra$absorbance * (1 / (spectra_range[2] - spectra_range[1]))
+    ftir[ftir$sample_id == sid, ]$absorbance <- spectra$absorbance
   }
 
   return(ftir)

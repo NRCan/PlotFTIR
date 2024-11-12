@@ -11,20 +11,22 @@ add_scalar_value(ftir, value, sample_ids = NA)
 subtract_scalar_value(ftir, value, sample_ids = NA)
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including spectra to be shifted.
+\item{ftir}{A data.frame of FTIR spectral data including spectra to be
+  shifted.
 
   Un data.frame de données spectrales IRTF comprenant les spectres à décalés.}
 
 \item{value}{The numeric value to add or subtract.
 
-Le valeur numerique d'ajute ou soustrait.}
+  Le valeur numerique d'ajute ou soustrait.}
 
-\item{sample_ids}{A vector of sample IDs to be shifted. All sample IDs must be present in the `ftir`
-  data.frame. If modifying all spectra, provide NA or NULL.
+\item{sample_ids}{A vector of sample IDs to be shifted. All sample IDs must
+  be present in the `ftir` data.frame. If modifying all spectra, provide NA
+  or NULL.
 
-  Un vecteur d'identifiants d'échantillons dont la moyenne doit être décalée. Tous les identifiants des
-  échantillons doivent être présents dans le data.frame `ftir`. Si modifiez tous les spectres,
-  indiquez NA ou NULL.}
+  Un vecteur d'identifiants d'échantillons dont la moyenne doit être décalée.
+  Tous les identifiants des échantillons doivent être présents dans le
+  data.frame `ftir`. Si modifiez tous les spectres, indiquez NA ou NULL.}
 }
 \value{
 A data.frame containing the adjusted FTIR spectra.
@@ -32,9 +34,13 @@ A data.frame containing the adjusted FTIR spectra.
   Un data.frame contenant les spectres IRTF ajustee.
 }
 \description{
-Add or subtract a constant (scalar) value to each data point in a FTIR spectra. Shifts the plot up or down on the y axis by the specified amount without any other change.
+Add or subtract a constant (scalar) value to each data point in
+a FTIR spectra. Shifts the plot up or down on the y axis by the specified
+amount without any other change.
 
-Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des y de la valeur spécifiée sans aucune autre modification.
+Ajoute ou soustrait une valeur constante (scalaire) à chaque point de données
+d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des
+y de la valeur spécifiée sans aucune autre modification.
 }
 \examples{
 # Add 0.1 to each spectra in biodiesel

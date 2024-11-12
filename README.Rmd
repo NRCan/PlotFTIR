@@ -155,9 +155,10 @@ biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
 
-Functions are provided for adjusting the baseline of spectra, adding or subtracting scalar values from entire spectra, and averaging spectra, see:
+Functions are provided for adjusting the baseline of spectra, adding or subtracting scalar values from entire spectra, normalizing spectra, and averaging spectra, see:
 * `recalculate_baseline()`
 * `add_scalar_value()` and `subtract_scalar_value()`
+* `normalize_spectra()`
 * `average_spectra()`
 
 ## Reading Files
@@ -313,9 +314,10 @@ biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 ```
 
-Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter ou soustraire des valeurs scalaires de spectres entiers, et calculer la moyenne des spectres, voir :
+Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter ou soustraire des valeurs scalaires de spectres entiers, normalisation des spectres, et calculer la moyenne des spectres, voir :
 * `recalculate_baseline()`
 * `add_scalar_value()` et `subtract_scalar_value()`
+* `normalize_spectra()`
 * `average_spectra()`
 
 ## Lecture des fichiers
