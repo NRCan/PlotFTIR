@@ -34,8 +34,9 @@
 #' @examples
 #' # Writing a temporary file to read later
 #' tf <- tempfile(fileext = ".csv")
-#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
-#'           file = tf, row.names = FALSE)
+#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c("wavenumber", "absorbance")],
+#'   file = tf, row.names = FALSE
+#' )
 #'
 #' # Read the .csv file and call the sample `sample1`
 #' read_ftir(tf, sample_name = "sample1")
@@ -119,10 +120,12 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
 #' @examples
 #' # Putting some files in a temp dir to read back into PlotFTIR:
 #' td <- tempdir()
-#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
-#'           file = file.path(td, "ftir_sample_1.csv"), row.names = FALSE)
-#' write.csv(sample_spectra[sample_spectra$sample_id == "toluene", c('wavenumber', 'absorbance')],
-#'           file = file.path(td, "ftir_sample_2.csv"), row.names = FALSE)
+#' write.csv(sample_spectra[sample_spectra$sample_id == "paper", c("wavenumber", "absorbance")],
+#'   file = file.path(td, "ftir_sample_1.csv"), row.names = FALSE
+#' )
+#' write.csv(sample_spectra[sample_spectra$sample_id == "toluene", c("wavenumber", "absorbance")],
+#'   file = file.path(td, "ftir_sample_2.csv"), row.names = FALSE
+#' )
 #'
 #' # Read .csv files from the temp directory and call them `sample-1` and `sample-2`
 #' read_ftir_directory(td, c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))
@@ -293,7 +296,7 @@ read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
 #' @export
 #'
 #' @examples
-#' if(requireNamespace("ggplot2", quietly = TRUE)){
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   td <- tempdir()
 #'   save_plot(plot_ftir(biodiesel), filename = file.path(td, "biodiesel_plot.png"))
 #' }
@@ -393,7 +396,7 @@ ir_to_df <- function(ir, what) {
   irdata <- ir::ir_get_spectrum(ir, what = what)
   irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = FALSE)
   irdata <- do.call(rbind, irdata)
-  colnames(irdata)[colnames(irdata)=='x'] <- "wavenumber"
+  colnames(irdata)[colnames(irdata) == "x"] <- "wavenumber"
 
   intensity <- NA
   ftir <- data.frame()
@@ -465,7 +468,8 @@ ir_to_df <- function(ir, what) {
 #' if (requireNamespace("ir", quietly = TRUE)) {
 #'   # convert biodiesel to a `ir` object
 #'   plotftir_to_ir(biodiesel,
-#'     metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA)))
+#'     metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA))
+#'   )
 #' }
 plotftir_to_ir <- function(ftir, metadata = NA) {
   # Package checks
@@ -555,7 +559,7 @@ plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto",
   # Package checks
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} and {.pkg ChemoSpec} requires {.pkg R.utils} package installation for this function.",
-                     i = "Install {.pkg R.utils} with {.code install.packages('R.utils')}"
+      i = "Install {.pkg R.utils} with {.code install.packages('R.utils')}"
     ))
   }
 
@@ -595,12 +599,13 @@ plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto",
 
   intensity <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
   currentwd <- getwd()
-  dir<-tempdir()
+  on.exit(setwd(currentwd))
+  dir <- tempdir()
   setwd(dir)
 
   for (i in seq_along(unique(ftir$sample_id))) {
     sid <- unique(ftir$sample_id)[i]
-    utils::write.csv(ftir[ftir$sample_id == sid, c('wavenumber', intensity)], file = paste0("./", sid, ".csv"), row.names = FALSE)
+    utils::write.csv(ftir[ftir$sample_id == sid, c("wavenumber", intensity)], file = paste0("./", sid, ".csv"), row.names = FALSE)
   }
   cs_ftir <- ChemoSpec::files2SpectraObject(gr.crit = group_crit, gr.cols = group_colours, freq.unit = "wavenumber", int.unit = intensity, fileExt = ".csv", descrip = description, header = TRUE, sep = ",", dec = ".")
 

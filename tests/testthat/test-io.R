@@ -262,7 +262,7 @@ test_that("interface to ir is ok", {
 })
 
 test_that("Interface to ChemoSpec is ok", {
-  if(!requireNamespace("R.utils", quietly = TRUE)) {
+  if (!requireNamespace("R.utils", quietly = TRUE)) {
     expect_error(plotftir_to_chemospec(biodiesel), regexp = "requires R.utils package installation for this function.", fixed = TRUE)
     testthat::skip("R.utils not available for testing interface")
   }
@@ -286,8 +286,9 @@ test_that("Interface to ChemoSpec is ok", {
 
   expect_error(plotftir_to_chemospec(biodiesel, group_colours = "blue"), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
   expect_error(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c("orange", "green", "blue")), regexp = ", or a vector of the same length as group_crit", fixed = TRUE)
-  expect_message(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c('red', 'blue'), description = "This is a very long description with 57 characters in it."),
-               regexp = "ChemoSpec advises that description is 40 characters or less. Your description is 57 characters", fixed = TRUE)
+  expect_message(plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"), group_colours = c("red", "blue"), description = "This is a very long description with 57 characters in it."),
+    regexp = "ChemoSpec advises that description is 40 characters or less. Your description is 57 characters", fixed = TRUE
+  )
 
 
   expect_message(plotftir_to_chemospec(biodiesel), regexp = " to ensure enough colours available for groups.", fixed = TRUE)
@@ -296,11 +297,11 @@ test_that("Interface to ChemoSpec is ok", {
   csdata <- plotftir_to_chemospec(biodiesel, group_crit = c("biodiesel", "unknown"))
 
   expect_equal(class(csdata), "Spectra")
-  expect_type(csdata$data, 'double')
+  expect_type(csdata$data, "double")
 
   csdata2 <- chemospec_to_plotftir(csdata)
 
-  expect_equal(csdata2[csdata2$sample_id == "biodiesel_0",], biodiesel[biodiesel$sample_id == "biodiesel_0",], ignore_attr = TRUE)
+  expect_equal(csdata2[csdata2$sample_id == "biodiesel_0", ], biodiesel[biodiesel$sample_id == "biodiesel_0", ], ignore_attr = TRUE)
 
   expect_true("ggplot" %in% suppressWarnings(class(plot_ftir(SrE.IR))))
 })
