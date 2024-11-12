@@ -17,3 +17,4 @@
    * Changes to working directory were unavoidable by the interface to ChemoSpec (that package doesn't allow
    for specifying directory when importing files). As such, in-code changes to working directory are protected
    with a call to `on.exit()`. 
+   * This resubmit also adds a function for normalization of spectra per user request (in maths.R), with associated docs.

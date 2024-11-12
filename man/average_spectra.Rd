@@ -7,26 +7,32 @@
 average_spectra(ftir, sample_ids = NA, average_id = "averaged_spectra")
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including spectra to be converted.
+\item{ftir}{A data.frame of FTIR spectral data including spectra to be
+converted.
 
-Un data.frame de données spectrales IRTF comprenant les spectres à convertir.}
+Un data.frame de données spectrales IRTF comprenant les spectres à
+convertir.}
 
-\item{sample_ids}{A vector of sample IDs to be averaged together. All sample IDs must be present in the \code{ftir}
-data.frame. If averaging all spectra, provide \code{NA} or \code{NULL.}
+\item{sample_ids}{A vector of sample IDs to be averaged together. All sample
+IDs must be present in the \code{ftir} data.frame. If averaging all spectra,
+provide \code{NA} or \code{NULL.}
 
-Un vecteur d'identifiants d'échantillons dont la moyenne doit être calculée.. Tous les identifiants des
-échantillons doivent être présents dans le data.frame \code{ftir}. Si la moyenne est calculée pour tous les spectres,
-indiquez \code{NA} ou \code{NULL.}}
+Un vecteur d'identifiants d'échantillons dont la moyenne doit être
+calculée.. Tous les identifiants des échantillons doivent être présents
+dans le data.frame \code{ftir}. Si la moyenne est calculée pour tous les
+spectres, indiquez \code{NA} ou \code{NULL.}}
 
-\item{average_id}{The name to be used as \code{sample_id} for the averaged spectra.
+\item{average_id}{The name to be used as \code{sample_id} for the averaged
+spectra.
 
 Le nom à utiliser en tant que \code{sample_id} pour les spectres moyennés.}
 }
 \value{
-A data.frame containing the averaged FTIR spectra, with \code{sample_id} corresponding to the provided \code{average_id}.
+A data.frame containing the averaged FTIR spectra, with \code{sample_id}
+corresponding to the provided \code{average_id}.
 
-Un data.frame contenant les spectres IRTF moyennés, avec \code{sample_id} correspondant à l'identifiant
-\code{average_id} fourni.
+Un data.frame contenant les spectres IRTF moyennés, avec \code{sample_id}
+correspondant à l'identifiant \code{average_id} fourni.
 }
 \description{
 Calculates an average of two or more spectra.

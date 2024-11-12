@@ -515,3 +515,32 @@ test_that("Baseline - minimum/maximum works", {
     recalculate_baseline(ftir_data, sample_ids = c("A", "B"), method = "maximum", wavenumber_range = c(1030, 1050), individually = FALSE)
   )
 })
+
+
+test_that("Normalization works", {
+  expect_error(normalize_spectra("not_a_dataframe"), regexp = "must be a data frame. You provided a string", fixed = TRUE)
+  expect_error(normalize_spectra(biodiesel, sample_ids = "A"), regexp = "All provided `sample_ids` must be in `ftir` data.", fixed = TRUE)
+  expect_error(normalize_spectra(biodiesel, wavenumber_range = c(1, 2, 3)), regexp = "must be of length 2", fixed = TRUE)
+  expect_error(normalize_spectra(biodiesel, wavenumber_range = c("one", "two")), regexp = "`wavenumber_range` must be `numeric` or `NA`.", fixed = TRUE)
+  expect_error(normalize_spectra(biodiesel, wavenumber_range = c(1, NA)), regexp = "`wavenumber_range` must be `numeric` or `NA`", fixed = TRUE)
+  expect_error(normalize_spectra(biodiesel, wavenumber_range = 1500), regexp = "must be of length 2", fixed = TRUE)
+  expect_error(normalize_spectra(absorbance_to_transmittance(biodiesel)), regexp = "Normalization of Transmittance spectra not supported", fixed = TRUE)
+
+  spectra <- data.frame(
+    wavenumber = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+    absorbance = c(0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9),
+    sample_id = "test"
+  )
+  expect_equal(range(spectra$absorbance), c(0.1, 1.9))
+  expect_equal(range(normalize_spectra(spectra)$absorbance), c(0.0, 1.0))
+  expect_equal(range(normalize_spectra(spectra, wavenumber_range = c(1, 5))$absorbance), c(0.0, 2.25))
+  expect_equal(range(normalize_spectra(spectra, wavenumber_range = c(6, 10))$absorbance), c(-1.25, 1))
+
+  biodiesel_normal <- normalize_spectra(biodiesel, sample_ids = c("diesel_unknown"))
+
+  expect_equal(
+    range(biodiesel[biodiesel$sample_id == "biodiesel_0", "absorbance"]),
+    range(biodiesel_normal[biodiesel_normal$sample_id == "biodiesel_0", "absorbance"])
+  )
+  expect_equal(range(biodiesel_normal[biodiesel_normal$sample_id == "diesel_unknown", "absorbance"]), c(0, 1))
+})

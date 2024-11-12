@@ -36,8 +36,9 @@ Lit un fichier fourni et renvoie un data.frame dans le format approprié pour le
 \examples{
 # Writing a temporary file to read later
 tf <- tempfile(fileext = ".csv")
-write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
-          file = tf, row.names = FALSE)
+write.csv(sample_spectra[sample_spectra$sample_id == "paper", c("wavenumber", "absorbance")],
+  file = tf, row.names = FALSE
+)
 
 # Read the .csv file and call the sample `sample1`
 read_ftir(tf, sample_name = "sample1")

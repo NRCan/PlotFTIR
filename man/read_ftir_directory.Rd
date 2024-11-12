@@ -36,10 +36,12 @@ Lit les fichiers fournis et renvoie un data.frame au format approprié pour les 
 \examples{
 # Putting some files in a temp dir to read back into PlotFTIR:
 td <- tempdir()
-write.csv(sample_spectra[sample_spectra$sample_id == "paper", c('wavenumber', 'absorbance')],
-          file = file.path(td, "ftir_sample_1.csv"), row.names = FALSE)
-write.csv(sample_spectra[sample_spectra$sample_id == "toluene", c('wavenumber', 'absorbance')],
-          file = file.path(td, "ftir_sample_2.csv"), row.names = FALSE)
+write.csv(sample_spectra[sample_spectra$sample_id == "paper", c("wavenumber", "absorbance")],
+  file = file.path(td, "ftir_sample_1.csv"), row.names = FALSE
+)
+write.csv(sample_spectra[sample_spectra$sample_id == "toluene", c("wavenumber", "absorbance")],
+  file = file.path(td, "ftir_sample_2.csv"), row.names = FALSE
+)
 
 # Read .csv files from the temp directory and call them `sample-1` and `sample-2`
 read_ftir_directory(td, c("ftir_sample_1.csv", "ftir_sample_2.csv"), c("sample-1", "sample-2"))

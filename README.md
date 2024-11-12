@@ -10,7 +10,8 @@
 [![R-CMD-check](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NRCan/PlotFTIR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![Coveralls test coverage](https://coveralls.io/repos/github/NRCan/PlotFTIR/badge.svg)](https://coveralls.io/r/NRCan/PlotFTIR?branch=main)
+[![Coveralls test
+coverage](https://coveralls.io/repos/github/NRCan/PlotFTIR/badge.svg)](https://coveralls.io/r/NRCan/PlotFTIR?branch=main)
 <!-- badges: end -->
 
 ## Introduction and Installation
@@ -204,9 +205,10 @@ head(biodiesel_transm)
 ```
 
 Functions are provided for adjusting the baseline of spectra, adding or
-subtracting scalar values from entire spectra, and averaging spectra,
-see: \* `recalculate_baseline()` \* `add_scalar_value()` and
-`subtract_scalar_value()` \* `average_spectra()`
+subtracting scalar values from entire spectra, normalizing spectra, and
+averaging spectra, see: \* `recalculate_baseline()` \*
+`add_scalar_value()` and `subtract_scalar_value()` \*
+`normalize_spectra()` \* `average_spectra()`
 
 ## Reading Files
 
@@ -454,9 +456,11 @@ head(biodiesel_transm)
 ```
 
 Des fonctions sont fournies pour ajuster la ligne de base des spectres,
-ajouter ou soustraire des valeurs scalaires de spectres entiers, et
-calculer la moyenne des spectres, voir : \* `recalculate_baseline()` \*
-`add_scalar_value()` et `subtract_scalar_value()` \* `average_spectra()`
+ajouter ou soustraire des valeurs scalaires de spectres entiers,
+normalisation des spectres, et calculer la moyenne des spectres, voir :
+\* `recalculate_baseline()` \* `add_scalar_value()` et
+`subtract_scalar_value()` \* `normalize_spectra()` \*
+`average_spectra()`
 
 ## Lecture des fichiers
 
