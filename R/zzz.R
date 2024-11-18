@@ -1,3 +1,5 @@
+# nocov start
+
 .onAttach <- function(libname, pkgname) {
   # default to memory cache if not set
   lang_option <- getOption("PlotFTIR.lang")
@@ -21,3 +23,4 @@
     }
   }
 }
+# nocov end
