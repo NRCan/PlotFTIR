@@ -8,7 +8,7 @@ plot_ftir(
   ftir,
   plot_title = "FTIR Spectra",
   legend_title = "Sample ID",
-  lang = "en"
+  lang = NA
 )
 }
 \arguments{
@@ -36,13 +36,20 @@ plot_ftir(
 \item{lang}{An optional argument for language. If set to one of `fr`,
   `french`, `francais`, or `français` the axis and default plot and legend
   titles will change to french. If non-default legend or plot titles are
-  provided they are used as-is. Can also provide `en`, `english` or
-  `anglais`.
+  provided they are used as-is. You can also provide `en`, `english` or
+  `anglais`, or (the default) `NA` will use the default language from user
+  options. To set a permanent default, set `options("PlotFTIR.lang" = "en")`
+  or `options("PlotFTIR.lang" = "fr")` for English or French, respectively.
 
   Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
   ou `Français`, l'axe et les titres par défaut de le tracé et du légende
   seront en français. Si des titres du légende ou de tracé autres que ceux
-  par défaut sont fournis, ils seront utilisés tels quels.}
+  par défaut sont fournis, ils seront utilisés tels quels. Vous pouvez aussi
+  fournir `en`, `english` ou `anglais`, ou (le défaut) `NA` qui utilisera le
+  langue par défaut des options de l'utilisateur. Pour définir une valeur
+  par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
+  `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
+  respectivement.}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend
