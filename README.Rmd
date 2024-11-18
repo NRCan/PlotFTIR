@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 library(magrittr)
+library(PlotFTIR)
 ```
 
 # PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
@@ -33,6 +34,8 @@ You can install the development version of `PlotFTIR` from [GitHub](https://gith
 ``` r
 # install.packages("devtools")
 devtools::install_github("NRCan/PlotFTIR")
+
+library(PlotFTIR)
 ```
 
 ## Example Plots
@@ -40,7 +43,6 @@ devtools::install_github("NRCan/PlotFTIR")
 This is a basic example which shows you how to plot a prepared set of FTIR spectra:
 
 ```{r basic_plot_en}
-library(PlotFTIR)
 biodiesel_plot <- plot_ftir(biodiesel)
 biodiesel_plot
 ```
@@ -177,6 +179,10 @@ Please cite this package in any journal articles containing images produced by w
 citation("PlotFTIR")
 ```
 
+## Language Settings
+
+The package has the ability to change language from English to French for plots on a per-plot basis (call `plot_ftir()` functions with `lang = 'en'` or `lang = 'fr` arguments). In addition, the default language can be set to English or French by setting `options('PlotFTIR.lang' = 'en')` or `options('PlotFTIR.lang' = 'fr')` respectively. This can be added to your .RProfile to persist between R sessions.
+
 ([English](#introduction-and-installation))
 
 ## Introduction et installation
@@ -188,6 +194,8 @@ Vous pouvez installer la version de développement de `PlotFTIR` depuis [GitHub]
 ``` r
 # install.packages("devtools")
 devtools::install_github("NRCan/PlotFTIR")
+
+library(PlotFTIR)
 ```
 
 ## Exemples des tracés
@@ -335,3 +343,7 @@ Veuillez citer ce paquet dans tout article de journal contenant des images produ
 ```{r cite-fr, warning=FALSE}
 citation("PlotFTIR")
 ```
+
+## Paramètres de langue
+
+Le paquetage a la capacité de changer la langue de l'anglais au français pour les tracés sur une base individuelle (appeler les fonctions `plot_ftir()` avec les arguments `lang = 'en'` ou `lang = 'fr'`). De plus, la langue par défaut peut être réglée sur l'anglais ou le français en réglant `options('PlotFTIR.lang' = 'en')` ou `options('PlotFTIR.lang' = 'fr')` respectivement. Ceci peut être ajouté à votre .RProfile pour persister entre les sessions R.

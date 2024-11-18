@@ -35,13 +35,20 @@
 #' @param lang An optional argument for language. If set to one of `fr`,
 #'   `french`, `francais`, or `français` the axis and default plot and legend
 #'   titles will change to french. If non-default legend or plot titles are
-#'   provided they are used as-is. Can also provide `en`, `english` or
-#'   `anglais`.
+#'   provided they are used as-is. You can also provide `en`, `english` or
+#'   `anglais`, or (the default) `NA` will use the default language from user
+#'   options. To set a permanent default, set `options("PlotFTIR.lang" = "en")`
+#'   or `options("PlotFTIR.lang" = "fr")` for English or French, respectively.
 #'
 #'   Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
 #'   ou `Français`, l'axe et les titres par défaut de le tracé et du légende
 #'   seront en français. Si des titres du légende ou de tracé autres que ceux
-#'   par défaut sont fournis, ils seront utilisés tels quels.
+#'   par défaut sont fournis, ils seront utilisés tels quels. Vous pouvez aussi
+#'   fournir `en`, `english` ou `anglais`, ou (le défaut) `NA` qui utilisera le
+#'   langue par défaut des options de l'utilisateur. Pour définir une valeur
+#'   par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
+#'   `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
+#'   respectivement.
 #'
 #' @keywords internal
 #'
@@ -71,7 +78,7 @@
 #'   marqueurs afin de mettre en évidence les nombres d'ondes importants, et
 #'   [move_plot_legend()] pour modifier la position de la légende.
 #'
-plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
+plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
@@ -92,7 +99,15 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
-  lang <- rlang::arg_match(lang, values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"), multiple = FALSE)
+  # if language is provided, check against permitted, else use default from options
+  if(!is.na(lang)){
+    lang <- rlang::arg_match(lang,
+                             values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"),
+                             multiple = FALSE)
+  } else {
+    lang <- getOption("PlotFTIR.lang", default = "en")
+  }
+
   l <- substr(lang, 0, 2)
   if (l == "fr") {
     if (all(plot_title == "FTIR Spectra")) {
@@ -184,7 +199,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #'   plot_ftir_stacked(biodiesel)
 #' }
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = "en") {
+plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = NA) {
   ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
@@ -246,7 +261,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 #'   plot_ftir(sample_spectra)
 #' }
-plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = "en") {
+plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
   ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 

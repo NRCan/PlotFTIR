@@ -27,6 +27,8 @@ You can install the development version of `PlotFTIR` from
 ``` r
 # install.packages("devtools")
 devtools::install_github("NRCan/PlotFTIR")
+
+library(PlotFTIR)
 ```
 
 ## Example Plots
@@ -35,7 +37,6 @@ This is a basic example which shows you how to plot a prepared set of
 FTIR spectra:
 
 ``` r
-library(PlotFTIR)
 biodiesel_plot <- plot_ftir(biodiesel)
 biodiesel_plot
 ```
@@ -240,17 +241,27 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.0.0, <https://github.com/NRCan/PlotFTIR>.
+#>   1.0.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.0.0},
+#>     note = {R package version 1.0.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
+
+## Language Settings
+
+The package has the ability to change language from English to French
+for plots on a per-plot basis (call `plot_ftir()` functions with
+`lang = 'en'` or `lang = 'fr` arguments). In addition, the default
+language can be set to English or French by setting
+`options('PlotFTIR.lang' = 'en')` or `options('PlotFTIR.lang' = 'fr')`
+respectively. This can be added to your .RProfile to persist between R
+sessions.
 
 ([English](#introduction-and-installation))
 
@@ -268,6 +279,8 @@ Vous pouvez installer la version de développement de `PlotFTIR` depuis
 ``` r
 # install.packages("devtools")
 devtools::install_github("NRCan/PlotFTIR")
+
+library(PlotFTIR)
 ```
 
 ## Exemples des tracés
@@ -494,14 +507,24 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.0.0, <https://github.com/NRCan/PlotFTIR>.
+#>   1.0.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.0.0},
+#>     note = {R package version 1.0.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
+
+## Paramètres de langue
+
+Le paquetage a la capacité de changer la langue de l’anglais au français
+pour les tracés sur une base individuelle (appeler les fonctions
+`plot_ftir()` avec les arguments `lang = 'en'` ou `lang = 'fr'`). De
+plus, la langue par défaut peut être réglée sur l’anglais ou le français
+en réglant `options('PlotFTIR.lang' = 'en')` ou
+`options('PlotFTIR.lang' = 'fr')` respectivement. Ceci peut être ajouté
+à votre .RProfile pour persister entre les sessions R.
