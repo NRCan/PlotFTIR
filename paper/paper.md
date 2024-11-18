@@ -3,7 +3,7 @@ title: 'PlotFTIR: Plotting FTIR Spectra'
 tags:
   - R
   - spectroscopy
-  - visualisation
+  - visualization
   - chemometrics
 authors:
   - name: Philip Bulsink
@@ -35,26 +35,26 @@ manipulation capabilities.
 
 # Statement of need
 
-`PlotFTIR` is a package that takes input data and produces high-quality, journal-article ready graphics, *reproducibly* 
-(\autoref{fig:example}). Scientists and researchers often rely on manual processes in software (such as Excel) to produce 
-graphics for journals, but these can be cumbersome and slow, requiring manual changes as new data is produced, or difficult 
-manipulations if the researcher needs to perform even simple manipulations (such as shifting spectra or averaging results).
+`PlotFTIR` is a package that takes input data and produces high-quality, journal-article ready graphics, *reproducibly* and
+with high-quality defaults (\autoref{fig:example}). Scientists and researchers often rely on manual processes in software 
+(such as Excel) to produce graphics for journals, but these can be cumbersome and slow, requiring manual changes as new data 
+is produced, or difficult changes if the researcher needs to perform even simple data manipulation (such as shifting spectra 
+or averaging results). Key components of producing high-quality figures are outlined by Rougier et. al. [@rougier:2014] and 
+the core principle of `PlotFTIR` is to follow these 'simple rules'.
 
 ![Example FTIR spectra produced by `PlotFTIR`.\label{fig:example}](./paper-biodiesel.png)
 
-`PlotFTIR` is designed with a repeatable, object-oriented workflow in mind, enabling reproducible workflows from loading 
-data through saving graphical files. Users can easily run a short script on their data set to produce graphics, or use 
-a few functions to visualize important elements during exploratory data analysis. 
+`PlotFTIR` is designed with a repeatable, data- and plot-oriented workflow in mind, enabling reproducible workflows from 
+loading data through saving graphical files. Users can easily run a short script on their data set to produce graphics, 
+or use a few functions to visualize important elements during exploratory data analysis.
 
 `PlotFTIR` provides simple manipulation functions, such as averaging of spectra, addition/subtraction of scalar values,
-multiple linear baselining functions, and conversion between absorbance and transmittance units (both commonly used in 
-FTIR studies, but each preferred by different scientific applications).
-
-More advanced spectra manipulation or chemometrics may be performed by other packages such as `ir` [@teickner:2022] or 
-`ChemoSpec` [@hanson:2024]. To facilitate collaboration between packages, `PlotFTIR` contains functions which can convert 
-data to or from the format specified by these other packages. This permits complex baseline, smoothing, or derivative 
-calculations in `ir`, or detailed statistics such as PCA, clustering, or ANOVA in `ChemoSpec`, and pretty plotting in 
-`PlotFTIR`, all in one workflow. 
+multiple (linear) baselining functions, and conversion between absorbance and transmittance units (both commonly used in 
+FTIR studies, but each preferred by different scientific applications). More advanced spectra manipulation or chemometrics 
+may be performed by other packages such as `ir` [@teickner:2022] or  `ChemoSpec` [@hanson:2024]. To facilitate collaboration 
+between packages, `PlotFTIR` contains functions which can convert  data to or from the format specified by these other 
+packages. This permits complex baseline, smoothing, or derivative calculations in `ir`, or detailed statistics such as PCA, 
+clustering, or ANOVA in `ChemoSpec`, and finishing with pretty plotting in `PlotFTIR`, all in one workflow. 
 
 `PlotFTIR` supports annotation of graphics with markers and labels, simple title and legend changes, sample renaming
 functions, and output options. It also provides logical default graphical parameters, including titles, legends, 
@@ -63,12 +63,16 @@ the other `R` packages for FTIR  which focus on spectra statistics or processing
 of publishing journal articles or reports (i.e. producing plots with normal x-axis orientation, default ggplot2 colour 
 palettes and labels, no support for annotation beyond ggplot functions, etc.) [@teickner:2022; @hanson:2024]. 
 
-Since `PlotFTIR` produces graphics using `ggplot2`, it enables novice users to produce graphics easily without preventing 
-advanced users from performing customization using ggplot2 or other add-on packages [@wickham:2016]. Graphical functions 
-in `PlotFTIR` are designed to be used in a traditional step-wise or piped fashion, where multiple graphical manipulations 
-can be performed sequentially. 
+While `PlotFTIR` produces graphics using `ggplot2` [@wickham:2016], it enables novice users to produce graphics easily 
+without preventing advanced users from performing customization. Users need not know `ggplot2` functions to produce 
+`PlotFTIR` graphics, instead, the graphical functions in `PlotFTIR` are designed to be used in a traditional step-wise 
+or piped fashion where multiple graphical manipulations can be performed sequentially. However, should users more 
+comfortable with `R` and `ggplot2` feel the need, the entire plot can be modified to their purposes with `ggplot2` 
+manipulations.
 
-The documentation for `PlotFTIR` is available in English and French.
+The documentation for `PlotFTIR` is available in English and French (including having default French labels and titles
+available for plotting by setting `lang = 'fr'` in the initial arguments for the plot). 
+
 
 # Acknowledgements
 
