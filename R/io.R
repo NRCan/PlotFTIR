@@ -155,11 +155,23 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
   }
 
   ftir <- data.frame()
+  intensity <- NA
   for (i in seq_along(files)) {
     tryCatch(
       {
         f <- read_ftir(path, files[i], sample_names[i])
-        ftir <- rbind(ftir, f)
+        if(is.na(intensity)) {
+          intensity <- attr(f, 'intensity')
+        }
+        if(attr(f, 'intensity') == intensity) {
+          ftir <- rbind(fitr, f)
+        } else {
+          if(intensity <- 'absorbance'){
+            ftir <- rbind(ftir, transmittance_to_absorbance(f))
+          } else {
+            ftir <- rbind(ftir, absorbance_to_transmittance(f))
+          }
+        }
       },
       error = function(e) cli::cli_warn(c("{e}", i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."))
     )
@@ -206,14 +218,21 @@ read_ftir_csv <- function(path, file, sample_name = NA, ...) {
     }
   }
   if (!("absorbance" %in% colnames(input_file)) && !("transmittance" %in% colnames(input_file))) {
-    if (max(input_file[, colnames(input_file) != "wavenumber"], na.rm = TRUE) > 10) {
-      # must be intensity = transmittance
+    if (intensity_type(input_file) == 'transmittance') {
       cli::cli_inform("{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val transmittance}.")
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "transmittance"
+      attr(input_file, 'intensity') <- 'transmittance'
     } else {
       # must be intensity = absorbance
       cli::cli_inform("{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val absorbance}.")
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "absorbance"
+      attr(input_file, 'intensity') <- 'absorbance'
+    }
+  } else {
+    if ('absorbance' %in% colnames(input_file)){
+      attr(input_file, 'intensity') <- 'absorbance'
+    } else {
+      attr(input_file, 'intensity') <- 'transmittance'
     }
   }
 
@@ -243,14 +262,16 @@ read_ftir_asp <- function(path, file, sample_name = NA, ...) {
     "sample_id" = sample_name
   )
 
-  if (max(ftir_data$intensity, na.rm = TRUE) > 10) {
+  if (intensity_type(ftir_data) == 'transmittance') {
     # must be intensity = transmittance
     cli::cli_inform("{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units.")
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "transmittance"
+    attr(input_file, 'intensity') <- 'transmittance'
   } else {
     # must be intensity = absorbance
     cli::cli_inform("{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val absorbance} units.")
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "absorbance"
+    attr(input_file, 'intensity') <- 'absorbance'
   }
 
   return(ftir_data)
@@ -403,16 +424,11 @@ ir_to_df <- function(ir, what) {
   for (s in seq_along(unique(irdata$sample_id))) {
     id <- unique(irdata$sample_id)[s]
     sampleir <- irdata[irdata$sample_id == id, ]
-    if (max(sampleir$y, na.rm = TRUE) < 10) {
-      sample_intensity <- "absorbance"
-      colnames(sampleir)[colnames(sampleir) == "y"] <- "absorbance"
-    } else {
-      sample_intensity <- "transmittance"
-      colnames(sampleir)[colnames(sampleir) == "y"] <- "transmittance"
-    }
-    if (is.na(intensity)) {
-      intensity <- sample_intensity
-    }
+    intensity <- intensity_type(sampleir)
+
+    sample_intensity <- intensity
+    colnames(sampleir)[colnames(sampleir) == "y"] <- intensity
+    attr(sampleir, 'intensity') <- intensity
 
     if (intensity == sample_intensity) {
       ftir <- rbind(ftir, sampleir)
@@ -668,8 +684,9 @@ chemospec_to_plotftir <- function(csdata) {
       "intensity" = csdata$data[i, ],
       "sample_id" = csdata$names[i]
     )
-    sample_units <- ifelse(max(df$intensity, na.rm = TRUE) > 10, "transmittance", "absorbance")
+    sample_units <- intensity_type(df)
     colnames(df)[colnames(df) == "intensity"] <- sample_units
+    attr(df, 'intensity') <- sample_units
     if (is.na(allunits)) {
       all_units <- sample_units
     }

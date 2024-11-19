@@ -178,3 +178,24 @@ check_ftir_data <- function(ftir, fn) {
 
   invisible(ftir)
 }
+
+
+#' Intensity Type
+#'
+#' @description Determines if the provided data has intensity type of absorbance or transmittance.
+#'
+#' @inheritParams conversion
+#'
+#' @return a character value 'absorbance' or 'transmittance'
+#' @keywords internal
+intensity_type <- function(ftir){
+  if('absorbance' %in% colnames(ftir)){
+    return('absorbance')
+  } else if ('transmittance' %in% colnames(ftir)){
+    return('transmittance')
+  }
+
+  # implied else
+  ftir <- ftir[,-which(names(ftir) %in% c("wavenumber", "sample_id"))]
+  return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
+}

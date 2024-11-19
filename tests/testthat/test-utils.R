@@ -78,3 +78,11 @@ test_that("Plot SampleID extraction is ok", {
     fixed = TRUE
   )
 })
+
+test_that("Intensity Typing works", {
+  expect_equal(intensity_type(biodiesel), 'absorbance')
+  expect_equal(intensity_type(absorbance_to_transmittance(biodiesel)), 'transmittance')
+  b2 <- biodiesel
+  colnames(biodiesel)[colnames(biodiesel) == 'absorbance'] <- 'intensity'
+  expect_equal(intensity_type(b2), 'absorbance')
+})
