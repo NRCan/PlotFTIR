@@ -61,7 +61,7 @@ NULL
 #' @export
 #' @rdname conversion
 absorbance_to_transmittance <- function(ftir) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::absorbance_to_transmittance")
+  ftir <- check_ftir_data(ftir)
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must contain a {.var absorbance} column.")
   }
@@ -76,7 +76,7 @@ absorbance_to_transmittance <- function(ftir) {
 #' @export
 #' @rdname conversion
 transmittance_to_absorbance <- function(ftir) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::transmittance_to_absorbance")
+  ftir <- check_ftir_data(ftir)
   if (!("transmittance" %in% colnames(ftir))) {
     cli::cli_abort("Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must contain a {.var transmittance} column.")
   }
@@ -132,17 +132,19 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' @title Check FTIR Data
 #'
 #' @description Check provided FTIR dataframe is appropriate for manipulation or plotting
-#' Not typically called directly, but as a function in data integrety check process before
-#' further calculation or plotting happens
+#' Not typically called directly, but as a function in data integrity check process before
+#' further calculation or plotting happens. Sets dataframe attribute "intensity" to
+#' "transmittance" or "absorbance" if not previously set.
 #'
 #' @param ftir A data.frame of FTIR spectral data including column to be
 #'  converted. Can't contain both `absorbance` and `transmittance` column.
 #'
-#' @param fn The name of the function, used in printing error codes.
-#'
-#' @return invisible ftir data if ok, typically called for effect of failure.
+#' @return invisible ftir data if ok
 #' @keywords internal
-check_ftir_data <- function(ftir, fn) {
+check_ftir_data <- function(ftir) {
+  fn <- deparse(sys.calls()[[sys.nframe() - 1]])
+  fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][2])
+
   if ("ir" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
     ftir <- ir_to_plotftir(ftir)
@@ -175,6 +177,13 @@ check_ftir_data <- function(ftir, fn) {
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
+  if (!is.null(attr(ftir, "intensity")) && !(attr(ftir, "intensity") %in% c("absorbance", "transmittance", "normalized absorbance"))) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} has unexpected attributes.")
+  }
+
+  if (is.null(attr(ftir, "intensity"))) {
+    attr(ftir, "intensity") <- intensity_type(ftir)
+  }
 
   invisible(ftir)
 }
@@ -188,14 +197,16 @@ check_ftir_data <- function(ftir, fn) {
 #'
 #' @return a character value 'absorbance' or 'transmittance'
 #' @keywords internal
-intensity_type <- function(ftir){
-  if('absorbance' %in% colnames(ftir)){
-    return('absorbance')
-  } else if ('transmittance' %in% colnames(ftir)){
-    return('transmittance')
+intensity_type <- function(ftir) {
+  # Don't check_ftir_data to avoid a loop
+
+  if ("absorbance" %in% colnames(ftir)) {
+    return("absorbance")
+  } else if ("transmittance" %in% colnames(ftir)) {
+    return("transmittance")
   }
 
   # implied else
-  ftir <- ftir[,-which(names(ftir) %in% c("wavenumber", "sample_id"))]
+  ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
   return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
 }

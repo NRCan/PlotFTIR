@@ -86,7 +86,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ))
   }
 
-  ftir <- check_ftir_data(ftir, "PlotFTIR:::plot_ftir_core")
+  ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
   }
@@ -100,10 +100,11 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   }
 
   # if language is provided, check against permitted, else use default from options
-  if(!is.na(lang)){
+  if (!is.na(lang)) {
     lang <- rlang::arg_match(lang,
-                             values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"),
-                             multiple = FALSE)
+      values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"),
+      multiple = FALSE
+    )
   } else {
     lang <- getOption("PlotFTIR.lang", default = "en")
   }
@@ -118,7 +119,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     }
   }
 
-  mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+  mode <- attr(ftir, "intensity")
 
   if (l == "fr") {
     xtitle <- bquote("Nombre d'onde" ~ (cm^-1))
@@ -200,7 +201,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   plot_ftir_stacked(biodiesel)
 #' }
 plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
@@ -262,7 +263,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   plot_ftir(sample_spectra)
 #' }
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::plot_ftir_stacked")
+  ftir <- check_ftir_data(ftir)
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
   return(p)

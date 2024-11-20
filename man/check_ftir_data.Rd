@@ -4,20 +4,19 @@
 \alias{check_ftir_data}
 \title{Check FTIR Data}
 \usage{
-check_ftir_data(ftir, fn)
+check_ftir_data(ftir)
 }
 \arguments{
 \item{ftir}{A data.frame of FTIR spectral data including column to be
 converted. Can't contain both `absorbance` and `transmittance` column.}
-
-\item{fn}{The name of the function, used in printing error codes.}
 }
 \value{
-invisible ftir data if ok, typically called for effect of failure.
+invisible ftir data if ok
 }
 \description{
 Check provided FTIR dataframe is appropriate for manipulation or plotting
-Not typically called directly, but as a function in data integrety check process before
-further calculation or plotting happens
+Not typically called directly, but as a function in data integrity check process before
+further calculation or plotting happens. Sets dataframe attribute "intensity" to
+"transmittance" or "absorbance" if not previously set.
 }
 \keyword{internal}

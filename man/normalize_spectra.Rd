@@ -57,5 +57,6 @@ normalize_spectra(biodiesel)
 # Normalize just `paper` and `isopropanol` spectra from 4000 to 3100 cm^-1^
 normalize_spectra(sample_spectra,
   sample_ids = c("paper", "isopropanol"),
-  wavenumber_range = c(4000, 3100))
+  wavenumber_range = c(4000, 3100)
+)
 }

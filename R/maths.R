@@ -40,7 +40,7 @@
 #' average_spectra(biodiesel, c("biodiesel_5_0", "biodiesel_B5", "diesel_unknown"))
 #' @md
 average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectra") {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::average_spectra")
+  ftir <- check_ftir_data(ftir)
 
 
   if (length(sample_ids) <= 1) {
@@ -169,7 +169,7 @@ NULL
 #' @rdname add_subtract_scalar
 #' @md
 add_scalar_value <- function(ftir, value, sample_ids = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::add_scalar_value")
+  ftir <- check_ftir_data(ftir)
 
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
@@ -202,7 +202,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
 #' @export
 #' @rdname add_subtract_scalar
 subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::subtract_scalar_value")
+  ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(value)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric.",
@@ -320,7 +320,7 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #' # Adjust the biodiesel spectra to minimum for each sample
 #' recalculate_baseline(biodiesel, method = "minimum", individually = TRUE)
 recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, method = "average", individually = TRUE) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::recalculate_baseline")
+  ftir <- check_ftir_data(ftir)
 
 
   if (length(sample_ids) <= 1) {
@@ -510,10 +510,11 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
 #' # Normalize just `paper` and `isopropanol` spectra from 4000 to 3100 cm^-1^
 #' normalize_spectra(sample_spectra,
 #'   sample_ids = c("paper", "isopropanol"),
-#'   wavenumber_range = c(4000, 3100))
+#'   wavenumber_range = c(4000, 3100)
+#' )
 normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   # Check inputs
-  ftir <- check_ftir_data(ftir, "PlotFTIR::normalize_spectra")
+  ftir <- check_ftir_data(ftir)
   if ("transmittance" %in% colnames(ftir)) {
     # Can't normalize transmission spectra
     cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}: Normalization of Transmittance spectra not supported.",

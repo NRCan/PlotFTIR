@@ -80,9 +80,22 @@ test_that("Plot SampleID extraction is ok", {
 })
 
 test_that("Intensity Typing works", {
-  expect_equal(intensity_type(biodiesel), 'absorbance')
-  expect_equal(intensity_type(absorbance_to_transmittance(biodiesel)), 'transmittance')
+  expect_equal(intensity_type(biodiesel), "absorbance")
+  expect_equal(intensity_type(absorbance_to_transmittance(biodiesel)), "transmittance")
   b2 <- biodiesel
-  colnames(biodiesel)[colnames(biodiesel) == 'absorbance'] <- 'intensity'
-  expect_equal(intensity_type(b2), 'absorbance')
+  colnames(biodiesel)[colnames(biodiesel) == "absorbance"] <- "intensity"
+  expect_equal(intensity_type(b2), "absorbance")
+})
+
+test_that("Checking FTIR data works", {
+  # Most checks are validated in one way or another by the repeated calling of the check_ftir_data()
+  # function in the other code, but we intentionally manually validate here.
+
+  bad_ftir <- biodiesel
+  attr(bad_ftir, "intensity") <- "test"
+  expect_error(check_ftir_data(bad_ftir), "has unexpected attributes.", fixed = TRUE)
+
+  no_attr_ftir <- biodiesel
+  attr(no_attr_ftir, "intensity") <- NULL
+  expect_equal(attr(check_ftir_data(no_attr_ftir), "intensity"), "absorbance")
 })

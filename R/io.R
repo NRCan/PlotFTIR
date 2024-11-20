@@ -160,13 +160,13 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
     tryCatch(
       {
         f <- read_ftir(path, files[i], sample_names[i])
-        if(is.na(intensity)) {
-          intensity <- attr(f, 'intensity')
+        if (is.na(intensity)) {
+          intensity <- attr(f, "intensity")
         }
-        if(attr(f, 'intensity') == intensity) {
-          ftir <- rbind(fitr, f)
+        if (attr(f, "intensity") == intensity) {
+          ftir <- rbind(ftir, f)
         } else {
-          if(intensity <- 'absorbance'){
+          if (intensity <- "absorbance") {
             ftir <- rbind(ftir, transmittance_to_absorbance(f))
           } else {
             ftir <- rbind(ftir, absorbance_to_transmittance(f))
@@ -218,21 +218,21 @@ read_ftir_csv <- function(path, file, sample_name = NA, ...) {
     }
   }
   if (!("absorbance" %in% colnames(input_file)) && !("transmittance" %in% colnames(input_file))) {
-    if (intensity_type(input_file) == 'transmittance') {
+    if (intensity_type(input_file) == "transmittance") {
       cli::cli_inform("{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val transmittance}.")
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "transmittance"
-      attr(input_file, 'intensity') <- 'transmittance'
+      attr(input_file, "intensity") <- "transmittance"
     } else {
       # must be intensity = absorbance
       cli::cli_inform("{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val absorbance}.")
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "absorbance"
-      attr(input_file, 'intensity') <- 'absorbance'
+      attr(input_file, "intensity") <- "absorbance"
     }
   } else {
-    if ('absorbance' %in% colnames(input_file)){
-      attr(input_file, 'intensity') <- 'absorbance'
+    if ("absorbance" %in% colnames(input_file)) {
+      attr(input_file, "intensity") <- "absorbance"
     } else {
-      attr(input_file, 'intensity') <- 'transmittance'
+      attr(input_file, "intensity") <- "transmittance"
     }
   }
 
@@ -262,16 +262,16 @@ read_ftir_asp <- function(path, file, sample_name = NA, ...) {
     "sample_id" = sample_name
   )
 
-  if (intensity_type(ftir_data) == 'transmittance') {
+  if (intensity_type(ftir_data) == "transmittance") {
     # must be intensity = transmittance
     cli::cli_inform("{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units.")
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "transmittance"
-    attr(input_file, 'intensity') <- 'transmittance'
+    attr(input_file, "intensity") <- "transmittance"
   } else {
     # must be intensity = absorbance
     cli::cli_inform("{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val absorbance} units.")
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "absorbance"
-    attr(input_file, 'intensity') <- 'absorbance'
+    attr(input_file, "intensity") <- "absorbance"
   }
 
   return(ftir_data)
@@ -428,7 +428,7 @@ ir_to_df <- function(ir, what) {
 
     sample_intensity <- intensity
     colnames(sampleir)[colnames(sampleir) == "y"] <- intensity
-    attr(sampleir, 'intensity') <- intensity
+    attr(sampleir, "intensity") <- intensity
 
     if (intensity == sample_intensity) {
       ftir <- rbind(ftir, sampleir)
@@ -496,7 +496,7 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
   }
 
   # Param Checks
-  ftir <- check_ftir_data(ftir, "PlotFTIR::plotftir_to_ir")
+  ftir <- check_ftir_data(ftir)
   if (!all(is.na(metadata))) {
     if (!is.data.frame(metadata)) {
       cli::cli_abort("Error in {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} must be either {.code NA} or a {.cls data.frame}.")
@@ -586,7 +586,7 @@ plotftir_to_chemospec <- function(ftir, group_crit = NA, group_colours = "auto",
   }
 
   # Param Checks
-  ftir <- check_ftir_data(ftir, "PlotFTIR::plotftir_to_chemospec")
+  ftir <- check_ftir_data(ftir)
 
   if (nchar(description) > 40) {
     cli::cli_alert_warning("{.pkg ChemoSpec} advises that {.param description} is 40 characters or less. Your description is {nchar(description)} characters.")
@@ -686,7 +686,7 @@ chemospec_to_plotftir <- function(csdata) {
     )
     sample_units <- intensity_type(df)
     colnames(df)[colnames(df) == "intensity"] <- sample_units
-    attr(df, 'intensity') <- sample_units
+    attr(df, "intensity") <- sample_units
     if (is.na(allunits)) {
       all_units <- sample_units
     }
