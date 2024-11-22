@@ -127,12 +127,16 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     xtitle <- bquote("Wavenumber" ~ (cm^-1))
   }
 
-  ytitle <- ifelse(mode == "absorbance", "Absorbance", "% Transmittance")
+  ytitle <- ifelse(mode %in% c("absorbance", "normalized absorbance"), "Absorbance", "% Transmittance")
+
+  if (grepl("normalized", mode)) {
+    ytitle <- paste("Normalized", ytitle)
+  }
 
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
 
-  if (mode == "absorbance") {
+  if (grepl("absorbance", mode)) {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id))) +
@@ -154,7 +158,7 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     ) +
     ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
     ggplot2::theme_light() +
-    ggplot2::scale_x_reverse(breaks = scales::breaks_extended())
+    ggplot2::scale_x_reverse(breaks = scales::breaks_extended(), expand = ggplot2::expansion())
 
   if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir$sample_id)) > 15) {
     p <- p +
@@ -162,6 +166,12 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   } else {
     p <- p +
       ggthemes::scale_color_calc()
+  }
+
+  if (grepl("normalized", mode)) {
+    p <- p + ggplot2::theme(
+      axis.text.y = ggplot2::element_blank()
+    )
   }
 
   return(p)
@@ -210,14 +220,14 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
     cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.")
   }
 
-  mode <- ifelse("absorbance" %in% colnames(ftir), "absorbance", "transmittance")
+  mode <- attr(ftir, "intensity")
 
   # Stack FTIR traces by 10% of range number of unique samples
   stack_samples <- unique(ftir$sample_id)
   nsamples <- length(unique(stack_samples))
 
   if (nsamples > 1) {
-    if (mode == "absorbance") {
+    if (grepl("absorbance", mode)) {
       # Transmittance gets an offset of stack_offset % against a percentage scale
       # for absorbance, most signals max out around 2 so that's the range.
       stack_offset <- (stack_offset / 100) * 2.0
@@ -228,7 +238,7 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
     )
 
     ftir <- merge(x = ftir, y = offset, by = "sample_id")
-    if (mode == "absorbance") {
+    if (grepl("absorbance", mode)) {
       ftir$absorbance <- ftir$absorbance + ftir$offset
     } else {
       ftir$transmittance <- ftir$transmittance + ftir$offset
@@ -238,9 +248,11 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
-  p <- p + ggplot2::theme(
-    axis.text.y = ggplot2::element_blank()
-  )
+  p <- p +
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_blank()
+    ) +
+    ggplot2::coord_cartesian(ylim = c(0, NA))
 
   return(p)
 }
