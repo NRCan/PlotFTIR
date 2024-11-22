@@ -174,6 +174,8 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     )
   }
 
+  attr(p, "intensity") <- attr(ftir, "intensity")
+
   return(p)
 }
 
@@ -248,11 +250,10 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
 
-  p <- p +
-    ggplot2::theme(
-      axis.text.y = ggplot2::element_blank()
-    ) +
-    ggplot2::coord_cartesian(ylim = c(0, NA))
+  p <- p + ggplot2::theme(axis.text.y = ggplot2::element_blank())
+  suppressMessages(p <- p + ggplot2::coord_cartesian(ylim = c(0, NA)))
+
+  attr(p, "spectra_style") <- "stacked"
 
   return(p)
 }
@@ -277,6 +278,8 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
   ftir <- check_ftir_data(ftir)
   p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
+
+  attr(p, "spectra_style") <- "normal"
 
   return(p)
 }
