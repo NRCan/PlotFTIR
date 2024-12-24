@@ -19,11 +19,11 @@ affiliations:
 
 # Summary
 
-Chemicals can be identified by the characteristics of their internal (inter-atomic) bonds. Determining the properties 
-of these bonds is commonly performed by infra-red analysis, where the bonds interact with light of specific energies. 
-When infra-red (lower energy) light is shone on a chemical sample, the different bonds absorb more or less light depending
-on the frequency (wavelength) of the light. Bonds between different atoms, and in different materials have characteristic
-absorbance values and can be used to confirm the identity of a chemical or the concentration of a component in a mixture.
+Chemicals can be identified by the characteristic vibrating of their internal atomic bonds. These bonds interact with light of specific energies. 
+When infra-red (lower energy) light is shone on a chemical sample, the different bonds absorb the energy from the light if the frequency
+matches the bond vibrational energy. By measuring the absorption of light at each wavelength, a spectrum is collected that acts like a molecular 
+fingerprint. Different molecules, with their different bonds, have unique spectra. If the chemical or mixture being analyzed is of unknown composition, 
+characteristics of it can be  deduced by the different peaks in the spectra.
 
 These infra-red absorbance measurements are commonly performed on Fourier Transform Infra-red (FTIR) instruments. Scientists
 and researchers may compare different FTIR spectra to observe changes in concentration of components, or changes in the
