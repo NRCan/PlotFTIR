@@ -159,7 +159,7 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
   for (i in seq_along(files)) {
     tryCatch(
       {
-        f <- read_ftir(path, files[i], sample_names[i])
+        f <- read_ftir(path, files[i], sample_names[i], ...)
         if (is.na(intensity)) {
           intensity <- attr(f, "intensity")
         }

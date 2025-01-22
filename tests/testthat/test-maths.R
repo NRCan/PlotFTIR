@@ -655,3 +655,19 @@ test_that("conversion between units works", {
     fixed = TRUE
   )
 })
+
+test_that("Normalization carries thorugh other functions", {
+  biodiesel_normal <- normalize_spectra(biodiesel, sample_ids = c("diesel_unknown"))
+
+  expect_equal(
+    range(biodiesel[biodiesel$sample_id == "biodiesel_0", "absorbance"]),
+    range(biodiesel_normal[biodiesel_normal$sample_id == "biodiesel_0", "absorbance"])
+  )
+  expect_equal(range(biodiesel_normal[biodiesel_normal$sample_id == "diesel_unknown", "absorbance"]), c(0, 1))
+  expect_equal(attr(biodiesel_normal, "intensity"), "normalized absorbance")
+
+  expect_equal(attr(add_scalar_value(biodiesel_normal, 1), "intensity"), "normalized absorbance")
+  expect_equal(attr(recalculate_baseline(biodiesel_normal, method = "point", wavenumber_range = 3900), "intensity"), "normalized absorbance")
+
+  expect_equal(attr(absorbance_to_transmittance(biodiesel_normal), "intensity"), "normalized transmittance")
+})

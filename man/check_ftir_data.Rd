@@ -4,7 +4,7 @@
 \alias{check_ftir_data}
 \title{Check FTIR Data}
 \usage{
-check_ftir_data(ftir, gentle = FALSE)
+check_ftir_data(ftir)
 }
 \arguments{
 \item{ftir}{A data.frame of FTIR spectral data including column to be

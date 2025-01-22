@@ -324,7 +324,6 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, method = "average", individually = TRUE) {
   ftir <- check_ftir_data(ftir)
 
-
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
       sample_ids <- unique(ftir$sample_id)
