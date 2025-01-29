@@ -102,6 +102,8 @@ rename_plot_sample_ids(biodiesel_plot, new_names)
 
 A helper function for the renaming is provided (see the documentation for `get_plot_sample_ids()`).
 
+Specific sample(s) can be highlighted (other samples greyed out) by calling `highlight_sample()`. 
+
 Finally, plot legends are customizable (for basic changes) through a helper function `move_plot_legend()`.
 
 ## Data Sets
@@ -262,6 +264,8 @@ rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
 ```
 
 Une fonction d'assistance pour le changement de nom est fournie (voir la documentation pour `get_plot_sample_ids()`).
+
+Un ou plusieurs échantillons spécifiques peuvent être mis en évidence (les autres échantillons étant grisés) en appelant `highlight_sample()`. 
 
 Enfin, les légendes des tracés sont personnalisables (pour les modifications de base) via une fonction d'assistance `move_plot_legend()`.
 
