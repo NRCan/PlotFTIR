@@ -321,3 +321,57 @@ test_that("legend moving is ok", {
     ggplot2::ggplot_build(moved_legend_plot)$layout$panel_params[[1]]$y.range
   )
 })
+
+test_that("highlighting is ok", {
+  # Ensure caught failure if no ggplot2, then skip remainder of tests
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+    expect_error(
+      highlight_sample(123, "test"),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+
+  if (!require("gghighlight", quietly = TRUE)) {
+    expect_error(
+      highlight_sample(biodiesel_plot, "test"),
+      "requires gghighlight package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip("gghighlight not available for testing manipulations")
+  }
+
+  # test arg checks.
+
+  expect_error(highlight_sample("abc", "sample"),
+               "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+               fixed = TRUE
+  )
+
+  expect_error(highlight_sample(biodiesel_plot, "sample"),
+               "All provided `sample_ids` must be in the `ftir_spectra_plot`.",
+               fixed = TRUE
+  )
+
+  # Plots should come out mostly the same.
+  highlighted_plot <- highlight_sample(biodiesel_plot, "diesel_unknown")
+
+  expect_equal(biodiesel_plot$labels$title, highlighted_plot$labels$title)
+
+  expect_equal(
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
+    ggplot2::ggplot_build(highlighted_plot)$layout$panel_params[[1]]$x.range
+  )
+
+  expect_equal(
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
+    ggplot2::ggplot_build(highlighted_plot)$layout$panel_params[[1]]$y.range
+  )
+})

@@ -19,13 +19,14 @@ Imports:
     cli,
     rlang,
     scales
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.3)
 Suggests: 
     testthat (>= 3.0.0),
     withr,
     ggplot2 (>= 3.0.0),
+    gghighlight,
     ggthemes,
     knitr,
     rmarkdown,
