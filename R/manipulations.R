@@ -53,11 +53,11 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be a numeric vector of length two.")
   }
 
-  if (any(zoom_range < 400, zoom_range > 4000)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between 400 and 4000 cm^-1.")
-  }
-
   data <- ftir_spectra_plot$data
+
+  if (any(zoom_range < min(data$wavenumber), zoom_range > max(data$wavenumebr))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+  }
 
   if ("transmittance" %in% colnames(data)) {
     yrange <- c(0, 100)
@@ -207,8 +207,9 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
     cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}.")
   }
 
-  if (cutoff < 400 || cutoff > 4000) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between 400 and 4000 cm^-1.")
+  data <- ftir_spectra_plot$data
+  if (cutoff < min(data$wavenumber) || cutoff > max(data$wavenumber)) {
+    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
   }
 
   if (!is.numeric(compression_ratio)) {
@@ -264,23 +265,23 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #'
 #' @param line_aesthetics A named `list` of aesthetics to pass to ggplot for
 #'   creating the vertical line. See `[ggplot2::geom_path()]`'s aesthetics
-#'   section for more info. Specifically, `alpha`, `color`, `linetype` and
+#'   section for more info. Specifically, `alpha`, `colo(u)r`, `linetype` and
 #'   `linewidth` are permitted. Positioning aesthetics will be removed.
 #'
 #'   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer la ligne
 #'   verticale. Voir la section esthétique de `[ggplot2::geom_path()]` pour plus
-#'   d'informations. Plus précisément, `alpha`, `color`, `linetype` et
+#'   d'informations. Plus précisément, `alpha`, `colo(u)r`, `linetype` et
 #'   `linewidth`` sont autorisés. Les aspects esthétiques du positionnement
 #'   seront supprimés.
 #'
 #' @param label_aesthetics A named `list` of aesthetics to pass to ggplot for
 #'   creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
-#'   more info. Specifically, `alpha`, `color`, `family`, `fill`, `fontface` and
+#'   more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
 #'   `size`are permitted. Positioning aesthetics will be removed.
 #'
 #'   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
 #'   l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
-#'   plus d'informations. Plus précisément, `alpha`, `color`, `family`, `fill`,
+#'   plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
 #'   `fontface` et `size` sont autorisés. Les aspects esthétiques du
 #'   positionnement seront supprimés.
 #'
@@ -314,6 +315,8 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #'   )
 #' }
 #' @md
+#'
+#' @seealso [add_band()]
 add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -343,8 +346,9 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
   }
 
   # TODO: This should limit on the plot x values.
-  if (wavenumber < 400 || wavenumber > 4000) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between 400 and 4000 cm^-1.")
+  data <- ftir_spectra_plot$data
+  if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenuber)) {
+    cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
   }
 
   p <- ftir_spectra_plot -
@@ -582,6 +586,8 @@ move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification =
 #' le tracé FTIR en tant qu'objet ggplot2, avec les spectres de l'échantillon sélectionné soulignier.
 #'
 #' @export
+#' @md
+#' @seealso [gghighlight::gghighlight()]
 #'
 #' @examples
 #' if (requireNamespace("ggplot2", quietly = TRUE) & requireNamespace("gghighlight", quietly = TRUE)) {
@@ -617,6 +623,107 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...){
 
   p <- suppressWarnings(ftir_spectra_plot +
     gghighlight::gghighlight(.data$sample_id %in% sample_ids), ...)
+
+  return(p)
+}
+
+#' Add Band
+#'
+#' @description
+#' Add a shaded band (with optional text overlay) to a FTIR spectral region, to visually highlight an area.
+#'
+#' Ajoutez une bande ombrée (avec un texte en option) à une région spectrale FTIR, pour mettre visuellement en évidence une zone.
+#'
+#' @param ftir_spectra_plot A plot generated by [plot_ftir()] or
+#'   [plot_ftir_stacked()].
+#'
+#'   Un tracé généré par [plot_ftir()] ou [plot_ftir_stacked()].
+#'
+#' @param wavenumber_range A vector of length two, with the wavenumber range of the shaded band.
+#'   Order of provided limits is not important.
+#'
+#'   Un vecteur de longueur deux, avec la gamme de nombres d'ondes de la bande ombrée.
+#'   L'ordre des limites fournies n'est pas important.
+#'
+#'
+#' @param text The text of the label over the band (optional).
+#'
+#'   Le texte de l'étiquette au-dessus du bande (facultatif).
+#'
+#' @param colour A colour for the shaded band. Note that alpha will be set to 0.5.
+#'  A default blue band will be added if not provided.
+#'  See `vignette("ggplot2-specs", "ggplot2")` for more information on aesthetics in graphics.
+#'
+#'  Une couleur pour la bande ombrée. Notez que la valeur alpha est fixée à 0,5.
+#'  Une bande bleue sera ajoutée par défaut si aucune valeur n'est fournie.
+#'  Voir `vignette(« ggplot2-specs », « ggplot2 »)` pour plus d'informations sur l'esthétique dans les graphiques.
+#'
+#' @param label_aesthetics A named `list` of aesthetics to pass to ggplot for
+#'   creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
+#'   more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
+#'   `size`are permitted. Positioning aesthetics will be removed.
+#'
+#'   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
+#'   l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
+#'   plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
+#'   `fontface` et `size` sont autorisés. Les aspects esthétiques du
+#'   positionnement seront supprimés.
+#'
+#' @return the FTIR plot as a ggplot2 object, with the shaded band added.
+#'
+#' le tracé FTIR en tant qu'objet ggplot2, avec la bande ombrée ajoutée.
+#'
+#' @export
+#' @md
+#' @seealso [add_wavenumber_marker()]
+#'
+#' @examples
+#' #' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   p <- plot_ftir(sample_spectra)
+#'
+#'   # Add a band to -OH region:
+#'   add_band(p, c(3600, 3100), "-OH Stretch")
+#' }
+add_band <- function(ftir_spectra_plot, wavenumber_range, text = NULL, colour=NULL, label_aesthetics = NULL) {
+  if(!requireNamespace("ggplot2")){
+    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+                     i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    ))
+  }
+
+  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+  }
+
+  if (!is.null(text)) {
+    if (is.data.frame(text) || is.matrix(text)) {
+      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+    } else if (!is.numeric(text) && !is.character(text)) {
+      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+    } else if (length(text) > 1) {
+      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} should be character or numeric, but not a vector of length greater than one.")
+    }
+  } else {
+    text <- ""
+  }
+
+  # TODO: check limits
+
+  if (is.null(colour)){
+    colour <- "#4080FF"
+  }
+
+  data <- ftir_spectra_plot$data
+  if (any(wavenumber_range < min(data$wavenumber)) || any(wavenumber_range > max(data$wavenumber))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+  }
+
+  p <- ftir_spectra_plot -
+    ggplot2::annotate("rect", fill = colour, xmin = min(wavenumber_range), xmax = max(wavenumber_range), ymin = -Inf, ymax = Inf, alpha = 0.5)
+  if(text != ""){
+    p <- p + rlang::inject(ggplot2::annotate("label", label = text, x = mean(wavenumber_range), y = Inf, vjust = 1, !!!label_aesthetics))
+  }
 
   return(p)
 }
