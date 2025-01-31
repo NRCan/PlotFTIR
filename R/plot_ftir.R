@@ -253,6 +253,13 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_blank())
   suppressMessages(p <- p + ggplot2::coord_cartesian(ylim = c(0, NA)))
 
+  if(grepl("absorbance", mode)){
+    p$labels$y <- "Absorbance (a.u.)"
+  } else {
+    p$labels$y <- "Transmittance (a.u.)"
+  }
+
+
   attr(p, "spectra_style") <- "stacked"
 
   return(p)

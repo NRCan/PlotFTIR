@@ -51,8 +51,13 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' @return invisible ftir data if ok
 #' @keywords internal
 check_ftir_data <- function(ftir) {
-  fn <- deparse(sys.calls()[[sys.nframe() - 1]])
-  fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
+  fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
+  if(inherits(fn, 'try-error')) {
+    fn <- "PlotFTIR::check_ftir_data"
+  } else {
+    fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
+  }
+
 
   if ("ir" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")

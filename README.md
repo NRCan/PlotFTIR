@@ -12,6 +12,7 @@
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Coveralls test
 coverage](https://coveralls.io/repos/github/NRCan/PlotFTIR/badge.svg)](https://coveralls.io/github/NRCan/PlotFTIR)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/PlotFTIR)](https://cran.r-project.org/package=PlotFTIR)
 <!-- badges: end -->
 
 ## Introduction and Installation

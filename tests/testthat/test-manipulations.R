@@ -65,6 +65,17 @@ test_that("zoom in is ok", {
         ggplot2::ggplot_build(zoomed_transmittance)$layout$panel_params[[1]]$y.range
     )
   )
+
+  # Check that y range hasn't moved for stacked transmittance plots
+  transmittance_stack_plot <- plot_ftir_stacked(absorbance_to_transmittance(biodiesel))
+  zoomed_transmittance_stack <- zoom_in_on_range(transmittance_stack_plot, c(2000, 2600))
+
+  expect_true(
+    all(
+      ggplot2::ggplot_build(transmittance_stack_plot)$layout$panel_params[[1]]$y.range ==
+        ggplot2::ggplot_build(zoomed_transmittance_stack)$layout$panel_params[[1]]$y.range
+    )
+  )
 })
 
 test_that("compress region is ok", {
