@@ -415,6 +415,11 @@ test_that("add_band is ok", {
              "`text` must be character or numeric, you provided a data frame.",
              fixed = TRUE
   )
+  expect_error(
+    add_band(biodiesel_plot, wavenumber_range = c(1000,2000), text = biodiesel_plot),
+    "`text` must be character or numeric, you provided a <gg",
+    fixed = TRUE
+  )
   expect_error(add_band(biodiesel_plot, wavenumber_range = c(1000,2000), text = c("This is", "too long")),
                "`text` should be character or numeric, but not a vector of length greater than one.",
                fixed = TRUE
@@ -436,6 +441,11 @@ test_that("add_band is ok", {
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
     ggplot2::ggplot_build(banded_plot)$layout$panel_params[[1]]$y.range
+  )
+
+  expect_equal(
+    ggplot2::ggplot_build(banded_plot)$layout$panel_params[[1]]$y.range,
+    ggplot2::ggplot_build(add_band(biodiesel_plot, c(1000, 1900), "Test Range"))$layout$panel_params[[1]]$y.range
   )
 
   expect_equal(
