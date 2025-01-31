@@ -68,18 +68,14 @@ Some FTIR plots have a compressed low-energy portion of the graph which you migh
 compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
-You can also add marker lines (with labels) at specific wavenumbers on the plots, controlling their line or text properties as needed.
+You can also add marker lines (with labels) at specific wavenumbers on the plots, controlling their line or text properties as needed. Similarly, a shaded band can be added to indicate a region.
 ```{r biodiesel_labelled_en}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-)
-add_wavenumber_marker(biodiesel_marked,
-  wavenumber = 2920,
-  text = "C-H Stretch",
-  line_aesthetics = list("linetype" = "dashed")
-)
+) 
+add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 ```
 
 If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. Samples must be listed in the rename vector with the format `"new name" = "old name"`. 
@@ -101,6 +97,8 @@ rename_plot_sample_ids(biodiesel_plot, new_names)
 ```
 
 A helper function for the renaming is provided (see the documentation for `get_plot_sample_ids()`).
+
+Specific sample(s) can be highlighted (other samples greyed out) by calling `highlight_sample()`. 
 
 Finally, plot legends are customizable (for basic changes) through a helper function `move_plot_legend()`.
 
@@ -228,18 +226,14 @@ Certains tracés IRTF ont une partie compressée du graphique à faible énergie
 compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
-Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
+Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins. De même, une bande ombrée peut être ajoutée pour indiquer une région.
 ```{r biodiesel_labelled_fr}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-)
-add_wavenumber_marker(biodiesel_trace,
-  wavenumber = 2920,
-  text = "C-H étirement",
-  line_aesthetics = list("linetype" = "dashed")
-)
+) 
+add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
 ```
 
 S'il est nécessaire de renommer les échantillons répertoriés dans la légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de renommage doit avoir le format `"nouveau nom" = "ancien nom"`.
@@ -262,6 +256,8 @@ rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
 ```
 
 Une fonction d'assistance pour le changement de nom est fournie (voir la documentation pour `get_plot_sample_ids()`).
+
+Un ou plusieurs échantillons spécifiques peuvent être mis en évidence (les autres échantillons étant grisés) en appelant `highlight_sample()`. 
 
 Enfin, les légendes des tracés sont personnalisables (pour les modifications de base) via une fonction d'assistance `move_plot_legend()`.
 

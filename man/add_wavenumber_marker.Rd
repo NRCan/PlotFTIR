@@ -32,23 +32,23 @@ entier le plus proche).}
 
 \item{line_aesthetics}{A named \code{list} of aesthetics to pass to ggplot for
 creating the vertical line. See \verb{[ggplot2::geom_path()]}'s aesthetics
-section for more info. Specifically, \code{alpha}, \code{color}, \code{linetype} and
+section for more info. Specifically, \code{alpha}, \verb{colo(u)r}, \code{linetype} and
 \code{linewidth} are permitted. Positioning aesthetics will be removed.
 
 Une \code{list} nommée d'esthétiques à transmettre à ggplot pour créer la ligne
 verticale. Voir la section esthétique de \verb{[ggplot2::geom_path()]} pour plus
-d'informations. Plus précisément, \code{alpha}, \code{color}, \code{linetype} et
+d'informations. Plus précisément, \code{alpha}, \verb{colo(u)r}, \code{linetype} et
 `linewidth`` sont autorisés. Les aspects esthétiques du positionnement
 seront supprimés.}
 
 \item{label_aesthetics}{A named \code{list} of aesthetics to pass to ggplot for
 creating the label. See \verb{[ggplot2::geom_text()]}'s aesthetics section for
-more info. Specifically, \code{alpha}, \code{color}, \code{family}, \code{fill}, \code{fontface} and
+more info. Specifically, \code{alpha}, \verb{colo(u)r}, \code{family}, \code{fill}, \code{fontface} and
 \code{size}are permitted. Positioning aesthetics will be removed.
 
 Une \code{list} nommée d'esthétiques à transmettre à ggplot pour créer
 l'étiquette. Voir la section esthétique de \verb{[ggplot2::geom_text()]} pour
-plus d'informations. Plus précisément, \code{alpha}, \code{color}, \code{family}, \code{fill},
+plus d'informations. Plus précisément, \code{alpha}, \verb{colo(u)r}, \code{family}, \code{fill},
 \code{fontface} et \code{size} sont autorisés. Les aspects esthétiques du
 positionnement seront supprimés.}
 }
@@ -99,4 +99,6 @@ aesthetics.
 
 Voir \code{vignette("ggplot2-specs")} pour plus d'informations sur la définition
 de l'esthétique.
+
+\code{\link[=add_band]{add_band()}}
 }
