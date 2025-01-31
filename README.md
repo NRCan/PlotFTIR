@@ -79,18 +79,15 @@ compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 
 You can also add marker lines (with labels) at specific wavenumbers on
 the plots, controlling their line or text properties as needed.
+Similarly, a shaded band can be added to indicate a region.
 
 ``` r
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-)
-add_wavenumber_marker(biodiesel_marked,
-  wavenumber = 2920,
-  text = "C-H Stretch",
-  line_aesthetics = list("linetype" = "dashed")
-)
+) 
+add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 ```
 
 <img src="man/figures/README-biodiesel_labelled_en-1.png" width="66.67%" />
@@ -337,19 +334,16 @@ compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 
 Vous pouvez également ajouter des lignes de marqueur (avec des
 étiquettes) à des numéros d’onde spécifiques sur les tracés, en
-contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
+contrôlant leurs propriétés de ligne ou de texte selon vos besoins. De
+même, une bande ombrée peut être ajoutée pour indiquer une région.
 
 ``` r
 biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-)
-add_wavenumber_marker(biodiesel_trace,
-  wavenumber = 2920,
-  text = "C-H étirement",
-  line_aesthetics = list("linetype" = "dashed")
-)
+) 
+add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
 ```
 
 <img src="man/figures/README-biodiesel_labelled_fr-1.png" width="66.67%" />

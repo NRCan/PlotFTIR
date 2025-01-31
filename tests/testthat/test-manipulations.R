@@ -28,7 +28,7 @@ test_that("zoom in is ok", {
     fixed = TRUE
   )
   expect_error(zoom_in_on_range(biodiesel_plot, zoom_range = c(200, 2000)),
-    "`zoom_range` must be values between 400 and 4000 cm^-1.",
+    "`zoom_range` must be values between 701 and 3999 cm^-1.",
     fixed = TRUE
   )
 
@@ -96,7 +96,7 @@ test_that("compress region is ok", {
     fixed = TRUE
   )
   expect_error(compress_low_energy(biodiesel_plot, cutoff = 100),
-    "`cutoff` must be a value between 400 and 4000 cm^-1.",
+    "`cutoff` must be a value between 701 and 3999 cm^-1.",
     fixed = TRUE
   )
   expect_error(compress_low_energy(biodiesel_plot, compression_ratio = "bob"),
@@ -181,7 +181,7 @@ test_that("labelled plot is ok", {
     fixed = TRUE
   )
   expect_error(add_wavenumber_marker(biodiesel_plot, wavenumber = 5000),
-    "`wavenumber` must be a value between 400 and 4000 cm^-1.",
+    "`wavenumber` must be a value between 701 and 3999 cm^-1.",
     fixed = TRUE
   )
 
@@ -373,5 +373,83 @@ test_that("highlighting is ok", {
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
     ggplot2::ggplot_build(highlighted_plot)$layout$panel_params[[1]]$y.range
+  )
+})
+
+test_that("add_band is ok", {
+  # Ensure caught failure if no ggplot2, then skip remainder of tests
+  if (!require("ggplot2", quietly = TRUE)) {
+    # Of course, we can't generate a plot to feed to the manipulations.
+    # This means that we can pass any value, the `ggplot` presence is tested first.
+
+    expect_error(
+      add_band(123),
+      "requires ggplot2 package installation",
+      fixed = TRUE
+    )
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+
+  # test arg checks.
+  expect_error(add_band("abc"),
+               "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+               fixed = TRUE
+  )
+  expect_error(add_band(biodiesel_plot, wavenumber_range = 100),
+               "`wavenumber_range` must be a numeric vector of length two.",
+               fixed = TRUE
+  )
+  expect_error(add_band(biodiesel_plot, wavenumber_range = c("a", "b")),
+               "`wavenumber_range` must be a numeric vector of length two.",
+               fixed = TRUE
+  )
+  expect_error(add_band(biodiesel_plot, wavenumber_range = c(200, 2000)),
+               "`wavenumber_range` must be values between 701 and 3999 cm^-1.",
+               fixed = TRUE
+  )
+
+  expect_error(
+    add_band(biodiesel_plot, wavenumber_range = c(1000,2000), text = mtcars),
+             "`text` must be character or numeric, you provided a data frame.",
+             fixed = TRUE
+  )
+  expect_error(
+    add_band(biodiesel_plot, wavenumber_range = c(1000,2000), text = biodiesel_plot),
+    "`text` must be character or numeric, you provided a <gg",
+    fixed = TRUE
+  )
+  expect_error(add_band(biodiesel_plot, wavenumber_range = c(1000,2000), text = c("This is", "too long")),
+               "`text` should be character or numeric, but not a vector of length greater than one.",
+               fixed = TRUE
+  )
+  # Plots should come out mostly the same.
+  banded_plot <- add_band(biodiesel_plot, c(1000, 2000))
+
+  expect_equal(
+    add_band(biodiesel_plot, c(1000, 1900)),
+    add_band(biodiesel_plot, c(1900, 1000))
+  )
+  expect_equal(biodiesel_plot$labels$title, banded_plot$labels$title)
+
+  expect_equal(
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
+    ggplot2::ggplot_build(banded_plot)$layout$panel_params[[1]]$x.range
+  )
+
+  expect_equal(
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
+    ggplot2::ggplot_build(banded_plot)$layout$panel_params[[1]]$y.range
+  )
+
+  expect_equal(
+    ggplot2::ggplot_build(banded_plot)$layout$panel_params[[1]]$y.range,
+    ggplot2::ggplot_build(add_band(biodiesel_plot, c(1000, 1900), "Test Range"))$layout$panel_params[[1]]$y.range
+  )
+
+  expect_equal(
+    add_band(biodiesel_plot, c(1000, 1000), "test", "blue"),
+    add_wavenumber_marker(biodiesel_plot, 1000, "test", line_aesthetics = list(color = "blue"))
   )
 })
