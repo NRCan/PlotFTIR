@@ -349,7 +349,6 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
     cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
-  # TODO: This should limit on the plot x values.
   data <- ftir_spectra_plot$data
   if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
     cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
