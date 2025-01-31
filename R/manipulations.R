@@ -55,7 +55,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 
   data <- ftir_spectra_plot$data
 
-  if (any(zoom_range < min(data$wavenumber), zoom_range > max(data$wavenumebr))) {
+  if (any(zoom_range < min(data$wavenumber), zoom_range > max(data$wavenumber))) {
     cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
   }
 
@@ -347,7 +347,7 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 
   # TODO: This should limit on the plot x values.
   data <- ftir_spectra_plot$data
-  if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenuber)) {
+  if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
     cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
   }
 
@@ -678,7 +678,7 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...){
 #' @seealso [add_wavenumber_marker()]
 #'
 #' @examples
-#' #' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #'   # Generate a plot
 #'   p <- plot_ftir(sample_spectra)
 #'
@@ -708,15 +708,25 @@ add_band <- function(ftir_spectra_plot, wavenumber_range, text = NULL, colour=NU
     text <- ""
   }
 
-  # TODO: check limits
-
-  if (is.null(colour)){
-    colour <- "#4080FF"
+  if (!(length(wavenumber_range) == 2) || !all(is.numeric(wavenumber_range))) {
+    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be a numeric vector of length two.")
   }
+
+  if(wavenumber_range[1] == wavenumber_range[2]){
+    # IF both wavenumbers are the same, then add a marker there, since a 0 width band won't show
+    return(add_wavenumber_marker(ftir_spectra_plot = ftir_spectra_plot, wavenumber = wavenumber_range[1],
+                                 text = text, label_aesthetics = label_aesthetics, line_aesthetics = list(color = colour)))
+  }
+
+  wavenumber_range <- wavenumber_range[order(wavenumber_range)]
 
   data <- ftir_spectra_plot$data
   if (any(wavenumber_range < min(data$wavenumber)) || any(wavenumber_range > max(data$wavenumber))) {
     cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+  }
+
+  if (is.null(colour)){
+    colour <- "#80c7ff"
   }
 
   p <- ftir_spectra_plot -

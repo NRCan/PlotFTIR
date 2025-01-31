@@ -58,7 +58,7 @@ Add a shaded band (with optional text overlay) to a FTIR spectral region, to vis
 Ajoutez une bande ombrée (avec un texte en option) à une région spectrale FTIR, pour mettre visuellement en évidence une zone.
 }
 \examples{
-#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+if (requireNamespace("ggplot2", quietly = TRUE)) {
   # Generate a plot
   p <- plot_ftir(sample_spectra)
 
