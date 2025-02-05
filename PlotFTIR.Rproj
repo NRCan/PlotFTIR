@@ -1,4 +1,5 @@
 Version: 1.0
+ProjectId: 20cfe570-0f99-4a3c-b730-e69e15e824cb
 
 RestoreWorkspace: No
 SaveWorkspace: No
@@ -18,7 +19,7 @@ StripTrailingWhitespace: Yes
 BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
-PackageCheckArgs: --as.cran
+PackageCheckArgs: --as.cran --ignore-vignettes
 PackageRoxygenize: rd,collate,namespace,vignette
 
 ZoteroLibraries: "My Library"

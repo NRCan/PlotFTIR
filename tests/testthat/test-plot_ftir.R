@@ -13,21 +13,23 @@ test_that("Plots are generated", {
   p1 <- plot_ftir(biodiesel)
   p2 <- plot_ftir_stacked(biodiesel)
 
-  biodiesel_transmittance <- absorbance_to_transmittance(biodiesel)
-
-  p3 <- plot_ftir(biodiesel_transmittance)
-  p4 <- plot_ftir_stacked(biodiesel_transmittance)
+  p3 <- plot_ftir(absorbance_to_transmittance(biodiesel))
+  p4 <- plot_ftir_stacked(absorbance_to_transmittance(biodiesel))
+  p5 <- plot_ftir(normalize_spectra(biodiesel))
 
   expect_true(ggplot2::is.ggplot(p1))
   expect_true(ggplot2::is.ggplot(p2))
   expect_equal(p1$labels$y, "Absorbance")
+  expect_equal(p2$labels$y, "Absorbance (a.u.)")
   expect_true(ggplot2::is.ggplot(p3))
   expect_true(ggplot2::is.ggplot(p4))
   expect_equal(p3$label$y, "% Transmittance")
+  expect_equal(p4$label$y, "Transmittance (a.u.)")
+  expect_equal(p5$label$y, "Normalized Absorbance")
 
   # ensure lots of samples can be plotted with rollover to viridis palette.
-  p5 <- suppressWarnings(plot_ftir(rbind(biodiesel, sample_spectra)))
-  expect_true(ggplot2::is.ggplot(p5))
+  p6 <- suppressWarnings(plot_ftir(rbind(biodiesel, sample_spectra)))
+  expect_true(ggplot2::is.ggplot(p6))
   expect_equal(p1$labels$y, "Absorbance")
 })
 
@@ -52,7 +54,7 @@ test_that("data is checked correctly", {
     fixed = TRUE
   )
   expect_error(plot_ftir(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    "`ftir` must have one of `absorbance` or `transmittance` columns.",
+    "Error in `PlotFTIR::plot_ftir()`. `ftir` must have one of `absorbance` or `transmittance` columns.",
     fixed = TRUE
   )
   expect_error(plot_ftir(ftir = full_data_df),

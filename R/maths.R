@@ -1,4 +1,4 @@
-## Holds functions to do maths on spectra Currently: average like spectra
+## Holds functions to do maths on spectra
 
 #' Average FTIR Spectra
 #'
@@ -40,8 +40,8 @@
 #' average_spectra(biodiesel, c("biodiesel_5_0", "biodiesel_B5", "diesel_unknown"))
 #' @md
 average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectra") {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::average_spectra")
-
+  ftir <- check_ftir_data(ftir)
+  intensity_attribute <- attr(ftir, "intensity")
 
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
@@ -73,7 +73,7 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
   other_wavenumbers <- ftir[ftir$sample_id != sample_ids[1], "wavenumber"]
   if (all(first_wavenumbers %in% other_wavenumbers) && all(other_wavenumbers %in% first_wavenumbers)) {
     # make average - when all wavenumbers are present in all samples
-    if ("absorbance" %in% names(ftir)) {
+    if (grepl("absorbance", intensity_attribute)) {
       avg_spectra <- stats::aggregate(absorbance ~ wavenumber, data = ftir, FUN = mean)
     } else {
       avg_spectra <- stats::aggregate(transmittance ~ wavenumber, data = ftir, FUN = mean)
@@ -119,6 +119,8 @@ average_spectra <- function(ftir, sample_ids = NA, average_id = "averaged_spectr
       return(average_spectra(ftir = interp_ftir, sample_ids = sample_ids, average_id = average_id))
     }
   }
+
+  attr(avg_spectra, "intensity") <- intensity_attribute
 
   return(avg_spectra)
 }
@@ -169,7 +171,7 @@ NULL
 #' @rdname add_subtract_scalar
 #' @md
 add_scalar_value <- function(ftir, value, sample_ids = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::add_scalar_value")
+  ftir <- check_ftir_data(ftir)
 
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
@@ -202,7 +204,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
 #' @export
 #' @rdname add_subtract_scalar
 subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::subtract_scalar_value")
+  ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(value)) {
     cli::cli_abort(c("Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric.",
@@ -320,8 +322,7 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #' # Adjust the biodiesel spectra to minimum for each sample
 #' recalculate_baseline(biodiesel, method = "minimum", individually = TRUE)
 recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, method = "average", individually = TRUE) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::recalculate_baseline")
-
+  ftir <- check_ftir_data(ftir)
 
   if (length(sample_ids) <= 1) {
     if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
@@ -510,13 +511,14 @@ recalculate_baseline <- function(ftir, sample_ids = NA, wavenumber_range = NA, m
 #' # Normalize just `paper` and `isopropanol` spectra from 4000 to 3100 cm^-1^
 #' normalize_spectra(sample_spectra,
 #'   sample_ids = c("paper", "isopropanol"),
-#'   wavenumber_range = c(4000, 3100))
+#'   wavenumber_range = c(4000, 3100)
+#' )
 normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   # Check inputs
-  ftir <- check_ftir_data(ftir, "PlotFTIR::normalize_spectra")
-  if ("transmittance" %in% colnames(ftir)) {
+  ftir <- check_ftir_data(ftir)
+  if ("transmittance" %in% colnames(ftir) || attr(ftir, "intensity") == "transmittance") {
     # Can't normalize transmission spectra
-    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}: Normalization of Transmittance spectra not supported.",
+    cli::cli_abort(c("Error in {.fn PlotFTIR::normalize_spectra}: Normalization of transmittance spectra not supported.",
       i = "Convert spectra to absorbance using {.fn transmittance_to_absorbance} then try again."
     ))
   }
@@ -554,6 +556,116 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
     spectra$absorbance <- spectra$absorbance - spectra_range[1]
     spectra$absorbance <- spectra$absorbance * (1 / (spectra_range[2] - spectra_range[1]))
     ftir[ftir$sample_id == sid, ]$absorbance <- spectra$absorbance
+  }
+
+  attr(ftir, "intensity") <- "normalized absorbance"
+
+  return(ftir)
+}
+
+
+#' Convert Between Absorbance and Transmittance
+#'
+#' @description These functions allow for the convenient conversion between
+#'   \%Transmittance and Absorbance units for the Y axis.
+#'
+#'   Converting between \%Transmittance and absorbance units for the Y axis is
+#'   not a simple flipping of axis or inversion. Instead, the two are related by
+#'   the following formulas:
+#'
+#' \deqn{
+#'  A=-log_{10}(\tfrac{\%T}{100})
+#' }
+#'   and
+#' \deqn{
+#'  \%T=10^{-A}\cdot 100
+#' }.
+#'
+#'   Ces fonctions permettent une conversion pratique entre les unités
+#'   \%Transmittance et Absorbance pour l'axe Y. La conversion entre les unités
+#'   \%Transmittance et Absorbance pour l'axe Y n'est pas un simple retournement
+#'   d'axe ou une inversion. Au lieu de cela, les deux sont liés par les
+#'   formules suivantes :
+#'
+#' \deqn{
+#'  A=-log_{10}(\tfrac{\%T}{100})
+#' }
+#'   and
+#' \deqn{
+#'  \%T=10^{-A}\cdot 100
+#' }
+#'
+#' @param ftir A data.frame of FTIR spectral data including column to be
+#'   converted. Can't contain both `absorbance` and `transmittance` column as
+#'   the receiving column would be overwritten
+#'
+#'   Un data.frame de données spectrales IRTF incluant la colonne à convertir.
+#'   Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
+#'   colonne de réception serait écrasée.
+#'
+#' @return a data.frame of FTIR spectral data with conversion between absorbance
+#'   or transmittance as requested. Note the original data column is removed
+#'   since FTIR spectral data frames can't be fed into plotting functions with
+#'   both transmittance and absorbance data included.
+#'
+#'   un data.frame de données spectrales IRTF avec conversion entre l'absorbance
+#'   ou la transmittance comme demandé. Notez que la colonne de données
+#'   d'origine est supprimée car les trames de données spectrales IRTF ne
+#'   peuvent pas être introduites dans les fonctions de tracé avec les données
+#'   de transmittance et d'absorbance incluses.
+#'
+#' @examples
+#' # Convert from absorbance to transmittance
+#' sample_spectra_transmittance <- absorbance_to_transmittance(sample_spectra)
+#'
+#' # Convert back to absorbance
+#' sample_spectra_absorbance <- transmittance_to_absorbance(sample_spectra_transmittance)
+#'
+#' @name conversion
+NULL
+
+#' @export
+#' @rdname conversion
+absorbance_to_transmittance <- function(ftir) {
+  ftir <- check_ftir_data(ftir)
+  normalized <- grepl("normalized", attr(ftir, "intensity"))
+  if (!("absorbance" %in% colnames(ftir)) || attr(ftir, "intensity") %in% c("transmittance", "normalized transmittance")) {
+    cli::cli_abort("Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must be absorbance data or contain a {.var absorbance} column.")
+  }
+  ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
+  ftir$absorbance <- NULL
+
+  # this drops the attributes
+  ftir <- ftir[, c("wavenumber", "transmittance", "sample_id")]
+
+  if (normalized) {
+    attr(ftir, "intensity") <- "normalized transmittance"
+  } else {
+    attr(ftir, "intensity") <- "transmittance"
+  }
+
+  return(ftir)
+}
+
+#' @export
+#' @rdname conversion
+transmittance_to_absorbance <- function(ftir) {
+  ftir <- check_ftir_data(ftir)
+  normalized <- grepl("normalized", attr(ftir, "intensity"))
+
+  if (!("transmittance" %in% colnames(ftir)) || attr(ftir, "intensity") %in% c("absorbance", "normalized absorbance")) {
+    cli::cli_abort("Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column.")
+  }
+
+  ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)
+  ftir$transmittance <- NULL
+
+  ftir <- ftir[, c("wavenumber", "absorbance", "sample_id")]
+
+  if (normalized) {
+    attr(ftir, "intensity") <- "normalized absorbance"
+  } else {
+    attr(ftir, "intensity") <- "absorbance"
   }
 
   return(ftir)

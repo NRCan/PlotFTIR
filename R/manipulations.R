@@ -60,7 +60,11 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   }
 
   if ("transmittance" %in% colnames(data)) {
-    yrange <- c(0, 100)
+    if('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
+      yrange <- c(0,100)
+    } else {
+      yrange <- c(0, max(c(data$transmittance, 100), na.rm = TRUE))
+    }
   } else {
     yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
   }
@@ -345,7 +349,6 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
     cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
   }
 
-  # TODO: This should limit on the plot x values.
   data <- ftir_spectra_plot$data
   if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
     cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")

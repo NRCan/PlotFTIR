@@ -1,94 +1,3 @@
-#' Convert Between Absorbance and Transmittance
-#'
-#' @description These functions allow for the convenient conversion between
-#'   \%Transmittance and Absorbance units for the Y axis.
-#'
-#'   Converting between \%Transmittance and absorbance units for the Y axis is
-#'   not a simple flipping of axis or inversion. Instead, the two are related by
-#'   the following formulas:
-#'
-#' \deqn{
-#'  A=-log_{10}(\tfrac{\%T}{100})
-#' }
-#'   and
-#' \deqn{
-#'  \%T=10^{-A}\cdot 100
-#' }.
-#'
-#'   Ces fonctions permettent une conversion pratique entre les unités
-#'   \%Transmittance et Absorbance pour l'axe Y. La conversion entre les unités
-#'   \%Transmittance et Absorbance pour l'axe Y n'est pas un simple retournement
-#'   d'axe ou une inversion. Au lieu de cela, les deux sont liés par les
-#'   formules suivantes :
-#'
-#' \deqn{
-#'  A=-log_{10}(\tfrac{\%T}{100})
-#' }
-#'   and
-#' \deqn{
-#'  \%T=10^{-A}\cdot 100
-#' }
-#'
-#' @param ftir A data.frame of FTIR spectral data including column to be
-#'   converted. Can't contain both `absorbance` and `transmittance` column as
-#'   the receiving column would be overwritten
-#'
-#'   Un data.frame de données spectrales IRTF incluant la colonne à convertir.
-#'   Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
-#'   colonne de réception serait écrasée.
-#'
-#' @return a data.frame of FTIR spectral data with conversion between absorbance
-#'   or transmittance as requested. Note the original data column is removed
-#'   since FTIR spectral data frames can't be fed into plotting functions with
-#'   both transmittance and absorbance data included.
-#'
-#'   un data.frame de données spectrales IRTF avec conversion entre l'absorbance
-#'   ou la transmittance comme demandé. Notez que la colonne de données
-#'   d'origine est supprimée car les trames de données spectrales IRTF ne
-#'   peuvent pas être introduites dans les fonctions de tracé avec les données
-#'   de transmittance et d'absorbance incluses.
-#'
-#' @examples
-#' # Convert from absorbance to transmittance
-#' sample_spectra_transmittance <- absorbance_to_transmittance(sample_spectra)
-#'
-#' # Convert back to absorbance
-#' sample_spectra_absorbance <- transmittance_to_absorbance(sample_spectra_transmittance)
-#'
-#' @name conversion
-NULL
-
-#' @export
-#' @rdname conversion
-absorbance_to_transmittance <- function(ftir) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::absorbance_to_transmittance")
-  if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must contain a {.var absorbance} column.")
-  }
-  ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
-  ftir$absorbance <- NULL
-
-  ftir <- ftir[, c("wavenumber", "transmittance", "sample_id")]
-
-  return(ftir)
-}
-
-#' @export
-#' @rdname conversion
-transmittance_to_absorbance <- function(ftir) {
-  ftir <- check_ftir_data(ftir, "PlotFTIR::transmittance_to_absorbance")
-  if (!("transmittance" %in% colnames(ftir))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must contain a {.var transmittance} column.")
-  }
-
-  ftir$absorbance <- -log(ftir$transmittance / 100, base = 10)
-  ftir$transmittance <- NULL
-
-  ftir <- ftir[, c("wavenumber", "absorbance", "sample_id")]
-
-  return(ftir)
-}
-
 #' Get Plot Sample IDs
 #'
 #' @description Get the sample IDs from a prepared plot. Useful if renaming in
@@ -132,17 +41,24 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' @title Check FTIR Data
 #'
 #' @description Check provided FTIR dataframe is appropriate for manipulation or plotting
-#' Not typically called directly, but as a function in data integrety check process before
-#' further calculation or plotting happens
+#' Not typically called directly, but as a function in data integrity check process before
+#' further calculation or plotting happens. Sets dataframe attribute "intensity" to
+#' "transmittance" or "absorbance" if not previously set.
 #'
 #' @param ftir A data.frame of FTIR spectral data including column to be
 #'  converted. Can't contain both `absorbance` and `transmittance` column.
 #'
-#' @param fn The name of the function, used in printing error codes.
-#'
-#' @return invisible ftir data if ok, typically called for effect of failure.
+#' @return invisible ftir data if ok
 #' @keywords internal
-check_ftir_data <- function(ftir, fn) {
+check_ftir_data <- function(ftir) {
+  fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
+  if(inherits(fn, 'try-error')) {
+    fn <- "PlotFTIR::check_ftir_data"
+  } else {
+    fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
+  }
+
+
   if ("ir" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
     ftir <- ir_to_plotftir(ftir)
@@ -175,6 +91,36 @@ check_ftir_data <- function(ftir, fn) {
   if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
     cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
   }
+  if (!is.null(attr(ftir, "intensity")) && !(attr(ftir, "intensity") %in% c("absorbance", "transmittance", "normalized absorbance", "normalized transmittance"))) {
+    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} has unexpected attributes.")
+  }
+
+  if (is.null(attr(ftir, "intensity"))) {
+    attr(ftir, "intensity") <- intensity_type(ftir)
+  }
 
   invisible(ftir)
+}
+
+
+#' Intensity Type
+#'
+#' @description Determines if the provided data has intensity type of absorbance or transmittance.
+#'
+#' @inheritParams conversion
+#'
+#' @return a character value 'absorbance' or 'transmittance'
+#' @keywords internal
+intensity_type <- function(ftir) {
+  # Don't check_ftir_data to avoid a loop if called by check_ftir_data()
+
+  if ("absorbance" %in% colnames(ftir)) {
+    return("absorbance")
+  } else if ("transmittance" %in% colnames(ftir)) {
+    return("transmittance")
+  }
+
+  # implied else
+  ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
+  return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
 }
