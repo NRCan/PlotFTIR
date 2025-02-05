@@ -1,4 +1,4 @@
-# PlotFTIR (development version)
+# PlotFTIR 1.1.0
 
 * Added ability to set default language in `options()`. (#10) 
 * Added ability to highlight one or more samples in spectra. (#15)
