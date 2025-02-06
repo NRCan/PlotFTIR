@@ -1,3 +1,5 @@
+# PlotFTIR (development version)
+
 # PlotFTIR 1.1.0
 
 * Added ability to set default language in `options()`. (#10) 
