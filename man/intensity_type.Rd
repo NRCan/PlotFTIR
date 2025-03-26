@@ -19,6 +19,7 @@ intensity_type(ftir)
 a character value 'absorbance' or 'transmittance'
 }
 \description{
-Determines if the provided data has intensity type of absorbance or transmittance.
+Determines if the provided data has intensity type of absorbance
+  or transmittance.
 }
 \keyword{internal}

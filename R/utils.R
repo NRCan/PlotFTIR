@@ -40,16 +40,29 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 
 #' @title Check FTIR Data
 #'
-#' @description Check provided FTIR dataframe is appropriate for manipulation or plotting
-#' Not typically called directly, but as a function in data integrity check process before
-#' further calculation or plotting happens. Sets dataframe attribute "intensity" to
-#' "transmittance" or "absorbance" if not previously set.
+#' @description Check the provided FTIR data.frame is appropriate for
+#'   manipulation or plotting. Not typically called directly, but as a function
+#'   in data integrity check process before further calculation or plotting
+#'   happens. Sets data.frame attribute `intensity` to `transmittance` or
+#'   `absorbance` if not previously set.
 #'
-#' @param ftir A data.frame of FTIR spectral data including column to be
-#'  converted. Can't contain both `absorbance` and `transmittance` column.
+#'   Vérifie que le data.frame IRTF fourni est approprié pour la manipulation ou
+#'   le tracé. Cette fonction n'est généralement pas appelée directement, mais
+#'   elle est utilisée dans le cadre du processus de vérification de l'intégrité
+#'   des données avant tout autre calcul ou tracé. Définit l'attribut data.frame
+#'   `intensity` à `transmittance` ou `absorbance` s'il n'a pas été défini
+#'   auparavant.
 #'
-#' @return invisible ftir data if ok
-#' @keywords internal
+#' @param ftir A data.frame of FTIR spectral data.
+#'
+#'   Un data.frame de données spectrales IRTF.
+#'
+#' @return Invisibly returns FTIR data if ok, or raises an error.
+#'
+#'   Renvoie de manière invisible les données IRTF si elles sont correctes, ou
+#'   soulève une erreur.
+#'
+#' @export
 check_ftir_data <- function(ftir) {
   fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
   if(inherits(fn, 'try-error')) {
@@ -105,7 +118,8 @@ check_ftir_data <- function(ftir) {
 
 #' Intensity Type
 #'
-#' @description Determines if the provided data has intensity type of absorbance or transmittance.
+#' @description Determines if the provided data has intensity type of absorbance
+#'   or transmittance.
 #'
 #' @inheritParams conversion
 #'
