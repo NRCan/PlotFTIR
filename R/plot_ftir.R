@@ -1,6 +1,5 @@
 # Plot FTIR Spectra
 
-
 #' PlotFTIR core plot generator
 #'
 #' @description Plot the FTIR spectra in a journal prepared format. Call
@@ -78,31 +77,51 @@
 #'   marqueurs afin de mettre en évidence les nombres d'ondes importants, et
 #'   [move_plot_legend()] pour modifier la position de la légende.
 #'
-plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
+plot_ftir_core <- function(
+  ftir,
+  plot_title = "FTIR Spectra",
+  legend_title = "Sample ID",
+  lang = NA
+) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
-    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two."
+    )
   }
   if (!is.character(legend_title) || length(legend_title) > 1) {
-    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string."
+    )
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    cli::cli_warn(c("Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
+    cli::cli_warn(c(
+      "Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
       i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
     ))
   }
 
   # if language is provided, check against permitted, else use default from options
   if (!is.na(lang)) {
-    lang <- rlang::arg_match(lang,
-      values = c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais"),
+    lang <- rlang::arg_match(
+      lang,
+      values = c(
+        "en",
+        "english",
+        "anglais",
+        "fr",
+        "french",
+        "francais",
+        "fran\u00e7ais"
+      ),
       multiple = FALSE
     )
   } else {
@@ -127,7 +146,11 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
     xtitle <- bquote("Wavenumber" ~ (cm^-1))
   }
 
-  ytitle <- ifelse(mode %in% c("absorbance", "normalized absorbance"), "Absorbance", "% Transmittance")
+  ytitle <- ifelse(
+    mode %in% c("absorbance", "normalized absorbance"),
+    "Absorbance",
+    "% Transmittance"
+  )
 
   if (grepl("normalized", mode)) {
     ytitle <- paste("Normalized", ytitle)
@@ -139,12 +162,20 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   if (grepl("absorbance", mode)) {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
-      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$absorbance, color = as.factor(.data$sample_id))) +
+      ggplot2::geom_line(ggplot2::aes(
+        x = .data$wavenumber,
+        y = .data$absorbance,
+        color = as.factor(.data$sample_id)
+      )) +
       ggplot2::scale_y_continuous()
   } else {
     ftir$transmittance <- as.numeric(ftir$transmittance)
     p <- ggplot2::ggplot(ftir) +
-      ggplot2::geom_line(ggplot2::aes(x = .data$wavenumber, y = .data$transmittance, color = as.factor(.data$sample_id))) +
+      ggplot2::geom_line(ggplot2::aes(
+        x = .data$wavenumber,
+        y = .data$transmittance,
+        color = as.factor(.data$sample_id)
+      )) +
       ggplot2::scale_y_continuous(breaks = scales::breaks_width(20)) +
       ggplot2::coord_cartesian(ylim = c(0, 100))
   }
@@ -156,11 +187,20 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
       x = xtitle,
       y = ytitle
     ) +
-    ggplot2::guides(color = ggplot2::guide_legend(title = legend_title), x = ggplot2::guide_axis(minor.ticks = TRUE)) +
+    ggplot2::guides(
+      color = ggplot2::guide_legend(title = legend_title),
+      x = ggplot2::guide_axis(minor.ticks = TRUE)
+    ) +
     ggplot2::theme_light() +
-    ggplot2::scale_x_reverse(breaks = scales::breaks_extended(), expand = ggplot2::expansion())
+    ggplot2::scale_x_reverse(
+      breaks = scales::breaks_extended(),
+      expand = ggplot2::expansion()
+    )
 
-  if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir$sample_id)) > 15) {
+  if (
+    !requireNamespace("ggthemes", quietly = TRUE) ||
+      length(unique(ftir$sample_id)) > 15
+  ) {
     p <- p +
       ggplot2::scale_color_viridis_d()
   } else {
@@ -169,9 +209,10 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
   }
 
   if (grepl("normalized", mode)) {
-    p <- p + ggplot2::theme(
-      axis.text.y = ggplot2::element_blank()
-    )
+    p <- p +
+      ggplot2::theme(
+        axis.text.y = ggplot2::element_blank()
+      )
   }
 
   attr(p, "intensity") <- attr(ftir, "intensity")
@@ -212,14 +253,24 @@ plot_ftir_core <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sa
 #'   # Plot FTIR spectras stacked showing the differences in the `biodiesel` dataset
 #'   plot_ftir_stacked(biodiesel)
 #' }
-plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", stack_offset = 10, lang = NA) {
+plot_ftir_stacked <- function(
+  ftir,
+  plot_title = "FTIR Spectra",
+  legend_title = "Sample ID",
+  stack_offset = 10,
+  lang = NA
+) {
   ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
-    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value."
+    )
   }
   if (stack_offset < 0 || stack_offset > 200) {
-    cli::cli_abort("Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200."
+    )
   }
 
   mode <- attr(ftir, "intensity")
@@ -248,17 +299,21 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
     ftir$offset <- NULL
   }
 
-  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
+  p <- plot_ftir_core(
+    ftir = ftir,
+    plot_title = plot_title,
+    legend_title = legend_title,
+    lang = lang
+  )
 
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_blank())
   suppressMessages(p <- p + ggplot2::coord_cartesian(ylim = c(0, NA)))
 
-  if(grepl("absorbance", mode)){
+  if (grepl("absorbance", mode)) {
     p$labels$y <- "Absorbance (a.u.)"
   } else {
     p$labels$y <- "Transmittance (a.u.)"
   }
-
 
   attr(p, "spectra_style") <- "stacked"
 
@@ -282,9 +337,19 @@ plot_ftir_stacked <- function(ftir, plot_title = "FTIR Spectra", legend_title = 
 #'   # Plot a basic FTIR Spectra overlay from the `sample_spectra` data set with default titles
 #'   plot_ftir(sample_spectra)
 #' }
-plot_ftir <- function(ftir, plot_title = "FTIR Spectra", legend_title = "Sample ID", lang = NA) {
+plot_ftir <- function(
+  ftir,
+  plot_title = "FTIR Spectra",
+  legend_title = "Sample ID",
+  lang = NA
+) {
   ftir <- check_ftir_data(ftir)
-  p <- plot_ftir_core(ftir = ftir, plot_title = plot_title, legend_title = legend_title, lang = lang)
+  p <- plot_ftir_core(
+    ftir = ftir,
+    plot_title = plot_title,
+    legend_title = legend_title,
+    lang = lang
+  )
 
   attr(p, "spectra_style") <- "normal"
 

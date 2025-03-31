@@ -31,3 +31,8 @@ Check the provided FTIR data.frame is appropriate for
   `intensity` à `transmittance` ou `absorbance` s'il n'a pas été défini
   auparavant.
 }
+\examples{
+# This returns (invisibly) the biodiesel data. If instead there was an issue
+# with the data structure it would raise an error.
+check_ftir_data(biodiesel)
+}

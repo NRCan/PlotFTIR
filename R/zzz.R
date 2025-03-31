@@ -12,7 +12,10 @@
       'PlotFTIR is set to English as default. Changer au fran\u00e7ais par la fonction `options("PlotFTIR.lang" = "en")`'
     )
   } else {
-    if (tolower(lang_option) %in% c("fr", "fra", "french", "francais", "fran\u00e7ais")) {
+    if (
+      tolower(lang_option) %in%
+        c("fr", "fra", "french", "francais", "fran\u00e7ais")
+    ) {
       packageStartupMessage(
         'Trac\u00e9 des spectres avec PlotFTIR. Veuillez citer si les tracu00e9s sont utilisu00e9s dans un publication (`citation("plotFTIR")`).'
       )

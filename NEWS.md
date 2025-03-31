@@ -1,5 +1,8 @@
 # PlotFTIR (development version)
 
+* Patch update to expose `check_ftir_data` for downstream packages. (related to #19)
+* Add import capability for .jdx filetype using `readJDX`. (#20)
+
 # PlotFTIR 1.1.0
 
 * Added ability to set default language in `options()`. (#10) 

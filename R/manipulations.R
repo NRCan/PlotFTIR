@@ -40,39 +40,55 @@
 zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   if (!(length(zoom_range) == 2) || !all(is.numeric(zoom_range))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be a numeric vector of length two.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be a numeric vector of length two."
+    )
   }
 
   data <- ftir_spectra_plot$data
 
-  if (any(zoom_range < min(data$wavenumber), zoom_range > max(data$wavenumber))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+  if (
+    any(zoom_range < min(data$wavenumber), zoom_range > max(data$wavenumber))
+  ) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+    )
   }
 
   if ("transmittance" %in% colnames(data)) {
-    if('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
-      yrange <- c(0,100)
+    if ('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
+      yrange <- c(0, 100)
     } else {
       yrange <- c(0, max(c(data$transmittance, 100), na.rm = TRUE))
     }
   } else {
-    yrange <- range(data[(data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)), ]$absorbance)
+    yrange <- range(
+      data[
+        (data$wavenumber > min(zoom_range) & data$wavenumber < max(zoom_range)),
+      ]$absorbance
+    )
   }
 
-  suppressMessages(p <- ftir_spectra_plot + ggplot2::coord_cartesian(
-    xlim = c(max(zoom_range), min(zoom_range)),
-    ylim = yrange
-  ))
+  suppressMessages(
+    p <- ftir_spectra_plot +
+      ggplot2::coord_cartesian(
+        xlim = c(max(zoom_range), min(zoom_range)),
+        ylim = yrange
+      )
+  )
 
   return(p)
 }
@@ -96,7 +112,8 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 
   intercept <- intercept * -1
 
-  scales::trans_new("compress",
+  scales::trans_new(
+    "compress",
     transform = function(x) {
       ifelse(x > intercept, x, (x - intercept) / ratio + intercept)
     },
@@ -138,12 +155,15 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #' @md
 `-.gg` <- function(plot, layer) {
   if (is.null(layer) || missing(layer)) {
-    cli::cli_abort(c("Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
+    cli::cli_abort(c(
+      "Cannot use {.code -.gg()} with a single argument, it must be followed by a {.arg layer}.",
       i = "Did you accidentally put {.code -} on a new line?"
     ))
   }
   if (!ggplot2::is.ggplot(plot)) {
-    cli::cli_abort("You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}.")
+    cli::cli_abort(
+      "You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}."
+    )
   }
   plot$layers <- c(layer, plot$layers)
   plot
@@ -195,37 +215,54 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
 #'   # Compress below 2000 cm^-1 by a factor of 5
 #'   compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 #' }
-compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ratio = 2) {
+compress_low_energy <- function(
+  ftir_spectra_plot,
+  cutoff = 2000,
+  compression_ratio = 2
+) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   if (!is.numeric(cutoff)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}."
+    )
   }
 
   data <- ftir_spectra_plot$data
   if (cutoff < min(data$wavenumber) || cutoff > max(data$wavenumber)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+    )
   }
 
   if (!is.numeric(compression_ratio)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a numeric value. You provided {.obj_type_friendly {compression_ratio}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a numeric value. You provided {.obj_type_friendly {compression_ratio}}."
+    )
   }
 
   if (compression_ratio < 0.01 || compression_ratio > 100) {
-    cli::cli_abort("Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a value between 0.01 and 100.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a value between 0.01 and 100."
+    )
   }
 
   p <- ftir_spectra_plot +
-    ggplot2::coord_trans(x = compress_trans(intercept = cutoff, ratio = compression_ratio))
+    ggplot2::coord_trans(
+      x = compress_trans(intercept = cutoff, ratio = compression_ratio)
+    )
 
   return(p)
 }
@@ -321,42 +358,71 @@ compress_low_energy <- function(ftir_spectra_plot, cutoff = 2000, compression_ra
 #' @md
 #'
 #' @seealso [add_band()]
-add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, line_aesthetics = NULL, label_aesthetics = NULL) {
+add_wavenumber_marker <- function(
+  ftir_spectra_plot,
+  wavenumber,
+  text = NULL,
+  line_aesthetics = NULL,
+  label_aesthetics = NULL
+) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   if (!is.numeric(wavenumber)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}."
+    )
   }
 
   if (!is.null(text)) {
     if (is.data.frame(text) || is.matrix(text)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+      )
     } else if (!is.numeric(text) && !is.character(text)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+      )
     } else if (length(text) > 1) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} should be character or numeric, but not a vector of length greater than one.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} should be character or numeric, but not a vector of length greater than one."
+      )
     }
   } else {
     text <- as.character(as.integer(wavenumber))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   data <- ftir_spectra_plot$data
   if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+    )
   }
 
   p <- ftir_spectra_plot -
-    rlang::inject(ggplot2::geom_vline(xintercept = wavenumber, !!!line_aesthetics)) +
-    rlang::inject(ggplot2::annotate("label", label = text, x = wavenumber, y = Inf, vjust = 1, !!!label_aesthetics))
+    rlang::inject(ggplot2::geom_vline(
+      xintercept = wavenumber,
+      !!!line_aesthetics
+    )) +
+    rlang::inject(ggplot2::annotate(
+      "label",
+      label = text,
+      x = wavenumber,
+      y = Inf,
+      vjust = 1,
+      !!!label_aesthetics
+    ))
 
   return(p)
 }
@@ -412,23 +478,30 @@ add_wavenumber_marker <- function(ftir_spectra_plot, wavenumber, text = NULL, li
 rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   preexisting_sampleids <- as.vector(get_plot_sample_ids(ftir_spectra_plot))
 
   if (!(all(sample_ids %in% preexisting_sampleids))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided 'old names' must be in the {.arg ftir_spectra_plot}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::rename_plot_sample_ids}. All provided 'old names' must be in the {.arg ftir_spectra_plot}."
+    )
   }
 
   if (!(all(preexisting_sampleids %in% sample_ids))) {
-    additional_sampleids <- preexisting_sampleids[!(preexisting_sampleids %in% sample_ids)]
+    additional_sampleids <- preexisting_sampleids[
+      !(preexisting_sampleids %in% sample_ids)
+    ]
     names(additional_sampleids) <- additional_sampleids
     sample_ids <- c(sample_ids, additional_sampleids)
   }
@@ -439,7 +512,10 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   # removing the old scales prevents the warning message from printing
   ftir_spectra_plot$scales$scales <- list()
 
-  if (!requireNamespace("ggthemes", quietly = TRUE) || length(unique(ftir_spectra_plot$sample_id)) > 15) {
+  if (
+    !requireNamespace("ggthemes", quietly = TRUE) ||
+      length(unique(ftir_spectra_plot$sample_id)) > 15
+  ) {
     p <- ftir_spectra_plot +
       ggplot2::scale_color_viridis_d(labels = new_ids) +
       ggplot2::scale_x_reverse()
@@ -518,38 +594,55 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
 #'   # Move legend to bottom:
 #'   move_plot_legend(p, position = "bottom", direction = "horizontal")
 #' }
-move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification = NULL, direction = NULL, legend_title_position = NULL) {
+move_plot_legend <- function(
+  ftir_spectra_plot,
+  position = NULL,
+  justification = NULL,
+  direction = NULL,
+  legend_title_position = NULL
+) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
   if (!is.null(position)) {
     allowed_positions <- c("none", "left", "right", "bottom", "top")
     if (!(position %in% allowed_positions)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::move_plot_legend}. {.arg position} must be one of {.or {.val {allowed_positions}}}, or NULL.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::move_plot_legend}. {.arg position} must be one of {.or {.val {allowed_positions}}}, or NULL."
+      )
     }
   }
   if (!is.null(justification)) {
     allowed_justifications <- c("top", "bottom", "center", "left", "right")
     if (!(justification %in% allowed_justifications)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::move_plot_legend}. Error in {.fn PlotFTIR::move_plot_legend}. {.arg justification} must be one of {.or {.val {allowed_justifications}}}, or NULL.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::move_plot_legend}. Error in {.fn PlotFTIR::move_plot_legend}. {.arg justification} must be one of {.or {.val {allowed_justifications}}}, or NULL."
+      )
     }
   }
   if (!is.null(direction)) {
     allowed_directions <- c("horizontal", "vertical")
     if (!(direction %in% allowed_directions)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::move_plot_legend}. {.arg direction} must be one of {.or {.val {allowed_directions}}}, or NULL.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::move_plot_legend}. {.arg direction} must be one of {.or {.val {allowed_directions}}}, or NULL."
+      )
     }
   }
   if (!is.null(legend_title_position)) {
     allowed_title_pos <- c("top", "bottom", "left", "right")
     if (!(legend_title_position %in% allowed_title_pos)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} must be one of {.or {.val {allowed_title_pos}}}, or NULL.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} must be one of {.or {.val {allowed_title_pos}}}, or NULL."
+      )
     }
   }
 
@@ -600,32 +693,40 @@ move_plot_legend <- function(ftir_spectra_plot, position = NULL, justification =
 #'   # Highlight one sample:
 #'   highlight_sample(p, "isopropanol")
 #' }
-highlight_sample <- function(ftir_spectra_plot, sample_ids, ...){
-  if(!requireNamespace("ggplot2")){
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-                     i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
+  if (!requireNamespace("ggplot2")) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
-
-  if(!requireNamespace("gghighlight")){
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg gghighlight} package installation.",
-                     i = "Install {.pkg gghighlight} with {.code install.packages('gghighlight')}"
+  if (!requireNamespace("gghighlight")) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg gghighlight} package installation.",
+      i = "Install {.pkg gghighlight} with {.run install.packages('gghighlight')}"
     ))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   preexisting_sampleids <- as.vector(get_plot_sample_ids(ftir_spectra_plot))
 
   if (!(all(sample_ids %in% preexisting_sampleids))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::highlight_sample}. All provided {.arg sample_ids} must be in the {.arg ftir_spectra_plot}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::highlight_sample}. All provided {.arg sample_ids} must be in the {.arg ftir_spectra_plot}."
+    )
   }
 
-  p <- suppressWarnings(ftir_spectra_plot +
-    gghighlight::gghighlight(.data$sample_id %in% sample_ids), ...)
+  p <- suppressWarnings(
+    ftir_spectra_plot +
+      gghighlight::gghighlight(.data$sample_id %in% sample_ids),
+    ...
+  )
 
   return(p)
 }
@@ -688,54 +789,97 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...){
 #'   # Add a band to -OH region:
 #'   add_band(p, c(3600, 3100), "-OH Stretch")
 #' }
-add_band <- function(ftir_spectra_plot, wavenumber_range, text = NULL, colour=NULL, label_aesthetics = NULL) {
-  if(!requireNamespace("ggplot2")){
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-                     i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+add_band <- function(
+  ftir_spectra_plot,
+  wavenumber_range,
+  text = NULL,
+  colour = NULL,
+  label_aesthetics = NULL
+) {
+  if (!requireNamespace("ggplot2")) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
 
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
 
   if (!is.null(text)) {
     if (is.data.frame(text) || is.matrix(text)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+      )
     } else if (!is.numeric(text) && !is.character(text)) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+      )
     } else if (length(text) > 1) {
-      cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg text} should be character or numeric, but not a vector of length greater than one.")
+      cli::cli_abort(
+        "Error in {.fn PlotFTIR::add_band}. {.arg text} should be character or numeric, but not a vector of length greater than one."
+      )
     }
   } else {
     text <- ""
   }
 
   if (!(length(wavenumber_range) == 2) || !all(is.numeric(wavenumber_range))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be a numeric vector of length two.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be a numeric vector of length two."
+    )
   }
 
-  if(wavenumber_range[1] == wavenumber_range[2]){
+  if (wavenumber_range[1] == wavenumber_range[2]) {
     # IF both wavenumbers are the same, then add a marker there, since a 0 width band won't show
-    return(add_wavenumber_marker(ftir_spectra_plot = ftir_spectra_plot, wavenumber = wavenumber_range[1],
-                                 text = text, label_aesthetics = label_aesthetics, line_aesthetics = list(color = colour)))
+    return(add_wavenumber_marker(
+      ftir_spectra_plot = ftir_spectra_plot,
+      wavenumber = wavenumber_range[1],
+      text = text,
+      label_aesthetics = label_aesthetics,
+      line_aesthetics = list(color = colour)
+    ))
   }
 
   wavenumber_range <- wavenumber_range[order(wavenumber_range)]
 
   data <- ftir_spectra_plot$data
-  if (any(wavenumber_range < min(data$wavenumber)) || any(wavenumber_range > max(data$wavenumber))) {
-    cli::cli_abort("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1.")
+  if (
+    any(wavenumber_range < min(data$wavenumber)) ||
+      any(wavenumber_range > max(data$wavenumber))
+  ) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+    )
   }
 
-  if (is.null(colour)){
+  if (is.null(colour)) {
     colour <- "#80c7ff"
   }
 
   p <- ftir_spectra_plot -
-    ggplot2::annotate("rect", fill = colour, xmin = min(wavenumber_range), xmax = max(wavenumber_range), ymin = -Inf, ymax = Inf, alpha = 0.5)
-  if(text != ""){
-    p <- p + rlang::inject(ggplot2::annotate("label", label = text, x = mean(wavenumber_range), y = Inf, vjust = 1, !!!label_aesthetics))
+    ggplot2::annotate(
+      "rect",
+      fill = colour,
+      xmin = min(wavenumber_range),
+      xmax = max(wavenumber_range),
+      ymin = -Inf,
+      ymax = Inf,
+      alpha = 0.5
+    )
+  if (text != "") {
+    p <- p +
+      rlang::inject(ggplot2::annotate(
+        "label",
+        label = text,
+        x = mean(wavenumber_range),
+        y = Inf,
+        vjust = 1,
+        !!!label_aesthetics
+      ))
   }
 
   return(p)

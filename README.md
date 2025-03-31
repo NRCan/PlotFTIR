@@ -215,10 +215,10 @@ averaging spectra, see: \* `recalculate_baseline()` \*
 
 ## Reading Files
 
-`PlotFTIR` can read .csv and .asp file types. The .csv file should
-contain only one spectra, with columns for `wavenumber` and `absorbance`
-or `transmittance.` The .asp files should be according to the file
-specifications (not modified by the user).
+`PlotFTIR` can read .csv, .asp, and .jdx file types. The .csv or .jdx
+files should contain only one spectra, with columns for `wavenumber` and
+`absorbance` or `transmittance.` The .asp files should be according to
+the file specifications (not modified by the user).
 
 ## Interfacing With `ir` and `ChemoSpec` Packages
 
@@ -243,14 +243,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.0.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.1.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.0.0.9000},
+#>     note = {R package version 1.1.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
@@ -479,11 +479,11 @@ normalisation des spectres, et calculer la moyenne des spectres, voir :
 
 ## Lecture des fichiers
 
-`PlotFTIR` peut lire les fichiers de type .csv et .asp. Le fichier .csv
-ne doit contenir qu’un seul spectre, avec des colonnes pour le
-`wavenumber` et `absorbance` ou `transmittance`. Les fichiers .asp
-doivent être conformes aux spécifications du fichier (non modifiées par
-l’utilisateur).
+`PlotFTIR` peut lire les fichiers de type .csv, .asp, et .jdx. Le
+fichier .csv ou .jdx ne doit contenir qu’un seul spectre, avec des
+colonnes pour le `wavenumber` et `absorbance` ou `transmittance`. Les
+fichiers .asp doivent être conformes aux spécifications du fichier (non
+modifiées par l’utilisateur).
 
 ## Interfaçage avec le paquetage `ir`
 
@@ -509,14 +509,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.0.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.1.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.0.0.9000},
+#>     note = {R package version 1.1.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```

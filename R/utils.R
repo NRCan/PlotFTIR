@@ -28,12 +28,15 @@
 get_plot_sample_ids <- function(ftir_spectra_plot) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.code install.packages('ggplot2')}"
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
   if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
-    cli::cli_abort("Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.")
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    )
   }
   return(as.factor(unique(ftir_spectra_plot$data$sample_id)))
 }
@@ -63,14 +66,17 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #'   soulève une erreur.
 #'
 #' @export
+#' @examples
+#' # This returns (invisibly) the biodiesel data. If instead there was an issue
+#' # with the data structure it would raise an error.
+#' check_ftir_data(biodiesel)
 check_ftir_data <- function(ftir) {
   fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
-  if(inherits(fn, 'try-error')) {
+  if (inherits(fn, 'try-error')) {
     fn <- "PlotFTIR::check_ftir_data"
   } else {
     fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
   }
-
 
   if ("ir" %in% class(ftir)) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
@@ -78,34 +84,62 @@ check_ftir_data <- function(ftir) {
   }
 
   if ("Spectra" %in% class(ftir)) {
-    cli::cli_inform("Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure.")
+    cli::cli_inform(
+      "Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure."
+    )
     ftir <- chemospec_to_plotftir(ftir)
   }
 
   if (!(is.data.frame(ftir))) {
-    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.")
+    cli::cli_abort(
+      "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."
+    )
   }
   if (!("sample_id" %in% colnames(ftir))) {
-    cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+    cli::cli_abort(c(
+      "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
       i = "It must contain a column named {.var sample_id}."
     ))
   }
   if (!("wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c("Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+    cli::cli_abort(c(
+      "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
       i = "It must contain a column named {.var wavenumber}."
     ))
   }
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.")
+    cli::cli_abort(
+      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+    )
   }
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.")
+    cli::cli_abort(
+      "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+    )
   }
-  if (any(!(colnames(ftir) %in% c("sample_id", "wavenumber", "absorbance", "transmittance")))) {
-    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.")
+  if (
+    any(
+      !(colnames(ftir) %in%
+        c("sample_id", "wavenumber", "absorbance", "transmittance"))
+    )
+  ) {
+    cli::cli_abort(
+      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+    )
   }
-  if (!is.null(attr(ftir, "intensity")) && !(attr(ftir, "intensity") %in% c("absorbance", "transmittance", "normalized absorbance", "normalized transmittance"))) {
-    cli::cli_abort("Error in {.fn {fn}}. {.arg ftir} has unexpected attributes.")
+  if (
+    !is.null(attr(ftir, "intensity")) &&
+      !(attr(ftir, "intensity") %in%
+        c(
+          "absorbance",
+          "transmittance",
+          "normalized absorbance",
+          "normalized transmittance"
+        ))
+  ) {
+    cli::cli_abort(
+      "Error in {.fn {fn}}. {.arg ftir} has unexpected attributes."
+    )
   }
 
   if (is.null(attr(ftir, "intensity"))) {

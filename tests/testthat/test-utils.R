@@ -17,7 +17,8 @@ test_that("Plot SampleID extraction is ok", {
 
   expect_equal(get_plot_sample_ids(p), as.factor(unique(biodiesel$sample_id)))
 
-  expect_error(get_plot_sample_ids(biodiesel),
+  expect_error(
+    get_plot_sample_ids(biodiesel),
     "`ftir_spectra_plot` must be a ggplot object. You provided ",
     fixed = TRUE
   )
@@ -25,7 +26,10 @@ test_that("Plot SampleID extraction is ok", {
 
 test_that("Intensity Typing works", {
   expect_equal(intensity_type(biodiesel), "absorbance")
-  expect_equal(intensity_type(absorbance_to_transmittance(biodiesel)), "transmittance")
+  expect_equal(
+    intensity_type(absorbance_to_transmittance(biodiesel)),
+    "transmittance"
+  )
   b2 <- biodiesel
   colnames(biodiesel)[colnames(biodiesel) == "absorbance"] <- "intensity"
   expect_equal(intensity_type(b2), "absorbance")
@@ -37,7 +41,11 @@ test_that("Checking FTIR data works", {
 
   bad_ftir <- biodiesel
   attr(bad_ftir, "intensity") <- "test"
-  expect_error(check_ftir_data(bad_ftir), "has unexpected attributes.", fixed = TRUE)
+  expect_error(
+    check_ftir_data(bad_ftir),
+    "has unexpected attributes.",
+    fixed = TRUE
+  )
 
   no_attr_ftir <- biodiesel
   attr(no_attr_ftir, "intensity") <- NULL

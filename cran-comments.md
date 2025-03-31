@@ -2,7 +2,7 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This is a minor update with improvements
-  * Added ability to set default language in options().
-  * Added two functions to enhance graphical output.
-  * Added internal functions to validate data.
+* This is a minor version release with improvements
+  * Exposes a function for downstream package(s) use.
+  * Adds import for .jdx filetype.
+
