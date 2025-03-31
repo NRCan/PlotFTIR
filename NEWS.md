@@ -1,4 +1,4 @@
-# PlotFTIR (development version)
+# PlotFTIR 1.2.0
 
 * Patch update to expose `check_ftir_data` for downstream packages. (related to #19)
 * Add import capability for .jdx filetype using `readJDX`. (#20)
