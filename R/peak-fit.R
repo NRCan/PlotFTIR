@@ -65,30 +65,20 @@
 #' ]
 #'
 #' # Find peaks using default settings
-#' if (requireNamespace("signal", quietly = TRUE)) {
-#'   peaks_default <- find_ftir_peaks(ftir_data)
-#'   print("Peaks found with default settings:")
-#'   print(peaks_default)
+#' peaks_default <- find_ftir_peaks(ftir_data)
+#' print("Peaks found with default settings:")
+#' print(peaks_default)
 #'
-#'   # Find peaks with adjusted smoothing and window parameters
-#'   # Example: Less smoothing on derivative, wider window for normal peaks
-#'   peaks_adjusted <- find_ftir_peaks(
-#'     ftir_data,
-#'     sg_n_deriv = 11, # Fewer points for derivative smoothing
-#'     window_norm = 15 # Wider window (wavenumbers) for normal peak check
-#'   )
-#'   print("Peaks found with adjusted settings:")
-#'   print(peaks_adjusted)
-#' }
+#' # Find peaks with adjusted smoothing and window parameters
+#' # Example: Less smoothing on derivative, wider window for normal peaks
+#' peaks_adjusted <- find_ftir_peaks(
+#'   ftir_data,
+#'   sg_n_deriv = 11, # Fewer points for derivative smoothing
+#'   window_norm = 15 # Wider window (wavenumbers) for normal peak check
+#' )
+#' print("Peaks found with adjusted settings:")
+#' print(peaks_adjusted)
 find_ftir_peaks <- function(ftir, ...) {
-  #Check Packages
-  if (!requireNamespace("signal", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg signal} package installation.",
-      i = "Install {.pkg signal} with {.run install.packages('signal')}"
-    ))
-  }
-
   #check args
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
@@ -327,13 +317,12 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #'
 #' # Example 1: Fit peaks using the default 'voigt' method
 #' # Peaks will be found automatically using find_ftir_peaks defaults
-#' if (requireNamespace("signal", quietly = TRUE)) {
-#'   fitted_voigt_default <- fit_peaks(ftir_data)
-#'   print("Fitted Voigt Peaks (Default):")
-#'   # Show key results like final parameters and convergence status
-#'   print(fit_peak_df(fitted_voigt_default))
-#'   print(paste("Convergence:", fitted_voigt_default$convergence))
-#' }
+#' fitted_voigt_default <- fit_peaks(ftir_data)
+#' print("Fitted Voigt Peaks (Default):")
+#' 
+#' # Show key results like final parameters and convergence status
+#' print(fit_peak_df(fitted_voigt_default))
+#' print(paste("Convergence:", fitted_voigt_default$convergence))
 #'
 #' \dontrun{
 #' # Example 2: Fit peaks using the 'gauss' method
@@ -538,16 +527,15 @@ fit_peaks <- function(
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
 #'
-#' if (requireNamespace("signal", quietly = TRUE)) {
-#'   # First, fit the peaks (using the default 'voigt' method)
-#'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+
+#' # First, fit the peaks (using the default 'voigt' method)
+#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #'
 #' # Now, convert the fitted model object to a data frame
 #' peak_df_voigt <- fit_peak_df(fitted_voigt)
 #'
 #' print("Peak Data Frame from Voigt Fit:")
 #' print(peak_df_voigt)
-#' }
 fit_peak_df <- function(fitted_peaks) {
   peak_table <- data.frame(
     "sample_id" = fitted_peaks$sample_id,
@@ -842,9 +830,7 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
 #' ]
 #'
 #' # First, fit the peaks using the default 'voigt' method
-#' if (requireNamespace("signal", quietly = TRUE)) {
-#'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
-#' }
+#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #'
 #' # --- Example 1: Plot components only (default) ---
 #' \dontrun{
@@ -1112,10 +1098,8 @@ plot_components <- function(
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
 #'
-#' if (requireNamespace("signal", quietly = TRUE)) {
-#'   # First, fit the peaks using the default 'voigt' method
-#'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
-#' }
+#' # First, fit the peaks using the default 'voigt' method
+#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #'
 #' # --- Example 1: Plot residuals with default settings ---
 #' \dontrun{

@@ -1647,10 +1647,6 @@ test_that("baseline_ftir works", {
   expect_equal("baselined", attr(baselined, "treatment"))
 
   #make sure the attr is appended and not overwriting
-  if (!requireNamespace('signal', quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
-  }
-
   smooth_baselined <- baseline_ftir(smooth_ftir(test_data))
   expect_true(grepl("baselined", attr(smooth_baselined, "treatment")))
   expect_true(grepl("smoothed", attr(smooth_baselined, "treatment")))
@@ -1763,8 +1759,8 @@ test_that("remove_continuum_ftir warns when continuum has already been removed",
 })
 
 test_that("remove_continuum_ftir works after other treatments.", {
-  if (!requireNamespace('baselined', quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
+  if (!requireNamespace('baseline', quietly = TRUE)) {
+    testthat::skip("baseline not available for testing")
   }
   ftir_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
@@ -1840,14 +1836,6 @@ test_that("smooth_ftir returns a data.frame with same number of rows", {
     sample_spectra$sample_id == "isopropanol",
   ]
 
-  if (!requireNamespace('signal', quietly = TRUE)) {
-    expect_error(
-      smooth_ftir(test_data),
-      "requires signal package installation"
-    )
-    testthat::skip("signal not available for testing")
-  }
-
   expect_equal(
     nrow(smooth_ftir(test_data, polynomial = 2, points = 13, derivative = 0)),
     nrow(test_data)
@@ -1885,10 +1873,6 @@ test_that("smooth_ftir returns a data.frame with same number of rows", {
 })
 
 test_that("smooth_ftir checks repeat calls", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
-  }
-
   test_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -1902,9 +1886,6 @@ test_that("smooth_ftir checks repeat calls", {
 })
 
 test_that("smooth_ftir corrects attributes", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
-  }
   if (!requireNamespace('baseline', quietly = TRUE)) {
     testthat::skip("baseline not available for testing")
   }

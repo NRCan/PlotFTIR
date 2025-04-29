@@ -18,7 +18,8 @@ LazyData: true
 Imports: 
     cli,
     rlang,
-    scales
+    scales,
+    signal
 RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.3)
@@ -34,8 +35,7 @@ Suggests:
     ChemoSpec,
     R.utils,
     readJDX,
-    baseline,
-    signal
+    baseline
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues
