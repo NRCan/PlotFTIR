@@ -200,7 +200,7 @@ It's possible to adjust baselines by a few different mechanisms in `PlotFTIR.` T
 
 This can be done on a single sample in the data set, on each sample individually (where the amount of shift could be different for each sample), or the amount of baseline shift can be applied to all of the samples at once (i.e. where the same shift is applied to all of the samples).
 
-All of these shifts are achieved by calling the `recalculate_baseline()` function.
+All of these shifts are achieved by calling the `shift_baseline()` function.
 
 For this demonstration, we'll use the `biodiesel` data contained in the package. It's a set of spectra of diesel samples containing increasing amount of biodiesel. 
 
@@ -213,7 +213,7 @@ If you look closely, all of the spectra are floating just above the 0 absorbance
 
 ```{r plot_biodiesel_baseline_1_en}
 biodiesel |>
-  recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
+  shift_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
   plot_ftir() |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -222,7 +222,7 @@ Of course, if you aren't careful with baselining you can get some weird results.
 
 ```{r plot_biodiesel_baseline_2_en}
 biodiesel |>
-  recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
+  shift_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
   plot_ftir() |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -231,7 +231,7 @@ Instead, it might be more useful to adjust all of the spectra by the minimum poi
 
 ```{r plot_biodiesel_baseline_3_en}
 biodiesel |>
-  recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
+  shift_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
   plot_ftir() |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -419,7 +419,7 @@ Il est possible d'ajuster les lignes de base par différents mécanismes dans `P
 
 Cette opération peut être effectuée sur un seul échantillon de l'ensemble de données, sur chaque échantillon individuellement (où l'ampleur du décalage peut être différente pour chaque échantillon), ou l'ampleur du décalage de la ligne de base peut être appliquée à tous les échantillons en même temps (c'est-à-dire que le même décalage est appliqué à tous les échantillons).
 
-Tous ces changements sont réalisés en appelant la fonction `recalculate_baseline()`.
+Tous ces changements sont réalisés en appelant la fonction `shift_baseline()`.
 
 Pour cette démonstration, nous utiliserons les données `biodiesel` contenues dans le paquet. Il s'agit d'un ensemble de spectres d'échantillons de diesel contenant des quantités croissantes de biodiesel. 
 
@@ -433,7 +433,7 @@ Si vous regardez de près, tous les spectres flottent juste au-dessus de la lign
 
 ```{r plot_biodiesel_baseline_1_fr}
 biodiesel |>
-  recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
+  shift_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
   plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -442,7 +442,7 @@ Bien sûr, si l'on ne fait pas attention à l'alignement de base, on peut obteni
 
 ```{r plot_biodiesel_baseline_2_fr}
 biodiesel |>
-  recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
+  shift_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
   plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -451,7 +451,7 @@ Il serait plus utile d'ajuster tous les spectres en fonction du point minimum d'
 
 ```{r plot_biodiesel_baseline_3_fr}
 biodiesel |>
-  recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
+  shift_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
   plot_ftir(lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```

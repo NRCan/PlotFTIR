@@ -8,16 +8,16 @@ normalize_spectra(ftir, sample_ids = NA, wavenumber_range = NA)
 }
 \arguments{
 \item{ftir}{A data.frame of FTIR spectral data including spectra to be
-baseline adjusted.
+baseline shifted
 
 Un data.frame de données spectrales IRTF comprenant les spectres à ajuster
 à la ligne de base.}
 
-\item{sample_ids}{A vector of sample IDs to be adjusted. All sample IDs must
+\item{sample_ids}{A vector of sample IDs to be shifted. All sample IDs must
 be present in the \code{ftir} data.frame. If adjusting all spectra, provide NA
 or NULL. Unlisted \code{sample_id} from \code{ftir} will be left alone.
 
-Un vecteur d'ID d'échantillons à ajuster Tous les ID d'échantillons doivent
+Un vecteur d'ID d'échantillons à ajuster. Tous les ID d'échantillons doivent
 être présents dans la base de données \code{ftir} data.frame. Si l'ajustement
 concerne tous les spectres, fournir NA ou NULL. Les \code{sample_id} non listés
 de \code{ftir} seront laissés seuls.}

@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* Merged in deconvolution and advanced smoothing and baseline functions. (#19) 
+
 # PlotFTIR 1.2.0
 
 * Patch update to expose `check_ftir_data` for downstream packages. (related to #19)
