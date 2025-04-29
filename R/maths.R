@@ -995,6 +995,15 @@ transmittance_to_absorbance <- function(ftir) {
 #'   plot_ftir(ftir_smoothed, plot_title = "Smoothed FTIR")
 #' }
 smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
+  # Package Checks
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg signal} package installation.",
+      i = "Install {.pkg signal} with {.run install.packages('signal')}"
+    ))
+  }
+
+  # arg checks
   if (!is.null(attr(ftir, "treatment"))) {
     if (grepl("smoothed", attr(ftir, "treatment"))) {
       cli::cli_warn(c(
@@ -1097,6 +1106,15 @@ smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
 #'   plot_ftir(ftir_baselined_lowpass, plot_title = "Lowpass Baselined FTIR")
 #' }
 baseline_ftir <- function(ftir, method = "modpolyfit", ...) {
+  # Package Checks
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg baseline} package installation.",
+      i = "Install {.pkg baseline} with {.run install.packages('baseline')}"
+    ))
+  }
+
+  # arg checks
   if (
     !(method %in%
       c(

@@ -4,6 +4,10 @@ test_that("find_ftir_peaks handles input errors ok", {
     wavenumber = seq(4000, 400, length.out = 100),
     absorbance = rnorm(100)
   )
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   expect_error(find_ftir_peaks(ftir), NA) # No error expected
   expect_error(
     find_ftir_peaks(ftir, zero_norm = "non-numeric"),
@@ -33,6 +37,10 @@ test_that("find_ftir_peaks handles input errors ok", {
 
 
 test_that("find_ftir_peaks returns sorted peaks", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = seq(4000, 400, length.out = 100),
@@ -43,6 +51,10 @@ test_that("find_ftir_peaks returns sorted peaks", {
 })
 
 test_that("find_ftir_peaks returns correct peaks", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -65,6 +77,10 @@ test_that("find_ftir_peaks returns correct peaks", {
 })
 
 test_that("Fixed Peak Locations don't move", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -152,6 +168,10 @@ test_that("Fixed Peak Locations don't move", {
 })
 
 test_that("zero_normalization and zero_deriv check ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -223,6 +243,10 @@ test_that("zero_threshold sets to zero values below threshold", {
 })
 
 test_that("fit_peaks (voigt) returns correct results", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -245,6 +269,10 @@ test_that("fit_peaks (voigt) returns correct results", {
 })
 
 test_that("fit_peaks (gaussian) returns correct results", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -267,6 +295,10 @@ test_that("fit_peaks (gaussian) returns correct results", {
 })
 
 test_that("fit_peaks (lorentz) returns correct results", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -289,6 +321,10 @@ test_that("fit_peaks (lorentz) returns correct results", {
 })
 
 test_that("fit_peaks (dsg) returns correct results", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- data.frame(
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 100)),
@@ -311,6 +347,10 @@ test_that("fit_peaks (dsg) returns correct results", {
 })
 
 test_that("fit_peaks error checks are ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -332,6 +372,10 @@ test_that("fit_peaks error checks are ok", {
 })
 
 test_that("Peak data.frame is created ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -378,6 +422,10 @@ test_that("Peak data.frame is created ok", {
 })
 
 test_that("get_fit_spectra works ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -400,6 +448,10 @@ test_that("get_fit_spectra works ok", {
 })
 
 test_that("get_fit_spectra checks are ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -427,6 +479,10 @@ test_that("get_fit_spectra checks are ok", {
 
 
 test_that("plot_fit_ftir_peaks work", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -462,6 +518,10 @@ test_that("plot_fit_ftir_peaks work", {
 })
 
 test_that("plot_fit_residuals work", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -497,6 +557,10 @@ test_that("plot_fit_residuals work", {
 })
 
 test_that("plot_components work", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -537,6 +601,10 @@ test_that("plot_components work", {
 })
 
 test_that("plot_fit_ftir_peaks error checks are ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing fit peak plot production")
   }
@@ -579,6 +647,10 @@ test_that("plot_fit_ftir_peaks error checks are ok", {
 })
 
 test_that("plot_fit_residuals error checks are ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip(
       "ggplot2 not available for testing fit residual plot production"
@@ -620,6 +692,10 @@ test_that("plot_fit_residuals error checks are ok", {
 })
 
 test_that("plot_components error checks are ok", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip(
       "ggplot2 not available for testing fit component plot production"
@@ -661,6 +737,10 @@ test_that("plot_components error checks are ok", {
 })
 
 test_that("Languages are handled properly", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip(
       "ggplot2 not available for testing fit component plot production"

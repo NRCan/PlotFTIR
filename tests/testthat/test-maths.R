@@ -1622,22 +1622,26 @@ test_that("Normalization carries thorugh other functions", {
 })
 
 
-test_that("baseline_ftir returns a data.frame with same number of rows", {
+test_that("baseline_ftir works", {
   test_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
+
+  if (!requireNamespace('baseline', quietly = TRUE)) {
+    expect_error(
+      baseline_ftir(test_data),
+      "requires baseline package installation"
+    )
+    testthat::skip("baseline not available for testing")
+  }
+
   expect_equal(nrow(baseline_ftir(test_data)), nrow(test_data))
   expect_equal(
     unique(baseline_ftir(test_data)$sample_id),
     unique(test_data$sample_id)
   )
   expect_equal(baseline_ftir(test_data)$wavenumber, test_data$wavenumber)
-})
 
-test_that("baseline_ftir corrects attributes", {
-  test_data <- sample_spectra[
-    sample_spectra$sample_id == "isopropanol",
-  ]
   baselined <- baseline_ftir(test_data)
 
   expect_equal("baselined", attr(baselined, "treatment"))
@@ -1646,12 +1650,6 @@ test_that("baseline_ftir corrects attributes", {
   smooth_baselined <- baseline_ftir(smooth_ftir(test_data))
   expect_true(grepl("baselined", attr(smooth_baselined, "treatment")))
   expect_true(grepl("smoothed", attr(smooth_baselined, "treatment")))
-})
-
-test_that("baseline_ftir error check is ok", {
-  test_data <- sample_spectra[
-    sample_spectra$sample_id == "isopropanol",
-  ]
 
   expect_error(
     baseline_ftir(test_data, method = "fake"),
@@ -1834,6 +1832,15 @@ test_that("smooth_ftir returns a data.frame with same number of rows", {
   test_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
+
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    expect_error(
+      baseline_ftir(test_data),
+      "requires signal package installation"
+    )
+    testthat::skip("signal not available for testing")
+  }
+
   expect_equal(
     nrow(smooth_ftir(test_data, polynomial = 2, points = 13, derivative = 0)),
     nrow(test_data)
