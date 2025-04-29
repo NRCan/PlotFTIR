@@ -1759,6 +1759,9 @@ test_that("remove_continuum_ftir warns when continuum has already been removed",
 })
 
 test_that("remove_continuum_ftir works after other treatments.", {
+  if (!requireNamespace('baselined', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
   ftir_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -1835,7 +1838,7 @@ test_that("smooth_ftir returns a data.frame with same number of rows", {
 
   if (!requireNamespace('signal', quietly = TRUE)) {
     expect_error(
-      baseline_ftir(test_data),
+      smooth_ftir(test_data),
       "requires signal package installation"
     )
     testthat::skip("signal not available for testing")
@@ -1878,6 +1881,10 @@ test_that("smooth_ftir returns a data.frame with same number of rows", {
 })
 
 test_that("smooth_ftir checks repeat calls", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   test_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -1891,6 +1898,13 @@ test_that("smooth_ftir checks repeat calls", {
 })
 
 test_that("smooth_ftir corrects attributes", {
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+  if (!requireNamespace('baseline', quietly = TRUE)) {
+    testthat::skip("baseline not available for testing")
+  }
+
   test_data <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]

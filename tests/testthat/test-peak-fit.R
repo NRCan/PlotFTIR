@@ -501,7 +501,7 @@ test_that("plot_fit_ftir_peaks work", {
   }
 
   p <- plot_fit_ftir_peaks(ftir, fitpeaks)
-  expect_true(ggplot2::is.ggplot(p))
+  expect_true(ggplot2::is_ggplot(p))
   expect_equal(p$labels$title, "Fitted FTIR Plot")
   expect_equal(
     p$labels$subtitle,
@@ -540,7 +540,7 @@ test_that("plot_fit_residuals work", {
   }
 
   p <- plot_fit_residuals(ftir, fitpeaks)
-  expect_true(ggplot2::is.ggplot(p))
+  expect_true(ggplot2::is_ggplot(p))
   expect_equal(p$labels$title, "Residual Plot")
   expect_equal(
     p$labels$subtitle,
@@ -581,7 +581,7 @@ test_that("plot_components work", {
 
   p <- plot_components(ftir, fitpeaks)
 
-  expect_true(ggplot2::is.ggplot(p))
+  expect_true(ggplot2::is_ggplot(p))
   expect_equal(p$labels$title, "Fitted FTIR Plot")
   expect_equal(
     p$labels$subtitle,
