@@ -1647,6 +1647,10 @@ test_that("baseline_ftir works", {
   expect_equal("baselined", attr(baselined, "treatment"))
 
   #make sure the attr is appended and not overwriting
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
   smooth_baselined <- baseline_ftir(smooth_ftir(test_data))
   expect_true(grepl("baselined", attr(smooth_baselined, "treatment")))
   expect_true(grepl("smoothed", attr(smooth_baselined, "treatment")))

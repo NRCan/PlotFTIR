@@ -96,5 +96,5 @@ Differentiation of Data by Simplified Least Squares Procedures". Analytical
 Chemistry 36. pp. 1627–1639. doi:10.1021/ac60214a047
 }
 \seealso{
-\code{\link[signal:sgolayfilt]{signal::sgolayfilt()}}, \code{\link[=smooth_ftir]{smooth_ftir()}}
+\code{\link[signal:sgolayfilt]{signal::sgolayfilt()}}, \code{\link[=smooth_ftir]{smooth_ftir()}}, \code{\link[=shift_baseline]{shift_baseline()}}
 }

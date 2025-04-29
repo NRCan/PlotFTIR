@@ -53,7 +53,7 @@
 #'   Un vecteur de nombres d'ondes correspondant aux pics trouvés dans les
 #'   spectres IRTF fournis.
 #' @export
-#' @seealso [signal::sgolayfilt()], [smooth_ftir()]
+#' @seealso [signal::sgolayfilt()], [smooth_ftir()], [shift_baseline()]
 #' @md
 #' @references Savitzky, A.; Golay, M.J.E. (1964). "Smoothing and
 #'   Differentiation of Data by Simplified Least Squares Procedures". Analytical
@@ -81,6 +81,15 @@
 #'   print(peaks_adjusted)
 #' }
 find_ftir_peaks <- function(ftir, ...) {
+  #Check Packages
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg signal} package installation.",
+      i = "Install {.pkg signal} with {.run install.packages('signal')}"
+    ))
+  }
+
+  #check args
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (length(unique(ftir$sample_id)) != 1) {
@@ -1289,8 +1298,10 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
 #'
-#' # First, fit the peaks using the default 'voigt' method
-#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#' if(!requireNamespace('signal', quietly = TRUE)){
+#'   # First, fit the peaks using the default 'voigt' method
+#'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#' }
 #'
 #' # --- Example 1: Plot original spectrum and the overall fitted sum ---
 #' \dontrun{
