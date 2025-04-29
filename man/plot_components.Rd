@@ -72,7 +72,9 @@ ftir_data <- ftir_data[
 ]
 
 # First, fit the peaks using the default 'voigt' method
-fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+if (requireNamespace("signal", quietly = TRUE)) {
+  fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+}
 
 # --- Example 1: Plot components only (default) ---
 \dontrun{

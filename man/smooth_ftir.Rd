@@ -44,8 +44,11 @@ ftir_data <- sample_spectra[
   sample_spectra$sample_id == "isopropanol",
 ]
 
-# Apply smoothing
-ftir_smoothed <- smooth_ftir(ftir_data)
+if (requireNamespace("signal", quietly = TRUE)) {
+  # Apply smoothing
+  ftir_smoothed <- smooth_ftir(ftir_data)
+}
+
 # --- Optional: Visualize the results ---
 \dontrun{
   plot_ftir(ftir_smoothed, plot_title = "Smoothed FTIR")

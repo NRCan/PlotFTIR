@@ -33,12 +33,14 @@ ftir_data <- ftir_data[
   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 ]
 
-# First, fit the peaks (using the default 'voigt' method)
-fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+if (requireNamespace("signal", quietly = TRUE)) {
+  # First, fit the peaks (using the default 'voigt' method)
+  fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 
 # Now, convert the fitted model object to a data frame
 peak_df_voigt <- fit_peak_df(fitted_voigt)
 
 print("Peak Data Frame from Voigt Fit:")
 print(peak_df_voigt)
+}
 }

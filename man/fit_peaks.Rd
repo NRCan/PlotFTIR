@@ -98,8 +98,10 @@ ftir_data <- ftir_data[
 fitted_voigt_default <- fit_peaks(ftir_data)
 print("Fitted Voigt Peaks (Default):")
 # Show key results like final parameters and convergence status
-print(fit_peak_df(fitted_voigt_default))
-print(paste("Convergence:", fitted_voigt_default$convergence))
+if (requireNamespace("signal", quietly = TRUE)) {
+  print(fit_peak_df(fitted_voigt_default))
+  print(paste("Convergence:", fitted_voigt_default$convergence))
+}
 
 \dontrun{
 # Example 2: Fit peaks using the 'gauss' method

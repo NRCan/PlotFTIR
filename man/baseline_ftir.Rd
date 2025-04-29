@@ -46,13 +46,13 @@ disponibles dans le package [baseline::baseline()].
 ftir_data <- sample_spectra[
   sample_spectra$sample_id == "isopropanol",
 ]
+if (requireNamespace("baseline", quietly = TRUE)) {
+  # Apply baseline correction using the default 'modpolyfit' method
+  ftir_baselined_modpoly <- baseline_ftir(ftir_data)
 
-# Apply baseline correction using the default 'modpolyfit' method
-ftir_baselined_modpoly <- baseline_ftir(ftir_data)
-
-# Apply baseline correction using the 'lowpass' method
-ftir_baselined_lowpass <- baseline_ftir(ftir_data, method = "lowpass")
-
+  # Apply baseline correction using the 'lowpass' method
+  ftir_baselined_lowpass <- baseline_ftir(ftir_data, method = "lowpass")
+}
 # --- Optional: Visualize the results ---
 \dontrun{
   plot_ftir(ftir_baselined_modpoly, plot_title = "ModPoly Baselined FTIR")
