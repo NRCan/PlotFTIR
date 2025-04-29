@@ -95,10 +95,10 @@ ftir_data <- ftir_data[
 
 # Example 1: Fit peaks using the default 'voigt' method
 # Peaks will be found automatically using find_ftir_peaks defaults
-fitted_voigt_default <- fit_peaks(ftir_data)
-print("Fitted Voigt Peaks (Default):")
-# Show key results like final parameters and convergence status
 if (requireNamespace("signal", quietly = TRUE)) {
+  fitted_voigt_default <- fit_peaks(ftir_data)
+  print("Fitted Voigt Peaks (Default):")
+  # Show key results like final parameters and convergence status
   print(fit_peak_df(fitted_voigt_default))
   print(paste("Convergence:", fitted_voigt_default$convergence))
 }
