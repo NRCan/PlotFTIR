@@ -15,7 +15,10 @@ test_that("Plot SampleID extraction is ok", {
 
   p <- plot_ftir(biodiesel)
 
-  expect_equal(get_plot_sample_ids(p), as.factor(unique(biodiesel$sample_id)))
+  expect_identical(
+    get_plot_sample_ids(p),
+    as.factor(unique(biodiesel$sample_id))
+  )
 
   expect_error(
     get_plot_sample_ids(biodiesel),
@@ -25,14 +28,14 @@ test_that("Plot SampleID extraction is ok", {
 })
 
 test_that("Intensity Typing works", {
-  expect_equal(intensity_type(biodiesel), "absorbance")
-  expect_equal(
+  expect_identical(intensity_type(biodiesel), "absorbance")
+  expect_identical(
     intensity_type(absorbance_to_transmittance(biodiesel)),
     "transmittance"
   )
   b2 <- biodiesel
   colnames(biodiesel)[colnames(biodiesel) == "absorbance"] <- "intensity"
-  expect_equal(intensity_type(b2), "absorbance")
+  expect_identical(intensity_type(b2), "absorbance")
 })
 
 test_that("Checking FTIR data works", {
@@ -49,5 +52,8 @@ test_that("Checking FTIR data works", {
 
   no_attr_ftir <- biodiesel
   attr(no_attr_ftir, "intensity") <- NULL
-  expect_equal(attr(check_ftir_data(no_attr_ftir), "intensity"), "absorbance")
+  expect_identical(
+    attr(check_ftir_data(no_attr_ftir), "intensity"),
+    "absorbance"
+  )
 })

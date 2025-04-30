@@ -46,13 +46,13 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
   }
 
-  if (!(length(zoom_range) == 2) || !all(is.numeric(zoom_range))) {
+  if (length(zoom_range) != 2 || !all(is.numeric(zoom_range))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be a numeric vector of length two."
     )
@@ -69,7 +69,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   }
 
   if ("transmittance" %in% colnames(data)) {
-    if ('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
+    if ("normal" %in% attr(ftir_spectra_plot, "spectra_style")) {
       yrange <- c(0, 100)
     } else {
       yrange <- c(0, max(c(data$transmittance, 100), na.rm = TRUE))
@@ -160,7 +160,7 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
       i = "Did you accidentally put {.code -} on a new line?"
     ))
   }
-  if (!ggplot2::is.ggplot(plot)) {
+  if (!ggplot2::is_ggplot(plot)) {
     cli::cli_abort(
       "You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}."
     )
@@ -228,7 +228,7 @@ compress_low_energy <- function(
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -397,7 +397,7 @@ add_wavenumber_marker <- function(
     text <- as.character(as.integer(wavenumber))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -484,7 +484,7 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -608,7 +608,7 @@ move_plot_legend <- function(
       i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
     ))
   }
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -708,7 +708,7 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -803,7 +803,7 @@ add_band <- function(
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -827,7 +827,7 @@ add_band <- function(
     text <- ""
   }
 
-  if (!(length(wavenumber_range) == 2) || !all(is.numeric(wavenumber_range))) {
+  if (length(wavenumber_range) != 2 || !all(is.numeric(wavenumber_range))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be a numeric vector of length two."
     )

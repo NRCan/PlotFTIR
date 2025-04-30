@@ -189,15 +189,15 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
     )
   }
 
-  if (!all(is.na(sample_names))) {
+  if (all(is.na(sample_names))) {
+    sample_names <- rep(NA, length(files))
+  } else {
     if (length(sample_names) != length(files)) {
       cli::cli_abort(c(
         "Error in {.fn PlotFTIR::read_ftir_directory}: If providing {.arg sample_names} the same number of names as the number of {.arg files} must be provided.",
         i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"
       ))
     }
-  } else {
-    sample_names <- rep(NA, length(files))
   }
 
   ftir <- data.frame()
@@ -219,11 +219,12 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
           }
         }
       },
-      error = function(e)
+      error = function(e) {
         cli::cli_warn(c(
           "{e}",
           i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."
         ))
+      }
     )
   }
   if (nrow(ftir) > 0) {
@@ -381,7 +382,10 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
     )
   }
   if (
-    !grepl("INFRARED", toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)]))
+    !grepl(
+      "INFRARED",
+      toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)])
+    )
   ) {
     cli::cli_abort(
       c(
@@ -392,9 +396,9 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
   }
 
   intensity <- NA
-  if (any(grepl("absorbance", tolower(metadata)))) {
+  if (any(grepl("absorbance", tolower(metadata), fixed = TRUE))) {
     intensity <- "absorbance"
-  } else if (any(grepl("transmittance", tolower(metadata)))) {
+  } else if (any(grepl("transmittance", tolower(metadata), fixed = TRUE))) {
     intensity <- "transmittance"
   }
 
@@ -402,13 +406,11 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
   sample_name_jdx <- names(jdx[4])
   if (is.na(sample_name)) {
     sample_name <- sample_name_jdx
-  } else {
-    if (sample_name != sample_name_jdx) {
-      cli::cli_alert_warning(c(
-        'Note: provided sample name of "{sample_name}" does not match that contained in the .jdx file: "{sample_name_jdx}".',
-        i = "Will use the provided sample name."
-      ))
-    }
+  } else if (sample_name != sample_name_jdx) {
+    cli::cli_alert_warning(c(
+      'Note: provided sample name of "{sample_name}" does not match that contained in the .jdx file: "{sample_name_jdx}".',
+      i = "Will use the provided sample name."
+    ))
   }
 
   ftir_data <- data.frame(
@@ -418,7 +420,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
 
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
-      if (intensity == 'transmittance' & max(ftir_data$intensity < 1.2)) {
+      if (intensity == "transmittance" && max(ftir_data$intensity < 1.2)) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
         ftir_data$intensity <- ftir_data$intensity * 100
@@ -435,7 +437,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
     intensity <- intensity_type(ftir_data)
   }
 
-  if (intensity == 'absorbance') {
+  if (intensity == "absorbance") {
     ftir_data$absorbance <- ftir_data$intensity
   } else {
     ftir_data$transmittance <- ftir_data$intensity
@@ -504,7 +506,7 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
@@ -554,7 +556,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
 
   # Param checks
 
-  if (!("ir" %in% class(ir_data))) {
+  if (!(inherits(ir_data, "ir"))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}."
     )
@@ -564,7 +566,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
     what <- seq_along(ir_data$spectra)
   }
 
-  if (suppressWarnings(any(is.na(as.numeric(what))))) {
+  if (suppressWarnings(anyNA(as.numeric(what)))) {
     if (all(what %in% ir_data$id_sample)) {
       what <- which(what %in% ir_data$id_sample)
     } else {
@@ -596,7 +598,7 @@ ir_to_df <- function(ir, what) {
   }
 
   # Param checks
-  if (!("ir" %in% class(ir))) {
+  if (!(inherits(ir, "ir"))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}."
     )
@@ -620,12 +622,10 @@ ir_to_df <- function(ir, what) {
 
     if (intensity == sample_intensity) {
       ftir <- rbind(ftir, sampleir)
+    } else if (intensity == "absorbance") {
+      ftir <- rbind(ftir, transmittance_to_absorbance(sampleir))
     } else {
-      if (intensity == "absorbance") {
-        ftir <- rbind(ftir, transmittance_to_absorbance(sampleir))
-      } else {
-        ftir <- rbind(ftir, absorbance_to_transmittance(sampleir))
-      }
+      ftir <- rbind(ftir, absorbance_to_transmittance(sampleir))
     }
   }
 
@@ -905,7 +905,7 @@ chemospec_to_plotftir <- function(csdata) {
   }
 
   # Param Checks
-  if (!("Spectra" %in% class(csdata))) {
+  if (!(inherits(csdata, "Spectra"))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} must be of class {.cls Spectra}, produced by the {.pkg ChemoSpec} package. You provided {.obj_type_friendly {csdata}}."
     )

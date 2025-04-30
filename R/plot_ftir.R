@@ -152,14 +152,14 @@ plot_ftir_core <- function(
     "% Transmittance"
   )
 
-  if (grepl("normalized", mode)) {
+  if (grepl("normalized", mode, fixed = TRUE)) {
     ytitle <- paste("Normalized", ytitle)
   }
 
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
 
-  if (grepl("absorbance", mode)) {
+  if (grepl("absorbance", mode, fixed = TRUE)) {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
       ggplot2::geom_line(ggplot2::aes(
@@ -208,7 +208,7 @@ plot_ftir_core <- function(
       ggthemes::scale_color_calc()
   }
 
-  if (grepl("normalized", mode)) {
+  if (grepl("normalized", mode, fixed = TRUE)) {
     p <- p +
       ggplot2::theme(
         axis.text.y = ggplot2::element_blank()
@@ -280,7 +280,7 @@ plot_ftir_stacked <- function(
   nsamples <- length(unique(stack_samples))
 
   if (nsamples > 1) {
-    if (grepl("absorbance", mode)) {
+    if (grepl("absorbance", mode, fixed = TRUE)) {
       # Transmittance gets an offset of stack_offset % against a percentage scale
       # for absorbance, most signals max out around 2 so that's the range.
       stack_offset <- (stack_offset / 100) * 2.0
@@ -291,7 +291,7 @@ plot_ftir_stacked <- function(
     )
 
     ftir <- merge(x = ftir, y = offset, by = "sample_id")
-    if (grepl("absorbance", mode)) {
+    if (grepl("absorbance", mode, fixed = TRUE)) {
       ftir$absorbance <- ftir$absorbance + ftir$offset
     } else {
       ftir$transmittance <- ftir$transmittance + ftir$offset
@@ -309,7 +309,7 @@ plot_ftir_stacked <- function(
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_blank())
   suppressMessages(p <- p + ggplot2::coord_cartesian(ylim = c(0, NA)))
 
-  if (grepl("absorbance", mode)) {
+  if (grepl("absorbance", mode, fixed = TRUE)) {
     p$labels$y <- "Absorbance (a.u.)"
   } else {
     p$labels$y <- "Transmittance (a.u.)"

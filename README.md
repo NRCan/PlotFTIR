@@ -209,9 +209,10 @@ head(biodiesel_transm)
 
 Functions are provided for adjusting the baseline of spectra, adding or
 subtracting scalar values from entire spectra, normalizing spectra, and
-averaging spectra, see: \* `recalculate_baseline()` \*
-`add_scalar_value()` and `subtract_scalar_value()` \*
-`normalize_spectra()` \* `average_spectra()`
+averaging spectra, see: \* `shift_baseline()` \* `baseline_ftir()` \*
+`remove_continuum_ftir()` \* `add_scalar_value()` and
+`subtract_scalar_value()` \* `normalize_spectra()` \*
+`average_spectra()`
 
 ## Reading Files
 
@@ -243,14 +244,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.1.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.2.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.1.0.9000},
+#>     note = {R package version 1.2.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
@@ -473,9 +474,9 @@ head(biodiesel_transm)
 Des fonctions sont fournies pour ajuster la ligne de base des spectres,
 ajouter ou soustraire des valeurs scalaires de spectres entiers,
 normalisation des spectres, et calculer la moyenne des spectres, voir :
-\* `recalculate_baseline()` \* `add_scalar_value()` et
-`subtract_scalar_value()` \* `normalize_spectra()` \*
-`average_spectra()`
+\* `shift_baseline()` \* `baseline_ftir()` \* `remove_continuum_ftir()`
+\* `add_scalar_value()` et `subtract_scalar_value()` \*
+`normalize_spectra()` \* `average_spectra()`
 
 ## Lecture des fichiers
 
@@ -509,14 +510,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.1.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.2.0.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.1.0.9000},
+#>     note = {R package version 1.2.0.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```

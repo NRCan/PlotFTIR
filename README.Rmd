@@ -75,8 +75,8 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-) 
-add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
+)
+add_band(biodiesel_marked, c(2750, 3050), "C-H Stretch")
 ```
 
 If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. Samples must be listed in the rename vector with the format `"new name" = "old name"`. 
@@ -157,7 +157,9 @@ head(biodiesel_transm)
 ```
 
 Functions are provided for adjusting the baseline of spectra, adding or subtracting scalar values from entire spectra, normalizing spectra, and averaging spectra, see:
-* `recalculate_baseline()`
+* `shift_baseline()`
+* `baseline_ftir()`
+* `remove_continuum_ftir()`
 * `add_scalar_value()` and `subtract_scalar_value()`
 * `normalize_spectra()`
 * `average_spectra()`
@@ -233,8 +235,8 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-) 
-add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
+)
+add_band(biodiesel_marked, c(2750, 3050), "C-H étirement")
 ```
 
 S'il est nécessaire de renommer les échantillons répertoriés dans la légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de renommage doit avoir le format `"nouveau nom" = "ancien nom"`.
@@ -320,7 +322,9 @@ head(biodiesel_transm)
 ```
 
 Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter ou soustraire des valeurs scalaires de spectres entiers, normalisation des spectres, et calculer la moyenne des spectres, voir :
-* `recalculate_baseline()`
+* `shift_baseline()`
+* `baseline_ftir()`
+* `remove_continuum_ftir()`
 * `add_scalar_value()` et `subtract_scalar_value()`
 * `normalize_spectra()`
 * `average_spectra()`

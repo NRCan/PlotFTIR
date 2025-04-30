@@ -238,43 +238,43 @@ test_that("add_subtract_scalar_value works", {
 
 test_that("Baseline error checking works", {
   expect_error(
-    recalculate_baseline("not_a_dataframe"),
+    shift_baseline("not_a_dataframe"),
     regexp = "must be a data frame. You provided a string",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, method = "failure"),
+    shift_baseline(biodiesel, method = "failure"),
     regexp = "must be a string",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, individually = "failure"),
+    shift_baseline(biodiesel, individually = "failure"),
     regexp = "must be a boolean value",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, sample_ids = "A"),
+    shift_baseline(biodiesel, sample_ids = "A"),
     regexp = "All provided `sample_ids` must be in `ftir` data.",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, wavenumber_range = c(1, 2, 3)),
+    shift_baseline(biodiesel, wavenumber_range = c(1, 2, 3)),
     regexp = "must be of length 1 or 2",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, wavenumber_range = c("one", "two")),
+    shift_baseline(biodiesel, wavenumber_range = c("one", "two")),
     regexp = "`wavenumber_range` must be `numeric` or `NA`.",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(
+    shift_baseline(
       biodiesel,
       method = "point",
       wavenumber_range = c(1, 2)
@@ -283,24 +283,24 @@ test_that("Baseline error checking works", {
     fixed = TRUE
   )
   expect_error(
-    recalculate_baseline(biodiesel, method = "point", wavenumber_range = NA),
+    shift_baseline(biodiesel, method = "point", wavenumber_range = NA),
     regexp = "must be a single numeric value",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1),
+    shift_baseline(biodiesel, method = "minimum", wavenumber_range = 1),
     regexp = "or two numeric values if `method = 'minimum'`",
     fixed = TRUE
   )
   expect_error(
-    recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1),
+    shift_baseline(biodiesel, method = "maximum", wavenumber_range = 1),
     regexp = "or two numeric values if `method = 'maximum'`",
     fixed = TRUE
   )
 
   expect_error(
-    recalculate_baseline(
+    shift_baseline(
       biodiesel,
       method = "average",
       wavenumber_range = 1500
@@ -318,12 +318,12 @@ test_that("Baseline - average works", {
   )
 
   expect_warning(
-    recalculate_baseline(ftir_data, method = "average", individually = TRUE),
+    shift_baseline(ftir_data, method = "average", individually = TRUE),
     regexp = "Adjusting spectra baseline by the average of all values is not analytically useful",
     fixed = TRUE
   )
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       method = "average",
       individually = TRUE
@@ -341,7 +341,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       method = "average",
       individually = FALSE
@@ -358,7 +358,7 @@ test_that("Baseline - average works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "average",
     wavenumber_range = c(1000, 1025),
@@ -379,7 +379,7 @@ test_that("Baseline - average works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "average",
     wavenumber_range = c(1000, 1025),
@@ -401,7 +401,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "average",
@@ -420,7 +420,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "average",
@@ -439,7 +439,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "average",
@@ -462,7 +462,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "average",
@@ -488,12 +488,12 @@ test_that("Baseline - average works", {
   ftir_data$absorbance <- NULL
 
   expect_warning(
-    recalculate_baseline(ftir_data, method = "average", individually = TRUE),
+    shift_baseline(ftir_data, method = "average", individually = TRUE),
     regexp = "Adjusting spectra baseline by the average of all values is not analytically useful",
     fixed = TRUE
   )
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       method = "average",
       individually = TRUE
@@ -511,7 +511,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       method = "average",
       individually = FALSE
@@ -528,7 +528,7 @@ test_that("Baseline - average works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "average",
     wavenumber_range = c(1000, 1025),
@@ -549,7 +549,7 @@ test_that("Baseline - average works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "average",
     wavenumber_range = c(1000, 1025),
@@ -571,7 +571,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "average",
@@ -590,7 +590,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "average",
@@ -609,7 +609,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "average",
@@ -632,7 +632,7 @@ test_that("Baseline - average works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
   suppressWarnings(
-    recalculated_ftir <- recalculate_baseline(
+    recalculated_ftir <- shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "average",
@@ -662,7 +662,7 @@ test_that("Baseline - point works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "point",
     wavenumber_range = 1000,
@@ -680,7 +680,7 @@ test_that("Baseline - point works", {
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
   suppressWarnings(expect_warning(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       method = "point",
       wavenumber_range = 500,
@@ -691,7 +691,7 @@ test_that("Baseline - point works", {
   ))
 
   suppressWarnings(expect_warning(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       method = "point",
       wavenumber_range = 1012.5,
@@ -701,7 +701,7 @@ test_that("Baseline - point works", {
     fixed = TRUE
   ))
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "point",
     wavenumber_range = 1000,
@@ -718,7 +718,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "point",
@@ -736,7 +736,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "point",
@@ -754,7 +754,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "point",
@@ -776,7 +776,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "point",
@@ -801,7 +801,7 @@ test_that("Baseline - point works", {
   ftir_data$transmittance <- c(90, 80, 70, 80, 70, 60, 70, 60, 50)
   ftir_data$absorbance <- NULL
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "point",
     wavenumber_range = 1000,
@@ -818,7 +818,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "point",
     wavenumber_range = 1000,
@@ -835,7 +835,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "point",
@@ -853,7 +853,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "point",
@@ -871,7 +871,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "point",
@@ -893,7 +893,7 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "point",
@@ -923,7 +923,7 @@ test_that("Baseline - minimum/maximum works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "minimum",
     individually = TRUE
@@ -938,12 +938,12 @@ test_that("Baseline - minimum/maximum works", {
     c(0, 0.1, 0.2)
   )
   expect_equal(
-    recalculate_baseline(ftir_data, method = "minimum", individually = TRUE),
-    recalculate_baseline(ftir_data, method = "maximum", individually = TRUE)
+    shift_baseline(ftir_data, method = "minimum", individually = TRUE),
+    shift_baseline(ftir_data, method = "maximum", individually = TRUE)
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "minimum",
     individually = FALSE
@@ -958,12 +958,12 @@ test_that("Baseline - minimum/maximum works", {
     c(0.1, 0.2, 0.3)
   )
   expect_equal(
-    recalculate_baseline(ftir_data, method = "minimum", individually = FALSE),
-    recalculate_baseline(ftir_data, method = "maximum", individually = FALSE)
+    shift_baseline(ftir_data, method = "minimum", individually = FALSE),
+    shift_baseline(ftir_data, method = "maximum", individually = FALSE)
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "minimum",
@@ -979,13 +979,13 @@ test_that("Baseline - minimum/maximum works", {
     c(0.2, 0.3, 0.4)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "minimum",
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "maximum",
@@ -994,7 +994,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "minimum",
@@ -1010,13 +1010,13 @@ test_that("Baseline - minimum/maximum works", {
     c(0.2, 0.3, 0.4)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "minimum",
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "maximum",
@@ -1025,7 +1025,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "minimum",
@@ -1045,13 +1045,13 @@ test_that("Baseline - minimum/maximum works", {
     c(0.3, 0.4, 0.5)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1060,7 +1060,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "minimum",
@@ -1080,13 +1080,13 @@ test_that("Baseline - minimum/maximum works", {
     c(0.3, 0.4, 0.5)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1095,7 +1095,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     wavenumber_range = c(1030, 1050),
@@ -1116,14 +1116,14 @@ test_that("Baseline - minimum/maximum works", {
     c(0.3, 0.4, 0.5)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       wavenumber_range = c(1030, 1050),
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1133,7 +1133,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     wavenumber_range = c(1030, 1050),
@@ -1154,14 +1154,14 @@ test_that("Baseline - minimum/maximum works", {
     c(0.3, 0.4, 0.5)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       wavenumber_range = c(1030, 1050),
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1174,7 +1174,7 @@ test_that("Baseline - minimum/maximum works", {
   ftir_data$transmittance <- c(90, 80, 70, 80, 70, 60, 70, 60, 50)
   ftir_data$absorbance <- NULL
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "minimum",
     individually = TRUE
@@ -1189,12 +1189,12 @@ test_that("Baseline - minimum/maximum works", {
     c(100, 90, 80)
   )
   expect_equal(
-    recalculate_baseline(ftir_data, method = "minimum", individually = TRUE),
-    recalculate_baseline(ftir_data, method = "maximum", individually = TRUE)
+    shift_baseline(ftir_data, method = "minimum", individually = TRUE),
+    shift_baseline(ftir_data, method = "maximum", individually = TRUE)
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     method = "minimum",
     individually = FALSE
@@ -1209,12 +1209,12 @@ test_that("Baseline - minimum/maximum works", {
     c(90, 80, 70)
   )
   expect_equal(
-    recalculate_baseline(ftir_data, method = "minimum", individually = FALSE),
-    recalculate_baseline(ftir_data, method = "maximum", individually = FALSE)
+    shift_baseline(ftir_data, method = "minimum", individually = FALSE),
+    shift_baseline(ftir_data, method = "maximum", individually = FALSE)
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "minimum",
@@ -1230,13 +1230,13 @@ test_that("Baseline - minimum/maximum works", {
     c(80, 70, 60)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "minimum",
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "maximum",
@@ -1245,7 +1245,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = "A",
     method = "minimum",
@@ -1261,13 +1261,13 @@ test_that("Baseline - minimum/maximum works", {
     c(80, 70, 60)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "minimum",
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = "A",
       method = "maximum",
@@ -1276,7 +1276,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "minimum",
@@ -1296,13 +1296,13 @@ test_that("Baseline - minimum/maximum works", {
     c(70, 60, 50)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1311,7 +1311,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     method = "minimum",
@@ -1331,13 +1331,13 @@ test_that("Baseline - minimum/maximum works", {
     c(70, 60, 50)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1346,7 +1346,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     wavenumber_range = c(1030, 1050),
@@ -1367,14 +1367,14 @@ test_that("Baseline - minimum/maximum works", {
     c(70, 60, 50)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       wavenumber_range = c(1030, 1050),
       individually = TRUE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1384,7 +1384,7 @@ test_that("Baseline - minimum/maximum works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "transmittance")
 
-  recalculated_ftir <- recalculate_baseline(
+  recalculated_ftir <- shift_baseline(
     ftir_data,
     sample_ids = c("A", "B"),
     wavenumber_range = c(1030, 1050),
@@ -1405,14 +1405,14 @@ test_that("Baseline - minimum/maximum works", {
     c(70, 60, 50)
   )
   expect_equal(
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "minimum",
       wavenumber_range = c(1030, 1050),
       individually = FALSE
     ),
-    recalculate_baseline(
+    shift_baseline(
       ftir_data,
       sample_ids = c("A", "B"),
       method = "maximum",
@@ -1605,7 +1605,7 @@ test_that("Normalization carries thorugh other functions", {
   )
   expect_equal(
     attr(
-      recalculate_baseline(
+      shift_baseline(
         biodiesel_normal,
         method = "point",
         wavenumber_range = 3900
@@ -1619,4 +1619,286 @@ test_that("Normalization carries thorugh other functions", {
     attr(absorbance_to_transmittance(biodiesel_normal), "intensity"),
     "normalized transmittance"
   )
+})
+
+
+test_that("baseline_ftir works", {
+  test_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    expect_error(
+      baseline_ftir(test_data),
+      "requires baseline package installation"
+    )
+    testthat::skip("baseline not available for testing")
+  }
+
+  expect_equal(nrow(baseline_ftir(test_data)), nrow(test_data))
+  expect_equal(
+    unique(baseline_ftir(test_data)$sample_id),
+    unique(test_data$sample_id)
+  )
+  expect_equal(baseline_ftir(test_data)$wavenumber, test_data$wavenumber)
+
+  baselined <- baseline_ftir(test_data)
+
+  expect_equal(attr(baselined, "treatment"), "baselined")
+
+  #make sure the attr is appended and not overwriting
+  smooth_baselined <- baseline_ftir(smooth_ftir(test_data))
+  expect_true(grepl("baselined", attr(smooth_baselined, "treatment")))
+  expect_true(grepl("smoothed", attr(smooth_baselined, "treatment")))
+
+  expect_error(
+    baseline_ftir(test_data, method = "fake"),
+    "should be one of which the"
+  )
+  expect_warning(
+    baseline_ftir(test_data, method = "TAP"),
+    "was not designed for use with FTIR data"
+  )
+  expect_warning(
+    baseline_ftir(baseline_ftir(test_data)),
+    "Repeat baseline adjustment of spectra may produce unexpected results"
+  )
+
+  test_data <- absorbance_to_transmittance(test_data)
+
+  expect_message(
+    transbaseline <- baseline_ftir(test_data),
+    "Baselining with transmittance spectra may not behave as expected"
+  )
+  expect_equal(transbaseline$wavenumber, test_data$wavenumber)
+})
+
+test_that("remove_continuum_ftir works with default parameters (spline, subtraction)", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(ftir_data)
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_true(all(is.numeric(result$absorbance)))
+  expect_true(all(is.numeric(result$wavenumber)))
+  expect_true(all(is.character(result$sample_id)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with linear interpolation", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(ftir_data, type = "linear")
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_true(all(is.numeric(result$absorbance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with division", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(ftir_data, application = "division")
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_true(all(is.numeric(result$absorbance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with linear interpolation and division", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(
+    ftir_data,
+    type = "linear",
+    application = "division"
+  )
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "absorbance", "sample_id"))
+  expect_true(all(is.numeric(result$absorbance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir throws error for invalid application", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  expect_error(
+    remove_continuum_ftir(ftir_data, application = "invalid"),
+    '`application` must be either "subtraction" or "division"'
+  )
+})
+
+test_that("remove_continuum_ftir throws error for invalid type", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  expect_error(
+    remove_continuum_ftir(ftir_data, type = "invalid"),
+    '`type` must be either "spline" or "linear"'
+  )
+})
+
+test_that("remove_continuum_ftir warns when continuum has already been removed", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(ftir_data)
+  expect_warning(
+    remove_continuum_ftir(result),
+    regexp = "Spectra have previously had continuum removed"
+  )
+})
+
+test_that("remove_continuum_ftir works after other treatments.", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing")
+  }
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  result <- remove_continuum_ftir(baseline_ftir(ftir_data))
+  expect_s3_class(result, "data.frame")
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+  expect_true(grepl("baselined", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with transmittance data", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir_data_transmittance <- absorbance_to_transmittance(ftir_data)
+  result <- remove_continuum_ftir(ftir_data_transmittance)
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "transmittance", "sample_id"))
+  expect_true(all(is.numeric(result$transmittance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with transmittance data and division", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir_data_transmittance <- absorbance_to_transmittance(ftir_data)
+  result <- remove_continuum_ftir(
+    ftir_data_transmittance,
+    application = "division"
+  )
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "transmittance", "sample_id"))
+  expect_true(all(is.numeric(result$transmittance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with transmittance data and linear", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir_data_transmittance <- absorbance_to_transmittance(ftir_data)
+  result <- remove_continuum_ftir(ftir_data_transmittance, type = "linear")
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "transmittance", "sample_id"))
+  expect_true(all(is.numeric(result$transmittance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+test_that("remove_continuum_ftir works with transmittance data, linear and division", {
+  ftir_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir_data_transmittance <- absorbance_to_transmittance(ftir_data)
+  result <- remove_continuum_ftir(
+    ftir_data_transmittance,
+    type = "linear",
+    application = "division"
+  )
+  expect_s3_class(result, "data.frame")
+  expect_equal(colnames(result), c("wavenumber", "transmittance", "sample_id"))
+  expect_true(all(is.numeric(result$transmittance)))
+  expect_true("treatment" %in% names(attributes(result)))
+  expect_true(grepl("continuum removed", attr(result, "treatment")))
+})
+
+
+test_that("smooth_ftir returns a data.frame with same number of rows", {
+  test_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+
+  expect_equal(
+    nrow(smooth_ftir(test_data, polynomial = 2, points = 13, derivative = 0)),
+    nrow(test_data)
+  )
+  expect_equal(
+    unique(
+      smooth_ftir(
+        test_data,
+        polynomial = 2,
+        points = 13,
+        derivative = 0
+      )$sample_id
+    ),
+    unique(test_data$sample_id)
+  )
+  expect_equal(
+    smooth_ftir(
+      test_data,
+      polynomial = 2,
+      points = 13,
+      derivative = 0
+    )$wavenumber,
+    test_data$wavenumber
+  )
+  test_data <- absorbance_to_transmittance(test_data)
+  expect_equal(
+    smooth_ftir(
+      test_data,
+      polynomial = 2,
+      points = 13,
+      derivative = 0
+    )$wavenumber,
+    test_data$wavenumber
+  )
+})
+
+test_that("smooth_ftir checks repeat calls", {
+  test_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+
+  smooth_propanol <- smooth_ftir(test_data)
+
+  expect_warning(
+    smooth_ftir(smooth_propanol),
+    "Spectra have been previously smoothed."
+  )
+})
+
+test_that("smooth_ftir corrects attributes", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing")
+  }
+
+  test_data <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  smoothed <- smooth_ftir(test_data)
+
+  expect_equal(attr(smoothed, "treatment"), "smoothed")
+
+  #make sure the attr is appended and not overwriting
+  smooth_baselined <- smooth_ftir(baseline_ftir(test_data))
+  expect_true(grepl("baselined", attr(smooth_baselined, "treatment")))
+  expect_true(grepl("smoothed", attr(smooth_baselined, "treatment")))
 })

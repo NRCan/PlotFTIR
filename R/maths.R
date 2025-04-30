@@ -81,7 +81,7 @@ average_spectra <- function(
       all(other_wavenumbers %in% first_wavenumbers)
   ) {
     # make average - when all wavenumbers are present in all samples
-    if (grepl("absorbance", intensity_attribute)) {
+    if (grepl("absorbance", intensity_attribute, fixed = TRUE)) {
       avg_spectra <- stats::aggregate(
         absorbance ~ wavenumber,
         data = ftir,
@@ -303,7 +303,7 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 }
 
 
-#' Recalculate Baseline
+#' Shift Baseline
 #'
 #' @md
 #' @description It may be desired to shift the baseline signal (0 for absorbance
@@ -311,20 +311,20 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #'   for all samples or a subset, using the same shift for all adjusted samples
 #'   or calculated individually.
 #'
-#'   Recalculate or shift to baseline/max transmittance can be done following
+#'   Shift to baseline/max transmittance can be done following
 #'   one of a few methods:
 #'  * To shift baseline based on the value at a given wavenumber:
-#'   `recalculate_baseline(ftir, wavenumber_range = [numeric], method =
+#'   `shift_baseline(ftir, wavenumber_range = [numeric], method =
 #'   'point')`
 #'  * To shift baseline based on the average value across a provided wavenumber range:
-#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   `shift_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
 #'   method = 'average')`
 #'  * To shift baseline based on the value at the single lowest point of absorbance
 #'   (or highest point of transmittance) across the whole spectra
-#'   `recalculate_baseline(ftir, method = 'minimum')`
+#'   `shift_baseline(ftir, method = 'minimum')`
 #'  * To shift baseline based on the value at the single lowest point of absorbance
 #'   (or highest point of transmittance) in a given range
-#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   `shift_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
 #'   method = 'minimum')`
 #'
 #'   To perform the exact same baseline adjustment on all samples, specify
@@ -338,21 +338,21 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #'   sous-ensemble, en utilisant le même décalage pour tous les échantillons
 #'   ajustés ou calculés individuellement.
 #'
-#'   Le recalcul ou le décalage de la ligne de base/transmittance maximale peut
+#'   Le décalage de la ligne de base/transmittance maximale peut
 #'   être effectué en suivant l'une des méthodes suivantes :
 #' * Pour décaler la ligne de base en fonction de la valeur à un nombre d'ondes donné :
-#'   `recalculate_baseline(ftir, wavenumber_range = [numeric], method =
+#'   `shift_baseline(ftir, wavenumber_range = [numeric], method =
 #'   'point')`
 #' * Pour décaler la ligne de base en fonction de la valeur moyenne sur un nombre
-#' d'ondes donné : #' `recalculate_baseline(ftir) = [numerique], method = 'point')
-#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#' d'ondes donné : #' `shift_baseline(ftir) = [numerique], method = 'point')
+#'   `shift_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
 #'   method = 'average')`
 #' * Pour décaler la ligne de base en fonction de la valeur du point d'absorbance
 #' le plus bas (ou du point de transmittance le plus élevé) sur l'ensemble des spectres.
-#'   `recalculate_baseline(ftir, method = 'minimum')`
+#'   `shift_baseline(ftir, method = 'minimum')`
 #' * Décaler la ligne de base en fonction de la valeur du point d'absorbance le
 #' plus bas (ou du point de transmittance le plus élevé) dans une gamme donnée.
-#'   `recalculate_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
+#'   `shift_baseline(ftir, wavenumber_range = c([numeric], [numeric]),
 #'   method = 'minimum')`
 #'
 #'   Pour effectuer exactement le même ajustement de la ligne de base sur tous
@@ -360,16 +360,16 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #'   détermination unique pour chaque échantillon, spécifiez `individualy =
 #'   TRUE`.
 #' @param ftir A data.frame of FTIR spectral data including spectra to be
-#'   baseline adjusted.
+#'   baseline shifted
 #'
 #'   Un data.frame de données spectrales IRTF comprenant les spectres à ajuster
 #'   à la ligne de base.
 #'
-#' @param sample_ids A vector of sample IDs to be adjusted. All sample IDs must
+#' @param sample_ids A vector of sample IDs to be shifted. All sample IDs must
 #'   be present in the `ftir` data.frame. If adjusting all spectra, provide NA
 #'   or NULL. Unlisted `sample_id` from `ftir` will be left alone.
 #'
-#'   Un vecteur d'ID d'échantillons à ajuster Tous les ID d'échantillons doivent
+#'   Un vecteur d'ID d'échantillons à ajuster. Tous les ID d'échantillons doivent
 #'   être présents dans la base de données `ftir` data.frame. Si l'ajustement
 #'   concerne tous les spectres, fournir NA ou NULL. Les `sample_id` non listés
 #'   de `ftir` seront laissés seuls.
@@ -408,8 +408,8 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #'
 #' @examples
 #' # Adjust the biodiesel spectra to minimum for each sample
-#' recalculate_baseline(biodiesel, method = "minimum", individually = TRUE)
-recalculate_baseline <- function(
+#' shift_baseline(biodiesel, method = "minimum", individually = TRUE)
+shift_baseline <- function(
   ftir,
   sample_ids = NA,
   wavenumber_range = NA,
@@ -427,26 +427,26 @@ recalculate_baseline <- function(
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
+      "Error in {.fn PlotFTIR::shift_baseline}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
       x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
     ))
   }
 
   if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2."
-    ))
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be of length 1 or 2."
+    )
   }
   if (!(all(is.na(wavenumber_range)) || all(is.numeric(wavenumber_range)))) {
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
       x = "You provided a {.obj_type_friendly wavenumber_range}."
     ))
   }
 
   if (!is.logical(individually)) {
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg individually} must be a boolean value.",
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg individually} must be a boolean value.",
       x = "You provided a {.obj_type_friendly individually}."
     ))
   }
@@ -454,14 +454,14 @@ recalculate_baseline <- function(
   permitted_methods <- c("point", "average", "minimum", "maximum")
   if (length(method) != 1 || !(method %in% permitted_methods)) {
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg method} must be a string.",
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg method} must be a string.",
       i = "{.arg method} must be one of {.val {permitted_methods}}."
     ))
   }
 
   if (method == "point" && length(wavenumber_range) == 2) {
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
       i = "The value at the provided wavenumber will be used to baseline adjust data."
     ))
   }
@@ -471,16 +471,16 @@ recalculate_baseline <- function(
       all(length(wavenumber_range) == 1, !is.na(wavenumber_range))
   ) {
     cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
-      i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
-      i = "To adjust by a single point, call the function with {.code method = 'point'}"
+      "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
+      "!" = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
+      "i" = "To adjust by a single point, call the function with {.code method = 'point'}"
     ))
   }
 
   if (method == "point") {
     if (length(wavenumber_range) != 1 || is.na(wavenumber_range)) {
       cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
+        "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be a single numeric value.",
         i = "The value at the provided wavenumber will be used to baseline adjust data."
       ))
     }
@@ -494,7 +494,7 @@ recalculate_baseline <- function(
                 max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)
           ) {
             cli::cli_warn(c(
-              "Warning in {.fn PlotFTIR::recalculate_baseline}. Provided wavenumber is not within spectral range.",
+              "Warning in {.fn PlotFTIR::shift_baseline}. Provided wavenumber is not within spectral range.",
               i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
             ))
           } else if (
@@ -505,7 +505,7 @@ recalculate_baseline <- function(
               10
           ) {
             cli::cli_warn(c(
-              "Warning in {.fn PlotFTIR::recalculate_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
+              "Warning in {.fn PlotFTIR::shift_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
               i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
             ))
           }
@@ -593,7 +593,7 @@ recalculate_baseline <- function(
       )
     } else if (length(wavenumber_range) != 2) {
       cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be two numeric values.",
+        "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be two numeric values.",
         i = "The average value between the provided wavenumbers will be used to baseline adjust data."
       ))
     }
@@ -754,7 +754,7 @@ recalculate_baseline <- function(
 #' normalisant dans une région de nombre d'ondes. Cette fonction ne fonctionne
 #' pas sur les données de transmittance, elle renverra une erreur.
 #'
-#' @inherit recalculate_baseline params return
+#' @inherit shift_baseline params return
 #' @export
 #' @examples
 #' # Normalize all samples in `biodiesel`
@@ -799,11 +799,11 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   }
 
   if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
+    cli::cli_abort(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2."
-    ))
+    )
   }
-  if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
+  if (anyNA(wavenumber_range) || !all(is.numeric(wavenumber_range))) {
     cli::cli_abort(c(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
       x = "You provided a {.obj_type_friendly wavenumber_range}."
@@ -895,7 +895,7 @@ NULL
 #' @rdname conversion
 absorbance_to_transmittance <- function(ftir) {
   ftir <- check_ftir_data(ftir)
-  normalized <- grepl("normalized", attr(ftir, "intensity"))
+  normalized <- grepl("normalized", attr(ftir, "intensity"), fixed = TRUE)
   if (
     !("absorbance" %in% colnames(ftir)) ||
       attr(ftir, "intensity") %in%
@@ -924,7 +924,7 @@ absorbance_to_transmittance <- function(ftir) {
 #' @rdname conversion
 transmittance_to_absorbance <- function(ftir) {
   ftir <- check_ftir_data(ftir)
-  normalized <- grepl("normalized", attr(ftir, "intensity"))
+  normalized <- grepl("normalized", attr(ftir, "intensity"), fixed = TRUE)
 
   if (
     !("transmittance" %in% colnames(ftir)) ||
@@ -944,6 +944,393 @@ transmittance_to_absorbance <- function(ftir) {
     attr(ftir, "intensity") <- "normalized absorbance"
   } else {
     attr(ftir, "intensity") <- "absorbance"
+  }
+
+  return(ftir)
+}
+
+
+#' Smooth FTIR with Savitzky-Golay filter
+#'
+#' @param ftir A data.frame in long format with a single FTIR spectra in columns
+#'   `sample_id`, `wavenumber`, and `absorbance`. The `absorbance` column may be
+#'   replaced by a `transmittance` column for transmittance plots.
+#'
+#'   Un data.frame au format long avec un seul spectre IRTF dans les colonnes
+#'   `sample_id`, `wavenumber`, et `absorbance`. La colonne `absorbance` peut
+#'   être remplacée par une colonne `transmittance` pour les tracés de
+#'   transmittance.
+#' @param polynomial Savitzky-Golay polynomial term.
+#'
+#'   Terme polynomial de Savitzky-Golay.
+#' @param points Savitzky-Golay points term.
+#'
+#'   Terme de points de Savitzky-Golay
+#' @param derivative Which derivative to return (default = 0 to smooth spectrum,
+#'   but can alos determine smoothed derivatives)
+#'
+#'   Dérivée à retourner (par défaut = 0 pour lisser le spectre, mais on peut
+#'   aussi déterminer des dérivées lissées)
+#'
+#' @return a data.frame with an FTIR spectrum, smoothed (or the derivative)
+#'
+#'   un data.frame avec un FTIR lissé, lissé (ou la dérivée lissée)
+#' @export
+#'
+#' @seealso [signal::sgolayfilt()]
+#'
+#' @references
+#' * Savitzky, A.; Golay, M.J.E. (1964). "Smoothing and Differentiation of Data by Simplified Least Squares Procedures". Analytical Chemistry 36. pp. 1627–1639. doi:10.1021/ac60214a047
+#' @examples
+#' # Load the isopropanol sample spectrum
+#' ftir_data <- sample_spectra[
+#'   sample_spectra$sample_id == "isopropanol",
+#' ]
+#'
+#' if (requireNamespace("signal", quietly = TRUE)) {
+#'   # Apply smoothing
+#'   ftir_smoothed <- smooth_ftir(ftir_data)
+#' }
+#'
+#' # --- Optional: Visualize the results ---
+#' \dontrun{
+#' plot_ftir(ftir_smoothed, plot_title = "Smoothed FTIR")
+#' }
+smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
+  # Package Checks
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg signal} package installation.",
+      i = "Install {.pkg signal} with {.run install.packages('signal')}"
+    ))
+  }
+
+  # arg checks
+  if (!is.null(attr(ftir, "treatment"))) {
+    if (grepl("smoothed", attr(ftir, "treatment"), fixed = TRUE)) {
+      cli::cli_warn(c(
+        "Warning in {.fn PlotFTIR::smooth_ftir}: Spectra have been previously smoothed.",
+        i = "Repeat smoothing of spectra may eliminate small or shoulder peaks."
+      ))
+    } else {
+      attr(ftir, "treatment") <- paste(attr(ftir, "treatment"), "smoothed")
+    }
+  } else {
+    attr(ftir, "treatment") <- "smoothed"
+  }
+
+  ftir <- check_ftir_data(ftir)
+
+  for (i in seq_along(unique(ftir$sample_id))) {
+    s <- unique(ftir$sample_id)[i]
+    if ("absorbance" %in% colnames(ftir)) {
+      intensity <- ftir[ftir$sample_id == s, ]$absorbance
+    } else {
+      intensity <- ftir[ftir$sample_id == s, ]$transmittance
+    }
+
+    smoothed_spectra <- signal::sgolayfilt(
+      intensity,
+      p = polynomial,
+      n = points,
+      m = derivative
+    )
+
+    if ("absorbance" %in% colnames(ftir)) {
+      ftir[ftir$sample_id == s, ]$absorbance <- smoothed_spectra
+    } else {
+      ftir[ftir$sample_id == s, ]$transmittance <- smoothed_spectra
+    }
+  }
+
+  return(ftir)
+}
+
+
+#' Baseline FTIR
+#'
+#' @description Correct the baseline of an FTIR spectrum using one of the
+#' techniques available in the [baseline::baseline()] package.
+#'
+#' Corrigez la ligne de base d'un spectre IRTF en utilisant l'une des techniques
+#' disponibles dans le package [baseline::baseline()].
+#'
+#' @param ftir A data.frame in long format with columns `sample_id`,
+#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
+#'   a `transmittance` column for transmittance plots.
+#'
+#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
+#'   colonne `transmittance` pour les tracés de transmission.
+#' @param method A method from [baseline::baseline()]. For FTIR data, best
+#'   results are achieved by selecting either `modpolyfit`, `peakDetection` or
+#'   `rfbaseline`.
+#'
+#'   Une méthode de [baseline::baseline()]. Pour les données IRTF, les meilleurs
+#'   résultats sont obtenus en sélectionnant soit `modpolyfit`, soit
+#'   `peakDetection`, soit `rfbaseline`.
+#' @param ... Additional parameters required by specific methods in
+#'   [baseline::baseline()].
+#'
+#'   Paramètres supplémentaires requis par certaines méthodes de
+#'   [baseline::baseline()].
+#'
+#' @return A FTIR spectral data.frame with baseline corrected intensity column.
+#'
+#' Un data.frame contenant le spectre IRTF corrigé de la ligne de base
+#'
+#' @export
+#'
+#' @seealso [baseline::baseline()]
+#'
+#' @references
+#' * Kristian Hovde Liland, Trygve Almøy, Bjørn-Helge Mevik (2010) Optimal Choice of Baseline Correction for Multivariate Calibration of Spectra, Applied Spectroscopy 64, pp. 1007-1016. doi:10.1366/000370210792434350
+#' * Chad A. Lieber and Anita Mahadevan-Jansen (2003) Automated Method for Subtraction of Fluorescence from Biological Raman Spectra, Applied Spectroscopy 57, pp. 1363-1367. doi:10.1366/000370203322554518
+#' * Kevin R. Coombes et al. (2003) Quality control and peak finding for proteomics data collected from nipple aspirate fluid by surface-enhanced laser desorption and ionization. Clinical Chemistry 49, pp. 1615-1623. doi:10.1373/49.10.1615
+#' * Andreas F. Ruckstuhl, Matthew P. Jacobson, Robert W. Field, James A. Dodd (2001) Baseline subtraction using robust local regression estimation. Journal of Quantitative Spectroscopy and Radiative Transfer 68, pp.. 179-193. doi:10.1016/S0022-4073(00)00021-2
+#' * Xianchun Shen et al. (2018) Applied Optics 57 pp. 5794-5799 doi:10.1364/AO.57.0057947
+#' @examples
+#' # Load the isopropanol sample spectrum
+#' ftir_data <- sample_spectra[
+#'   sample_spectra$sample_id == "isopropanol",
+#' ]
+#' if (requireNamespace("baseline", quietly = TRUE)) {
+#'   # Apply baseline correction using the default 'modpolyfit' method
+#'   ftir_baselined_modpoly <- baseline_ftir(ftir_data)
+#'
+#'   # Apply baseline correction using the 'lowpass' method
+#'   ftir_baselined_lowpass <- baseline_ftir(ftir_data, method = "lowpass")
+#' }
+#' # --- Optional: Visualize the results ---
+#' \dontrun{
+#' plot_ftir(ftir_baselined_modpoly, plot_title = "ModPoly Baselined FTIR")
+#'
+#' plot_ftir(ftir_baselined_lowpass, plot_title = "Lowpass Baselined FTIR")
+#' }
+baseline_ftir <- function(ftir, method = "modpolyfit", ...) {
+  # Package Checks
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg baseline} package installation.",
+      i = "Install {.pkg baseline} with {.run install.packages('baseline')}"
+    ))
+  }
+
+  # arg checks
+  if (
+    !(method %in%
+      c(
+        "als",
+        "fillPeaks",
+        "irls",
+        "lowpass",
+        "medianWindow",
+        "modpolyfit",
+        "peakDetection",
+        "rfbaseline",
+        "rollingBall",
+        "shirley",
+        "TAP"
+      ))
+  ) {
+    cli::cli_abort(
+      "Error in {.pkg PlotFTIR::baseline_ftir}: {.arg method} should be one of which the {.pkg baseline} is capable of performing."
+    )
+  }
+
+  if (method %in% c("TAP", "shirley", "rollingBall")) {
+    cli::cli_warn(
+      "Method {.code {method}} was not designed for use with FTIR data."
+    )
+  }
+
+  ftir <- check_ftir_data(ftir)
+
+  if (!is.null(attr(ftir, "treatment"))) {
+    if (grepl("baselined", attr(ftir, "treatment"), fixed = TRUE)) {
+      cli::cli_warn(c(
+        "Warning in {.fn PlotFTIR::baseline_ftir}: Spectra have been previously baselined.",
+        i = "Repeat baseline adjustment of spectra may produce unexpected results."
+      ))
+    } else {
+      attr(ftir, "treatment") <- paste(attr(ftir, "treatment"), "baselined")
+    }
+  } else {
+    attr(ftir, "treatment") <- "baselined"
+  }
+
+  for (i in seq_along(unique(ftir$sample_id))) {
+    s <- unique(ftir$sample_id)[i]
+
+    if ("absorbance" %in% colnames(ftir)) {
+      intensity <- ftir[ftir$sample_id == s, ]$absorbance
+    } else {
+      cli::cli_alert_danger(
+        "Note from {.fn PlotFTIR::baseline_ftir}: Baselining with transmittance spectra may not behave as expected."
+      )
+      intensity <- ftir[ftir$sample_id == s, ]$transmittance
+    }
+
+    baselined_spectra <- baseline::baseline(
+      matrix(intensity, ncol = length(intensity)),
+      method = method,
+      ... = ...
+    )
+    corrected <- as.vector(baseline::getCorrected(baselined_spectra))
+
+    if ("absorbance" %in% colnames(ftir)) {
+      ftir[ftir$sample_id == s, ]$absorbance <- corrected
+    } else {
+      ftir[ftir$sample_id == s, ]$transmittance <- corrected
+    }
+  }
+  return(ftir)
+}
+
+
+# Function(s) for dealing with reflectance in absorbance spectra - continuum removal
+# * Clark, R.N. and Roush, T.L. (1984) J. Geophysical Res. 89 pp 6329-6340 <doi:10.1029/JB089iB07p06329>
+
+# Cubic Spline continuum is recommended, "although straight-line segments would produce nearly the same result in this case"
+# ToDo: test cubic vs hermite.
+# Should be done as division in reflectance spectra, or as subtraction for absorbtive spectra
+
+#' Remove Continuum from FTIR Spectra
+#'
+#' @description This function removes the continuum from FTIR spectra using
+#'   either spline or linear interpolation. The continuum is defined as the
+#'   convex hull of the spectrum, and is either subtracted or divided from the
+#'   original spectrum. This is a common preprocessing step in reflectance
+#'   spectroscopy to highlight absorption features.
+#'
+#'   Cette fonction supprime le continuum des spectres IRTF en utilisant une
+#'   interpolation spline ou linéaire. Le continuum est défini comme l'enveloppe
+#'   convexe du spectre, et est soit soustrait, soit divisé du spectre original.
+#'   Il s'agit d'une étape de prétraitement courante en spectroscopie de
+#'   réflectance pour mettre en évidence les caractéristiques d'absorption.
+#'
+#' @param ftir A data.frame in long format with a single FTIR spectra in columns
+#'   `sample_id`, `wavenumber`, and `absorbance` or `transmittance`.
+#'
+#'   Un data.frame au format long avec un seul spectre IRTF dans les colonnes
+#'   `sample_id`, `wavenumber`, et `absorbance` ou `transmittance`.
+#' @param type The type of interpolation to use for the continuum. Options are
+#'   `spline` (default) or `linear`.
+#'
+#'   Le type d'interpolation à utiliser pour le continuum. Les options sont
+#'   `spline` (par défaut) ou `linear`.
+#' @param application How to apply the continuum to the spectra. Options are
+#'   `subtraction` (default) or `division`.
+#'
+#'   Comment appliquer le continuum aux spectres. Les options sont `subtraction`
+#'   (par défaut) ou `division`.
+#' @param ... Additional arguments (currently unused).
+#'
+#'   Arguments supplémentaires (actuellement inutilisés).
+#'
+#' @return A data.frame with the continuum removed from the spectra. The
+#'   `absorbance` or `transmittance` column will be modified.
+#'
+#'   Un data.frame avec le continuum supprimé des spectres. La colonne
+#'   `absorbance` ou `transmittance` sera modifiée.
+#'
+#' @export
+#'
+#' @references Clark, R.N. and Roush, T.L. (1984) J. Geophysical Res. 89 pp
+#'   6329-6340 <doi:10.1029/JB089iB07p06329>
+#'
+#' @examples
+#' # Load the isopropanol sample spectrum
+#' ftir_data <- sample_spectra[
+#'   sample_spectra$sample_id == "isopropanol",
+#' ]
+#'
+#' # Remove the continuum using spline interpolation and subtraction
+#' ftir_no_continuum <- remove_continuum_ftir(ftir_data)
+#'
+#' # Remove the continuum using linear interpolation and division
+#' ftir_no_continuum_linear_div <- remove_continuum_ftir(
+#'   ftir_data,
+#'   type = "linear",
+#'   application = "division"
+#' )
+remove_continuum_ftir <- function(
+  ftir,
+  type = "spline",
+  application = "subtraction",
+  ...
+) {
+  # error checking
+  ftir <- PlotFTIR::check_ftir_data(ftir)
+
+  if (!(application %in% c("subtraction", "division"))) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::remove_continuum_ftir}: {.arg application} must be either {.val subtraction} or {.val division}."
+    )
+  }
+
+  if (!(type %in% c("spline", "linear"))) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::remove_continuum_ftir}: {.arg type} must be either {.val spline} or {.val linear}."
+    )
+  }
+
+  if (!is.null(attr(ftir, "treatment"))) {
+    if (grepl("continuum removed", attr(ftir, "treatment"), fixed = TRUE)) {
+      cli::cli_warn(c(
+        "Warning in {.fn PlotFTIR::remove_continuum_ftir}: Spectra have previously had continuum removed.",
+        i = "Repeat continuum removal of spectra may produce unexpected results."
+      ))
+    } else {
+      attr(ftir, "treatment") <- paste(
+        attr(ftir, "treatment"),
+        "continuum removed"
+      )
+    }
+  } else {
+    attr(ftir, "treatment") <- "continuum removed"
+  }
+
+  # needs to be ordered for rubberbanding
+  ftir <- ftir[order(ftir$wavenumber), ]
+  x <- ftir$wavenumber
+  if ("absorbance" %in% colnames(ftir)) {
+    y <- ftir$absorbance
+    # invert absorbance for convex hull
+    y_for_hull <- 1 / y
+  } else {
+    y <- ftir$transmittance
+    y_for_hull <- y
+  }
+
+  # find convex shape of curve (rubberband)
+  # add bumpers, build hull, and sort
+  hull <- sort(grDevices::chull(
+    c(x[1] - 1, x, x[length(x)] + 1),
+    c(0, y_for_hull, 0)
+  ))
+  # take off the bumpers, subtract by 1 to 'shift everything' back to actual x indexes
+  hull <- hull[2:(length(hull) - 1)] - 1
+
+  # Build functions for interpolating
+  if (type == "spline") {
+    continuum <- stats::splinefun(x = x[hull], y = y_for_hull[hull])(x)
+  } else {
+    # Type is linear
+    continuum <- stats::approx(x = x[hull], y = y[hull], xout = x)$y
+  }
+
+  # Apply the continuum to the spectra by subtraction or division
+  if (application == "subtraction") {
+    y_corrected <- y - continuum
+  } else {
+    y_corrected <- y / continuum
+  }
+
+  if ("absorbance" %in% colnames(ftir)) {
+    ftir$absorbance <- 1 / y_corrected
+  } else {
+    ftir$transmittance <- y_corrected
   }
 
   return(ftir)
