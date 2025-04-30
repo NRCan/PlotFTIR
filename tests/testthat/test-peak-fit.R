@@ -793,6 +793,10 @@ test_that("Languages are handled properly", {
     "Residual of Voigt fitted peaks and isopropanol"
   )
 
+  if (!requireNamespace('gghighlight')) {
+    testthat::skip("gghighlight not available for testing")
+  }
+
   p <- plot_components(ftir, fitpeaks)
   expect_equal(p$labels$title, "Fitted FTIR Plot")
   expect_equal(
