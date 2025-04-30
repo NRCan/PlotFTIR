@@ -579,6 +579,18 @@ test_that("plot_components work", {
     )
   }
 
+  if (!require("gghighlight", quietly = TRUE)) {
+    expect_error(
+      plot_components(ftir, fitpeaks),
+      "requires gghighlight package installation",
+      fixed = TRUE
+    )
+
+    testthat::skip(
+      "gghighlight not available for testing component plot production"
+    )
+  }
+
   p <- plot_components(ftir, fitpeaks)
 
   expect_true(ggplot2::is_ggplot(p))
@@ -657,6 +669,12 @@ test_that("plot_fit_residuals error checks are ok", {
     )
   }
 
+  if (!require("gghighlight", quietly = TRUE)) {
+    testthat::skip(
+      "ggplot2 not available for testing fit residual plot production"
+    )
+  }
+
   ftir <- sample_spectra[
     sample_spectra$sample_id == "isopropanol",
   ]
@@ -699,6 +717,12 @@ test_that("plot_components error checks are ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip(
       "ggplot2 not available for testing fit component plot production"
+    )
+  }
+
+  if (!require("gghighlight", quietly = TRUE)) {
+    testthat::skip(
+      "gghighlight not available for testing fit component plot production"
     )
   }
 
