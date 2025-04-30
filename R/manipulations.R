@@ -52,7 +52,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
     )
   }
 
-  if (!(length(zoom_range) == 2) || !all(is.numeric(zoom_range))) {
+  if (length(zoom_range) != 2 || !all(is.numeric(zoom_range))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be a numeric vector of length two."
     )
@@ -69,7 +69,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   }
 
   if ("transmittance" %in% colnames(data)) {
-    if ('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
+    if ("normal" %in% attr(ftir_spectra_plot, "spectra_style")) {
       yrange <- c(0, 100)
     } else {
       yrange <- c(0, max(c(data$transmittance, 100), na.rm = TRUE))
@@ -827,7 +827,7 @@ add_band <- function(
     text <- ""
   }
 
-  if (!(length(wavenumber_range) == 2) || !all(is.numeric(wavenumber_range))) {
+  if (length(wavenumber_range) != 2 || !all(is.numeric(wavenumber_range))) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be a numeric vector of length two."
     )

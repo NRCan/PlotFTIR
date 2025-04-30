@@ -81,7 +81,7 @@ average_spectra <- function(
       all(other_wavenumbers %in% first_wavenumbers)
   ) {
     # make average - when all wavenumbers are present in all samples
-    if (grepl("absorbance", intensity_attribute)) {
+    if (grepl("absorbance", intensity_attribute, fixed = TRUE)) {
       avg_spectra <- stats::aggregate(
         absorbance ~ wavenumber,
         data = ftir,
@@ -433,9 +433,9 @@ shift_baseline <- function(
   }
 
   if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
+    cli::cli_abort(
       "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be of length 1 or 2."
-    ))
+    )
   }
   if (!(all(is.na(wavenumber_range)) || all(is.numeric(wavenumber_range)))) {
     cli::cli_abort(c(
@@ -472,8 +472,8 @@ shift_baseline <- function(
   ) {
     cli::cli_abort(c(
       "Error in {.fn PlotFTIR::shift_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
-      i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
-      i = "To adjust by a single point, call the function with {.code method = 'point'}"
+      "!" = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
+      "i" = "To adjust by a single point, call the function with {.code method = 'point'}"
     ))
   }
 
@@ -799,11 +799,11 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   }
 
   if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
+    cli::cli_abort(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2."
-    ))
+    )
   }
-  if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
+  if (anyNA(wavenumber_range) || !all(is.numeric(wavenumber_range))) {
     cli::cli_abort(c(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
       x = "You provided a {.obj_type_friendly wavenumber_range}."
@@ -895,7 +895,7 @@ NULL
 #' @rdname conversion
 absorbance_to_transmittance <- function(ftir) {
   ftir <- check_ftir_data(ftir)
-  normalized <- grepl("normalized", attr(ftir, "intensity"))
+  normalized <- grepl("normalized", attr(ftir, "intensity"), fixed = TRUE)
   if (
     !("absorbance" %in% colnames(ftir)) ||
       attr(ftir, "intensity") %in%
@@ -924,7 +924,7 @@ absorbance_to_transmittance <- function(ftir) {
 #' @rdname conversion
 transmittance_to_absorbance <- function(ftir) {
   ftir <- check_ftir_data(ftir)
-  normalized <- grepl("normalized", attr(ftir, "intensity"))
+  normalized <- grepl("normalized", attr(ftir, "intensity"), fixed = TRUE)
 
   if (
     !("transmittance" %in% colnames(ftir)) ||
@@ -994,7 +994,7 @@ transmittance_to_absorbance <- function(ftir) {
 #'
 #' # --- Optional: Visualize the results ---
 #' \dontrun{
-#'   plot_ftir(ftir_smoothed, plot_title = "Smoothed FTIR")
+#' plot_ftir(ftir_smoothed, plot_title = "Smoothed FTIR")
 #' }
 smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
   # Package Checks
@@ -1007,7 +1007,7 @@ smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
 
   # arg checks
   if (!is.null(attr(ftir, "treatment"))) {
-    if (grepl("smoothed", attr(ftir, "treatment"))) {
+    if (grepl("smoothed", attr(ftir, "treatment"), fixed = TRUE)) {
       cli::cli_warn(c(
         "Warning in {.fn PlotFTIR::smooth_ftir}: Spectra have been previously smoothed.",
         i = "Repeat smoothing of spectra may eliminate small or shoulder peaks."
@@ -1103,9 +1103,9 @@ smooth_ftir <- function(ftir, polynomial = 2, points = 13, derivative = 0) {
 #' }
 #' # --- Optional: Visualize the results ---
 #' \dontrun{
-#'   plot_ftir(ftir_baselined_modpoly, plot_title = "ModPoly Baselined FTIR")
+#' plot_ftir(ftir_baselined_modpoly, plot_title = "ModPoly Baselined FTIR")
 #'
-#'   plot_ftir(ftir_baselined_lowpass, plot_title = "Lowpass Baselined FTIR")
+#' plot_ftir(ftir_baselined_lowpass, plot_title = "Lowpass Baselined FTIR")
 #' }
 baseline_ftir <- function(ftir, method = "modpolyfit", ...) {
   # Package Checks
@@ -1147,7 +1147,7 @@ baseline_ftir <- function(ftir, method = "modpolyfit", ...) {
   ftir <- check_ftir_data(ftir)
 
   if (!is.null(attr(ftir, "treatment"))) {
-    if (grepl("baselined", attr(ftir, "treatment"))) {
+    if (grepl("baselined", attr(ftir, "treatment"), fixed = TRUE)) {
       cli::cli_warn(c(
         "Warning in {.fn PlotFTIR::baseline_ftir}: Spectra have been previously baselined.",
         i = "Repeat baseline adjustment of spectra may produce unexpected results."
@@ -1276,7 +1276,7 @@ remove_continuum_ftir <- function(
   }
 
   if (!is.null(attr(ftir, "treatment"))) {
-    if (grepl("continuum removed", attr(ftir, "treatment"))) {
+    if (grepl("continuum removed", attr(ftir, "treatment"), fixed = TRUE)) {
       cli::cli_warn(c(
         "Warning in {.fn PlotFTIR::remove_continuum_ftir}: Spectra have previously had continuum removed.",
         i = "Repeat continuum removal of spectra may produce unexpected results."
@@ -1309,7 +1309,7 @@ remove_continuum_ftir <- function(
     c(x[1] - 1, x, x[length(x)] + 1),
     c(0, y_for_hull, 0)
   ))
-  #take off the bumpers, subtract by 1 to 'shift everything' back to actual x indexes
+  # take off the bumpers, subtract by 1 to 'shift everything' back to actual x indexes
   hull <- hull[2:(length(hull) - 1)] - 1
 
   # Build functions for interpolating

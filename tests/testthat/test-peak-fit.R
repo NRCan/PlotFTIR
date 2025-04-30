@@ -4,7 +4,7 @@ test_that("find_ftir_peaks handles input errors ok", {
     wavenumber = seq(4000, 400, length.out = 100),
     absorbance = rnorm(100)
   )
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -37,7 +37,7 @@ test_that("find_ftir_peaks handles input errors ok", {
 
 
 test_that("find_ftir_peaks returns sorted peaks", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -51,7 +51,7 @@ test_that("find_ftir_peaks returns sorted peaks", {
 })
 
 test_that("find_ftir_peaks returns correct peaks", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -69,7 +69,7 @@ test_that("find_ftir_peaks returns correct peaks", {
     window_norm = 50,
     window_deriv = 50
   )
-  expect_equal(length(peaks), 10)
+  expect_length(peaks, 10)
   expect_equal(
     peaks,
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3818)
@@ -77,7 +77,7 @@ test_that("find_ftir_peaks returns correct peaks", {
 })
 
 test_that("Fixed Peak Locations don't move", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -107,26 +107,26 @@ test_that("Fixed Peak Locations don't move", {
   gmm_loose <- fit_peaks(
     ftir,
     peaklist = peaklist,
-    fixed_peaks = F,
+    fixed_peaks = FALSE,
     method = "g"
   )
 
   lmm_loose <- fit_peaks(
     ftir,
     peaklist = peaklist,
-    fixed_peaks = F,
+    fixed_peaks = FALSE,
     method = "l"
   )
   pvmm_loose <- fit_peaks(
     ftir,
     peaklist = peaklist,
-    fixed_peaks = F,
+    fixed_peaks = FALSE,
     method = "pv"
   )
   dsgmm_loose <- fit_peaks(
     ftir,
     peaklist = peaklist,
-    fixed_peaks = F,
+    fixed_peaks = FALSE,
     method = "dsg"
   )
 
@@ -168,7 +168,7 @@ test_that("Fixed Peak Locations don't move", {
 })
 
 test_that("zero_normalization and zero_deriv check ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -243,7 +243,7 @@ test_that("zero_threshold sets to zero values below threshold", {
 })
 
 test_that("fit_peaks (voigt) returns correct results", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -254,7 +254,7 @@ test_that("fit_peaks (voigt) returns correct results", {
   )
   fitted_peaks <- fit_peaks(ftir, method = "voigt")
   expect_equal(fitted_peaks$method, "voigt")
-  expect_equal(length(fitted_peaks$mu), 10)
+  expect_length(fitted_peaks$mu, 10)
   expect_equal(
     round(fitted_peaks$mu),
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3818)
@@ -269,7 +269,7 @@ test_that("fit_peaks (voigt) returns correct results", {
 })
 
 test_that("fit_peaks (gaussian) returns correct results", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -280,7 +280,7 @@ test_that("fit_peaks (gaussian) returns correct results", {
   )
   fitted_peaks <- fit_peaks(ftir, method = "gaussian")
   expect_equal(fitted_peaks$method, "gauss")
-  expect_equal(length(fitted_peaks$mu), 10)
+  expect_length(fitted_peaks$mu, 10)
   expect_equal(
     round(fitted_peaks$mu),
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3818)
@@ -295,7 +295,7 @@ test_that("fit_peaks (gaussian) returns correct results", {
 })
 
 test_that("fit_peaks (lorentz) returns correct results", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -306,7 +306,7 @@ test_that("fit_peaks (lorentz) returns correct results", {
   )
   fitted_peaks <- fit_peaks(ftir, method = "lorentz")
   expect_equal(fitted_peaks$method, "lorentz")
-  expect_equal(length(fitted_peaks$mu), 10)
+  expect_length(fitted_peaks$mu, 10)
   expect_equal(
     round(fitted_peaks$mu),
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3819)
@@ -321,7 +321,7 @@ test_that("fit_peaks (lorentz) returns correct results", {
 })
 
 test_that("fit_peaks (dsg) returns correct results", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -332,7 +332,7 @@ test_that("fit_peaks (dsg) returns correct results", {
   )
   fitted_peaks <- fit_peaks(ftir, method = "dsg")
   expect_equal(fitted_peaks$method, "doniach-šunjić-gauss")
-  expect_equal(length(fitted_peaks$mu), 10)
+  expect_length(fitted_peaks$mu, 10)
   expect_equal(
     round(fitted_peaks$mu),
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3818)
@@ -347,7 +347,7 @@ test_that("fit_peaks (dsg) returns correct results", {
 })
 
 test_that("fit_peaks error checks are ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -372,7 +372,7 @@ test_that("fit_peaks error checks are ok", {
 })
 
 test_that("Peak data.frame is created ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -422,7 +422,7 @@ test_that("Peak data.frame is created ok", {
 })
 
 test_that("get_fit_spectra works ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -436,19 +436,19 @@ test_that("get_fit_spectra works ok", {
   fitl <- fit_peaks(ftir, method = "lorentz")
   fitd <- fit_peaks(ftir, method = "dsg")
 
-  expect_equal(length(get_fit_spectra(ftir, fitg)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitv)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitl)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitd)), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitg), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitv), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitl), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitd), length(ftir$wavenumber))
 
-  expect_equal(length(get_fit_spectra(ftir, fitg, 3)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitv, 3)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitl, 3)), length(ftir$wavenumber))
-  expect_equal(length(get_fit_spectra(ftir, fitd, 3)), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitg, 3), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitv, 3), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitl, 3), length(ftir$wavenumber))
+  expect_length(get_fit_spectra(ftir, fitd, 3), length(ftir$wavenumber))
 })
 
 test_that("get_fit_spectra checks are ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -479,7 +479,7 @@ test_that("get_fit_spectra checks are ok", {
 
 
 test_that("plot_fit_ftir_peaks work", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -518,7 +518,7 @@ test_that("plot_fit_ftir_peaks work", {
 })
 
 test_that("plot_fit_residuals work", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -557,7 +557,7 @@ test_that("plot_fit_residuals work", {
 })
 
 test_that("plot_components work", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -613,7 +613,7 @@ test_that("plot_components work", {
 })
 
 test_that("plot_fit_ftir_peaks error checks are ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -659,7 +659,7 @@ test_that("plot_fit_ftir_peaks error checks are ok", {
 })
 
 test_that("plot_fit_residuals error checks are ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -710,7 +710,7 @@ test_that("plot_fit_residuals error checks are ok", {
 })
 
 test_that("plot_components error checks are ok", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
@@ -761,7 +761,7 @@ test_that("plot_components error checks are ok", {
 })
 
 test_that("Languages are handled properly", {
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 

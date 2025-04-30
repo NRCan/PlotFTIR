@@ -283,16 +283,16 @@ test_that("reading .jdx works", {
 
   expect_equal(names(jdx_jdx)[4], unique(jdx_ftir$sample_id))
   expect_equal(nrow(jdx_ftir), nrow(jdx_jdx[[4]]))
-  expect_true('transmittance' %in% colnames(jdx_ftir))
+  expect_true("transmittance" %in% colnames(jdx_ftir))
   expect_message(
     read_ftir(
       path = system.file("extdata", "SBO.jdx", package = "readJDX"),
-      sample_name = 'test_sample'
+      sample_name = "test_sample"
     ),
     "does not match that contained in the .jdx file"
   )
 
-  #More IR Data
+  # More IR Data
   jdx_ir2 <- read_ftir(
     path = system.file("extdata", "MiniDIFDUP.JDX", package = "readJDX")
   )
@@ -488,17 +488,17 @@ test_that("interface to ir is ok", {
   )
 
   allir <- ir_to_plotftir(irdata)
-  expect_equal(length(unique(allir$sample_id)), nrow(irdata))
+  expect_length(unique(allir$sample_id), nrow(irdata))
   expect_equal(colnames(allir), c("wavenumber", "absorbance", "sample_id"))
 
   irnum <- ir_to_plotftir(irdata, what = c(1:5))
-  expect_equal(length(unique(irnum$sample_id)), 5)
+  expect_length(unique(irnum$sample_id), 5)
 
   irname <- ir_to_plotftir(
     irdata,
     what = c("GN 11-389", "GN 11-400", "GN 11-407")
   )
-  expect_equal(length(unique(irname$sample_id)), 3)
+  expect_length(unique(irname$sample_id), 3)
 
   plotir <- plotftir_to_ir(biodiesel)
 
@@ -558,7 +558,7 @@ test_that("Interface to ChemoSpec is ok", {
   csftir <- chemospec_to_plotftir(SrE.IR)
 
   expect_equal(colnames(csftir), c("wavenumber", "absorbance", "sample_id"))
-  expect_equal(length(unique(csftir$sample_id)), length(SrE.IR$names))
+  expect_length(unique(csftir$sample_id), length(SrE.IR$names))
 
   expect_error(
     plotftir_to_chemospec(biodiesel, group_colours = "blue"),

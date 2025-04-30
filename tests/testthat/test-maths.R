@@ -1627,7 +1627,7 @@ test_that("baseline_ftir works", {
     sample_spectra$sample_id == "isopropanol",
   ]
 
-  if (!requireNamespace('baseline', quietly = TRUE)) {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
     expect_error(
       baseline_ftir(test_data),
       "requires baseline package installation"
@@ -1644,7 +1644,7 @@ test_that("baseline_ftir works", {
 
   baselined <- baseline_ftir(test_data)
 
-  expect_equal("baselined", attr(baselined, "treatment"))
+  expect_equal(attr(baselined, "treatment"), "baselined")
 
   #make sure the attr is appended and not overwriting
   smooth_baselined <- baseline_ftir(smooth_ftir(test_data))
@@ -1759,7 +1759,7 @@ test_that("remove_continuum_ftir warns when continuum has already been removed",
 })
 
 test_that("remove_continuum_ftir works after other treatments.", {
-  if (!requireNamespace('baseline', quietly = TRUE)) {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
     testthat::skip("baseline not available for testing")
   }
   ftir_data <- sample_spectra[
@@ -1886,7 +1886,7 @@ test_that("smooth_ftir checks repeat calls", {
 })
 
 test_that("smooth_ftir corrects attributes", {
-  if (!requireNamespace('baseline', quietly = TRUE)) {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
     testthat::skip("baseline not available for testing")
   }
 
@@ -1895,7 +1895,7 @@ test_that("smooth_ftir corrects attributes", {
   ]
   smoothed <- smooth_ftir(test_data)
 
-  expect_equal("smoothed", attr(smoothed, "treatment"))
+  expect_equal(attr(smoothed, "treatment"), "smoothed")
 
   #make sure the attr is appended and not overwriting
   smooth_baselined <- smooth_ftir(baseline_ftir(test_data))

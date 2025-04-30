@@ -72,18 +72,18 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' check_ftir_data(biodiesel)
 check_ftir_data <- function(ftir) {
   fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
-  if (inherits(fn, 'try-error')) {
+  if (inherits(fn, "try-error")) {
     fn <- "PlotFTIR::check_ftir_data"
   } else {
     fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
   }
 
-  if ("ir" %in% class(ftir)) {
+  if (inherits(ftir, "ir")) {
     cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
     ftir <- ir_to_plotftir(ftir)
   }
 
-  if ("Spectra" %in% class(ftir)) {
+  if (inherits(ftir, "Spectra")) {
     cli::cli_inform(
       "Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure."
     )

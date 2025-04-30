@@ -79,7 +79,7 @@
 #' print("Peaks found with adjusted settings:")
 #' print(peaks_adjusted)
 find_ftir_peaks <- function(ftir, ...) {
-  #check args
+  # check args
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (length(unique(ftir$sample_id)) != 1) {
@@ -319,7 +319,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #' # Peaks will be found automatically using find_ftir_peaks defaults
 #' fitted_voigt_default <- fit_peaks(ftir_data)
 #' print("Fitted Voigt Peaks (Default):")
-#' 
+#'
 #' # Show key results like final parameters and convergence status
 #' print(fit_peak_df(fitted_voigt_default))
 #' print(paste("Convergence:", fitted_voigt_default$convergence))
@@ -347,7 +347,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #'   ftir_data,
 #'   peaklist = fixed_peak_locations,
 #'   fixed_peaks = TRUE
-#'  )
+#' )
 #' print("Fitted Voigt Peaks (Fixed Locations):")
 #' print(fit_peak_df(fitted_voigt_fixed))
 #'
@@ -580,7 +580,9 @@ fit_peak_df <- function(fitted_peaks) {
 #'   Une valeur de caractère pour le type de pic ajusté aux spectres.
 #' @keywords internal
 get_fit_method <- function(fitted_peaks) {
-  if (!("method" %in% names(fitted_peaks))) {
+  if (("method" %in% names(fitted_peaks))) {
+    method <- fitted_peaks$method
+  } else {
     cli::cli_warn(
       "Warning in {.fn PlotFTIR::get_fit_method}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
     )
@@ -593,8 +595,6 @@ get_fit_method <- function(fitted_peaks) {
     } else {
       method <- "gauss"
     }
-  } else {
-    method <- fitted_peaks$method
   }
   return(method)
 }
@@ -834,29 +834,29 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
 #'
 #' # --- Example 1: Plot components only (default) ---
 #' \dontrun{
-#'   plot_components(ftir_data, fitted_voigt)
+#' plot_components(ftir_data, fitted_voigt)
 #' }
 #'
 #' # --- Example 2: Plot components AND the overall fitted sum ---
 #' \dontrun{
-#'   plot_components(ftir_data, fitted_voigt, plot_fit = TRUE)
+#' plot_components(ftir_data, fitted_voigt, plot_fit = TRUE)
 #' }
 #'
 #' # --- Example 3: Plot components and fit with custom titles and name ---
 #' \dontrun{
-#'   plot_components(
-#'     ftir_data,
-#'     fitted_voigt,
-#'     plot_fit = TRUE,
-#'     plot_title = c("Isopropanol Peak Fit", "Voigt Components"),
-#'     legend_title = "Spectrum Type",
-#'     fitted_sample_name = "Total Fit (Voigt)"
-#'   )
+#' plot_components(
+#'   ftir_data,
+#'   fitted_voigt,
+#'   plot_fit = TRUE,
+#'   plot_title = c("Isopropanol Peak Fit", "Voigt Components"),
+#'   legend_title = "Spectrum Type",
+#'   fitted_sample_name = "Total Fit (Voigt)"
+#' )
 #' }
 #'
 #' # --- Example 4: Plot components in French ---
 #' \dontrun{
-#'   plot_components(ftir_data, fitted_voigt, plot_fit = TRUE, lang = "fr")
+#' plot_components(ftir_data, fitted_voigt, plot_fit = TRUE, lang = "fr")
 #' }
 plot_components <- function(
   ftir,
@@ -1009,15 +1009,15 @@ plot_components <- function(
     lang = lang
   ))
 
-  if (!requireNamespace("ggthemes", quietly = TRUE)) {
+  if (requireNamespace("ggthemes", quietly = TRUE)) {
     suppressWarnings(
       p <- p +
-        ggplot2::scale_color_viridis_d()
+        ggthemes::scale_color_calc()
     )
   } else {
     suppressWarnings(
       p <- p +
-        ggthemes::scale_color_calc()
+        ggplot2::scale_color_viridis_d()
     )
   }
 
@@ -1103,20 +1103,20 @@ plot_components <- function(
 #'
 #' # --- Example 1: Plot residuals with default settings ---
 #' \dontrun{
-#'   plot_fit_residuals(ftir_data, fitted_voigt)
+#' plot_fit_residuals(ftir_data, fitted_voigt)
 #' }
 #'
 #' # --- Example 2: Plot residuals with custom titles in French ---
 #' \dontrun{
-#'   plot_fit_residuals(
-#'     ftir_data,
-#'     fitted_voigt,
-#'     lang = "fr",
-#'     plot_title = c(
-#'       "R\u00e9sidus de l'ajustement",
-#'       "Diff\u00e9rence entre le spectre et l'ajustement Voigt"
-#'     )
+#' plot_fit_residuals(
+#'   ftir_data,
+#'   fitted_voigt,
+#'   lang = "fr",
+#'   plot_title = c(
+#'     "R\u00e9sidus de l'ajustement",
+#'     "Diff\u00e9rence entre le spectre et l'ajustement Voigt"
 #'   )
+#' )
 #' }
 #'
 plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
@@ -1282,36 +1282,36 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
 #'
-#' if(!requireNamespace('signal', quietly = TRUE)){
+#' if (!requireNamespace("signal", quietly = TRUE)) {
 #'   # First, fit the peaks using the default 'voigt' method
 #'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #' }
 #'
 #' # --- Example 1: Plot original spectrum and the overall fitted sum ---
 #' \dontrun{
-#'   plot_fit_ftir_peaks(ftir_data, fitted_voigt)
+#' plot_fit_ftir_peaks(ftir_data, fitted_voigt)
 #' }
 #'
 #' # --- Example 2: Plot original, overall fit, AND individual components ---
 #' # This internally calls plot_components() with plot_fit = TRUE
 #' \dontrun{
-#'   plot_fit_ftir_peaks(ftir_data, fitted_voigt, plot_components = TRUE)
+#' plot_fit_ftir_peaks(ftir_data, fitted_voigt, plot_components = TRUE)
 #' }
 #'
 #' # --- Example 3: Plot original and fit with custom titles and name ---
 #' \dontrun{
-#'   plot_fit_ftir_peaks(
-#'     ftir_data,
-#'     fitted_voigt,
-#'     plot_title = c("Isopropanol Fit Comparison", "Original vs. Voigt Sum"),
-#'     legend_title = "Spectrum Source",
-#'     fitted_sample_name = "Total Voigt Fit"
-#'   )
+#' plot_fit_ftir_peaks(
+#'   ftir_data,
+#'   fitted_voigt,
+#'   plot_title = c("Isopropanol Fit Comparison", "Original vs. Voigt Sum"),
+#'   legend_title = "Spectrum Source",
+#'   fitted_sample_name = "Total Voigt Fit"
+#' )
 #' }
 #'
 #' # --- Example 4: Plot original and fit in French ---
 #' \dontrun{
-#'   plot_fit_ftir_peaks(ftir_data, fitted_voigt, lang = "fr")
+#' plot_fit_ftir_peaks(ftir_data, fitted_voigt, lang = "fr")
 #' }
 #'
 plot_fit_ftir_peaks <- function(
@@ -1398,25 +1398,23 @@ plot_fit_ftir_peaks <- function(
   )
   if ("plot_title" %in% argnames) {
     plot_title <- args$plot_title
+  } else if (lang == "en") {
+    plot_title <- c(
+      "Fitted FTIR Plot",
+      paste0(
+        "Showing as-analyzed spectra and sum of ",
+        tools::toTitleCase(method),
+        " fitted peaks"
+      )
+    )
   } else {
-    if (lang == "en") {
-      plot_title <- c(
-        "Fitted FTIR Plot",
-        paste0(
-          "Showing as-analyzed spectra and sum of ",
-          tools::toTitleCase(method),
-          " fitted peaks"
-        )
+    plot_title <- c(
+      "Trac\u00e9 IRTF ajust\u00e9",
+      paste0(
+        "Montrer les spectres et de la somme des pics ajust\u00e9s par la m\u00e9thode ",
+        tools::toTitleCase(method)
       )
-    } else {
-      plot_title <- c(
-        "Trac\u00e9 IRTF ajust\u00e9",
-        paste0(
-          "Montrer les spectres et de la somme des pics ajust\u00e9s par la m\u00e9thode ",
-          tools::toTitleCase(method)
-        )
-      )
-    }
+    )
   }
 
   fitted_y <- get_fit_spectra(ftir = ftir, fitted_peaks = fitted_peaks)
@@ -1680,7 +1678,7 @@ spect_em_dsgmm <- function(
       "Error in {.fn spect_em_dsgmm}. All of {.param mu}, {.param sigma}, {.param alpha}, {.param eta} and {.param mix_ratio} must be of the same length."
     )
   }
-  if (!maxit > 1) {
+  if (maxit <= 1) {
     cli::cli_abort(
       "Error in {.fn spect_em_dsgmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
     )
@@ -1806,7 +1804,7 @@ spect_em_dsgmm <- function(
     eta_1 <- rbind(eta_1, eta)
     mix_ratio_1 <- rbind(mix_ratio_1, mix_ratio)
 
-    #Check for convergance
+    # Check for convergance
     if (abs(LL_1[i + 1] - LL_1[i]) < conv_cri) {
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
@@ -1892,7 +1890,7 @@ spect_em_gmm <- function(
       "Error in {.fn spect_em_gmm}. All of {.param mu}, {.param sigma}, and {.param mix_ratio} must be of the same length."
     )
   }
-  if (!maxit > 1) {
+  if (maxit <= 1) {
     cli::cli_abort(
       "Error in {.fn spect_em_gmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
     )
@@ -1938,7 +1936,7 @@ spect_em_gmm <- function(
     sigma_1 <- rbind(sigma_1, sigma)
     mix_ratio_1 <- rbind(mix_ratio_1, mix_ratio)
 
-    #Check for convergance
+    # Check for convergance
     if (abs(LL_1[i + 1] - LL_1[i]) < conv_cri) {
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
@@ -2018,7 +2016,7 @@ spect_em_lmm <- function(
       "Error in {.fn spect_em_lmm}. All of {.param mu}, {.param gam}, and {.param mix_ratio} must be of the same length."
     )
   }
-  if (!maxit > 1) {
+  if (maxit <= 1) {
     cli::cli_abort(
       "Error in {.fn spect_em_lmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
     )
@@ -2097,7 +2095,7 @@ spect_em_lmm <- function(
     gam_1 <- rbind(gam_1, gam)
     mix_ratio_1 <- rbind(mix_ratio_1, mix_ratio)
 
-    #Check for convergance
+    # Check for convergance
     if (abs(LL_1[i + 1] - LL_1[i]) < conv_cri) {
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
@@ -2184,7 +2182,7 @@ spect_em_pvmm <- function(
       "Error in {.fn spect_em_pvmm}. All of {.param mu}, {.param sigma}, {.param eta}, and {.param mix_ratio} must be of the same length."
     )
   }
-  if (!maxit > 1) {
+  if (maxit <= 1) {
     cli::cli_abort(
       "Error in {.fn spect_em_pvmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
     )
@@ -2207,7 +2205,7 @@ spect_em_pvmm <- function(
   eta_1 <- rbind(eta_1, eta)
   mix_ratio_1 <- rbind(mix_ratio_1, mix_ratio)
 
-  #Iterative optimization
+  # Iterative optimization
   for (i in 1:maxit) {
     tmp <- sapply(1:K, f_k)
     den <- apply(tmp, 1, sum)
@@ -2285,7 +2283,7 @@ spect_em_pvmm <- function(
     eta_1 <- rbind(eta_1, eta)
     mix_ratio_1 <- rbind(mix_ratio_1, mix_ratio)
 
-    #Check for convergance
+    # Check for convergance
     if (abs(LL_1[i + 1] - LL_1[i]) < conv_cri) {
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")

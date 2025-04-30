@@ -75,8 +75,8 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-) 
-add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
+)
+add_band(biodiesel_marked, c(2750, 3050), "C-H Stretch")
 ```
 
 If the need arises to rename samples listed in the legend, this is possible via `rename_plot_sample_ids()`. Samples must be listed in the rename vector with the format `"new name" = "old name"`. 
@@ -235,8 +235,8 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-) 
-add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
+)
+add_band(biodiesel_marked, c(2750, 3050), "C-H étirement")
 ```
 
 S'il est nécessaire de renommer les échantillons répertoriés dans la légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de renommage doit avoir le format `"nouveau nom" = "ancien nom"`.
