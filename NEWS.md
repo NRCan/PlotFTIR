@@ -1,4 +1,4 @@
-# PlotFTIR (development version)
+# PlotFTIR 1.2.1
 
 * Updates (mostly to testing) to comply with pending ggplot2 4.0.0 release (#23)
 
