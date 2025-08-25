@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* Updates (mostly to testing) to comply with pending ggplot2 4.0.0 release (#23)
+
 # PlotFTIR 1.2.0
 
 * Patch update to expose `check_ftir_data` for downstream packages. (related to #19)

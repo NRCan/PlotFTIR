@@ -310,9 +310,9 @@ plot_ftir_stacked <- function(
   suppressMessages(p <- p + ggplot2::coord_cartesian(ylim = c(0, NA)))
 
   if (grepl("absorbance", mode)) {
-    p$labels$y <- "Absorbance (a.u.)"
+    p <- p + ggplot2::ylab("Absorbance (a.u.)")
   } else {
-    p$labels$y <- "Transmittance (a.u.)"
+    p <- p + ggplot2::ylab("Transmittance (a.u.)")
   }
 
   attr(p, "spectra_style") <- "stacked"
