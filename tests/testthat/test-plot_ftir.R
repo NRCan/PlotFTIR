@@ -17,8 +17,8 @@ test_that("Plots are generated", {
   p4 <- plot_ftir_stacked(absorbance_to_transmittance(biodiesel))
   p5 <- plot_ftir(normalize_spectra(biodiesel))
 
-  expect_true(ggplot2::is.ggplot(p1))
-  expect_true(ggplot2::is.ggplot(p2))
+  expect_true(ggplot2::is_ggplot(p1))
+  expect_true(ggplot2::is_ggplot(p2))
   p1lab <- ggplot2::get_labs(p1)
   p2lab <- ggplot2::get_labs(p2)
   expect_equal(p1lab$y, "Absorbance")
@@ -27,9 +27,9 @@ test_that("Plots are generated", {
   p3lab <- ggplot2::get_labs(p3)
   p4lab <- ggplot2::get_labs(p4)
   p5lab <- ggplot2::get_labs(p5)
-  expect_true(ggplot2::is.ggplot(p3))
-  expect_true(ggplot2::is.ggplot(p4))
-  expect_true(ggplot2::is.ggplot(p5))
+  expect_true(ggplot2::is_ggplot(p3))
+  expect_true(ggplot2::is_ggplot(p4))
+  expect_true(ggplot2::is_ggplot(p5))
   expect_equal(p3lab$y, "% Transmittance")
   expect_equal(p4lab$y, "Transmittance (a.u.)")
   expect_equal(p5lab$y, "Normalized Absorbance")
@@ -37,7 +37,7 @@ test_that("Plots are generated", {
   # ensure lots of samples can be plotted with rollover to viridis palette.
   p6 <- suppressWarnings(plot_ftir(rbind(biodiesel, sample_spectra)))
   p6lab <- ggplot2::get_labs(p6)
-  expect_true(ggplot2::is.ggplot(p6))
+  expect_true(ggplot2::is_ggplot(p6))
   expect_equal(p6lab$y, "Absorbance")
 })
 

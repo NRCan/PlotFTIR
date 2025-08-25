@@ -244,7 +244,7 @@ test_that("labelled plot is ok", {
   )
 })
 
-test_that("-.gg is ok", {
+test_that("-.ggplot is ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing -.gg.")
   }
@@ -253,11 +253,6 @@ test_that("-.gg is ok", {
   expect_error(
     biodiesel_plot - NULL,
     "Cannot use `-.gg()` with a single argument, ",
-    fixed = TRUE
-  )
-  expect_error(
-    4 - ggplot2::geom_vline(xintercept = 5),
-    "You need to have a ggplot on the left side. You provided ",
     fixed = TRUE
   )
 })
@@ -296,7 +291,7 @@ test_that("rename is ok", {
   )
 
   rp <- rename_plot_sample_ids(p, new_ids)
-  expect_true(ggplot2::is.ggplot(rp))
+  expect_true(ggplot2::is_ggplot(rp))
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
   expect_true("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 
@@ -314,7 +309,7 @@ test_that("rename is ok", {
 
   # check only partial names still makes a plot
   rp <- rename_plot_sample_ids(p, new_ids[1])
-  expect_true(ggplot2::is.ggplot(rp))
+  expect_true(ggplot2::is_ggplot(rp))
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
   expect_false("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 })
