@@ -160,11 +160,7 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
       i = "Did you accidentally put {.code -} on a new line?"
     ))
   }
-  if (!ggplot2::is_ggplot(plot)) {
-    cli::cli_abort(
-      "You need to have a ggplot on the left side. You provided {.obj_type_friendly { plot }}."
-    )
-  }
+
   layers_count <- length(plot$layers)
 
   plot <- plot + layer
@@ -407,13 +403,6 @@ add_wavenumber_marker <- function(
     )
   }
 
-  data <- ftir_spectra_plot$data
-  if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
-    )
-  }
-
   if (is.null(line_aesthetics)) {
     line_aesthetics <- list()
   }
@@ -431,6 +420,13 @@ add_wavenumber_marker <- function(
   if (!is.list(label_aesthetics)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg label_aesthetics} must be a named list. You provided {.obj_type_friendly {label_aesthetics}}."
+    )
+  }
+
+  data <- ftir_spectra_plot$data
+  if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
     )
   }
 

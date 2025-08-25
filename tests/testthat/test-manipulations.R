@@ -225,6 +225,27 @@ test_that("labelled plot is ok", {
     "`wavenumber` must be a value between 701 and 3999 cm^-1.",
     fixed = TRUE
   )
+  expect_error(
+    add_wavenumber_marker(
+      biodiesel_plot,
+      wavenumber = 1740,
+      text = "CO Stretch",
+      line_aesthetics = 'dashed'
+    ),
+    "`line_aesthetics` must be a named list. You provided",
+    fixed = TRUE
+  )
+
+  expect_error(
+    add_wavenumber_marker(
+      biodiesel_plot,
+      wavenumber = 1740,
+      text = "CO Stretch",
+      label_aesthetics = 'bold'
+    ),
+    "`label_aesthetics` must be a named list. You provided",
+    fixed = TRUE
+  )
 
   # Plots should come out mostly the same.
   labelled_plot <- add_wavenumber_marker(biodiesel_plot, 1740, "CO Stretch")
