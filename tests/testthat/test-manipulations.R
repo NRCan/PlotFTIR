@@ -43,7 +43,10 @@ test_that("zoom in is ok", {
     zoom_in_on_range(biodiesel_plot, c(1000, 1900)),
     zoom_in_on_range(biodiesel_plot, c(1900, 1000))
   )
-  expect_equal(biodiesel_plot$labels$title, zoomed_plot$labels$title)
+
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  zplab <- ggplot2::get_labs(zoomed_plot)
+  expect_equal(bdlab$title, zplab$title)
 
   expect_false(
     all(
@@ -148,7 +151,9 @@ test_that("compress region is ok", {
   # Plots should come out mostly the same.
   compressed_plot <- compress_low_energy(biodiesel_plot)
 
-  expect_equal(biodiesel_plot$labels$title, compressed_plot$labels$title)
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  cplab <- ggplot2::get_labs(compressed_plot)
+  expect_equal(bdlab$title, cplab$title)
 
   expect_false(
     all(
@@ -220,11 +225,34 @@ test_that("labelled plot is ok", {
     "`wavenumber` must be a value between 701 and 3999 cm^-1.",
     fixed = TRUE
   )
+  expect_error(
+    add_wavenumber_marker(
+      biodiesel_plot,
+      wavenumber = 1740,
+      text = "CO Stretch",
+      line_aesthetics = 'dashed'
+    ),
+    "`line_aesthetics` must be a named list. You provided",
+    fixed = TRUE
+  )
+
+  expect_error(
+    add_wavenumber_marker(
+      biodiesel_plot,
+      wavenumber = 1740,
+      text = "CO Stretch",
+      label_aesthetics = 'bold'
+    ),
+    "`label_aesthetics` must be a named list. You provided",
+    fixed = TRUE
+  )
 
   # Plots should come out mostly the same.
   labelled_plot <- add_wavenumber_marker(biodiesel_plot, 1740, "CO Stretch")
 
-  expect_equal(biodiesel_plot$labels$title, labelled_plot$labels$title)
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  lplab <- ggplot2::get_labs(labelled_plot)
+  expect_equal(bdlab$title, lplab$title)
 
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
@@ -237,7 +265,7 @@ test_that("labelled plot is ok", {
   )
 })
 
-test_that("-.gg is ok", {
+test_that("-.ggplot is ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing -.gg.")
   }
@@ -246,11 +274,6 @@ test_that("-.gg is ok", {
   expect_error(
     biodiesel_plot - NULL,
     "Cannot use `-.gg()` with a single argument, ",
-    fixed = TRUE
-  )
-  expect_error(
-    4 - ggplot2::geom_vline(xintercept = 5),
-    "You need to have a ggplot on the left side. You provided ",
     fixed = TRUE
   )
 })
@@ -289,7 +312,7 @@ test_that("rename is ok", {
   )
 
   rp <- rename_plot_sample_ids(p, new_ids)
-  expect_true(ggplot2::is.ggplot(rp))
+  expect_true(ggplot2::is_ggplot(rp))
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
   expect_true("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 
@@ -307,7 +330,7 @@ test_that("rename is ok", {
 
   # check only partial names still makes a plot
   rp <- rename_plot_sample_ids(p, new_ids[1])
-  expect_true(ggplot2::is.ggplot(rp))
+  expect_true(ggplot2::is_ggplot(rp))
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
   expect_false("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 })
@@ -368,7 +391,9 @@ test_that("legend moving is ok", {
     direction = "horizontal"
   )
 
-  expect_equal(biodiesel_plot$labels$title, moved_legend_plot$labels$title)
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  mlplab <- ggplot2::get_labs(moved_legend_plot)
+  expect_equal(bdlab$title, mlplab$title)
 
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
@@ -424,7 +449,9 @@ test_that("highlighting is ok", {
   # Plots should come out mostly the same.
   highlighted_plot <- highlight_sample(biodiesel_plot, "diesel_unknown")
 
-  expect_equal(biodiesel_plot$labels$title, highlighted_plot$labels$title)
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  hplab <- ggplot2::get_labs(highlighted_plot)
+  expect_equal(bdlab$title, hplab$title)
 
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
@@ -505,7 +532,10 @@ test_that("add_band is ok", {
     add_band(biodiesel_plot, c(1000, 1900)),
     add_band(biodiesel_plot, c(1900, 1000))
   )
-  expect_equal(biodiesel_plot$labels$title, banded_plot$labels$title)
+
+  bdlab <- ggplot2::get_labs(biodiesel_plot)
+  bplab <- ggplot2::get_labs(banded_plot)
+  expect_equal(bdlab$title, bplab$title)
 
   expect_equal(
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,

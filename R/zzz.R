@@ -9,7 +9,7 @@
     options("PlotFTIR.lang" = "en")
     packageStartupMessage(
       'Plotting spectra with PlotFTIR. Please cite if plots are used in publishing (`citation("plotFTIR")`).\n',
-      'PlotFTIR is set to English as default. Changer au fran\u00e7ais par la fonction `options("PlotFTIR.lang" = "en")`'
+      'PlotFTIR is set to English as default. Changer au fran\u00e7ais par la fonction `options("PlotFTIR.lang" = "fr")`'
     )
   } else {
     if (

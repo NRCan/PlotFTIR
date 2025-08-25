@@ -17,20 +17,28 @@ test_that("Plots are generated", {
   p4 <- plot_ftir_stacked(absorbance_to_transmittance(biodiesel))
   p5 <- plot_ftir(normalize_spectra(biodiesel))
 
-  expect_true(ggplot2::is.ggplot(p1))
-  expect_true(ggplot2::is.ggplot(p2))
-  expect_equal(p1$labels$y, "Absorbance")
-  expect_equal(p2$labels$y, "Absorbance (a.u.)")
-  expect_true(ggplot2::is.ggplot(p3))
-  expect_true(ggplot2::is.ggplot(p4))
-  expect_equal(p3$label$y, "% Transmittance")
-  expect_equal(p4$label$y, "Transmittance (a.u.)")
-  expect_equal(p5$label$y, "Normalized Absorbance")
+  expect_true(ggplot2::is_ggplot(p1))
+  expect_true(ggplot2::is_ggplot(p2))
+  p1lab <- ggplot2::get_labs(p1)
+  p2lab <- ggplot2::get_labs(p2)
+  expect_equal(p1lab$y, "Absorbance")
+  expect_equal(p2lab$y, "Absorbance (a.u.)")
+
+  p3lab <- ggplot2::get_labs(p3)
+  p4lab <- ggplot2::get_labs(p4)
+  p5lab <- ggplot2::get_labs(p5)
+  expect_true(ggplot2::is_ggplot(p3))
+  expect_true(ggplot2::is_ggplot(p4))
+  expect_true(ggplot2::is_ggplot(p5))
+  expect_equal(p3lab$y, "% Transmittance")
+  expect_equal(p4lab$y, "Transmittance (a.u.)")
+  expect_equal(p5lab$y, "Normalized Absorbance")
 
   # ensure lots of samples can be plotted with rollover to viridis palette.
   p6 <- suppressWarnings(plot_ftir(rbind(biodiesel, sample_spectra)))
-  expect_true(ggplot2::is.ggplot(p6))
-  expect_equal(p1$labels$y, "Absorbance")
+  p6lab <- ggplot2::get_labs(p6)
+  expect_true(ggplot2::is_ggplot(p6))
+  expect_equal(p6lab$y, "Absorbance")
 })
 
 test_that("data is checked correctly", {
@@ -148,14 +156,16 @@ test_that("Language settings work", {
 
   p <- plot_ftir(biodiesel, lang = "fr")
 
-  expect_equal(p$labels$title, "Spectres IRTF")
-  expect_equal(p$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
+  plab <- ggplot2::get_labs(p)
+  expect_equal(plab$title, "Spectres IRTF")
+  expect_equal(plab$x, bquote("Nombre d'onde" ~ (cm^-1)))
 
   p2 <- plot_ftir(
     biodiesel,
     lang = "fr",
     plot_title = c("My Plot", "my subtitle")
   )
-  expect_equal(p2$labels$title, "My Plot")
-  expect_equal(p2$labels$x, bquote("Nombre d'onde" ~ (cm^-1)))
+  p2lab <- ggplot2::get_labs(p2)
+  expect_equal(p2lab$title, "My Plot")
+  expect_equal(p2lab$x, bquote("Nombre d'onde" ~ (cm^-1)))
 })

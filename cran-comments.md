@@ -2,7 +2,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This is a minor version release with improvements
-  * Exposes a function for downstream package(s) use.
-  * Adds import for .jdx filetype.
-
+* This is a patch release with updates to test code to resolve upstream changes in ggplot2 4.0.0. 

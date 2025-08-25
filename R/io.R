@@ -219,11 +219,12 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
           }
         }
       },
-      error = function(e)
+      error = function(e) {
         cli::cli_warn(c(
           "{e}",
           i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."
         ))
+      }
     )
   }
   if (nrow(ftir) > 0) {
@@ -504,7 +505,7 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
     ))
   }
 
-  if (!ggplot2::is.ggplot(ftir_spectra_plot)) {
+  if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
     )
