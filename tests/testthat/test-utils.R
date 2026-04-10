@@ -51,3 +51,14 @@ test_that("Checking FTIR data works", {
   attr(no_attr_ftir, "intensity") <- NULL
   expect_equal(attr(check_ftir_data(no_attr_ftir), "intensity"), "absorbance")
 })
+
+test_that("Print PlotFTIR data works", {
+  # Capture the output
+  output <- capture.output(print(check_ftir_data(biodiesel)))
+  expect_true(any(grepl("PlotFTIR data:", output)))
+  expect_true(any(grepl("Spectral range:", output)))
+  expect_true(any(grepl("Resolution:", output)))
+  expect_true(any(grepl("Intensity type:", output)))
+  expect_true(any(grepl("Number of samples:", output)))
+  expect_true(any(grepl("Sample IDs:", output)))
+})

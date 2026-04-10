@@ -146,7 +146,57 @@ check_ftir_data <- function(ftir) {
     attr(ftir, "intensity") <- intensity_type(ftir)
   }
 
+  class(ftir) <- unique(c("PlotFTIR_data", class(ftir)))
+
   invisible(ftir)
+}
+
+
+#' Print PlotFTIR Data
+#'
+#' @description
+#' Pretty print method for PlotFTIR data structures, showing spectral range,
+#' inferred resolution, intensity type, number of samples, and sample IDs.
+#'
+#' Méthode d'impression jolie pour les structures de données PlotFTIR, montrant
+#' la plage spectrale, la résolution inférée, le type d'intensité, le nombre
+#' d'échantillons et les ID d'échantillons.
+#'
+#' @param x A PlotFTIR data object.
+#'
+#'   Un objet de données PlotFTIR.
+#'
+#' @param ... Additional arguments passed to print.
+#'
+#'   Arguments supplémentaires passés à print.
+#'
+#' @return Invisibly returns the object.
+#'
+#'   Renvoie l'objet de manière invisible.
+#'
+#' @export
+#' @method print PlotFTIR_data
+print.PlotFTIR_data <- function(x, ...) {
+  cat("PlotFTIR data:\n")
+  wn <- sort(unique(x$wavenumber))
+  cat("  Spectral range:", min(wn), "-", max(wn), "cm⁻¹\n")
+  res <- diff(wn)
+  if (length(res) == 0) {
+    cat("  Resolution: none\n")
+  } else if (length(unique(res)) == 1) {
+    cat("  Resolution:", unique(res), "cm⁻¹\n")
+  } else {
+    cat("  Resolution: variable\n")
+  }
+  cat("  Intensity type:", attr(x, "intensity"), "\n")
+  samples <- unique(x$sample_id)
+  cat("  Number of samples:", length(samples), "\n")
+  if (length(samples) <= 5) {
+    cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
+  } else {
+    cat("  Sample IDs:", paste(head(samples, 5), collapse = ", "), "...\n")
+  }
+  invisible(x)
 }
 
 

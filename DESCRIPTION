@@ -20,7 +20,7 @@ Imports:
     rlang,
     scales,
     stbl (>= 0.3.0)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.3)
 Suggests: 

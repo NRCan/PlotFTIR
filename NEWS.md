@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* `print()` now provides pretty printing for PlotFTIR data structures, showing spectral range, resolution, intensity type, number of samples, and sample IDs. (#27)
+
 # PlotFTIR 1.2.1
 
 * Updates (mostly to testing) to comply with pending ggplot2 4.0.0 release (#23)

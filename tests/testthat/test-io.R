@@ -500,6 +500,7 @@ test_that("interface to ir is ok", {
     irdata,
     what = c("GN 11-389", "GN 11-400", "GN 11-407")
   )
+  expect_true("PlotFTIR_data" %in% class(irname))
   expect_equal(length(unique(irname$sample_id)), 3)
 
   plotir <- plotftir_to_ir(biodiesel)
@@ -559,6 +560,7 @@ test_that("Interface to ChemoSpec is ok", {
 
   csftir <- chemospec_to_plotftir(SrE.IR)
 
+  expect_true("PlotFTIR_data" %in% class(csftir))
   expect_equal(colnames(csftir), c("wavenumber", "absorbance", "sample_id"))
   expect_equal(length(unique(csftir$sample_id)), length(SrE.IR$names))
 
