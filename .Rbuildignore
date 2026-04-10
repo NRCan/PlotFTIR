@@ -13,3 +13,4 @@
 ^paper$
 ^revdep$
 cobertura.xml
+^AGENTS\.md$
