@@ -6,11 +6,7 @@
 #'
 #'   Calcule la moyenne de deux spectres ou plus.
 #'
-#' @param ftir A data.frame of FTIR spectral data including spectra to be
-#'   converted.
-#'
-#'   Un data.frame de données spectrales IRTF comprenant les spectres à
-#'   convertir.
+#' @inheritParams .shared-params
 #'
 #' @param sample_ids A vector of sample IDs to be averaged together. All sample
 #'   IDs must be present in the `ftir` data.frame. If averaging all spectra,
@@ -211,10 +207,7 @@ average_spectra <- function(
 #' d'un spectre IRTF. Décale le tracé vers le haut ou vers le bas sur l'axe des
 #' y de la valeur spécifiée sans aucune autre modification.
 #'
-#' @param ftir A data.frame of FTIR spectral data including spectra to be
-#'   shifted.
-#'
-#'   Un data.frame de données spectrales IRTF comprenant les spectres à décalés.
+#' @inheritParams .shared-params
 #'
 #' @param sample_ids A vector of sample IDs to be shifted. All sample IDs must
 #'   be present in the `ftir` data.frame. If modifying all spectra, provide NA
@@ -359,11 +352,7 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
 #'   les échantillons, spécifiez `individually = FALSE`. Pour ajuster avec une
 #'   détermination unique pour chaque échantillon, spécifiez `individualy =
 #'   TRUE`.
-#' @param ftir A data.frame of FTIR spectral data including spectra to be
-#'   baseline adjusted.
-#'
-#'   Un data.frame de données spectrales IRTF comprenant les spectres à ajuster
-#'   à la ligne de base.
+#' @inheritParams .shared-params
 #'
 #' @param sample_ids A vector of sample IDs to be adjusted. All sample IDs must
 #'   be present in the `ftir` data.frame. If adjusting all spectra, provide NA
@@ -862,13 +851,7 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
 #'  \%T=10^{-A}\cdot 100
 #' }
 #'
-#' @param ftir A data.frame of FTIR spectral data including column to be
-#'   converted. Can't contain both `absorbance` and `transmittance` column as
-#'   the receiving column would be overwritten
-#'
-#'   Un data.frame de données spectrales IRTF incluant la colonne à convertir.
-#'   Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
-#'   colonne de réception serait écrasée.
+#' @inheritParams .shared-params
 #'
 #' @return a data.frame of FTIR spectral data with conversion between absorbance
 #'   or transmittance as requested. Note the original data column is removed

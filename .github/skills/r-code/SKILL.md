@@ -6,7 +6,7 @@ description: Guide for writing R code. Use when writing new functions, designing
 
 # R code
 
-This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill.
+This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill. Once satisfied with the function of the code (see the `tdd-workflow` skill), verify that the code passes R CMD Check without errors, warnings, or notes. Address any issues before finalizing the code.
 
 ## Naming conventions
 
@@ -43,7 +43,7 @@ fetch_records(fp, ps, ow)
 
 ## File organization
 
-One exported function per file: `R/{function_name}.R` (e.g. `fetch_records()` → `R/fetch_records.R`). Internal helpers used exclusively by that function live in the same file. Shared helpers go in `R/utils.R` or `R/utils-{topic}.R` (e.g. `R/utils-parsing.R`).
+For existing code and capabilites that fit into the existing structure: Please use the currently available file structure and naming conventions. Do not create new .R files unless you are adding a completely new capability that does not fit into the existing structure. If you are adding a new capability, please follow the file organization guidelines below: One exported function per file: `R/{function_name}.R` (e.g. `fetch_records()` → `R/fetch_records.R`). Internal helpers used exclusively by that function live in the same file. Shared helpers go in `R/utils.R` or `R/utils-{topic}.R` (e.g. `R/utils-parsing.R`).
 
 ## Coding style
 
@@ -133,10 +133,9 @@ summarize_data <- function(x) {
 
 ## Input validation
 
-Use `stbl::to_*()` and `stbl::stabilize_*()` to validate parameters. These functions coerce when safe and fail with clear error messages when not.
+Validate all input parameters. Provide cli::cli_abort() errors with informative messages and appropriate error classes if parameter values are invalid. This ensures that users get clear feedback when they call the function incorrectly, and allows them to handle specific error classes if needed.
 
-- **`to_*()`** — simple type coercion. Use when you need to ensure a parameter is the right type but don't need additional constraints.
-- **`stabilize_*()`** — coercion plus content validation (regex, ranges, etc.). Use when simple type coercion isn't enough.
+Some validation functions exist (i.e. to check the spectra format or intesnsity type). Use them when appropriate.
 
 **Validate in the function that uses the parameter**, not in a caller that passes it through. This preserves R's lazy evaluation — if a parameter is never used on a code path, it is never evaluated or validated.
 
@@ -168,8 +167,6 @@ build_report <- function(data, title, page_size) {
 }
 ```
 
-When `call` is available (because the function accepts it), always pass it to `stbl` calls so error messages point to the user's call frame.
-
 ## Internal vs. exported functions
 
 Export a function when:
@@ -186,17 +183,9 @@ Internal helpers use a dot prefix (e.g. `.parse_response()`).
 
 ## Error handling
 
-Use `.pkg_abort()` (defined in `R/aaa-conditions.R`) rather than calling `cli::cli_abort()` directly. This wraps `stbl::pkg_abort()` and ensures consistent error class formatting:
+Always provide informative error messages with `cli::cli_abort()`.
 
-```r
-.pkg_abort(
-  "Column {.field {name}} not found in {.arg data}.",
-  "column_not_found",
-  call = call
-)
-```
-
-Always pass `call = call` (or `call = rlang::caller_env()`) so errors point to the user's call frame, not an internal helper.
+Provide both the function and cause of the error in the message. 
 
 ## Common package mistakes
 

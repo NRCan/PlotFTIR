@@ -7,11 +7,10 @@
 average_spectra(ftir, sample_ids = NA, average_id = "averaged_spectra")
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including spectra to be
-converted.
-
-Un data.frame de données spectrales IRTF comprenant les spectres à
-convertir.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 
 \item{sample_ids}{A vector of sample IDs to be averaged together. All sample
 IDs must be present in the \code{ftir} data.frame. If averaging all spectra,

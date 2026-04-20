@@ -24,15 +24,13 @@ plot_ftir_stacked(
   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
   manière appropriée.}
 
-\item{plot_title}{A title for a plot. Defaults to "FTIR Spectra". If a vector
-  length two, the second element will be used for a subtitle.
+\item{plot_title}{Title for plot. Defaults to "FTIR Spectra". Vector length 2 uses
+second element as subtitle.
+Titre du tracé. Par défaut "FTIR Spectra". Un vecteur de longueur 2 utilise
+le deuxième élément comme sous-titre.}
 
-  Un titre pour une trace. La valeur par défaut est «FTIR Spectra». Si un
-  vecteur mesure deux, le deuxième élément sera utilisé pour un sous-titre.}
-
-\item{legend_title}{A title for the legend. Defaults to "Sample ID".
-
-  Un titre pour la légende. La valeur par défaut est «Sample ID».}
+\item{legend_title}{Title for legend. Defaults to "Sample ID".
+Titre de la légende. Par défaut "Sample ID".}
 
 \item{stack_offset}{The amount in percentage of stacking offset to use. For
  transmittance this is directly linked to the units of Y axis, for absorbance
@@ -42,23 +40,10 @@ plot_ftir_stacked(
  transmittance, cette valeur est directement liée aux unités de l'axe y, pour
  l'absorbance cela représente environ 0,2 unités d'absorbance.}
 
-\item{lang}{An optional argument for language. If set to one of `fr`,
-  `french`, `francais`, or `français` the axis and default plot and legend
-  titles will change to french. If non-default legend or plot titles are
-  provided they are used as-is. You can also provide `en`, `english` or
-  `anglais`, or (the default) `NA` will use the default language from user
-  options. To set a permanent default, set `options("PlotFTIR.lang" = "en")`
-  or `options("PlotFTIR.lang" = "fr")` for English or French, respectively.
-
-  Un argument optionnel pour la langue. S'il vaut `Fr`, `French`, `Francais`,
-  ou `Français`, l'axe et les titres par défaut de le tracé et du légende
-  seront en français. Si des titres du légende ou de tracé autres que ceux
-  par défaut sont fournis, ils seront utilisés tels quels. Vous pouvez aussi
-  fournir `en`, `english` ou `anglais`, ou (le défaut) `NA` qui utilisera le
-  langue par défaut des options de l'utilisateur. Pour définir une valeur
-  par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
-  `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
-  respectivement.}
+\item{lang}{Optional language argument: `fr`/`french`/`francais`/`français` for French;
+`en`/`english`/`anglais` for English; `NA` uses default.
+Argument optionnel pour la langue : `fr`/`french`/`francais`/`français` pour le français ;
+`en`/`english`/`anglais` pour l'anglais ; `NA` utilise la valeur par défaut.}
 }
 \value{
 a ggplot object containing a  FTIR spectral plot. The plot and legend

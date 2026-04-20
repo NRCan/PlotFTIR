@@ -11,10 +11,10 @@ add_scalar_value(ftir, value, sample_ids = NA)
 subtract_scalar_value(ftir, value, sample_ids = NA)
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including spectra to be
-  shifted.
-
-  Un data.frame de données spectrales IRTF comprenant les spectres à décalés.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 
 \item{value}{The numeric value to add or subtract.
 
