@@ -20,8 +20,16 @@ Un tracé généré par [plot_ftir()] ou [plot_ftir_stacked()].}
 Argument optionnel pour la langue : `fr`/`french`/`francais`/`français` pour le français ;
 `en`/`english`/`anglais` pour l'anglais ; `NA` utilise la valeur par défaut.}
 
-\item{label_aesthetics}{Named list of aesthetics to pass to ggplot for the label.
-Liste nommée d'esthétiques à transmettre à ggplot pour l'étiquette.}
+\item{label_aesthetics}{A named `list` of aesthetics to pass to ggplot for
+  creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
+  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
+  `size`are permitted. Positioning aesthetics will be removed.
+
+  Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
+  l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
+  plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
+  `fontface` et `size` sont autorisés. Les aspects esthétiques du
+  positionnement seront supprimés.}
 
 \item{plot_title}{Title for plot. Defaults to "FTIR Spectra". Vector length 2 uses
 second element as subtitle.
