@@ -25,7 +25,7 @@ Depends:
 Suggests: 
     testthat (>= 3.0.0),
     withr,
-    ggplot2 (>= 3.0.0),
+    ggplot2 (>= 3.5.0),
     gghighlight,
     ggthemes,
     knitr,
