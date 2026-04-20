@@ -39,8 +39,16 @@ d'informations. Plus précisément, \code{alpha}, \verb{colo(u)r}, \code{linetyp
 `linewidth`` sont autorisés. Les aspects esthétiques du positionnement
 seront supprimés.}
 
-\item{label_aesthetics}{Named list of aesthetics to pass to ggplot for the label.
-Liste nommée d'esthétiques à transmettre à ggplot pour l'étiquette.}
+\item{label_aesthetics}{A named `list` of aesthetics to pass to ggplot for
+  creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
+  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
+  `size`are permitted. Positioning aesthetics will be removed.
+
+  Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
+  l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
+  plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
+  `fontface` et `size` sont autorisés. Les aspects esthétiques du
+  positionnement seront supprimés.}
 }
 \value{
 the FTIR plot as a ggplot2 object, with a marker added at the

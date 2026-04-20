@@ -254,7 +254,7 @@ compress_low_energy <- function(
   }
 
   p <- ftir_spectra_plot +
-    ggplot2::coord_trans(
+    ggplot2::coord_transform(
       x = compress_trans(intercept = cutoff, ratio = compression_ratio)
     )
 

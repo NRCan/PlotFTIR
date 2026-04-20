@@ -34,8 +34,16 @@ Une couleur pour la bande ombrée. Notez que la valeur alpha est fixée à 0,5.
 Une bande bleue sera ajoutée par défaut si aucune valeur n'est fournie.
 Voir \verb{vignette(« ggplot2-specs », « ggplot2 »)} pour plus d'informations sur l'esthétique dans les graphiques.}
 
-\item{label_aesthetics}{Named list of aesthetics to pass to ggplot for the label.
-Liste nommée d'esthétiques à transmettre à ggplot pour l'étiquette.}
+\item{label_aesthetics}{A named `list` of aesthetics to pass to ggplot for
+  creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
+  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
+  `size`are permitted. Positioning aesthetics will be removed.
+
+  Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
+  l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
+  plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
+  `fontface` et `size` sont autorisés. Les aspects esthétiques du
+  positionnement seront supprimés.}
 }
 \value{
 the FTIR plot as a ggplot2 object, with the shaded band added.
