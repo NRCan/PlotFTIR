@@ -179,7 +179,7 @@ check_ftir_data <- function(ftir) {
 print.PlotFTIR_data <- function(x, ...) {
   cat("PlotFTIR data:\n")
   wn <- sort(unique(x$wavenumber))
-  cat("  Spectral range:", min(wn), "-", max(wn), "cm⁻¹\n")
+  cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\n")
   res <- diff(wn)
   if (length(res) == 0) {
     cat("  Resolution: none\n")
@@ -194,7 +194,7 @@ print.PlotFTIR_data <- function(x, ...) {
   if (length(samples) <= 5) {
     cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
   } else {
-    cat("  Sample IDs:", paste(head(samples, 5), collapse = ", "), "...\n")
+    cat("  Sample IDs:", paste(utils::head(samples, 5), collapse = ", "), "...\n")
   }
   invisible(x)
 }
