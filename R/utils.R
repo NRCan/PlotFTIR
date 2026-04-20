@@ -184,7 +184,7 @@ print.PlotFTIR_data <- function(x, ...) {
   if (length(res) == 0) {
     cat("  Resolution: none\n")
   } else if (length(unique(res)) == 1) {
-    cat("  Resolution:", unique(res), "cm⁻¹\n")
+    cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
   } else {
     cat("  Resolution: variable\n")
   }
