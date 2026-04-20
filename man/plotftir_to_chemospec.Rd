@@ -12,16 +12,10 @@ plotftir_to_chemospec(
 )
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`,
-  `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
-  a `transmittance` column for transmittance plots. The code determines the
-  correct y axis units and labels the plot/adjusts the margins appropriately.
-
-  Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
-  et `absorbance`. La colonne `absorbance` peut être remplacée par une
-  colonne `transmittance` pour les tracés de transmission. Le code détermine
-  les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
-  manière appropriée.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 
 \item{group_crit}{A vector of character strings. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.crit` parameter.
 

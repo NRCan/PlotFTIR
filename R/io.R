@@ -641,17 +641,7 @@ ir_to_df <- function(ir, what) {
 #'
 #' Convertit les données `PlotFTIR` en données prêtes à être utilisées par le paquet `ir`.
 #'
-#' @param ftir
-#'   A data.frame in long format with columns `sample_id`,
-#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
-#'   a `transmittance` column for transmittance plots. The code determines the
-#'   correct y axis units and labels the plot/adjusts the margins appropriately.
-#'
-#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
-#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
-#'   colonne `transmittance` pour les tracés de transmission. Le code détermine
-#'   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
-#'   manière appropriée.
+#' @inheritParams .shared-params
 #'
 #' @param metadata
 #'   Additional data to pass to `ir` to include as metadata. Should be structured
@@ -725,17 +715,7 @@ plotftir_to_ir <- function(ftir, metadata = NA) {
 #'
 #' Convertit les données `PlotFTIR` en données prêtes à être utilisées par le paquet `ChemoSpec`.
 #'
-#' @param ftir
-#'   A data.frame in long format with columns `sample_id`,
-#'   `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
-#'   a `transmittance` column for transmittance plots. The code determines the
-#'   correct y axis units and labels the plot/adjusts the margins appropriately.
-#'
-#'   Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
-#'   et `absorbance`. La colonne `absorbance` peut être remplacée par une
-#'   colonne `transmittance` pour les tracés de transmission. Le code détermine
-#'   les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
-#'   manière appropriée.
+#' @inheritParams .shared-params
 #'
 #' @param group_crit
 #' A vector of character strings. Corresponds to [ChemoSpec::files2SpectraObject()] `gr.crit` parameter.

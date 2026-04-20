@@ -7,11 +7,10 @@
 normalize_spectra(ftir, sample_ids = NA, wavenumber_range = NA)
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including spectra to be
-baseline adjusted.
-
-Un data.frame de données spectrales IRTF comprenant les spectres à ajuster
-à la ligne de base.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 
 \item{sample_ids}{A vector of sample IDs to be adjusted. All sample IDs must
 be present in the \code{ftir} data.frame. If adjusting all spectra, provide NA

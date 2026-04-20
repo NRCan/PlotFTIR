@@ -7,13 +7,10 @@
 intensity_type(ftir)
 }
 \arguments{
-\item{ftir}{A data.frame of FTIR spectral data including column to be
-  converted. Can't contain both `absorbance` and `transmittance` column as
-  the receiving column would be overwritten
-
-  Un data.frame de données spectrales IRTF incluant la colonne à convertir.
-  Ne peut pas contenir les colonnes `absorbance` et `transmittance` car la
-  colonne de réception serait écrasée.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 }
 \value{
 a character value 'absorbance' or 'transmittance'

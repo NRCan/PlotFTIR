@@ -7,16 +7,10 @@
 plotftir_to_ir(ftir, metadata = NA)
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`,
-  `wavenumber`, and `absorbance`. The `absorbance` column may be replaced by
-  a `transmittance` column for transmittance plots. The code determines the
-  correct y axis units and labels the plot/adjusts the margins appropriately.
-
-  Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
-  et `absorbance`. La colonne `absorbance` peut être remplacée par une
-  colonne `transmittance` pour les tracés de transmission. Le code détermine
-  les unités correctes de l'axe y et étiquette le tracé/ajuste les marges de
-  manière appropriée.}
+\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
+and `absorbance`/`transmittance`.
+Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
+et `absorbance`/`transmittance`.}
 
 \item{metadata}{Additional data to pass to `ir` to include as metadata. Should be structured
   as a data.frame.
