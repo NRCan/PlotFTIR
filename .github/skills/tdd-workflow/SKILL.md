@@ -234,17 +234,11 @@ test_path("fixtures", "sample.rds")
 
 ## Mocking
 
-Mock functions that might have unstable output, hit external servers, etc.
-
-```r
-local_mocked_bindings(
-  .other_fn = function(...) "mocked_result"
-)
-result <- my_function_that_calls_other_fn()
-```
+Mock functions that might hit external servers, etc. by using the `vcr` package. Mock other unstable functions as needed.
 
 ## Common mistakes
 
 - **Do not modify tests to make them pass.** Fix the implementation.
 - **Do not write tests that depend on other tests' state.** Each test must be independently runnable.
 - **Ask for help if test is bad.** If you think a test might be invalid, do not loop through trying to make impossible tests pass. Ask for help if possible.
+- **Do not write tests that just check that a function exists** — this is not a useful test. Test the function's behavior instead.

@@ -31,6 +31,45 @@ PlotFTIR/
 
 ---
 
+## Code Style
+
+- R code formatting: Always run `air format .` after generating R code.
+- Comments explain *why*, not *what*.
+- Bilingual: All documentation, errors, and messages must include French translations.
+- One function per file: R/function_name.R (except shared helpers in utils/).
+
+## Architecture
+
+Standard R package structure with core components:
+- **io.R**: File reading (CSV, ASP, JDX formats + ir/ChemoSpec bridges)
+- **plot_ftir.R**: Core plotting (ggplot2 wrapper)
+- **manipulations.R**: Plot transformations (zoom, markers, highlighting)
+- **maths.R**: Spectral operations (average, normalize, convert)
+- **utils.R**: Central validation hub
+
+Data structure: Long-format data.frames with exactly 3 columns (`wavenumber`, `absorbance|transmittance`, `sample_id`) and mandatory `intensity` attribute set by `check_ftir_data()`.
+
+See [vignettes/plotting_ftir_spectra.Rmd](vignettes/plotting_ftir_spectra.Rmd) for end-to-end tutorial and [doc/deconvoluting-spectra.Rmd](doc/deconvoluting-spectra.Rmd) for advanced techniques.
+
+## Build and Test
+
+- Update packages: `pak::pak()`
+- Run all tests: `devtools::test(reporter = "check")`
+- Run specific test: `devtools::test(filter = "name", reporter = "check")`
+- Full check: `devtools::check(error_on = "warning")`
+- Document: `roxygen2::roxygenise()`
+- R console: Use `--quiet --vanilla`
+
+## Conventions
+
+- TDD workflow: Write failing test first, then implement.
+- News updates: Add bullet at top of [NEWS.md](NEWS.md) under dev heading; user-facing changes only, 1 line, present tense, positive framing, function names in backticks near start, end with contributor/issue before period.
+- Bilingual guarantee: All user-facing text in French and English.
+- Error handling: Use `.pkg_abort()` for bilingual errors; gate optional packages with `requireNamespace()`.
+- Issue numbers: Never guess; verify from user, branch name, or `gh issue list`.
+
+---
+
 ## Standard workflow
 
 For any feature, fix, or refactor:
