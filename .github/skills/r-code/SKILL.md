@@ -6,7 +6,7 @@ description: Guide for writing R code. Use when writing new functions, designing
 
 # R code
 
-This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill.
+This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill. Once satisfied with the function of the code (see the `tdd-workflow` skill), verify that the code passes R CMD Check without errors, warnings, or notes. Address any issues before finalizing the code.
 
 ## Naming conventions
 
