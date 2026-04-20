@@ -80,6 +80,12 @@ spectra <- read_ftir_directory(
 head(spectra)
 ```
 
+Let's look at the structure of the data we've loaded:
+
+```{r print_spectra}
+print(spectra)
+```
+
 Having loaded the data, we can see that it has a structure of three columns, named `wavenumber`, `absorbance` and `sample_id`. We've read a few files in so all of the spectra are included in the one `spectra` object. 
 
 ## Plotting

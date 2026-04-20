@@ -48,6 +48,14 @@ biodiesel_plot <- plot_ftir(biodiesel)
 biodiesel_plot
 ```
 
+You can inspect the structure of your data using the print method:
+
+```{r print_data}
+print(biodiesel)
+```
+
+This will display the spectral range, inferred resolution, intensity type, number of samples, and sample IDs.
+
 You can also plot spectra in a stacked/offset manner instead of overlaid:
 ```{r stack_plot_en}
 # Generate a plot

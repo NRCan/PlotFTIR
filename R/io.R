@@ -630,6 +630,7 @@ ir_to_df <- function(ir, what) {
     }
   }
 
+  ftir <- check_ftir_data(ftir)
   return(ftir)
 }
 
@@ -921,5 +922,6 @@ chemospec_to_plotftir <- function(csdata) {
     ftir <- rbind(ftir, df)
   }
 
+  ftir <- check_ftir_data(ftir)
   return(ftir)
 }
