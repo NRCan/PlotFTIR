@@ -14,3 +14,4 @@
 ^revdep$
 cobertura.xml
 ^AGENTS\.md$
+.continue/
