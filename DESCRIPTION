@@ -33,7 +33,9 @@ Suggests:
     ir,
     ChemoSpec,
     R.utils,
-    readJDX
+    readJDX,
+    EMpeaksR,
+    signal
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues

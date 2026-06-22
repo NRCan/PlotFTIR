@@ -117,6 +117,47 @@ find_ftir_peaks <- function(ftir, ...) {
     )
   }
 
+  if (!is.integer(sg_p_norm) && !is.numeric(sg_p_norm)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_norm} must be numeric."
+    )
+  }
+  if (sg_p_norm < 0 || sg_p_norm != floor(sg_p_norm)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_norm} must be an integer ≥ 0."
+    )
+  }
+  if (!is.integer(sg_n_norm) && !is.numeric(sg_n_norm)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_norm} must be numeric."
+    )
+  }
+  if (sg_n_norm < 3 || sg_n_norm != floor(sg_n_norm) || sg_n_norm %% 2 == 0) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_norm} must be an odd integer ≥ 3."
+    )
+  }
+  if (!is.integer(sg_p_deriv) && !is.numeric(sg_p_deriv)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_deriv} must be numeric."
+    )
+  }
+  if (sg_p_deriv < 0 || sg_p_deriv != floor(sg_p_deriv)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_deriv} must be an integer ≥ 0."
+    )
+  }
+  if (!is.integer(sg_n_deriv) && !is.numeric(sg_n_deriv)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be numeric."
+    )
+  }
+  if (sg_n_deriv < 3 || sg_n_deriv != floor(sg_n_deriv) || sg_n_deriv %% 2 == 0) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be an odd integer ≥ 3."
+    )
+  }
+
   sg <- signal::sgolayfilt(ftir$absorbance, p = sg_p_norm, n = sg_n_norm, m = 0)
   sg_deriv <- signal::sgolayfilt(
     ftir$absorbance,
@@ -167,7 +208,7 @@ find_ftir_peaks <- function(ftir, ...) {
   # shape of the derivative)
   if (min(all_peaks, na.rm = TRUE) == min(ftir$wavenumber, na.rm = TRUE)) {
     last <- ftir[rank(ftir$wavenumber) == 1, "absorbance"]
-    secondlast <- ftir[rank(ftir$wavenumber) == 1, "absorbance"]
+    secondlast <- ftir[rank(ftir$wavenumber) == 2, "absorbance"]
     if (last <= secondlast) {
       all_peaks <- all_peaks[all_peaks != min(ftir$wavenumber, na.rm = TRUE)]
     }
@@ -868,12 +909,12 @@ plot_components <- function(
   PlotFTIR::check_ftir_data(ftir)
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_components}. {.arg ftir} must be supplied in absorbance units."
+      "Error in {.fn PlotFTIR::plot_components}. {.arg ftir} must be supplied in absorbance units."
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_components}. {.arg ftir} must only contain one sample spectra."
+      "Error in {.fn PlotFTIR::plot_components}. {.arg ftir} must only contain one sample spectra."
     )
   }
 
@@ -895,7 +936,7 @@ plot_components <- function(
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
+      "Error in {.fn PlotFTIR::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
     )
   }
 
@@ -911,12 +952,12 @@ plot_components <- function(
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn FTIRtools::plot_components}. {.arg fitted_peaks} should be generated with {.fn FTIRtools::fit_peaks}."
+      "Warning in {.fn PlotFTIR::plot_components}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
     cli::cli_warn(c(
-      "Warning in {.fn FTIRtools::plot_components}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+      "Warning in {.fn PlotFTIR::plot_components}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
       i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
     ))
   }
@@ -1124,23 +1165,23 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg ftir} must be supplied in absorbance units."
+      "Error in {.fn PlotFTIR::plot_fit_residuals}. {.arg ftir} must be supplied in absorbance units."
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg ftir} must only contain one sample spectra."
+      "Error in {.fn PlotFTIR::plot_fit_residuals}. {.arg ftir} must only contain one sample spectra."
     )
   }
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg fitted_peaks} should be generated with {.fn FTIRtools::fit_peaks}."
+      "Warning in {.fn PlotFTIR::plot_fit_residuals}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
     cli::cli_warn(c(
-      "Warning in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
       i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
     ))
   }
@@ -1170,7 +1211,7 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
+      "Error in {.fn PlotFTIR::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
     )
   }
 
@@ -1334,12 +1375,12 @@ plot_fit_ftir_peaks <- function(
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg ftir} must be supplied in absorbance units."
+      "Error in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg ftir} must be supplied in absorbance units."
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg ftir} must only contain one sample spectra."
+      "Error in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg ftir} must only contain one sample spectra."
     )
   }
 
@@ -1361,7 +1402,7 @@ plot_fit_ftir_peaks <- function(
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn FTIRtools::plot_fit_ftir_peaks}. Supplied {lun} unused argument{?s}: {argnames}."
+      "Error in {.fn PlotFTIR::plot_fit_residuals}. Supplied {lun} unused argument{?s}: {argnames}."
     )
   }
 
@@ -1377,12 +1418,12 @@ plot_fit_ftir_peaks <- function(
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg fitted_peaks} should be generated with {.fn FTIRtools::fit_peaks}."
+      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
     cli::cli_warn(c(
-      "Warning in {.fn FTIRtools::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
       i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
     ))
   }
@@ -1454,15 +1495,15 @@ process_language <- function(lang) {
       ),
       error = function(x) {
         cli::cli_warn(c(
-          "Warning: language must be one of 'en', 'english', anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'.",
-          i = "Using default language '{getOption('FTIRtools.lang', default = 'en')}'."
+          "Warning: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'.",
+          i = "Using default language '{getOption('PlotFTIR.lang', default = 'en')}'."
         ))
       }
     )
   }
   if (is.na(l)) {
-    # either lang was NA or failed the match.arg. Default to getOptions result
-    l <- getOption("FTIRtools.lang", default = "en")
+    # either lang was NA or failed the match. Default to getOptions result
+    l <- getOption("PlotFTIR.lang", default = "en")
   }
 
   l <- substr(l, 0, 2)

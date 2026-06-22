@@ -1,3 +1,5 @@
+# === Section 1: find_ftir_peaks() Core Tests ===
+
 test_that("find_ftir_peaks handles input errors ok", {
   ftir <- data.frame(
     sample_id = "sample1",
@@ -34,7 +36,6 @@ test_that("find_ftir_peaks handles input errors ok", {
   )
   expect_error(find_ftir_peaks(ftir), NA) # should be no error
 })
-
 
 test_that("find_ftir_peaks returns sorted peaks", {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -76,171 +77,7 @@ test_that("find_ftir_peaks returns correct peaks", {
   )
 })
 
-test_that("Fixed Peak Locations don't move", {
-  if (!requireNamespace("signal", quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
-  }
-
-  ftir <- sample_spectra[
-    sample_spectra$sample_id == "isopropanol",
-  ]
-  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
-  peaklist <- c(
-    1040,
-    1100,
-    1130,
-    1160,
-    1190,
-    1220,
-    1260,
-    1300,
-    1340,
-    1380,
-    1410,
-    1460,
-    1560,
-    1750,
-    1900,
-    1970
-  )
-
-  gmm_loose <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = FALSE,
-    method = "g"
-  )
-
-  lmm_loose <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = FALSE,
-    method = "l"
-  )
-  pvmm_loose <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = FALSE,
-    method = "pv"
-  )
-  dsgmm_loose <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = FALSE,
-    method = "dsg"
-  )
-
-  expect_false(all(gmm_loose$mu == peaklist))
-  expect_false(all(lmm_loose$mu == peaklist))
-  expect_false(all(pvmm_loose$mu == peaklist))
-  expect_false(all(dsgmm_loose$mu == peaklist))
-
-  gmm_fixed <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = TRUE,
-    method = "g"
-  )
-
-  lmm_fixed <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = TRUE,
-    method = "l"
-  )
-  pvmm_fixed <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = TRUE,
-    method = "pv"
-  )
-  dsgmm_fixed <- fit_peaks(
-    ftir,
-    peaklist = peaklist,
-    fixed_peaks = TRUE,
-    method = "dsg"
-  )
-
-  expect_equal(gmm_fixed$mu, peaklist)
-  expect_equal(lmm_fixed$mu, peaklist)
-  expect_equal(pvmm_fixed$mu, peaklist)
-  expect_equal(dsgmm_fixed$mu, peaklist)
-})
-
-test_that("zero_normalization and zero_deriv check ok", {
-  if (!requireNamespace("signal", quietly = TRUE)) {
-    testthat::skip("signal not available for testing")
-  }
-
-  ftir <- data.frame(
-    sample_id = "sample1",
-    wavenumber = round(seq(4000, 400, length.out = 100)),
-    absorbance = rep(c(0, 0, 1, 2, 3, 5, 3, 2, 0, 0), 10)
-  )
-  peaks <- find_ftir_peaks(
-    ftir,
-    sg_p_deriv = 3,
-    sg_n_deriv = 7,
-    sg_p_norm = 3,
-    sg_n_norm = 7,
-    window_norm = 50,
-    window_deriv = 50
-  )
-
-  expect_error(
-    peaks <- find_ftir_peaks(
-      ftir,
-      sg_p_deriv = 3,
-      sg_n_deriv = 7,
-      sg_p_norm = 3,
-      sg_n_norm = 7,
-      window_norm = 50,
-      window_deriv = 50,
-      zero_norm = 100
-    ),
-    "is larger than the highest point in the spectra."
-  )
-
-  expect_error(
-    peaks <- find_ftir_peaks(
-      ftir,
-      sg_p_deriv = 3,
-      sg_n_deriv = 7,
-      sg_p_norm = 3,
-      sg_n_norm = 7,
-      window_norm = 50,
-      window_deriv = 50,
-      zero_deriv = 100
-    ),
-    "is larger than the highest point in the derivative spectra."
-  )
-})
-
-test_that("maxima function detects local maximas", {
-  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
-  expect_equal(maxima(x), 5)
-  x <- c(1, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
-  expect_equal(maxima(x, window = 2), c(5, 9))
-})
-
-test_that("minima function detects local minimas", {
-  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
-  expect_equal(minima(x), c(1, 9))
-  x <- c(3, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
-  expect_equal(minima(x), c(2, 6, 14))
-  x <- c(1, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5, 6, 5, 3, 5, 4, 3, 2, 1)
-  expect_equal(minima(x), c(1, 6, 8, 10, 14, 19))
-  expect_equal(minima(x, window = 2), c(1, 14, 19))
-})
-
-test_that("zero_threshold sets to zero values below threshold", {
-  x <- c(1, 0.01, 0.001, 0.0001)
-  expect_equal(zero_threshold(x, threshold = 1e-3), c(1, 0.01, 0.001, 0))
-  x <- c(-1, -0.01, -0.001, -0.0001)
-  expect_equal(zero_threshold(x, threshold = 1e-2), c(-1, -0.01, 0, 0))
-  x <- c(1, -0.01, 0.001, -0.001)
-  expect_equal(zero_threshold(x, threshold = 1e-2), c(1, -0.01, 0, 0))
-})
+# === Section 2: fit_peaks() Core Tests ===
 
 test_that("fit_peaks (voigt) returns correct results", {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -346,30 +183,75 @@ test_that("fit_peaks (dsg) returns correct results", {
   expect_equal(fittype, "doniach-šunjić-gauss")
 })
 
-test_that("fit_peaks error checks are ok", {
+# === Section 3: Parameter Validation Tests (NEW for integration) ===
+
+test_that("find_ftir_peaks validates parameter types", {
   if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
 
-  ftir <- sample_spectra[
-    sample_spectra$sample_id == "isopropanol",
-  ]
-
-  expect_error(
-    fit_peaks(absorbance_to_transmittance(ftir)),
-    "must be supplied in absorbance units"
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = seq(4000, 400, length.out = 100),
+    absorbance = rnorm(100)
   )
 
-  expect_error(
-    fit_peaks(sample_spectra),
-    "must only contain one sample spectra"
-  )
-
-  expect_error(
-    fit_peaks(ftir, method = "bad_method"),
-    "must be one of `voigt`, `lorentz`, `gauss` or `dsg`"
-  )
+  expect_error(find_ftir_peaks(ftir, sg_p_norm = "invalid"), "`sg_p_norm` must be numeric")
 })
+
+test_that("fit_peaks validates method parameter", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = seq(4000, 400, length.out = 100),
+    absorbance = rnorm(100)
+  )
+
+  expect_error(fit_peaks(ftir, method = "invalid_method"), "must be one of")
+})
+
+# === Section 4: Data Validation Pattern Tests (NEW for integration) ===
+
+test_that("All functions validate ftir data structure", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  expect_error(find_ftir_peaks(data.frame(a = 1, b = 2)), "must contain a column named `sample_id`")
+})
+
+# === Section 5: Helper Function Tests ===
+
+test_that("maxima function detects local maximas", {
+  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
+  expect_equal(maxima(x), 5)
+  x <- c(1, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
+  expect_equal(maxima(x, window = 2), c(5, 9))
+})
+
+test_that("minima function detects local minimas", {
+  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
+  expect_equal(minima(x), c(1, 9))
+  x <- c(3, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
+  expect_equal(minima(x), c(2, 6, 14))
+  x <- c(1, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5, 6, 5, 3, 5, 4, 3, 2, 1)
+  expect_equal(minima(x), c(1, 6, 8, 10, 14, 19))
+  expect_equal(minima(x, window = 2), c(1, 14, 19))
+})
+
+test_that("zero_threshold sets to zero values below threshold", {
+  x <- c(1, 0.01, 0.001, 0.0001)
+  expect_equal(zero_threshold(x, threshold = 1e-3), c(1, 0.01, 0.001, 0))
+  x <- c(-1, -0.01, -0.001, -0.0001)
+  expect_equal(zero_threshold(x, threshold = 1e-2), c(-1, -0.01, 0, 0))
+  x <- c(1, -0.01, 0.001, -0.001)
+  expect_equal(zero_threshold(x, threshold = 1e-2), c(1, -0.01, 0, 0))
+})
+
+# === Section 6: Output Generation Tests ===
 
 test_that("Peak data.frame is created ok", {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -477,6 +359,7 @@ test_that("get_fit_spectra checks are ok", {
   )
 })
 
+# === Section 7: Plot Functionality Tests ===
 
 test_that("plot_fit_ftir_peaks work", {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -610,6 +493,33 @@ test_that("plot_components work", {
   )
   expect_equal(p4$labels$title, "Test Plot")
   expect_equal(p4$labels$subtitle, "Test Subtitle")
+})
+
+# === Section 8: Error Handling Tests ===
+
+test_that("fit_peaks error checks are ok", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+
+  expect_error(
+    fit_peaks(absorbance_to_transmittance(ftir)),
+    "must be supplied in absorbance units"
+  )
+
+  expect_error(
+    fit_peaks(sample_spectra),
+    "must only contain one sample spectra"
+  )
+
+  expect_error(
+    fit_peaks(ftir, method = "bad_method"),
+    "must be one of `voigt`, `lorentz`, `gauss` or `dsg`"
+  )
 })
 
 test_that("plot_fit_ftir_peaks error checks are ok", {
@@ -760,6 +670,8 @@ test_that("plot_components error checks are ok", {
   )
 })
 
+# === Section 9: Language Handling Tests ===
+
 test_that("Languages are handled properly", {
   if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
@@ -846,12 +758,11 @@ test_that("Languages are handled properly", {
 
   expect_warning(
     plot_components(ftir, fitpeaks, lang = "test"),
-    "language must be one of 'en', 'english', anglais', 'fr', 'french', 'francais' or"
+    "language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or"
   )
 })
 
-
-#component-optimization is extnsively tested in peak-fit code as well.
+# === Section 10: Component Optimization Tests (Internal) ===
 
 test_that("component-optimization dsgmm error checking is ok", {
   ftir <- data.frame(
@@ -1135,4 +1046,146 @@ test_that("component-optimization fixed-mu is ok", {
   expect_equal(lmm_fixed$mu, mu_list_rounded)
   expect_equal(pvmm_fixed$mu, mu_list_rounded)
   expect_equal(dsgmm_fixed$mu, mu_list_rounded)
+})
+
+# === Section 11: Fixed Peak Behavior Tests (Existing) ===
+
+test_that("Fixed Peak Locations don't move", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
+  peaklist <- c(
+    1040,
+    1100,
+    1130,
+    1160,
+    1190,
+    1220,
+    1260,
+    1300,
+    1340,
+    1380,
+    1410,
+    1460,
+    1560,
+    1750,
+    1900,
+    1970
+  )
+
+  gmm_loose <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = FALSE,
+    method = "g"
+  )
+
+  lmm_loose <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = FALSE,
+    method = "l"
+  )
+  pvmm_loose <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = FALSE,
+    method = "pv"
+  )
+  dsgmm_loose <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = FALSE,
+    method = "dsg"
+  )
+
+  expect_false(all(gmm_loose$mu == peaklist))
+  expect_false(all(lmm_loose$mu == peaklist))
+  expect_false(all(pvmm_loose$mu == peaklist))
+  expect_false(all(dsgmm_loose$mu == peaklist))
+
+  gmm_fixed <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = TRUE,
+    method = "g"
+  )
+
+  lmm_fixed <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = TRUE,
+    method = "l"
+  )
+  pvmm_fixed <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = TRUE,
+    method = "pv"
+  )
+  dsgmm_fixed <- fit_peaks(
+    ftir,
+    peaklist = peaklist,
+    fixed_peaks = TRUE,
+    method = "dsg"
+  )
+
+  expect_equal(gmm_fixed$mu, peaklist)
+  expect_equal(lmm_fixed$mu, peaklist)
+  expect_equal(pvmm_fixed$mu, peaklist)
+  expect_equal(dsgmm_fixed$mu, peaklist)
+})
+
+test_that("zero_normalization and zero_deriv check ok", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = round(seq(4000, 400, length.out = 100)),
+    absorbance = rep(c(0, 0, 1, 2, 3, 5, 3, 2, 0, 0), 10)
+  )
+  peaks <- find_ftir_peaks(
+    ftir,
+    sg_p_deriv = 3,
+    sg_n_deriv = 7,
+    sg_p_norm = 3,
+    sg_n_norm = 7,
+    window_norm = 50,
+    window_deriv = 50
+  )
+
+  expect_error(
+    peaks <- find_ftir_peaks(
+      ftir,
+      sg_p_deriv = 3,
+      sg_n_deriv = 7,
+      sg_p_norm = 3,
+      sg_n_norm = 7,
+      window_norm = 50,
+      window_deriv = 50,
+      zero_norm = 100
+    ),
+    "is larger than the highest point in the spectra."
+  )
+
+  expect_error(
+    peaks <- find_ftir_peaks(
+      ftir,
+      sg_p_deriv = 3,
+      sg_n_deriv = 7,
+      sg_p_norm = 3,
+      sg_n_norm = 7,
+      window_norm = 50,
+      window_deriv = 50,
+      zero_deriv = 100
+    ),
+    "is larger than the highest point in the derivative spectra."
+  )
 })
