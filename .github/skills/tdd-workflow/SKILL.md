@@ -12,7 +12,7 @@ Write a failing test first, then implement the minimal code to make it pass, the
 
 ## File naming
 
-Tests for `R/{name}.R` go in `tests/testthat/test-{name}.R`. Place new tests next to similar existing ones.
+Tests for `R/{name}.R` go in `tests/testthat/test-{name}.R`. Within the correct test file for the source file under test, place new tests adjacent to existing tests for the same function being tested, or at the end of the file if no tests for that function exist yet.
 
 ## Running tests
 
@@ -28,12 +28,15 @@ Testing functions load code automatically. You do not need to call `library()` o
 
 ## Coverage
 
-Goal: **100%** for every edited file. After editing `R/file_name.R`, verify:
+Goal: **100%** for every edited file. After editing `R/{name}.R`, replace `{name}` with the actual filename and verify:
 
 ```r
-covr_res <- devtools:::test_coverage_active_file("R/file_name.R")
+# Replace {name} with the actual filename (e.g., "plot_ftir")
+covr_res <- devtools:::test_coverage_active_file("R/{name}.R")
 which(purrr::map_int(covr_res, "value") == 0)
 ```
+
+If a specific line or branch cannot be covered without unreasonable test contortion (e.g., a defensive check against an impossible internal state), add a `# nocov start` / `# nocov end` comment pair around those lines and leave a comment explaining why coverage is excluded. Do not write tests purely to hit a coverage number.
 
 Files excluded from the coverage requirement:
 - `R/*-package.R`
@@ -75,7 +78,7 @@ test_that("build_summary print method is stable (#123)", {
 })
 ```
 
-When snapshots change intentionally, check the content of the file corresponding to the edited test file, then accept:
+When snapshots change intentionally, read the full diff of the `.md` snapshot file to confirm the change matches the expected behavioral change described in the issue. Only call `testthat::snapshot_accept()` after confirming the new snapshot output is correct. Never accept a snapshot diff without reviewing it:
 
 ```r
 testthat::snapshot_accept("test_name")
@@ -86,14 +89,14 @@ Snapshots are stored in `tests/testthat/_snaps/`. The filename corresponds to th
 ## Test design principles
 
 - **Self-sufficient:** each test contains its own setup, execution, and assertion. Tests must be runnable in isolation.
-- **Duplication over factoring:** repeat setup code rather than extracting it. Clarity beats DRY in tests.
+- **Self-contained setup:** keep each test's setup code with the test (do not split across helpers). When setup is repeated, this is acceptable if it keeps each test readable in isolation; extract only if the setup becomes genuinely hard to understand or maintain.
 - **One concept per test:** a failing test should tell you exactly what broke.
 - **Minimal with few comments:** keep tests lean. Avoid over-commenting.
-- **Issue reference in description:** the `desc` of every new `test_that()` call should end with one or more parenthetical issue references for the issue(s) *verified by those tests* — typically the issue currently being solved. **Never guess or invent issue numbers.** Determine the number from the user's prompt, the branch name (`git branch --show-current`), or `gh issue list`. Before writing a number, verify you can trace it to one of these sources. If no tracked issue applies, use `#noissue`. The numbers in the examples below are illustrative placeholders — do not copy them:
+- **Issue reference in description:** the `desc` of every new `test_that()` call should end with one or more parenthetical issue references for the issue(s) *verified by those tests* — typically the issue currently being solved. **Never guess or invent issue numbers.** Determine the number from the user's prompt, the branch name (`git branch --show-current`), or `gh issue list`. Before writing a number, verify you can trace it to one of these sources. If none of these sources yields a verifiable issue number (e.g., `gh` is unavailable or returns an error, the branch name contains no number, and the user's prompt does not mention one), use `#noissue` and inform the user that an issue reference could not be determined automatically. If no tracked issue applies, do not add a reference number. The numbers in the examples below are illustrative placeholders — do not copy them:
   ```r
   test_that("fetch_records() returns correct columns (#1)", { ... })
   test_that("build_summary() returns correct columns (#2, #3)", { ... })
-  test_that(".check_record() errors on empty input (#noissue)", { ... })
+  test_that(".check_record() errors on empty input", { ... })
   ```
 
 ## testthat Edition 3 — deprecated patterns
@@ -105,6 +108,8 @@ expect_equivalent(x, y)          # expect_equal(x, y, ignore_attr = TRUE)
 with_mock(...)                    # local_mocked_bindings(...)
 expect_is(x, "data.frame")       # expect_s3_class(x, "data.frame")
 ```
+
+Detailed sub-sections and examples follow below.
 
 ## Essential expectations
 
@@ -119,48 +124,15 @@ expect_identical(x, y)                    # exact match
 
 ### Conditions
 
-**Errors thrown by this package** (via `.pkg_abort()`) should always be tested
-with `stbl::expect_pkg_error_snapshot()`, which captures both the error class
-hierarchy and the user-facing message in one snapshot:
+**Errors thrown by this package** (via `.cli_abort()`) should always be tested
+with `expect_error()`
 
 ```r
 test_that("process_data() errors on empty input (#42)", {
-  stbl::expect_pkg_error_snapshot(
+  expect_error(
     process_data(data.frame()),
     "PlotFTIR",
     "empty_input"
-  )
-})
-```
-
-Pass `transform = stbl::.transform_path(path)` to scrub volatile values (e.g. temp
-paths) from the snapshot before comparison.
-
-**Errors thrown by `stbl`** (via `stbl::to_*()` / `stbl::stabilize_*()`)
-should be tested with `stbl::expect_pkg_error_classes()`. Since the message
-text is controlled by `stbl`, only the class hierarchy needs to be asserted:
-
-```r
-test_that("process_data() errors on non-integer page_size (#43)", {
-  stbl::expect_pkg_error_classes(
-    process_data(sample_data, page_size = "abc"),
-    "stbl",
-    "incompatible_type"
-  )
-})
-```
-
-For **composite** stbl error classes (where the class name contains dashes,
-e.g. `stbl-error-coerce-character`), pass each dash-separated component as a
-separate argument. Underscores within a component are kept as-is:
-
-```r
-test_that("process_data() errors on non-coercible input (#43)", {
-  stbl::expect_pkg_error_classes(
-    process_data(sample_data, value = list(bad = "input")),
-    "stbl",
-    "coerce",
-    "character"
   )
 })
 ```
@@ -234,7 +206,7 @@ test_path("fixtures", "sample.rds")
 
 ## Mocking
 
-Mock functions that might hit external servers, etc. by using the `vcr` package. Mock other unstable functions as needed.
+Mock functions that return non-deterministic output (e.g. random numbers, current timestamps, UUIDs) or that depend on external state (file system, environment variables, system time). Do not mock stable, pure functions within this package.
 
 ## Common mistakes
 
