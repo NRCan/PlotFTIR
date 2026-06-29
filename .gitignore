@@ -54,5 +54,7 @@ inst/doc
 *.Rbak
 revdep/
 cobertura.xml
-.kilo/*
+
 .vscode/*
+.kilo/*
+tests/testthat/_problems*
