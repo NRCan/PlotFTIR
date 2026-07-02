@@ -1,19 +1,23 @@
 #' Find FTIR Peaks
 #' @description This function finds peaks in FTIR spectra by identifying minima
 #'   of the double derivative, then re-scanning for maxima of peaks missed by
-#'   the derivative method. This double-check ensures that both sharp peaks
-#'   (like C-H stretch) and wide gentle peaks (like O-H stretch) are found. The
-#'   spectra is smoothed by a Savitzky-Golay filter prior to analysis and as
-#'   such there are a number of optional tuning parameters that can be provided
-#'   (the defaults work well for typical spectra).
+#'   the derivative method. It also uses first derivative zero-crossings to find
+#'   broad asymmetric peaks that might be missed by the second derivative.
+#'   Peaks detected by different methods within a specified wavenumber window
+#'   are merged into a single representative peak location. The spectra is
+#'   smoothed by a Savitzky-Golay filter prior to analysis and as such there are
+#'   a number of optional tuning parameters that can be provided (the defaults
+#'   work well for typical spectra).
 #'
 #'   Cette fonction permet de trouver des pics dans les spectres IRTF en
 #'   identifiant les minima de la double dérivée, puis en recherchant à nouveau
-#'   les maxima des pics manqués par la méthode de la dérivée. Cette double
-#'   vérification permet de s'assurer que les pics aigus (comme l'étirement C-H)
-#'   et les pics larges et doux (comme l'étirement O-H) sont trouvés. Le spectre
-#'   est lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre,
-#'   un certain nombre de paramètres de réglage facultatifs peuvent être fournis
+#'   les maxima des pics manqués par la méthode de la dérivée. Elle utilise
+#'   également les zéro-crossings de la première dérivée pour trouver les pics
+#'   larges et asymétriques qui pourraient être manqués par la dérivée seconde.
+#'   Les pics détectés par différentes méthodes dans une fenêtre spécifique de
+#'   nombres d'ondes sont fusionnés en un seul pic représentatif. Le spectre est
+#'   lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre, un
+#'   certain nombre de paramètres de réglage facultatifs peuvent être fournis
 #'   (les valeurs par défaut fonctionnent bien pour les spectres typiques).
 #' @param ftir A data.frame in long format with a single FTIR spectra in columns
 #'   `sample_id`, `wavenumber`, and `absorbance`. The `absorbance` column may be
@@ -27,12 +31,12 @@
 #' * `sg_p_norm` The polynomial degree used in smoothing the spectra for finding peaks by signal maxima. Default `3`.
 #' * `sg_p_deriv` The polynomial degree used in smoothing the derivative for finding peaks by minima. Default `3`.
 #' * `sg_n_norm` The number of points used in smoothing the spectra for finding peaks by signal maxima. Default `13`.
-#' * `sg_n_deriv` The number of points used in smoothing the derivative for finding peaks by minima. Default `13`.
+#' * `sg_n_deriv` The number of points used in smoothing the derivative for finding peaks by minima. Default `15`.
 #' * `window_norm` The width of the window (in wavenumbers) to ensure that a peak is a true maxima and not just noise. Default `10`. Works best on data with consistent resolution, and will round up to the next data point.
 #' * `window_deriv` The width of the window (in wavenumbers) to ensure that a derivative minima is a true minima and not just noise. Default `5`. Works best on data with consistent resolution, and will round up to the next data point.
-#' * `window_align` The width of the window (in wavenumbers) whereby derivative and normal peaks are compared. Normal peaks are added to the derivative peak list if they are outside of the window distance of any other peak
 #' * `zero_norm` Spectra have baseline noise removed before searching for peaks by setting signal value below the zero threshold to 0. Default `1e-2`.
 #' * `zero_deriv`Derivative have baseline noise removed before searching for peaks by setting values below the zero threshold to 0. Default `1e-4`.
+#' * `window_merge` The width of the window (in wavenumbers) within which peaks detected by different methods are merged into a single representative peak. Default `5`. Works best on data with consistent resolution.
 #'
 #'
 #'   Paramètres optionnels supplémentaires à transmettre à l'algorithme de
@@ -41,19 +45,19 @@
 #'   défaut `3`.
 #' * `sg_p_deriv` Le degré polynomial utilisé dans le lissage de la dérivée pour trouver les pics par les minima. Par défaut `3`.
 #' * `sg_n_norm` Le nombre de points utilisés pour lisser les spectres afin de trouver les pics par maxima du signal. Valeur par défaut `13`.
-#' * `sg_n_deriv` Le nombre de points utilisés dans le lissage de la dérivée pour trouver les pics par minima. Par défaut `13`.
+#' * `sg_n_deriv` Le nombre de points utilisés dans le lissage de la dérivée pour trouver les pics par minima. Par défaut `15`.
 #' * `window_norm` La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un pic est un vrai maxima et pas seulement du bruit. Valeur par défaut `10`. Fonctionne mieux sur des données avec une résolution cohérente, et arrondit au point de données suivant.
 #' * `window_deriv` La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un minima de dérivée est un vrai minima et pas seulement du bruit. Valeur par défaut `5`. Fonctionne mieux sur des données avec une résolution cohérente, et arrondira au point de données suivant.
-#' * `window_align` La largeur de la fenêtre (en wavenumbers) par laquelle les pics dérivés et normaux sont comparés. Les pics normaux sont ajoutés à la liste des pics dérivés s'ils se trouvent à l'extérieur de la distance de la fenêtre de tout autre pic.
 #' * `zero_norm` Les spectres sont débarrassés du bruit de base avant de rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil zéro. Valeur par défaut `1e-2`.
 #' * `zero_deriv`La dérivée est débarrassée du bruit de base avant la recherche des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par défaut `1e-4`.
+#' * `window_merge` La largeur de la fenêtre (en wavenumbers) dans laquelle les pics détectés par différentes méthodes sont fusionnés en un seul pic représentatif. Par défaut `5`. Fonctionne mieux sur des données avec une résolution cohérente.
 #' @return A vector of wavenumbers corresponding to peaks found in the provided
 #'   FTIR spectra.
 #'
 #'   Un vecteur de nombres d'ondes correspondant aux pics trouvés dans les
 #'   spectres IRTF fournis.
 #' @export
-#' @seealso [signal::sgolayfilt()], [smooth_ftir()], [shift_baseline()]
+#' @seealso [signal::sgolayfilt()]
 #' @md
 #' @references Savitzky, A.; Golay, M.J.E. (1964). "Smoothing and
 #'   Differentiation of Data by Simplified Least Squares Procedures". Analytical
@@ -102,9 +106,9 @@ find_ftir_peaks <- function(ftir, ...) {
   sg_n_deriv <- `if`("sg_n_deriv" %in% names(args), args$sg_n_deriv, 15)
   window_norm <- `if`("window_norm" %in% names(args), args$window_norm, 10)
   window_deriv <- `if`("window_deriv" %in% names(args), args$window_deriv, 5)
-  window_align <- `if`("window_align" %in% names(args), args$window_align, 10)
   zero_norm <- `if`("zero_norm" %in% names(args), args$zero_norm, 1e-2)
   zero_deriv <- `if`("zero_deriv" %in% names(args), args$zero_deriv, 1e-4)
+  window_merge <- `if`("window_merge" %in% names(args), args$window_merge, 5)
 
   if (!is.numeric(zero_norm)) {
     cli::cli_abort(
@@ -114,6 +118,16 @@ find_ftir_peaks <- function(ftir, ...) {
   if (!is.numeric(zero_deriv)) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg zero_deriv} must be numeric."
+    )
+  }
+  if (!is.numeric(window_merge)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg window_merge} must be numeric."
+    )
+  }
+  if (window_merge <= 0) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg window_merge} must be positive."
     )
   }
 
@@ -152,7 +166,9 @@ find_ftir_peaks <- function(ftir, ...) {
       "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be numeric."
     )
   }
-  if (sg_n_deriv < 3 || sg_n_deriv != floor(sg_n_deriv) || sg_n_deriv %% 2 == 0) {
+  if (
+    sg_n_deriv < 3 || sg_n_deriv != floor(sg_n_deriv) || sg_n_deriv %% 2 == 0
+  ) {
     cli::cli_abort(
       "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be an odd integer ≥ 3."
     )
@@ -196,8 +212,12 @@ find_ftir_peaks <- function(ftir, ...) {
 
   all_peaks <- deriv_peaks
   for (i in seq_along(norm_peaks)) {
-    if (sum(abs(all_peaks - norm_peaks[i]) < window_align) == 0) {
+    matches <- abs(all_peaks - norm_peaks[i]) < window_merge
+    if (sum(matches) == 0) {
       all_peaks <- c(all_peaks, norm_peaks[i])
+    } else {
+      avg_idx <- which(matches)[1]
+      all_peaks[avg_idx] <- mean(c(all_peaks[avg_idx], norm_peaks[i]))
     }
   }
 

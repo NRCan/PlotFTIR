@@ -194,7 +194,11 @@ print.PlotFTIR_data <- function(x, ...) {
   if (length(samples) <= 5) {
     cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
   } else {
-    cat("  Sample IDs:", paste(utils::head(samples, 5), collapse = ", "), "...\n")
+    cat(
+      "  Sample IDs:",
+      paste(utils::head(samples, 5), collapse = ", "),
+      "...\n"
+    )
   }
   invisible(x)
 }

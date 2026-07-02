@@ -77,7 +77,95 @@ test_that("find_ftir_peaks returns correct peaks", {
   )
 })
 
-# === Section 2: fit_peaks() Core Tests ===
+# === Section 2: Hybrid Peak Detection Tests ===
+
+test_that("find_ftir_peaks accepts window_merge parameter", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = seq(4000, 400, length.out = 100),
+    absorbance = rnorm(100)
+  )
+  expect_error(find_ftir_peaks(ftir), NA)
+  expect_error(
+    find_ftir_peaks(ftir, window_merge = "non-numeric"),
+    "`window_merge` must be numeric"
+  )
+  expect_error(
+    find_ftir_peaks(ftir, window_merge = -1),
+    "`window_merge` must be positive"
+  )
+})
+
+test_that("find_ftir_peaks merges close peaks using representative approach", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = round(seq(4000, 400, length.out = 200)),
+    absorbance = rep(c(0, 0, 1, 2, 3, 5, 3, 2, 0, 0), 20)
+  )
+
+  peaks_default <- find_ftir_peaks(
+    ftir,
+    sg_p_deriv = 3,
+    sg_n_deriv = 7,
+    sg_p_norm = 3,
+    sg_n_norm = 7,
+    window_norm = 50,
+    window_deriv = 50
+  )
+
+  peaks_wider_merge <- find_ftir_peaks(
+    ftir,
+    sg_p_deriv = 3,
+    sg_n_deriv = 7,
+    sg_p_norm = 3,
+    sg_n_norm = 7,
+    window_norm = 50,
+    window_deriv = 50,
+    window_merge = 10
+  )
+
+  expect_length(peaks_default, 20)
+  expect_type(peaks_wider_merge, "double")
+})
+
+test_that("find_ftir_peaks finds broad peaks via first derivative zero-crossing", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = round(seq(4000, 400, length.out = 200)),
+    absorbance = c(
+      rep(0.1, 50),
+      seq(0.1, 3, length.out = 60), # broad rising
+      seq(3, 0.1, length.out = 60), # broad falling
+      rep(0.1, 30)
+    )
+  )
+
+  peaks_broad <- find_ftir_peaks(
+    ftir,
+    sg_p_deriv = 2,
+    sg_n_deriv = 11,
+    sg_p_norm = 2,
+    sg_n_norm = 11,
+    window_norm = 30,
+    window_deriv = 30
+  )
+
+  expect_type(peaks_broad, "double")
+})
+
+# === Section 3: fit_peaks() Core Tests ===
 
 test_that("fit_peaks (voigt) returns correct results", {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -196,7 +284,10 @@ test_that("find_ftir_peaks validates parameter types", {
     absorbance = rnorm(100)
   )
 
-  expect_error(find_ftir_peaks(ftir, sg_p_norm = "invalid"), "`sg_p_norm` must be numeric")
+  expect_error(
+    find_ftir_peaks(ftir, sg_p_norm = "invalid"),
+    "`sg_p_norm` must be numeric"
+  )
 })
 
 test_that("fit_peaks validates method parameter", {
@@ -220,7 +311,10 @@ test_that("All functions validate ftir data structure", {
     testthat::skip("signal not available for testing")
   }
 
-  expect_error(find_ftir_peaks(data.frame(a = 1, b = 2)), "must contain a column named `sample_id`")
+  expect_error(
+    find_ftir_peaks(data.frame(a = 1, b = 2)),
+    "must contain a column named `sample_id`"
+  )
 })
 
 # === Section 5: Helper Function Tests ===
