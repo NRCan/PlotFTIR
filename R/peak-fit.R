@@ -19,7 +19,7 @@
 #'   lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre, un
 #'   certain nombre de paramètres de réglage facultatifs peuvent être fournis
 #'   (les valeurs par défaut fonctionnent bien pour les spectres typiques).
-#' @param ftir A data.frame in long format with a single FTIR spectra in columns
+#' @param ftir (`data.frame`) A data.frame in long format with a single FTIR spectra in columns
 #'   `sample_id`, `wavenumber`, and `absorbance`. The `absorbance` column may be
 #'   replaced by a `transmittance` column for transmittance plots.
 #'
@@ -51,7 +51,7 @@
 #' * `zero_norm` Les spectres sont débarrassés du bruit de base avant de rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil zéro. Valeur par défaut `1e-2`.
 #' * `zero_deriv`La dérivée est débarrassée du bruit de base avant la recherche des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par défaut `1e-4`.
 #' * `window_merge` La largeur de la fenêtre (en wavenumbers) dans laquelle les pics détectés par différentes méthodes sont fusionnés en un seul pic représentatif. Par défaut `5`. Fonctionne mieux sur des données avec une résolution cohérente.
-#' @return A vector of wavenumbers corresponding to peaks found in the provided
+#' @returns A vector of wavenumbers corresponding to peaks found in the provided
 #'   FTIR spectra.
 #'
 #'   Un vecteur de nombres d'ondes correspondant aux pics trouvés dans les
@@ -201,12 +201,12 @@ find_ftir_peaks <- function(ftir, ...) {
   # at 2000 cm-1 and 2008 cm-1, next option is 2012 cm-1)
   resolution <- abs(mean(diff(ftir$wavenumber)))
 
-  deriv_peaks <- ftir$wavenumber[minima(
-    zero_threshold(sg_deriv, zero_deriv),
+  deriv_peaks <- ftir$wavenumber[.minima(
+    .zero_threshold(sg_deriv, zero_deriv),
     ceiling(window_deriv / resolution)
   )]
-  norm_peaks <- ftir$wavenumber[maxima(
-    zero_threshold(sg, zero_norm),
+  norm_peaks <- ftir$wavenumber[.maxima(
+    .zero_threshold(sg, zero_norm),
     ceiling(window_norm / resolution)
   )]
 
@@ -252,7 +252,7 @@ find_ftir_peaks <- function(ftir, ...) {
 }
 
 
-maxima <- function(x, window = 1) {
+.maxima <- function(x, window = 1) {
   # in this form, window is COUNTS of values away, not wavenumbers
   lenx <- length(x)
   x <- c(rep(-Inf, window), x, rep(-Inf, window))
@@ -277,12 +277,12 @@ maxima <- function(x, window = 1) {
 }
 
 
-minima <- function(x, window = 1) {
+.minima <- function(x, window = 1) {
   return(maxima(x = x * -1, window))
 }
 
 
-zero_threshold <- function(x, threshold = 1e-4) {
+.zero_threshold <- function(x, threshold = 1e-4) {
   x[abs(x) < threshold] <- 0
   return(x)
 }
@@ -308,7 +308,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #'
 #'   Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 #'   `sample_id`, `wavenumber`, et `absorbance`.
-#' @param peaklist The locations of peaks from `[find_ftir_peaks()]`. If none
+#' @param peaklist (`numeric`) The locations of peaks from `[find_ftir_peaks()]`. If none
 #'   provided, will search for peaks using the default parameters of that
 #'   function. Note that you could provide a common list of peaks for fitting
 #'   multiple different spectra to compare results between samples.
@@ -318,8 +318,8 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #'   de cette fonction. Notez que vous pouvez fournir une liste commune de pics
 #'   pour l'ajustement de plusieurs spectres différents afin de comparer les
 #'   résultats entre les échantillons.
-#' @param method The peak style / fitting method. Theoretically FTIR peaks are
-#'   Lorentzian shaped, but with Gaussian broadening the pseudo-Voigt shape
+#' @param method (`character`) The peak style / fitting method. Theoretically FTIR peaks are
+#'   Lorentz shaped, but with Gaussian broadening the pseudo-Voigt shape
 #'   matches best. Some success is seen using Doniach-Šunjić-Gauss peak shapes
 #'   since these can adopt undetected shoulder peaks in an asymmetric measure
 #'   for each peak. Options are:
@@ -338,7 +338,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #' * `gauss` Ajuster les pics en forme de Gauss [EMpeaksR::spect_em_gmm()]
 #' * `lorentz` Ajuster les pics en forme de Lorentz [EMpeaksR::spect_em_lmm()]
 #' * `dsg` Ajuster les pics en forme de Doniach-Šunjić-Gauss [EMpeaksR::spect_em_dsgmm()]
-#' @param fixed_peaks Boolean, whether to fix the peak locations to the provided
+#' @param fixed_peaks (`logical`) Boolean, whether to fix the peak locations to the provided
 #'   values or allow the optimizer to move peaks as needed.
 #'
 #'   Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
@@ -349,7 +349,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #'   Paramètres de contrôle pour les fonctions d'ajustement (`conv_cri` et/ou
 #'   `maxit`) ou paramètres supplémentaires à passer à [find_ftir_peaks()] si
 #'   nécessaire.
-#' @return An `EMpeaksR` style fitted model. See the documentation for each peak
+#' @returns An `EMpeaksR` style fitted model. See the documentation for each peak
 #'   shape.
 #'
 #'   Un modèle ajusté de type `EMpeaksR`. Voir la documentation pour chaque forme de pic.
@@ -366,7 +366,7 @@ zero_threshold <- function(x, threshold = 1e-4) {
 #' peak separation method in XPS analysis". Science and Technology of Advanced
 #' Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
 #' @examples
-#' #' # Load the isopropanol sample spectrum from the PlotFTIR package
+#' # Load the isopropanol sample spectrum from the PlotFTIR package
 #' ftir_data <- PlotFTIR::sample_spectra[
 #'   PlotFTIR::sample_spectra$sample_id == "isopropanol",
 #' ]
@@ -465,6 +465,9 @@ fit_peaks <- function(
       "Error in {.fn PlotFTIR::fit_peaks}. {.arg method} must be one of {.code voigt}, {.code lorentz}, {.code gauss} or {.code dsg}."
     )
   }
+
+  # Use rlang::arg_match for better validation
+  method <- rlang::arg_match(method, c("voigt", "gauss", "lorentz", "dsg"))
 
   args <- list(...)
 
@@ -636,11 +639,11 @@ fit_peak_df <- function(fitted_peaks) {
 #'
 #'   Un objet de [fit_peaks()].
 #'
-#' @return A character value for the peak type fitted to the spectra.
+#' @returns A character value for the peak type fitted to the spectra.
 #'
 #'   Une valeur de caractère pour le type de pic ajusté aux spectres.
 #' @keywords internal
-get_fit_method <- function(fitted_peaks) {
+.get_fit_method <- function(fitted_peaks) {
   if (("method" %in% names(fitted_peaks))) {
     method <- fitted_peaks$method
   } else {
@@ -687,7 +690,7 @@ get_fit_method <- function(fitted_peaks) {
 #'   Un index des pics si l'on obtient des spectres à un seul pic, sinon la
 #'   somme de tous les pics ajustés est renvoyée.
 #'
-#' @return The calculated absorbance intensities as numeric vector of the same
+#' @returns The calculated absorbance intensities as numeric vector of the same
 #'   length as the FTIR spectra.
 #'
 #'   Les intensités d'absorption calculées sous forme de tableau numérique de
@@ -701,22 +704,22 @@ get_fit_method <- function(fitted_peaks) {
 #' expectation-conditional maximization algorithm for extending high–throughput
 #' peak separation method in XPS analysis". Science and Technology of Advanced
 #' Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
-get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
+.get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
   PlotFTIR::check_ftir_data(ftir)
-  method <- get_fit_method(fitted_peaks)
+  method <- .get_fit_method(fitted_peaks)
   if (!is.null(peak)) {
     if (!is.numeric(peak)) {
       cli::cli_abort(
-        "Error in PlotFTIR:::get_fit_spectra: requested peak must be an integer value. You provided {.obj_type_friendly {peak}}."
+        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak must be an integer value. You provided {.obj_type_friendly {peak}}."
       )
     } else if (peak %% 1 != 0) {
       cli::cli_abort(
-        "Error in PlotFTIR:::get_fit_spectra: requested peak must be an integer value. You provided something with decimals."
+        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak must be an integer value. You provided something with decimals."
       )
     }
     if (peak > length(fitted_peaks$mu) || peak < 1) {
       cli::cli_abort(
-        "Error in PlotFTIR:::get_fit_spectra: requested peak {.val {peak}} is out of range, only {{length(fitted_peaks$mu}} peaks are fitted."
+        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak {.val {peak}} is out of range, only {{length(fitted_peaks$mu}} peaks are fitted."
       )
     }
   }
@@ -728,7 +731,7 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
           fitted_peaks$mix_ratio[x] *
-            truncated_g(
+            .truncated_g(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
               sigma = fitted_peaks$sigma[x]
@@ -743,7 +746,7 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
           fitted_peaks$mix_ratio[x] *
-            truncated_pv(
+            .truncated_pv(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
               sigma = fitted_peaks$sigma[x],
@@ -759,7 +762,7 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
           fitted_peaks$mix_ratio[x] *
-            truncated_l(
+            .truncated_l(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
               gam = fitted_peaks$gam[x]
@@ -774,7 +777,58 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
           fitted_peaks$mix_ratio[x] *
-            truncated_dsg(
+            .truncated_dsg(
+              ftir$wavenumber,
+              mu = fitted_peaks$mu[x],
+              sigma = fitted_peaks$sigma[x],
+              alpha = fitted_peaks$alpha[x],
+              eta = fitted_peaks$eta[x]
+            )
+        }
+      )
+    )
+  }
+      )
+    )
+  } else if (method == "voigt") {
+    y <- Reduce(
+      "+",
+      lapply(
+        seq_along(fitted_peaks$mu),
+        FUN = function(x) {
+          fitted_peaks$mix_ratio[x] *
+            .truncated_pv(
+              ftir$wavenumber,
+              mu = fitted_peaks$mu[x],
+              sigma = fitted_peaks$sigma[x],
+              eta = fitted_peaks$eta[x]
+            )
+        }
+      )
+    )
+  } else if (method == "lorentz") {
+    y <- Reduce(
+      "+",
+      lapply(
+        seq_along(fitted_peaks$mu),
+        FUN = function(x) {
+          fitted_peaks$mix_ratio[x] *
+            .truncated_l(
+              ftir$wavenumber,
+              mu = fitted_peaks$mu[x],
+              gam = fitted_peaks$gam[x]
+            )
+        }
+      )
+    )
+  } else {
+    y <- Reduce(
+      "+",
+      lapply(
+        seq_along(fitted_peaks$mu),
+        FUN = function(x) {
+          fitted_peaks$mix_ratio[x] *
+            .truncated_dsg(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
               sigma = fitted_peaks$sigma[x],
@@ -797,14 +851,14 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
   # determine the scale factor, but now recalculate the peak of interest.
   if (method == "gauss") {
     y <- fitted_peaks$mix_ratio[peak] *
-      truncated_g(
+      .truncated_g(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         sigma = fitted_peaks$sigma[peak]
       )
   } else if (method == "voigt") {
     y <- fitted_peaks$mix_ratio[peak] *
-      truncated_pv(
+      .truncated_pv(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         sigma = fitted_peaks$sigma[peak],
@@ -812,14 +866,14 @@ get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
       )
   } else if (method == "lorentz") {
     y <- fitted_peaks$mix_ratio[peak] *
-      truncated_l(
+      .truncated_l(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         gam = fitted_peaks$gam[peak]
       )
   } else {
     y <- fitted_peaks$mix_ratio[peak] *
-      truncated_dsg(
+      .truncated_dsg(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         sigma = fitted_peaks$sigma[peak],
@@ -1201,7 +1255,7 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
     cli::cli_warn(c(
-      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+      "Warning in {.fn PlotFTIR::plot_fit_residuals}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
       i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
     ))
   }
@@ -1211,7 +1265,7 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
 
-  method <- get_fit_method(fitted_peaks = fitted_peaks)
+  method <- .get_fit_method(fitted_peaks = fitted_peaks)
 
   fitted_y <- get_fit_spectra(ftir, fitted_peaks)
 
@@ -1495,7 +1549,7 @@ plot_fit_ftir_peaks <- function(
 }
 
 
-process_language <- function(lang) {
+.process_language <- function(lang) {
   # if language is provided, check against permitted, else use default from options.
   l <- NA
   if (!is.na(lang)) {
@@ -1609,11 +1663,11 @@ process_language <- function(lang) {
 #'
 #'   Un tableau numérique des valeurs x (nombres d'ondes) des spectres par
 #'   rapport auxquels les composants sont optimisés.
-#' @param y A numeric vector of absorbance values (of same length as `x`) of the
+#' @param y (`numeric`) A numeric vector of absorbance values (of same length as `x`) of the
 #'   spectra against which the components are being optimized.
 #'
-#'   A numeric vector of absorbance values (of same length as `x`) of the
-#'   spectra against which the components are being optimized.
+#'   Un tableau numérique des valeurs d'absorption (de la même longueur que `x`) des
+#'   spectres par rapport auxquels les composants sont optimisés.
 #' @param mu A numeric vector of component peak centers.
 #'
 #'   Un tableau numérique des centres de pics des composants.
@@ -1622,11 +1676,11 @@ process_language <- function(lang) {
 #'
 #'   Un tableau numérique des valeurs d'écart-type (sigma) des pics des
 #'   composants. Doit être de la même longueur que `mu`.
-#' @param alpha A numeric vector of component proportion asymmetric (alpha)
+#' @param alpha (`numeric`) A numeric vector of component proportion asymmetric (alpha)
 #'   values. Must all be between 0 and 1. Must be the same length as `mu`.
 #'
-#'   A numeric vector of component proportion asymmetric (alpha) values. Must
-#'   all be between 0 and 1. Must be the same length as `mu`.
+#'   Un tableau numérique des valeurs de proportion asymétrique (alpha) des composants.
+#'   Doit être compris entre 0 et 1. Doit être de la même longueur que `mu`.
 #' @param eta A numeric vector of component mixing of Gauss and Lorentz
 #'   characteristics. Must all be between 0 and 1. Must be the same length as
 #'   `mu`.
@@ -2395,7 +2449,7 @@ spect_em_pvmm <- function(
 
 # These are from the EMpeaksR and are unexported helper functions
 
-truncated_pv <- function(x, mu, sigma, eta) {
+.truncated_pv <- function(x, mu, sigma, eta) {
   (eta *
     stats::dcauchy(x, mu, sqrt(2 * log(2)) * sigma) +
     (1 - eta) * stats::dnorm(x, mu, sigma)) /
@@ -2406,7 +2460,7 @@ truncated_pv <- function(x, mu, sigma, eta) {
     )
 }
 
-truncated_dsg <- function(x, mu, sigma, alpha, eta) {
+.truncated_dsg <- function(x, mu, sigma, alpha, eta) {
   ((eta *
     (((gamma(1 - alpha)) /
       ((x - mu)^2 + (sqrt(2 * log(2)) * sigma)^2)^((1 - alpha) / 2)) *
@@ -2435,14 +2489,14 @@ truncated_dsg <- function(x, mu, sigma, alpha, eta) {
     )
 }
 
-dCauchy <- function(x, mu, gam) {
+.dCauchy <- function(x, mu, gam) {
   return((stats::dcauchy(x, mu, gam)) / sum(stats::dcauchy(x, mu, gam)))
 }
 
-truncated_l <- function(x, mu, gam) {
+.truncated_l <- function(x, mu, gam) {
   return(dCauchy(x = x, mu = mu[1], gam = gam[1]))
 }
 
-truncated_g <- function(x, mu, sigma) {
+.truncated_g <- function(x, mu, sigma) {
   return(stats::dnorm(x = x, mean = mu[1], sd = sigma[1]))
 }

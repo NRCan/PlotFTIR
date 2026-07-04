@@ -58,3 +58,4 @@ cobertura.xml
 .vscode/*
 .kilo/*
 tests/testthat/_problems*
+test_changes.R
