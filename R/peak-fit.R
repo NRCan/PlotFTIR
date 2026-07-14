@@ -788,57 +788,6 @@ fit_peak_df <- function(fitted_peaks) {
       )
     )
   }
-      )
-    )
-  } else if (method == "voigt") {
-    y <- Reduce(
-      "+",
-      lapply(
-        seq_along(fitted_peaks$mu),
-        FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
-            .truncated_pv(
-              ftir$wavenumber,
-              mu = fitted_peaks$mu[x],
-              sigma = fitted_peaks$sigma[x],
-              eta = fitted_peaks$eta[x]
-            )
-        }
-      )
-    )
-  } else if (method == "lorentz") {
-    y <- Reduce(
-      "+",
-      lapply(
-        seq_along(fitted_peaks$mu),
-        FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
-            .truncated_l(
-              ftir$wavenumber,
-              mu = fitted_peaks$mu[x],
-              gam = fitted_peaks$gam[x]
-            )
-        }
-      )
-    )
-  } else {
-    y <- Reduce(
-      "+",
-      lapply(
-        seq_along(fitted_peaks$mu),
-        FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
-            .truncated_dsg(
-              ftir$wavenumber,
-              mu = fitted_peaks$mu[x],
-              sigma = fitted_peaks$sigma[x],
-              alpha = fitted_peaks$alpha[x],
-              eta = fitted_peaks$eta[x]
-            )
-        }
-      )
-    )
-  }
 
   scale_factor <- (1 / max(y, na.rm = TRUE)) *
     max(ftir$absorbance, na.rm = TRUE)
