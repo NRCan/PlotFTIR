@@ -42,7 +42,12 @@
 #' read_ftir(tf, sample_name = "sample1")
 #' @md
 #' @seealso [read_ftir_directory()]
-read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
+read_ftir <- function(
+  path = ".",
+  file = NA_character_,
+  sample_name = NA_character_,
+  ...
+) {
   # Check inputs
   if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort(
@@ -174,7 +179,12 @@ read_ftir <- function(path = ".", file = NA, sample_name = NA, ...) {
 #'
 #' @md
 #' @seealso [read_ftir()]
-read_ftir_directory <- function(path, files, sample_names = NA, ...) {
+read_ftir_directory <- function(
+  path,
+  files,
+  sample_names = NA_character_,
+  ...
+) {
   # Check inputs
   if (length(path) != 1 || !is.character(path)) {
     cli::cli_abort(c(
@@ -197,11 +207,11 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
       ))
     }
   } else {
-    sample_names <- rep(NA, length(files))
+    sample_names <- rep(NA_character_, length(files))
   }
 
   ftir <- data.frame()
-  intensity <- NA
+  intensity <- NA_character_
   for (i in seq_along(files)) {
     tryCatch(
       {
@@ -238,7 +248,7 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
 }
 
 
-read_ftir_csv <- function(path, file, sample_name = NA, ...) {
+read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
   input_file <- utils::read.csv(file = file.path(path, file), ...)
 
   if (ncol(input_file) > 2) {
@@ -323,7 +333,7 @@ read_ftir_csv <- function(path, file, sample_name = NA, ...) {
 }
 
 
-read_ftir_asp <- function(path, file, sample_name = NA, ...) {
+read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
   input_file <- readLines(con = file.path(path, file))
   data_rows <- as.numeric(input_file[1])
   max_wavenumber <- as.numeric(input_file[2])
@@ -364,7 +374,7 @@ read_ftir_asp <- function(path, file, sample_name = NA, ...) {
 }
 
 
-read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
+read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   if (!requireNamespace("readJDX", quietly = TRUE)) {
     cli::cli_abort(c(
       "{.pkg PlotFTIR} requires {.pkg readJDX} package installation for this function.",
@@ -392,7 +402,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
     )
   }
 
-  intensity <- NA
+  intensity <- NA_character_
   if (any(grepl("absorbance", tolower(metadata)))) {
     intensity <- "absorbance"
   } else if (any(grepl("transmittance", tolower(metadata)))) {
@@ -452,7 +462,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA, ...) {
 }
 
 
-read_ftir_spc <- function(path, file, sample_name = NA, ...) {
+read_ftir_spc <- function(path, file, sample_name = NA_character_, ...) {
   cli::cli_abort(c(
     "Error in {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR is not (yet) able to read .spc files.",
     i = "The {.pkg hyperSpec} package may be able to read this file."
@@ -460,7 +470,7 @@ read_ftir_spc <- function(path, file, sample_name = NA, ...) {
 }
 
 
-read_ftir_a2r <- function(path, file, sample_name = NA, ...) {
+read_ftir_a2r <- function(path, file, sample_name = NA_character_, ...) {
   cli::cli_abort(c(
     "Error in {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR is not (yet) able to read .a2r files.",
     i = "The {.pkg hyperSpec} package may be able to read this file."
@@ -751,7 +761,7 @@ plotftir_to_ir <- function(ftir, metadata = NULL) {
 #' }
 plotftir_to_chemospec <- function(
   ftir,
-  group_crit = NA,
+  group_crit = NA_character_,
   group_colours = "auto",
   description = "FTIR Study"
 ) {
