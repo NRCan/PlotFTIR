@@ -212,7 +212,7 @@ read_ftir_directory <- function(path, files, sample_names = NA, ...) {
         if (attr(f, "intensity") == intensity) {
           ftir <- rbind(ftir, f)
         } else {
-          if (intensity <- "absorbance") {
+          if (intensity == "absorbance") {
             ftir <- rbind(ftir, transmittance_to_absorbance(f))
           } else {
             ftir <- rbind(ftir, absorbance_to_transmittance(f))
@@ -667,7 +667,7 @@ ir_to_df <- function(ir, what) {
 #'     metadata = data.frame("Biodiesel_Content" = c(0, 0.25, 0.5, 1, 2.5, 5, 7.5, 10, 0.5, 5, NA))
 #'   )
 #' }
-plotftir_to_ir <- function(ftir, metadata = NA) {
+plotftir_to_ir <- function(ftir, metadata = NULL) {
   # Package checks
   if (!requireNamespace("ir", quietly = TRUE)) {
     cli::cli_abort(c(
