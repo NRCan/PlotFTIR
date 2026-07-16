@@ -4,7 +4,7 @@
 \alias{plotftir_to_ir}
 \title{Convert `PlotFTIR` data to `ir`}
 \usage{
-plotftir_to_ir(ftir, metadata = NA)
+plotftir_to_ir(ftir, metadata = NULL)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,

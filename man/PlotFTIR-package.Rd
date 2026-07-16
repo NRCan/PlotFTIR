@@ -19,6 +19,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Philip Bulsink \email{philip.bulsink@nrcan-rncan.gc.ca} (\href{https://orcid.org/0000-0001-9668-2429}{ORCID})
 
+Authors:
+\itemize{
+  \item Philip Bulsink \email{philip.bulsink@nrcan-rncan.gc.ca} (\href{https://orcid.org/0000-0001-9668-2429}{ORCID})
+}
+
 Other contributors:
 \itemize{
   \item Ulrich Makanda \email{ulrich.makanda@nrcan-rncan.gc.ca} (Translated documentation to French/Traduire la documentation en français) [translator]

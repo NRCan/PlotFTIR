@@ -19,7 +19,6 @@ Imports:
     cli,
     rlang,
     scales
-RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.3)
 Suggests: 
@@ -38,3 +37,4 @@ Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues
 URL: https://github.com/NRCan/PlotFTIR
+Config/roxygen2/version: 8.0.0
