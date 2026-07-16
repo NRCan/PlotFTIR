@@ -4,7 +4,7 @@
 \alias{read_ftir_directory}
 \title{Read FTIR file}
 \usage{
-read_ftir_directory(path, files, sample_names = NA, ...)
+read_ftir_directory(path, files, sample_names = NA_character_, ...)
 }
 \arguments{
 \item{path}{Path to the file. Default is the current working directory, as \code{"."}.
@@ -19,9 +19,9 @@ Noms de fichiers, obligatoires.}
 
 Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, les noms de fichiers sont utilisés sans l'extension.}
 
-\item{...}{Additional parameters to pass to the file reading function. For CSV files, see \code{\link[utils:read.table]{utils::read.csv()}}, it may be wise to pass \code{col.names} to disambiguate the input data.
+\item{...}{Additional parameters to pass to the file reading function. For CSV files, see \code{\link[utils:read.csv]{utils::read.csv()}}, it may be wise to pass \code{col.names} to disambiguate the input data.
 
-Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir \code{\link[utils:read.table]{utils::read.csv()}}, il peut être judicieux de passer \code{col.names} pour désambiguïser les données d'entrée.}
+Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir \code{\link[utils:read.csv]{utils::read.csv()}}, il peut être judicieux de passer \code{col.names} pour désambiguïser les données d'entrée.}
 }
 \value{
 a data.frame containing the spectral data from the files.
