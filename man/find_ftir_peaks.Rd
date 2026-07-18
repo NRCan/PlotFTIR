@@ -4,10 +4,10 @@
 \alias{find_ftir_peaks}
 \title{Find FTIR Peaks}
 \usage{
-find_ftir_peaks(ftir, ...)
+find_ftir_peaks(ftir, call = rlang::caller_env(), ...)
 }
 \arguments{
-\item{ftir}{A data.frame in long format with a single FTIR spectra in columns
+\item{ftir}{(\code{data.frame}) A data.frame in long format with a single FTIR spectra in columns
 \code{sample_id}, \code{wavenumber}, and \code{absorbance}. The \code{absorbance} column may be
 replaced by a \code{transmittance} column for transmittance plots.
 
@@ -15,6 +15,9 @@ Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 \code{sample_id}, \code{wavenumber}, et \code{absorbance}. La colonne \code{absorbance} peut
 être remplacée par une colonne \code{transmittance} pour les tracés de
 transmittance.}
+
+\item{call}{(`environment`) The caller environment for error messages.
+L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{Additional optional parameters to pass to peak finding algorithm.
 \itemize{

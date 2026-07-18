@@ -4,7 +4,14 @@
 \alias{plot_components}
 \title{Plot Components}
 \usage{
-plot_components(ftir, fitted_peaks, plot_fit = FALSE, lang = NA, ...)
+plot_components(
+  ftir,
+  fitted_peaks,
+  plot_fit = FALSE,
+  lang = NA,
+  call = rlang::caller_env(),
+  ...
+)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with a single FTIR spectra in columns
@@ -41,6 +48,9 @@ plot_components(ftir, fitted_peaks, plot_fit = FALSE, lang = NA, ...)
   par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
   `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
   respectivement.}
+
+\item{call}{(`environment`) The caller environment for error messages.
+L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{optional argument `fitted_sample_name` for naming the fitted peaks
   on the plot, or extra parameters to pass to [PlotFTIR::plot_ftir()].

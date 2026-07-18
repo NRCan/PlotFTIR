@@ -18,7 +18,8 @@ LazyData: true
 Imports: 
     cli,
     rlang,
-    scales
+    scales,
+    tibble
 Depends: 
     R (>= 3.3)
 Suggests: 

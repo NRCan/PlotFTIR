@@ -4,7 +4,13 @@
 \alias{plot_fit_residuals}
 \title{Plot Residuals}
 \usage{
-plot_fit_residuals(ftir, fitted_peaks, lang = NA, ...)
+plot_fit_residuals(
+  ftir,
+  fitted_peaks,
+  lang = NA,
+  call = rlang::caller_env(),
+  ...
+)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with a single FTIR spectra in columns
@@ -36,6 +42,9 @@ plot_fit_residuals(ftir, fitted_peaks, lang = NA, ...)
   par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
   `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
   respectivement.}
+
+\item{call}{(`environment`) The caller environment for error messages.
+L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{optional argument `fitted_sample_name` for naming the fitted peaks
   on the plot, or extra parameters to pass to [PlotFTIR::plot_ftir()].

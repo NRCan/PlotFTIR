@@ -4,7 +4,14 @@
 \alias{fit_peaks}
 \title{Fit Peaks}
 \usage{
-fit_peaks(ftir, peaklist = NA, method = "voigt", fixed_peaks = FALSE, ...)
+fit_peaks(
+  ftir,
+  peaklist = NA,
+  method = "voigt",
+  fixed_peaks = FALSE,
+  call = rlang::caller_env(),
+  ...
+)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with a single FTIR spectra in columns
@@ -13,7 +20,7 @@ fit_peaks(ftir, peaklist = NA, method = "voigt", fixed_peaks = FALSE, ...)
 Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 \code{sample_id}, \code{wavenumber}, et \code{absorbance}.}
 
-\item{peaklist}{The locations of peaks from \verb{[find_ftir_peaks()]}. If none
+\item{peaklist}{(\code{numeric}) The locations of peaks from \verb{[find_ftir_peaks()]}. If none
 provided, will search for peaks using the default parameters of that
 function. Note that you could provide a common list of peaks for fitting
 multiple different spectra to compare results between samples.
@@ -24,16 +31,16 @@ de cette fonction. Notez que vous pouvez fournir une liste commune de pics
 pour l'ajustement de plusieurs spectres différents afin de comparer les
 résultats entre les échantillons.}
 
-\item{method}{The peak style / fitting method. Theoretically FTIR peaks are
-Lorentzian shaped, but with Gaussian broadening the pseudo-Voigt shape
+\item{method}{(\code{character}) The peak style / fitting method. Theoretically FTIR peaks are
+Lorentz shaped, but with Gaussian broadening the pseudo-Voigt shape
 matches best. Some success is seen using Doniach-Šunjić-Gauss peak shapes
 since these can adopt undetected shoulder peaks in an asymmetric measure
 for each peak. Options are:
 \itemize{
-\item \code{voigt} (default): Fit Voigt shaped peaks \code{\link[EMpeaksR:PVMM]{EMpeaksR::spect_em_pvmm()}}
-\item \code{gauss} Fit Gauss shaped peaks \code{\link[EMpeaksR:GMM]{EMpeaksR::spect_em_gmm()}}
-\item \code{lorentz} Fit Lorentz shaped peaks \code{\link[EMpeaksR:LMM]{EMpeaksR::spect_em_lmm()}}
-\item \code{dsg} Fit Doniach-Šunjić-Gauss shaped peaks \code{\link[EMpeaksR:DSGMM]{EMpeaksR::spect_em_dsgmm()}}
+\item \code{voigt} (default): Fit Voigt shaped peaks \code{\link[EMpeaksR:spect_em_pvmm]{EMpeaksR::spect_em_pvmm()}}
+\item \code{gauss} Fit Gauss shaped peaks \code{\link[EMpeaksR:spect_em_gmm]{EMpeaksR::spect_em_gmm()}}
+\item \code{lorentz} Fit Lorentz shaped peaks \code{\link[EMpeaksR:spect_em_lmm]{EMpeaksR::spect_em_lmm()}}
+\item \code{dsg} Fit Doniach-Šunjić-Gauss shaped peaks \code{\link[EMpeaksR:spect_em_dsgmm]{EMpeaksR::spect_em_dsgmm()}}
 
 Le style des pics / la méthode d'ajustement. En théorie, les pics IRTF ont
 une forme de Lorentz, mais avec un élargissement Gaussien, c'est la forme
@@ -41,18 +48,21 @@ pseudo-Voigt qui convient le mieux. Les formes de pics de
 Doniach-Šunjić-Gauss donnent de bons résultats, car elles permettent
 d'adopter des pics d'épaulement non détectés dans le cadre d'une mesure
 asymétrique pour chaque pic. Les options sont les suivantes :
-\item \code{voigt} (par défaut) : Ajuster les pics en forme de Voigt \code{\link[EMpeaksR:PVMM]{EMpeaksR::spect_em_pvmm()}}
-\item \code{gauss} Ajuster les pics en forme de Gauss \code{\link[EMpeaksR:GMM]{EMpeaksR::spect_em_gmm()}}
-\item \code{lorentz} Ajuster les pics en forme de Lorentz \code{\link[EMpeaksR:LMM]{EMpeaksR::spect_em_lmm()}}
-\item \code{dsg} Ajuster les pics en forme de Doniach-Šunjić-Gauss \code{\link[EMpeaksR:DSGMM]{EMpeaksR::spect_em_dsgmm()}}
+\item \code{voigt} (par défaut) : Ajuster les pics en forme de Voigt \code{\link[EMpeaksR:spect_em_pvmm]{EMpeaksR::spect_em_pvmm()}}
+\item \code{gauss} Ajuster les pics en forme de Gauss \code{\link[EMpeaksR:spect_em_gmm]{EMpeaksR::spect_em_gmm()}}
+\item \code{lorentz} Ajuster les pics en forme de Lorentz \code{\link[EMpeaksR:spect_em_lmm]{EMpeaksR::spect_em_lmm()}}
+\item \code{dsg} Ajuster les pics en forme de Doniach-Šunjić-Gauss \code{\link[EMpeaksR:spect_em_dsgmm]{EMpeaksR::spect_em_dsgmm()}}
 }}
 
-\item{fixed_peaks}{Boolean, whether to fix the peak locations to the provided
+\item{fixed_peaks}{(\code{logical}) Boolean, whether to fix the peak locations to the provided
 values or allow the optimizer to move peaks as needed.
 
 Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
 fournies ou permettre à l'optimiseur de déplacer les pics selon les
 besoins.}
+
+\item{call}{(`environment`) The caller environment for error messages.
+L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{Control parameters for fitting functions (\code{conv_cri} and/or
 \code{maxit}) or additional parameters to pass to \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} if needed.
@@ -83,7 +93,7 @@ de base afin de réduire le travail de l'ajusteur de pics en produisant un
 bruit de fond.
 }
 \examples{
-#' # Load the isopropanol sample spectrum from the PlotFTIR package
+# Load the isopropanol sample spectrum from the PlotFTIR package
 ftir_data <- PlotFTIR::sample_spectra[
   PlotFTIR::sample_spectra$sample_id == "isopropanol",
 ]

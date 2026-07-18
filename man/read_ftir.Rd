@@ -19,9 +19,9 @@ Nom du fichier, obligatoire. Si le fichier et le chemin sont fournis ensemble en
 
 Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, le nom du fichier est utilisé sans l'extension.}
 
-\item{...}{Additional parameters to pass to the file reading function. For CSV files, see \code{\link[utils:read.table]{utils::read.csv()}}, it may be wise to pass \code{col.names} to disambiguate the input data.
+\item{...}{Additional parameters to pass to the file reading function. For CSV files, see \code{\link[utils:read.csv]{utils::read.csv()}}, it may be wise to pass \code{col.names} to disambiguate the input data.
 
-Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir \code{\link[utils:read.table]{utils::read.csv()}}, il peut être judicieux de passer \code{col.names} pour désambiguïser les données d'entrée.}
+Paramètres supplémentaires à transmettre à la fonction de lecture de fichier. Pour les fichiers CSV, voir \code{\link[utils:read.csv]{utils::read.csv()}}, il peut être judicieux de passer \code{col.names} pour désambiguïser les données d'entrée.}
 }
 \value{
 a data.frame containing the spectral data from the file.

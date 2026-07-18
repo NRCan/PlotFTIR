@@ -9,6 +9,7 @@ plot_fit_ftir_peaks(
   fitted_peaks,
   plot_components = FALSE,
   lang = NA,
+  call = rlang::caller_env(),
   ...
 )
 }
@@ -48,6 +49,9 @@ plot_fit_ftir_peaks(
   par défaut permanente, mettez `options("PlotFTIR.lang" = "en")` ou
   `options("PlotFTIR.lang" = "fr")` pour l'anglais ou le français,
   respectivement.}
+
+\item{call}{(`environment`) The caller environment for error messages.
+L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{Optional argument `fitted_sample_name` for naming the fitted peaks
   on the plot, or extra parameters to pass to [PlotFTIR::plot_ftir()].

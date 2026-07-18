@@ -2,6 +2,7 @@
 
 S3method("-",ggplot)
 S3method(print,PlotFTIR_data)
+export(.process_language)
 export(absorbance_to_transmittance)
 export(add_band)
 export(add_scalar_value)
@@ -34,3 +35,4 @@ export(subtract_scalar_value)
 export(transmittance_to_absorbance)
 export(zoom_in_on_range)
 importFrom(rlang,.data)
+importFrom(tibble,as_tibble)

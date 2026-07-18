@@ -226,3 +226,62 @@ intensity_type <- function(ftir) {
   ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
   return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
 }
+
+
+#' Process Language Parameter
+#'
+#' @description Internal helper to normalize the `lang` parameter to a
+#'   two-letter code ('en' or 'fr'). Accepts common aliases and falls back to
+#'   the package option `PlotFTIR.lang`.
+#'
+#'   Assistant interne pour normaliser le paramètre `lang` en un code à deux
+#'   lettres ('en' ou 'fr'). Accepte les alias courants et utilise par défaut
+#'   l'option de package `PlotFTIR.lang`.
+#'
+#' @param lang Character string with language preference, or `NA`.
+#'
+#'   Chaîne de caractères avec la préférence de langue, ou `NA`.
+#'
+#' @param call The calling environment for error messages.
+#'
+#'   L'environnement d'appel pour les messages d'erreur.
+#'
+#' @return A two-character string: 'en' or 'fr'.
+#'
+#'   Une chaîne de deux caractères : 'en' ou 'fr'.
+#'
+#' @keywords internal
+#' @export
+#' @md
+.process_language <- function(lang, call = rlang::caller_env()) {
+  if (!is.na(lang)) {
+    l <- tryCatch(
+      match.arg(
+        lang,
+        choices = c(
+          "en",
+          "english",
+          "anglais",
+          "fr",
+          "french",
+          "francais",
+          "fran\u00e7ais"
+        ),
+        several.ok = FALSE
+      ),
+      error = function(x) {
+        cli::cli_warn(
+          "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'. Use default.",
+          call = call
+        )
+        NA_character_
+      }
+    )
+  } else {
+    l <- NA_character_
+  }
+  if (is.na(l)) {
+    l <- getOption("PlotFTIR.lang", default = "en")
+  }
+  substr(l, 1, 2)
+}

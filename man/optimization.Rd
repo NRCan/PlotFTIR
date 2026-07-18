@@ -66,11 +66,11 @@ which the components are being optimized.
 Un tableau numérique des valeurs x (nombres d'ondes) des spectres par
 rapport auxquels les composants sont optimisés.}
 
-\item{y}{A numeric vector of absorbance values (of same length as \code{x}) of the
+\item{y}{(\code{numeric}) A numeric vector of absorbance values (of same length as \code{x}) of the
 spectra against which the components are being optimized.
 
-A numeric vector of absorbance values (of same length as \code{x}) of the
-spectra against which the components are being optimized.}
+Un tableau numérique des valeurs d'absorption (de la même longueur que \code{x}) des
+spectres par rapport auxquels les composants sont optimisés.}
 
 \item{mu}{A numeric vector of component peak centers.
 
@@ -82,11 +82,11 @@ values. Must be the same length as \code{mu}.
 Un tableau numérique des valeurs d'écart-type (sigma) des pics des
 composants. Doit être de la même longueur que \code{mu}.}
 
-\item{alpha}{A numeric vector of component proportion asymmetric (alpha)
+\item{alpha}{(\code{numeric}) A numeric vector of component proportion asymmetric (alpha)
 values. Must all be between 0 and 1. Must be the same length as \code{mu}.
 
-A numeric vector of component proportion asymmetric (alpha) values. Must
-all be between 0 and 1. Must be the same length as \code{mu}.}
+Un tableau numérique des valeurs de proportion asymétrique (alpha) des composants.
+Doit être compris entre 0 et 1. Doit être de la même longueur que \code{mu}.}
 
 \item{eta}{A numeric vector of component mixing of Gauss and Lorentz
 characteristics. Must all be between 0 and 1. Must be the same length as

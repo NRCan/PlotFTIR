@@ -56,6 +56,7 @@
 #'
 #'   Un vecteur de nombres d'ondes correspondant aux pics trouvés dans les
 #'   spectres IRTF fournis.
+#' @inheritParams .shared-params
 #' @export
 #' @seealso [signal::sgolayfilt()]
 #' @md
@@ -82,13 +83,14 @@
 #' )
 #' print("Peaks found with adjusted settings:")
 #' print(peaks_adjusted)
-find_ftir_peaks <- function(ftir, ...) {
+find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   # check args
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg ftir} must only contain one sample spectra."
+      "{.arg ftir} must only contain one sample spectra.",
+      call = call
     )
   }
 
@@ -112,65 +114,89 @@ find_ftir_peaks <- function(ftir, ...) {
 
   if (!is.numeric(zero_norm)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg zero_norm} must be numeric."
+      "{.arg zero_norm} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (!is.numeric(zero_deriv)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg zero_deriv} must be numeric."
+      "{.arg zero_deriv} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (!is.numeric(window_merge)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg window_merge} must be numeric."
+      "{.arg window_merge} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (window_merge <= 0) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg window_merge} must be positive."
+      "{.arg window_merge} must be positive.",
+      "plotftir_invalid_value",
+      call = call
     )
   }
 
-  if (!is.integer(sg_p_norm) && !is.numeric(sg_p_norm)) {
+  if (!is.numeric(sg_p_norm)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_norm} must be numeric."
+      "{.arg sg_p_norm} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (sg_p_norm < 0 || sg_p_norm != floor(sg_p_norm)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_norm} must be an integer ≥ 0."
+      "{.arg sg_p_norm} must be an integer >= 0.",
+      "plotftir_invalid_value",
+      call = call
     )
   }
-  if (!is.integer(sg_n_norm) && !is.numeric(sg_n_norm)) {
+  if (!is.numeric(sg_n_norm)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_norm} must be numeric."
+      "{.arg sg_n_norm} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (sg_n_norm < 3 || sg_n_norm != floor(sg_n_norm) || sg_n_norm %% 2 == 0) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_norm} must be an odd integer ≥ 3."
+      "{.arg sg_n_norm} must be an odd integer >= 3.",
+      "plotftir_invalid_value",
+      call = call
     )
   }
-  if (!is.integer(sg_p_deriv) && !is.numeric(sg_p_deriv)) {
+  if (!is.numeric(sg_p_deriv)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_deriv} must be numeric."
+      "{.arg sg_p_deriv} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (sg_p_deriv < 0 || sg_p_deriv != floor(sg_p_deriv)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_p_deriv} must be an integer ≥ 0."
+      "{.arg sg_p_deriv} must be an integer >= 0.",
+      "plotftir_invalid_value",
+      call = call
     )
   }
-  if (!is.integer(sg_n_deriv) && !is.numeric(sg_n_deriv)) {
+  if (!is.numeric(sg_n_deriv)) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be numeric."
+      "{.arg sg_n_deriv} must be numeric.",
+      "plotftir_invalid_type",
+      call = call
     )
   }
   if (
     sg_n_deriv < 3 || sg_n_deriv != floor(sg_n_deriv) || sg_n_deriv %% 2 == 0
   ) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg sg_n_deriv} must be an odd integer ≥ 3."
+      "{.arg sg_n_deriv} must be an odd integer >= 3.",
+      "plotftir_invalid_value",
+      call = call
     )
   }
 
@@ -183,16 +209,22 @@ find_ftir_peaks <- function(ftir, ...) {
   )
 
   if (zero_norm > max(abs(sg), na.rm = TRUE)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg zero_norm} is larger than the highest point in the spectra.",
-      i = "Set {.arg zero_norm} to remove noise, typically around 1e-4."
-    ))
+    cli::cli_abort(
+      c(
+        "{.arg zero_norm} is larger than the highest point in the spectra.",
+        i = "Set {.arg zero_norm} to remove noise, typically around 1e-4."
+      ),
+      call = call
+    )
   }
   if (zero_deriv > max(abs(sg_deriv), na.rm = TRUE)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::find_ftir_peaks}. {.arg zero_deriv} is larger than the highest point in the derivative spectra.",
-      i = "Set {.arg zero_deriv} to remove noise, typically around 1e-4."
-    ))
+    cli::cli_abort(
+      c(
+        "{.arg zero_deriv} is larger than the highest point in the derivative spectra.",
+        i = "Set {.arg zero_deriv} to remove noise, typically around 1e-4."
+      ),
+      call = call
+    )
   }
 
   # need resolution to convert windows in wavenumbers to data index units by
@@ -278,7 +310,7 @@ find_ftir_peaks <- function(ftir, ...) {
 
 
 .minima <- function(x, window = 1) {
-  return(maxima(x = x * -1, window))
+  return(.maxima(x = x * -1, window))
 }
 
 
@@ -349,6 +381,7 @@ find_ftir_peaks <- function(ftir, ...) {
 #'   Paramètres de contrôle pour les fonctions d'ajustement (`conv_cri` et/ou
 #'   `maxit`) ou paramètres supplémentaires à passer à [find_ftir_peaks()] si
 #'   nécessaire.
+#' @inheritParams .shared-params
 #' @returns An `EMpeaksR` style fitted model. See the documentation for each peak
 #'   shape.
 #'
@@ -427,47 +460,43 @@ fit_peaks <- function(
   peaklist = NA,
   method = "voigt",
   fixed_peaks = FALSE,
+  call = rlang::caller_env(),
   ...
 ) {
   PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::fit_peaks}. {.arg ftir} must be supplied in absorbance units."
+      "{.arg ftir} must be supplied in absorbance units.",
+      call = call
     )
   }
 
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::fit_peaks}. {.arg ftir} must only contain one sample spectra."
+      "{.arg ftir} must only contain one sample spectra.",
+      call = call
     )
   }
 
-  if (
-    !(tolower(method) %in%
-      c(
-        "v",
-        "pv",
-        "voigt",
-        "pseudo-voigt",
-        "gauss",
-        "gaussian",
-        "normal",
-        "g",
-        "dsg",
-        "doniach-\u0161unji\u0107-gauss",
-        "doniach-sunjic-gauss",
-        "l",
-        "lorentz"
-      ))
-  ) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::fit_peaks}. {.arg method} must be one of {.code voigt}, {.code lorentz}, {.code gauss} or {.code dsg}."
-    )
-  }
+  .fit_method_map <- c(
+    voigt = "voigt",
+    v = "voigt",
+    pv = "voigt",
+    "pseudo-voigt" = "voigt",
+    gauss = "gauss",
+    gaussian = "gauss",
+    normal = "gauss",
+    g = "gauss",
+    lorentz = "lorentz",
+    l = "lorentz",
+    dsg = "doniach-sunjic-gauss",
+    "doniach-sunjic-gauss" = "doniach-sunjic-gauss",
+    "doniach-\u0161unji\u0107-gauss" = "doniach-sunjic-gauss"
+  )
 
-  # Use rlang::arg_match for better validation
-  method <- rlang::arg_match(method, c("voigt", "gauss", "lorentz", "dsg"))
+  method <- rlang::arg_match(method, names(.fit_method_map))
+  canonical_method <- .fit_method_map[method]
 
   args <- list(...)
 
@@ -495,8 +524,7 @@ fit_peaks <- function(
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
 
-  if (tolower(method) %in% c("g", "gauss", "gaussian", "normal")) {
-    method <- "gauss"
+  if (canonical_method == "gauss") {
     utils::capture.output(
       res <- spect_em_gmm(
         x = ftir$wavenumber,
@@ -510,8 +538,7 @@ fit_peaks <- function(
       ),
       file = nullfile()
     )
-  } else if (tolower(method) %in% c("v", "pv", "voigt", "pseudo-voigt")) {
-    method <- "voigt"
+  } else if (canonical_method == "voigt") {
     utils::capture.output(
       res <- spect_em_pvmm(
         x = ftir$wavenumber,
@@ -526,8 +553,7 @@ fit_peaks <- function(
       ),
       file = nullfile()
     )
-  } else if (tolower(method) %in% c("l", "lorentz")) {
-    method <- "lorentz"
+  } else if (canonical_method == "lorentz") {
     utils::capture.output(
       res <- spect_em_lmm(
         x = ftir$wavenumber,
@@ -542,8 +568,6 @@ fit_peaks <- function(
       file = nullfile()
     )
   } else {
-    method <- "doniach-\u0161unji\u0107-gauss"
-
     utils::capture.output(
       res <- spect_em_dsgmm(
         x = ftir$wavenumber,
@@ -560,7 +584,7 @@ fit_peaks <- function(
       file = nullfile()
     )
   }
-  res$method <- method
+  res$method <- unname(canonical_method)
   res$sample_id <- unique(ftir$sample_id)
   res$fixed_peaks <- fixed_peaks
 
@@ -601,10 +625,13 @@ fit_peaks <- function(
 #' print("Peak Data Frame from Voigt Fit:")
 #' print(peak_df_voigt)
 fit_peak_df <- function(fitted_peaks) {
-  peak_table <- data.frame(
-    "sample_id" = fitted_peaks$sample_id,
-    "peak" = seq_along(fitted_peaks$mu),
-    "wavenumber" = fitted_peaks$mu
+  peak_table <- as_tibble(
+    data.frame(
+      sample_id = fitted_peaks$sample_id,
+      peak = seq_along(fitted_peaks$mu),
+      wavenumber = fitted_peaks$mu
+    ),
+    row.names = NULL
   )
 
   if ("sigma" %in% names(fitted_peaks)) {
@@ -624,7 +651,7 @@ fit_peak_df <- function(fitted_peaks) {
 
   peak_table <- peak_table[order(peak_table$wavenumber), ]
 
-  return(peak_table)
+  as_tibble(peak_table)
 }
 
 
@@ -648,7 +675,7 @@ fit_peak_df <- function(fitted_peaks) {
     method <- fitted_peaks$method
   } else {
     cli::cli_warn(
-      "Warning in {.fn PlotFTIR::get_fit_method}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
+      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}."
     )
     if ("alpha" %in% names(fitted_peaks)) {
       method <- "doniach-\u0161unji\u0107-gauss"
@@ -704,22 +731,32 @@ fit_peak_df <- function(fitted_peaks) {
 #' expectation-conditional maximization algorithm for extending high–throughput
 #' peak separation method in XPS analysis". Science and Technology of Advanced
 #' Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
-.get_fit_spectra <- function(ftir, fitted_peaks, peak = NULL) {
+.get_fit_spectra <- function(
+  ftir,
+  fitted_peaks,
+  peak = NULL,
+  call = rlang::caller_env()
+) {
   PlotFTIR::check_ftir_data(ftir)
   method <- .get_fit_method(fitted_peaks)
   if (!is.null(peak)) {
     if (!is.numeric(peak)) {
       cli::cli_abort(
-        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak must be an integer value. You provided {.obj_type_friendly {peak}}."
+        "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}.",
+        "plotftir_invalid_value",
+        call = call
       )
     } else if (peak %% 1 != 0) {
       cli::cli_abort(
-        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak must be an integer value. You provided something with decimals."
+        "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}.",
+        "plotftir_invalid_value",
+        call = call
       )
     }
     if (peak > length(fitted_peaks$mu) || peak < 1) {
       cli::cli_abort(
-        "Error in {.fn PlotFTIR::get_fit_spectra}. Requested peak {.val {peak}} is out of range, only {{length(fitted_peaks$mu}} peaks are fitted."
+        "Requested peak {.val {peak}} is out of range; only {length(fitted_peaks$mu)} peak(s) fitted.",
+        call = call
       )
     }
   }
@@ -878,6 +915,7 @@ fit_peak_df <- function(fitted_peaks) {
 #'   Argument optionnel `fitted_sample_name` pour nommer les pics ajustés sur le
 #'   graphique, ou des paramètres supplémentaires à passer à
 #'   [PlotFTIR::plot_ftir()].
+#' @inheritParams .shared-params
 #' @returns A [PlotFTIR] graphic with residuals plotted against wavenumber
 #'
 #' Un graphique [PlotFTIR] avec les résidus tracés en fonction du nombre d'ondes
@@ -927,21 +965,24 @@ plot_components <- function(
   fitted_peaks,
   plot_fit = FALSE,
   lang = NA,
+  call = rlang::caller_env(),
   ...
 ) {
   PlotFTIR::check_ftir_data(ftir)
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_components}. {.arg ftir} must be supplied in absorbance units."
+      "{.arg ftir} must be supplied in absorbance units.",
+      call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_components}. {.arg ftir} must only contain one sample spectra."
+      "{.arg ftir} must only contain one sample spectra.",
+      call = call
     )
   }
 
-  lang <- process_language(lang)
+  lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
@@ -959,7 +1000,8 @@ plot_components <- function(
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
+      "{.fun plot_components} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+      call = call
     )
   }
 
@@ -971,18 +1013,22 @@ plot_components <- function(
     ifelse(lang == "en", "Sample ID", "ID de l'\u00e9chantillon")
   )
 
-  method <- get_fit_method(fitted_peaks)
+  method <- .get_fit_method(fitted_peaks)
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn PlotFTIR::plot_components}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
+      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+      call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(c(
-      "Warning in {.fn PlotFTIR::plot_components}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-      i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
-    ))
+    cli::cli_warn(
+      c(
+        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+      ),
+      call = call
+    )
   }
 
   if ("plot_title" %in% argnames) {
@@ -1016,7 +1062,7 @@ plot_components <- function(
   )
   for (i in seq(n_peaks)) {
     s <- paste("Component", i)
-    y <- get_fit_spectra(ftir, fitted_peaks, i)
+    y <- .get_fit_spectra(ftir, fitted_peaks, i)
     fit_spectra <- rbind(
       fit_spectra,
       data.frame(wavenumber = ftir$wavenumber, absorbance = y, sample_id = s)
@@ -1037,7 +1083,7 @@ plot_components <- function(
     )
     fitted_sample <- data.frame(
       wavenumber = ftir$wavenumber,
-      absorbance = get_fit_spectra(ftir, fitted_peaks = fitted_peaks),
+      absorbance = .get_fit_spectra(ftir, fitted_peaks = fitted_peaks),
       sample_id = fitted_sample_name
     )
     plotdata <- rbind(plotdata, fitted_sample)
@@ -1145,6 +1191,7 @@ plot_components <- function(
 #'   Argument optionnel `fitted_sample_name` pour nommer les pics ajustés sur le
 #'   graphique, ou des paramètres supplémentaires à passer à
 #'   [PlotFTIR::plot_ftir()].
+#' @inheritParams .shared-params
 #' @returns A [PlotFTIR::plot_ftir()] graphic with residuals plotted against
 #'   wavenumber.
 #'
@@ -1183,40 +1230,52 @@ plot_components <- function(
 #' )
 #' }
 #'
-plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
+plot_fit_residuals <- function(
+  ftir,
+  fitted_peaks,
+  lang = NA,
+  call = rlang::caller_env(),
+  ...
+) {
   PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_fit_residuals}. {.arg ftir} must be supplied in absorbance units."
+      "{.arg ftir} must be supplied in absorbance units.",
+      call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_fit_residuals}. {.arg ftir} must only contain one sample spectra."
+      "{.arg ftir} must only contain one sample spectra.",
+      call = call
     )
   }
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn PlotFTIR::plot_fit_residuals}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
+      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+      call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(c(
-      "Warning in {.fn PlotFTIR::plot_fit_residuals}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-      i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
-    ))
+    cli::cli_warn(
+      c(
+        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+      ),
+      call = call
+    )
   }
 
-  lang <- process_language(lang)
+  lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
 
   method <- .get_fit_method(fitted_peaks = fitted_peaks)
 
-  fitted_y <- get_fit_spectra(ftir, fitted_peaks)
+  fitted_y <- .get_fit_spectra(ftir, fitted_peaks)
 
   residual <- fitted_y - ftir$absorbance
 
@@ -1234,7 +1293,8 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_components}. Supplied {lun} unused argument{?s}: {argnames}."
+      "{.fun plot_fit_residuals} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+      call = call
     )
   }
 
@@ -1246,7 +1306,7 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
     ""
   )
 
-  method <- get_fit_method(fitted_peaks)
+  method <- .get_fit_method(fitted_peaks)
 
   if ("plot_title" %in% argnames) {
     plot_title <- args$plot_title
@@ -1330,6 +1390,7 @@ plot_fit_residuals <- function(ftir, fitted_peaks, lang = NA, ...) {
 #'   graphique, ou des paramètres supplémentaires à passer à
 #'   [PlotFTIR::plot_ftir()].
 #'
+#' @inheritParams .shared-params
 #' @return A [PlotFTIR::plot_ftir()] graphic.
 #'
 #'   Un graphique [PlotFTIR::plot_ftir()].
@@ -1383,6 +1444,7 @@ plot_fit_ftir_peaks <- function(
   fitted_peaks,
   plot_components = FALSE,
   lang = NA,
+  call = rlang::caller_env(),
   ...
 ) {
   if (plot_components) {
@@ -1391,23 +1453,26 @@ plot_fit_ftir_peaks <- function(
       fitted_peaks = fitted_peaks,
       plot_fit = TRUE,
       lang = lang,
-      ... = ...
+      call = call,
+      ...
     ))
   }
   PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg ftir} must be supplied in absorbance units."
+      "{.arg ftir} must be supplied in absorbance units.",
+      call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg ftir} must only contain one sample spectra."
+      "{.arg ftir} must only contain one sample spectra.",
+      call = call
     )
   }
 
-  lang <- process_language(lang)
+  lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
@@ -1425,7 +1490,8 @@ plot_fit_ftir_peaks <- function(
     ]
     lun <- length(unused)
     cli::cli_abort(
-      "Error in {.fn PlotFTIR::plot_fit_residuals}. Supplied {lun} unused argument{?s}: {argnames}."
+      "{.fun plot_fit_ftir_peaks} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+      call = call
     )
   }
 
@@ -1437,18 +1503,22 @@ plot_fit_ftir_peaks <- function(
     ifelse(lang == "en", "Sample ID", "ID de l'\u00e9chantillon")
   )
 
-  method <- get_fit_method(fitted_peaks)
+  method <- .get_fit_method(fitted_peaks)
 
   if (!("sample_id" %in% names(fitted_peaks))) {
     cli::cli_warn(
-      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} should be generated with {.fn PlotFTIR::fit_peaks}."
+      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+      call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(c(
-      "Warning in {.fn PlotFTIR::plot_fit_ftir_peaks}. {.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-      i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
-    ))
+    cli::cli_warn(
+      c(
+        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+      ),
+      call = call
+    )
   }
 
   fitted_sample_name <- ifelse(
@@ -1481,7 +1551,7 @@ plot_fit_ftir_peaks <- function(
     )
   }
 
-  fitted_y <- get_fit_spectra(ftir = ftir, fitted_peaks = fitted_peaks)
+  fitted_y <- .get_fit_spectra(ftir = ftir, fitted_peaks = fitted_peaks)
 
   plotdata <- data.frame(
     "wavenumber" = rep(ftir$wavenumber, 2),
@@ -1496,44 +1566,6 @@ plot_fit_ftir_peaks <- function(
     lang = lang
   )
 }
-
-
-.process_language <- function(lang) {
-  # if language is provided, check against permitted, else use default from options.
-  l <- NA
-  if (!is.na(lang)) {
-    tryCatch(
-      l <- match.arg(
-        lang,
-        choices = c(
-          "en",
-          "english",
-          "anglais",
-          "fr",
-          "french",
-          "francais",
-          "fran\u00e7ais"
-        ),
-        several.ok = FALSE
-      ),
-      error = function(x) {
-        cli::cli_warn(c(
-          "Warning: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'.",
-          i = "Using default language '{getOption('PlotFTIR.lang', default = 'en')}'."
-        ))
-      }
-    )
-  }
-  if (is.na(l)) {
-    # either lang was NA or failed the match. Default to getOptions result
-    l <- getOption("PlotFTIR.lang", default = "en")
-  }
-
-  l <- substr(l, 0, 2)
-
-  return(l)
-}
-
 
 # EMpeaksR algorithms modified with the following changes:
 #  - removal of verbose printing (now optional as message for easier silencing)
@@ -1712,7 +1744,7 @@ spect_em_dsgmm <- function(
 ) {
   # Function Prep
   f_k <- function(i) {
-    mix_ratio[i] * truncated_dsg(x, mu[i], sigma[i], alpha[i], eta[i])
+    mix_ratio[i] * .truncated_dsg(x, mu[i], sigma[i], alpha[i], eta[i])
   }
 
   LL <- function(x, y, mu, sigma, alpha, eta, mix_ratio) {
@@ -1721,13 +1753,13 @@ spect_em_dsgmm <- function(
   }
 
   Q_fun <- function(x, w_k, mu, sigma, alpha, eta, mix_ratio) {
-    w_k %*% (log(mix_ratio) + log(truncated_dsg(x, mu, sigma, alpha, eta)))
+    w_k %*% (log(mix_ratio) + log(.truncated_dsg(x, mu, sigma, alpha, eta)))
   }
 
   # Error checking
   if (length(x) != length(y)) {
     cli::cli_abort(
-      "Error in {.fn spect_em_dsgmm}. Provided {.param x} and {.param y} vectors must be of the same length."
+      "Provided {.arg x} and {.arg y} vectors must be of the same length."
     )
   }
   if (
@@ -1739,12 +1771,12 @@ spect_em_dsgmm <- function(
     )
   ) {
     cli::cli_abort(
-      "Error in {.fn spect_em_dsgmm}. All of {.param mu}, {.param sigma}, {.param alpha}, {.param eta} and {.param mix_ratio} must be of the same length."
+      "All of {.arg mu}, {.arg sigma}, {.arg alpha}, {.arg eta} and {.arg mix_ratio} must be of the same length."
     )
   }
   if (maxit <= 1) {
     cli::cli_abort(
-      "Error in {.fn spect_em_dsgmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
+      "{.arg maxit} must be greater than 1 to perform optimization."
     )
   }
 
@@ -1775,7 +1807,7 @@ spect_em_dsgmm <- function(
     for (j in 1:K) {
       w_k[j, ] <- y *
         mix_ratio[j] *
-        truncated_dsg(x, mu[j], sigma[j], alpha[j], eta[j]) /
+        .truncated_dsg(x, mu[j], sigma[j], alpha[j], eta[j]) /
         den
     }
     n_k <- apply(w_k, 1, sum)
@@ -1946,17 +1978,17 @@ spect_em_gmm <- function(
   # Error checking
   if (length(x) != length(y)) {
     cli::cli_abort(
-      "Error in {.fn spect_em_gmm}. Provided {.param x} and {.param y} vectors must be of the same length."
+      "Provided {.arg x} and {.arg y} vectors must be of the same length."
     )
   }
   if (any(length(mix_ratio) != length(mu), length(sigma) != length(mu))) {
     cli::cli_abort(
-      "Error in {.fn spect_em_gmm}. All of {.param mu}, {.param sigma}, and {.param mix_ratio} must be of the same length."
+      "All of {.arg mu}, {.arg sigma}, and {.arg mix_ratio} must be of the same length."
     )
   }
   if (maxit <= 1) {
     cli::cli_abort(
-      "Error in {.fn spect_em_gmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
+      "{.arg maxit} must be greater than 1 to perform optimization."
     )
   }
 
@@ -2059,30 +2091,30 @@ spect_em_lmm <- function(
 ) {
   # Function Setup
   f_k <- function(i) {
-    mix_ratio[i] * dCauchy(x, mu[i], gam[i])
+    mix_ratio[i] * .d_cauchy(x, mu[i], gam[i])
   }
   LL <- function(x, y, mu, gam, mix_ratio) {
     pL <- sapply(1:K, f_k)
     sum(y * log(apply(pL, 1, sum)))
   }
   Q_fun <- function(x, w_k, mu, gam, mix_ratio) {
-    w_k %*% (log(mix_ratio) + log(dCauchy(x, mu, gam)))
+    w_k %*% (log(mix_ratio) + log(.d_cauchy(x, mu, gam)))
   }
 
   # Error checking
   if (length(x) != length(y)) {
     cli::cli_abort(
-      "Error in {.fn spect_em_lmm}. Provided {.param x} and {.param y} vectors must be of the same length."
+      "Provided {.arg x} and {.arg y} vectors must be of the same length."
     )
   }
   if (any(length(mix_ratio) != length(mu), length(gam) != length(mu))) {
     cli::cli_abort(
-      "Error in {.fn spect_em_lmm}. All of {.param mu}, {.param gam}, and {.param mix_ratio} must be of the same length."
+      "All of {.arg mu}, {.arg gam}, and {.arg mix_ratio} must be of the same length."
     )
   }
   if (maxit <= 1) {
     cli::cli_abort(
-      "Error in {.fn spect_em_lmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
+      "{.arg maxit} must be greater than 1 to perform optimization."
     )
   }
 
@@ -2110,7 +2142,7 @@ spect_em_lmm <- function(
     for (j in 1:K) {
       w_k[j, ] <- y *
         mix_ratio[j] *
-        dCauchy(x, mu[j], gam[j]) /
+        .d_cauchy(x, mu[j], gam[j]) /
         den
     }
     n_k <- apply(w_k, 1, sum)
@@ -2219,20 +2251,20 @@ spect_em_pvmm <- function(
 ) {
   # Function Setup
   f_k <- function(i) {
-    mix_ratio[i] * truncated_pv(x, mu[i], sigma[i], eta[i])
+    mix_ratio[i] * .truncated_pv(x, mu[i], sigma[i], eta[i])
   }
   LL <- function(x, y, mu, sigma, eta, mix_ratio) {
     pL <- sapply(1:K, f_k)
     sum(y * log(apply(pL, 1, sum)))
   }
   Q_fun <- function(x, w_k, mu, sigma, eta, mix_ratio) {
-    w_k %*% (log(mix_ratio) + log(truncated_pv(x, mu, sigma, eta)))
+    w_k %*% (log(mix_ratio) + log(.truncated_pv(x, mu, sigma, eta)))
   }
 
   # Error checking
   if (length(x) != length(y)) {
     cli::cli_abort(
-      "Error in {.fn spect_em_pvmm}. Provided {.param x} and {.param y} vectors must be of the same length."
+      "Provided {.arg x} and {.arg y} vectors must be of the same length."
     )
   }
   if (
@@ -2243,12 +2275,12 @@ spect_em_pvmm <- function(
     )
   ) {
     cli::cli_abort(
-      "Error in {.fn spect_em_pvmm}. All of {.param mu}, {.param sigma}, {.param eta}, and {.param mix_ratio} must be of the same length."
+      "All of {.arg mu}, {.arg sigma}, {.arg eta}, and {.arg mix_ratio} must be of the same length."
     )
   }
   if (maxit <= 1) {
     cli::cli_abort(
-      "Error in {.fn spect_em_pvmm}. Provided {.param maxit} must be greater than 1 to perform optimization."
+      "{.arg maxit} must be greater than 1 to perform optimization."
     )
   }
 
@@ -2277,7 +2309,7 @@ spect_em_pvmm <- function(
     for (j in 1:K) {
       w_k[j, ] <- y *
         mix_ratio[j] *
-        truncated_pv(x, mu[j], sigma[j], eta[j]) /
+        .truncated_pv(x, mu[j], sigma[j], eta[j]) /
         den
     }
     n_k <- apply(w_k, 1, sum)
@@ -2438,12 +2470,12 @@ spect_em_pvmm <- function(
     )
 }
 
-.dCauchy <- function(x, mu, gam) {
+.d_cauchy <- function(x, mu, gam) {
   return((stats::dcauchy(x, mu, gam)) / sum(stats::dcauchy(x, mu, gam)))
 }
 
 .truncated_l <- function(x, mu, gam) {
-  return(dCauchy(x = x, mu = mu[1], gam = gam[1]))
+  return(.d_cauchy(x = x, mu = mu[1], gam = gam[1]))
 }
 
 .truncated_g <- function(x, mu, sigma) {
