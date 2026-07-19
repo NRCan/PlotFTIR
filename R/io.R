@@ -614,7 +614,17 @@ ir_to_df <- function(ir, what) {
   }
 
   irdata <- ir::ir_get_spectrum(ir, what = what)
-  irdata <- mapply(cbind, irdata, "sample_id" = names(irdata), SIMPLIFY = FALSE)
+  if(!is.null(names(irdata))) {
+    sample_ids <- names(irdata)
+  } else if('id_sample' %in% names(ir)){
+    sample_ids <- as.vector(ir$id_sample[what])
+  } else {
+    cli::cli_warn(
+      "Could not find sample spectra ids from {.pkg ir} object.",
+      call = rlang::caller_fn()
+    )
+  }
+  irdata <- mapply(cbind, irdata, "sample_id" = sample_ids, SIMPLIFY = FALSE)
   irdata <- do.call(rbind, irdata)
   colnames(irdata)[colnames(irdata) == "x"] <- "wavenumber"
 
