@@ -621,8 +621,10 @@ ir_to_df <- function(ir, what) {
   } else {
     cli::cli_warn(
       "Could not find sample spectra ids from {.pkg ir} object.",
+      i = "Sample IDs assigned index numerical values.",
       call = rlang::caller_fn()
     )
+    sample_ids <- as.vector(as.character(what))
   }
   irdata <- mapply(cbind, irdata, "sample_id" = sample_ids, SIMPLIFY = FALSE)
   irdata <- do.call(rbind, irdata)
