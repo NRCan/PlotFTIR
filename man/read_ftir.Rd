@@ -4,7 +4,7 @@
 \alias{read_ftir}
 \title{Read FTIR file}
 \usage{
-read_ftir(path = ".", file = NA, sample_name = NA, ...)
+read_ftir(path = ".", file = NA_character_, sample_name = NA_character_, ...)
 }
 \arguments{
 \item{path}{Path to the file. Default is the current working directory, as \code{"."}. Can include the filename, in which case provide \code{NA} as the filename.

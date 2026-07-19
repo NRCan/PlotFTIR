@@ -6,7 +6,7 @@
 \usage{
 plotftir_to_chemospec(
   ftir,
-  group_crit = NA,
+  group_crit = NA_character_,
   group_colours = "auto",
   description = "FTIR Study"
 )
