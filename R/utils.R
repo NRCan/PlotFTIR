@@ -254,7 +254,7 @@ intensity_type <- function(ftir) {
 #' @export
 #' @md
 .process_language <- function(lang, call = rlang::caller_env()) {
-  if (!is.na(lang)) {
+  if (!is.null(lang) & !is.na(lang) & length(lang) > 0) {
     l <- tryCatch(
       match.arg(
         lang,
@@ -283,5 +283,9 @@ intensity_type <- function(ftir) {
   if (is.na(l)) {
     l <- getOption("PlotFTIR.lang", default = "en")
   }
-  substr(l, 1, 2)
+  if (substr(l, 1, 2) %in% c('an', 'en')){
+    return('en')
+  } else {
+    return('fr')
+  }
 }

@@ -84,6 +84,14 @@
 #' print("Peaks found with adjusted settings:")
 #' print(peaks_adjusted)
 find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
+  # check dependencies
+  if (!requireNamespace('signal', quietly = TRUE)) {
+    cli::cli_abort(
+      "{.pkg signal} must be available to find peaks.",
+      call = call
+    )
+  }
+
   # check args
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
@@ -463,7 +471,7 @@ fit_peaks <- function(
   call = rlang::caller_env(),
   ...
 ) {
-  PlotFTIR::check_ftir_data(ftir)
+  ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
@@ -501,13 +509,12 @@ fit_peaks <- function(
   args <- list(...)
 
   if (all(is.na(peaklist))) {
-    peaklist <- find_ftir_peaks(
-      ftir,
-      ... = args[
-        !(names(args) %in%
-          c("sigma", "mix_ratio", "eta", "gam", "alpha", "maxit", "conv_cri"))
-      ]
-    )
+     peak_args <- args[
+       !(names(args) %in% c("sigma", "mix_ratio", "eta", "gam", "alpha", "maxit", "conv_cri"))
+     ]
+     peaklist <- do.call(
+       find_ftir_peaks,
+       c(list(ftir = ftir, call = call), peak_args))
   }
   n <- length(peaklist)
 
@@ -625,14 +632,12 @@ fit_peaks <- function(
 #' print("Peak Data Frame from Voigt Fit:")
 #' print(peak_df_voigt)
 fit_peak_df <- function(fitted_peaks) {
-  peak_table <- as_tibble(
+  peak_table <-
     data.frame(
       sample_id = fitted_peaks$sample_id,
       peak = seq_along(fitted_peaks$mu),
       wavenumber = fitted_peaks$mu
-    ),
-    row.names = NULL
-  )
+    )
 
   if ("sigma" %in% names(fitted_peaks)) {
     peak_table$sigma <- fitted_peaks$sigma
@@ -651,7 +656,7 @@ fit_peak_df <- function(fitted_peaks) {
 
   peak_table <- peak_table[order(peak_table$wavenumber), ]
 
-  as_tibble(peak_table)
+  return(peak_table)
 }
 
 
@@ -737,7 +742,7 @@ fit_peak_df <- function(fitted_peaks) {
   peak = NULL,
   call = rlang::caller_env()
 ) {
-  PlotFTIR::check_ftir_data(ftir)
+  ftir <- PlotFTIR::check_ftir_data(ftir)
   method <- .get_fit_method(fitted_peaks)
   if (!is.null(peak)) {
     if (!is.numeric(peak)) {
@@ -968,7 +973,7 @@ plot_components <- function(
   call = rlang::caller_env(),
   ...
 ) {
-  PlotFTIR::check_ftir_data(ftir)
+  ftir <- PlotFTIR::check_ftir_data(ftir)
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
       "{.arg ftir} must be supplied in absorbance units.",
@@ -1237,7 +1242,7 @@ plot_fit_residuals <- function(
   call = rlang::caller_env(),
   ...
 ) {
-  PlotFTIR::check_ftir_data(ftir)
+  ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
@@ -1407,7 +1412,7 @@ plot_fit_residuals <- function(
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
 #'
-#' if (!requireNamespace("signal", quietly = TRUE)) {
+#' if (requireNamespace("signal", quietly = TRUE)) {
 #'   # First, fit the peaks using the default 'voigt' method
 #'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #' }
@@ -1457,7 +1462,7 @@ plot_fit_ftir_peaks <- function(
       ...
     ))
   }
-  PlotFTIR::check_ftir_data(ftir)
+  ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
     cli::cli_abort(
