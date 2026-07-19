@@ -520,13 +520,17 @@ test_that("interface to ir is ok", {
   expect_true("ggplot" %in% suppressWarnings(class(plot_ftir(irdata))))
 })
 
-test_that("Interface to IR is ok for PlotFTIR data (# 35)",{
-  adjusted_BD <- plotftir_to_ir(biodiesel, metadata = NA) |>
-    ir::ir_bc(method = "rubberband", return_bl = FALSE) |>
-    ir_to_plotftir(what=NA)
+test_that("interface to ir is ok for PlotFTIR data (#35)", {
+  if (!requireNamespace("ir", quietly = TRUE)) {
+    testthat::skip("ir not available for testing interface")
+  }
 
-  expect_equal(names(adjusted_BD), names(biodiesel))
-  
+  adjusted_bd <- plotftir_to_ir(biodiesel, metadata = NA) |>
+    ir::ir_bc(method = "rubberband", return_bl = FALSE) |>
+    ir_to_plotftir(what = NA)
+
+  expect_true("PlotFTIR_data" %in% class(adjusted_bd))
+  expect_setequal(unique(adjusted_bd$sample_id), unique(biodiesel$sample_id))
 })
 
 test_that("Interface to ChemoSpec is ok", {
