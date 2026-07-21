@@ -72,7 +72,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' check_ftir_data(biodiesel)
 check_ftir_data <- function(ftir) {
   fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
-  if (inherits(fn, 'try-error')) {
+  if (inherits(fn, "try-error")) {
     fn <- "PlotFTIR::check_ftir_data"
   } else {
     fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
@@ -254,7 +254,7 @@ intensity_type <- function(ftir) {
 #' @export
 #' @md
 .process_language <- function(lang, call = rlang::caller_env()) {
-  if (!is.null(lang) & !is.na(lang) & length(lang) > 0) {
+  if (!is.null(lang) && !is.na(lang) && length(lang) > 0) {
     l <- tryCatch(
       match.arg(
         lang,
@@ -283,9 +283,9 @@ intensity_type <- function(ftir) {
   if (is.na(l)) {
     l <- getOption("PlotFTIR.lang", default = "en")
   }
-  if (substr(l, 1, 2) %in% c('an', 'en')){
-    return('en')
+  if (substr(l, 1, 2) %in% c("an", "en")) {
+    return("en")
   } else {
-    return('fr')
+    return("fr")
   }
 }

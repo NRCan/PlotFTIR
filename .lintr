@@ -5,5 +5,6 @@ linters: linters_with_defaults(
     line_length_linter(120L),
     missing_argument_linter(),
     unnecessary_concatenation_linter(allow_single_expression = FALSE),
-    yoda_test_linter()
+    yoda_test_linter(), 
+    return_linter = NULL
   )

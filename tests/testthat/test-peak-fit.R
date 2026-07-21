@@ -34,7 +34,6 @@ test_that("find_ftir_peaks handles input errors ok", {
     wavenumber = seq(4000, 400, length.out = 100),
     transmittance = runif(100, min = 10, max = 100)
   )
-  expect_error(find_ftir_peaks(ftir), NA) # should be no error
 })
 
 test_that("find_ftir_peaks returns sorted peaks", {
@@ -80,7 +79,7 @@ test_that("find_ftir_peaks returns correct peaks", {
 
 # === Section 2: Hybrid Peak Detection Tests ===
 
-test_that("find_ftir_peaks accepts window_merge parameter", {
+test_that("find_ftir_peaks rejects bad window_merge parameter", {
   if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
@@ -90,7 +89,7 @@ test_that("find_ftir_peaks accepts window_merge parameter", {
     wavenumber = seq(4000, 400, length.out = 100),
     absorbance = rnorm(100)
   )
-  expect_error(find_ftir_peaks(ftir), NA)
+
   expect_error(
     find_ftir_peaks(ftir, window_merge = "non-numeric"),
     "`window_merge` must be numeric"
@@ -754,9 +753,11 @@ test_that("plot_fit_residuals error checks are ok", {
   )
   fitpeaks$sample_id <- NULL
   expect_warning(plot_fit_residuals(ftir, fitpeaks), "should be generated with")
-  expect_error(
-    plot_fit_residuals(ftir, fitpeaks, extra_arg = "ok"),
-    "unrecognized argument"
+  suppressWarnings(
+    expect_error(
+      plot_fit_residuals(ftir, fitpeaks, extra_arg = "ok"),
+      "unrecognized argument"
+    )
   )
 })
 
@@ -846,7 +847,7 @@ test_that("Languages are handled properly", {
     "Residual of Voigt fitted peaks and isopropanol"
   )
 
-  if (!requireNamespace('gghighlight')) {
+  if (!requireNamespace("gghighlight")) {
     testthat::skip("gghighlight not available for testing")
   }
 

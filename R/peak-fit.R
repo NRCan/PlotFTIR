@@ -2,12 +2,12 @@
 #' @description This function finds peaks in FTIR spectra by identifying minima
 #'   of the double derivative, then re-scanning for maxima of peaks missed by
 #'   the derivative method. It also uses first derivative zero-crossings to find
-#'   broad asymmetric peaks that might be missed by the second derivative.
-#'   Peaks detected by different methods within a specified wavenumber window
-#'   are merged into a single representative peak location. The spectra is
-#'   smoothed by a Savitzky-Golay filter prior to analysis and as such there are
-#'   a number of optional tuning parameters that can be provided (the defaults
-#'   work well for typical spectra).
+#'   broad asymmetric peaks that might be missed by the second derivative. Peaks
+#'   detected by different methods within a specified wavenumber window are
+#'   merged into a single representative peak location. The spectra is smoothed
+#'   by a Savitzky-Golay filter prior to analysis and as such there are a number
+#'   of optional tuning parameters that can be provided (the defaults work well
+#'   for typical spectra).
 #'
 #'   Cette fonction permet de trouver des pics dans les spectres IRTF en
 #'   identifiant les minima de la double dérivée, puis en recherchant à nouveau
@@ -19,38 +19,68 @@
 #'   lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre, un
 #'   certain nombre de paramètres de réglage facultatifs peuvent être fournis
 #'   (les valeurs par défaut fonctionnent bien pour les spectres typiques).
-#' @param ftir (`data.frame`) A data.frame in long format with a single FTIR spectra in columns
-#'   `sample_id`, `wavenumber`, and `absorbance`. The `absorbance` column may be
-#'   replaced by a `transmittance` column for transmittance plots.
+#' @param ftir (`data.frame`) A data.frame in long format with a single FTIR
+#'   spectra in columns `sample_id`, `wavenumber`, and `absorbance`. The
+#'   `absorbance` column may be replaced by a `transmittance` column for
+#'   transmittance plots.
 #'
 #'   Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 #'   `sample_id`, `wavenumber`, et `absorbance`. La colonne `absorbance` peut
 #'   être remplacée par une colonne `transmittance` pour les tracés de
 #'   transmittance.
 #' @param ... Additional optional parameters to pass to peak finding algorithm.
-#' * `sg_p_norm` The polynomial degree used in smoothing the spectra for finding peaks by signal maxima. Default `3`.
-#' * `sg_p_deriv` The polynomial degree used in smoothing the derivative for finding peaks by minima. Default `3`.
-#' * `sg_n_norm` The number of points used in smoothing the spectra for finding peaks by signal maxima. Default `13`.
-#' * `sg_n_deriv` The number of points used in smoothing the derivative for finding peaks by minima. Default `15`.
-#' * `window_norm` The width of the window (in wavenumbers) to ensure that a peak is a true maxima and not just noise. Default `10`. Works best on data with consistent resolution, and will round up to the next data point.
-#' * `window_deriv` The width of the window (in wavenumbers) to ensure that a derivative minima is a true minima and not just noise. Default `5`. Works best on data with consistent resolution, and will round up to the next data point.
-#' * `zero_norm` Spectra have baseline noise removed before searching for peaks by setting signal value below the zero threshold to 0. Default `1e-2`.
-#' * `zero_deriv`Derivative have baseline noise removed before searching for peaks by setting values below the zero threshold to 0. Default `1e-4`.
-#' * `window_merge` The width of the window (in wavenumbers) within which peaks detected by different methods are merged into a single representative peak. Default `5`. Works best on data with consistent resolution.
+#' * `sg_p_norm` The polynomial degree used in smoothing the spectra for finding
+#' peaks by signal maxima. Default `3`.
+#' * `sg_p_deriv` The polynomial degree used in smoothing the derivative for
+#' finding peaks by minima. Default `3`.
+#' * `sg_n_norm` The number of points used in smoothing the spectra for finding
+#' peaks by signal maxima. Default `13`.
+#' * `sg_n_deriv` The number of points used in smoothing the derivative for
+#' finding peaks by minima. Default `15`.
+#' * `window_norm` The width of the window (in wavenumbers) to ensure that a
+#' peak is a true maxima and not just noise. Default `10`. Works best on data
+#' with consistent resolution, and will round up to the next data point.
+#' * `window_deriv` The width of the window (in wavenumbers) to ensure that a
+#' derivative minima is a true minima and not just noise. Default `5`. Works
+#' best on data with consistent resolution, and will round up to the next data
+#' point.
+#' * `zero_norm` Spectra have baseline noise removed before searching for peaks
+#' by setting signal value below the zero threshold to 0. Default `1e-2`.
+#' * `zero_deriv`Derivative have baseline noise removed before searching for
+#' peaks by setting values below the zero threshold to 0. Default `1e-4`.
+#' * `window_merge` The width of the window (in wavenumbers) within which peaks
+#' detected by different methods are merged into a single representative peak.
+#' Default `5`. Works best on data with consistent resolution.
 #'
 #'
 #'   Paramètres optionnels supplémentaires à transmettre à l'algorithme de
 #'   recherche de pics. #' * `sg_p_norm` Le degré polynomial utilisé pour lisser
 #'   les spectres afin de trouver les pics par les maxima du signal. Valeur par
 #'   défaut `3`.
-#' * `sg_p_deriv` Le degré polynomial utilisé dans le lissage de la dérivée pour trouver les pics par les minima. Par défaut `3`.
-#' * `sg_n_norm` Le nombre de points utilisés pour lisser les spectres afin de trouver les pics par maxima du signal. Valeur par défaut `13`.
-#' * `sg_n_deriv` Le nombre de points utilisés dans le lissage de la dérivée pour trouver les pics par minima. Par défaut `15`.
-#' * `window_norm` La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un pic est un vrai maxima et pas seulement du bruit. Valeur par défaut `10`. Fonctionne mieux sur des données avec une résolution cohérente, et arrondit au point de données suivant.
-#' * `window_deriv` La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un minima de dérivée est un vrai minima et pas seulement du bruit. Valeur par défaut `5`. Fonctionne mieux sur des données avec une résolution cohérente, et arrondira au point de données suivant.
-#' * `zero_norm` Les spectres sont débarrassés du bruit de base avant de rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil zéro. Valeur par défaut `1e-2`.
-#' * `zero_deriv`La dérivée est débarrassée du bruit de base avant la recherche des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par défaut `1e-4`.
-#' * `window_merge` La largeur de la fenêtre (en wavenumbers) dans laquelle les pics détectés par différentes méthodes sont fusionnés en un seul pic représentatif. Par défaut `5`. Fonctionne mieux sur des données avec une résolution cohérente.
+#' * `sg_p_deriv` Le degré polynomial utilisé dans le lissage de la dérivée pour
+#'  trouver les pics par les minima. Par défaut `3`.
+#' * `sg_n_norm` Le nombre de points utilisés pour lisser les spectres afin de
+#'  trouver les pics par maxima du signal. Valeur par défaut `13`.
+#' * `sg_n_deriv` Le nombre de points utilisés dans le lissage de la dérivée
+#' pour trouver les pics par minima. Par défaut `15`.
+#' * `window_norm` La largeur de la fenêtre (en wavenumbers) pour s'assurer
+#' qu'un pic est un vrai maxima et pas seulement du bruit. Valeur par défaut
+#' `10`. Fonctionne mieux sur des données avec une résolution cohérente, et
+#' arrondit au point de données suivant.
+#' * `window_deriv` La largeur de la fenêtre (en wavenumbers) pour s'assurer
+#' qu'un minima de dérivée est un vrai minima et pas seulement du bruit. Valeur
+#' par défaut `5`. Fonctionne mieux sur des données avec une résolution
+#' cohérente, et arrondira au point de données suivant.
+#' * `zero_norm` Les spectres sont débarrassés du bruit de base avant de
+#' rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil
+#' zéro. Valeur par défaut `1e-2`.
+#' * `zero_deriv`La dérivée est débarrassée du bruit de base avant la recherche
+#' des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par
+#' défaut `1e-4`.
+#' * `window_merge` La largeur de la fenêtre (en wavenumbers) dans laquelle les
+#' pics détectés par différentes méthodes sont fusionnés en un seul pic
+#' représentatif. Par défaut `5`. Fonctionne mieux sur des données avec une
+#' résolution cohérente.
 #' @returns A vector of wavenumbers corresponding to peaks found in the provided
 #'   FTIR spectra.
 #'
@@ -85,7 +115,7 @@
 #' print(peaks_adjusted)
 find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   # check dependencies
-  if (!requireNamespace('signal', quietly = TRUE)) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
     cli::cli_abort(
       "{.pkg signal} must be available to find peaks.",
       call = call
@@ -296,7 +326,7 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   # in this form, window is COUNTS of values away, not wavenumbers
   lenx <- length(x)
   x <- c(rep(-Inf, window), x, rep(-Inf, window))
-  m <- c()
+  m <- numeric()
   for (i in seq_along(x)) {
     # don't evaluate in filler region
     if (i <= window) {
@@ -348,21 +378,22 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'
 #'   Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 #'   `sample_id`, `wavenumber`, et `absorbance`.
-#' @param peaklist (`numeric`) The locations of peaks from `[find_ftir_peaks()]`. If none
-#'   provided, will search for peaks using the default parameters of that
-#'   function. Note that you could provide a common list of peaks for fitting
-#'   multiple different spectra to compare results between samples.
+#' @param peaklist (`numeric`) The locations of peaks from
+#'   `[find_ftir_peaks()]`. If none provided, will search for peaks using the
+#'   default parameters of that function. Note that you could provide a common
+#'   list of peaks for fitting multiple different spectra to compare results
+#'   between samples.
 #'
 #'   Les emplacements des pics de `[find_ftir_peaks()]`. Si aucune valeur n'est
 #'   fournie, les pics seront recherchés en utilisant les paramètres par défaut
 #'   de cette fonction. Notez que vous pouvez fournir une liste commune de pics
 #'   pour l'ajustement de plusieurs spectres différents afin de comparer les
 #'   résultats entre les échantillons.
-#' @param method (`character`) The peak style / fitting method. Theoretically FTIR peaks are
-#'   Lorentz shaped, but with Gaussian broadening the pseudo-Voigt shape
-#'   matches best. Some success is seen using Doniach-Šunjić-Gauss peak shapes
-#'   since these can adopt undetected shoulder peaks in an asymmetric measure
-#'   for each peak. Options are:
+#' @param method (`character`) The peak style / fitting method. Theoretically
+#'   FTIR peaks are Lorentz shaped, but with Gaussian broadening the
+#'   pseudo-Voigt shape matches best. Some success is seen using
+#'   Doniach-Šunjić-Gauss peak shapes since these can adopt undetected shoulder
+#'   peaks in an asymmetric measure for each peak. Options are:
 #' * `voigt` (default): Fit Voigt shaped peaks [EMpeaksR::spect_em_pvmm()]
 #' * `gauss` Fit Gauss shaped peaks [EMpeaksR::spect_em_gmm()]
 #' * `lorentz` Fit Lorentz shaped peaks [EMpeaksR::spect_em_lmm()]
@@ -378,8 +409,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #' * `gauss` Ajuster les pics en forme de Gauss [EMpeaksR::spect_em_gmm()]
 #' * `lorentz` Ajuster les pics en forme de Lorentz [EMpeaksR::spect_em_lmm()]
 #' * `dsg` Ajuster les pics en forme de Doniach-Šunjić-Gauss [EMpeaksR::spect_em_dsgmm()]
-#' @param fixed_peaks (`logical`) Boolean, whether to fix the peak locations to the provided
-#'   values or allow the optimizer to move peaks as needed.
+#' @param fixed_peaks (`logical`) Boolean, whether to fix the peak locations to
+#'   the provided values or allow the optimizer to move peaks as needed.
 #'
 #'   Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
 #'   fournies ou permettre à l'optimiseur de déplacer les pics selon les
@@ -390,22 +421,24 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'   `maxit`) ou paramètres supplémentaires à passer à [find_ftir_peaks()] si
 #'   nécessaire.
 #' @inheritParams .shared-params
-#' @returns An `EMpeaksR` style fitted model. See the documentation for each peak
-#'   shape.
+#' @returns An `EMpeaksR` style fitted model. See the documentation for each
+#'   peak shape.
 #'
-#'   Un modèle ajusté de type `EMpeaksR`. Voir la documentation pour chaque forme de pic.
+#'   Un modèle ajusté de type `EMpeaksR`. Voir la documentation pour chaque
+#'   forme de pic.
 #' @export
 #' @md
 #' @seealso [spect_em_gmm()], [spect_em_lmm()], [spect_em_pvmm()],
 #'   [spect_em_dsgmm()]
 #' @references Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y.
-#' (2019) "Spectrum adapted expectation-maximization algorithm for
-#' high-throughput peak shift analysis". Science and technology of advanced
-#' materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123 Matsumura,
-#' T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum adapted
-#' expectation-conditional maximization algorithm for extending high–throughput
-#' peak separation method in XPS analysis". Science and Technology of Advanced
-#' Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
+#'   (2019) "Spectrum adapted expectation-maximization algorithm for
+#'   high-throughput peak shift analysis". Science and technology of advanced
+#'   materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123 Matsumura,
+#'   T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum
+#'   adapted expectation-conditional maximization algorithm for extending
+#'   high–throughput peak separation method in XPS analysis". Science and
+#'   Technology of Advanced Materials: Methods, 1(1), pp 45-55.
+#'   doi:10.1080/27660400.2021.1899449
 #' @examples
 #' # Load the isopropanol sample spectrum from the PlotFTIR package
 #' ftir_data <- PlotFTIR::sample_spectra[
@@ -509,12 +542,14 @@ fit_peaks <- function(
   args <- list(...)
 
   if (all(is.na(peaklist))) {
-     peak_args <- args[
-       !(names(args) %in% c("sigma", "mix_ratio", "eta", "gam", "alpha", "maxit", "conv_cri"))
-     ]
-     peaklist <- do.call(
-       find_ftir_peaks,
-       c(list(ftir = ftir, call = call), peak_args))
+    peak_args <- args[
+      !(names(args) %in%
+        c("sigma", "mix_ratio", "eta", "gam", "alpha", "maxit", "conv_cri"))
+    ]
+    peaklist <- do.call(
+      find_ftir_peaks,
+      c(list(ftir = ftir, call = call), peak_args)
+    )
   }
   n <- length(peaklist)
 
@@ -1112,7 +1147,7 @@ plot_components <- function(
     sampleids <- unique(plotdata$sample_id)
     plotdata$sample_id <- factor(
       plotdata$sample_id,
-      c(ftir$sample_id[1], sampleids[!(sampleids %in% c(ftir$sample_id[1]))])
+      c(ftir$sample_id[1], sampleids[!(sampleids %in% ftir$sample_id[1])])
     )
   }
 
@@ -1292,10 +1327,7 @@ plot_fit_residuals <- function(
 
   argnames <- names(list(...))
   if (any(!(argnames %in% c("plot_title", "legend_title", "lang")))) {
-    unused <- argnames[
-      !(argnames %in%
-        c("plot_title", "legend_title", "lang"))
-    ]
+    unused <- argnames[!(argnames %in% c("plot_title", "legend_title", "lang"))]
     lun <- length(unused)
     cli::cli_abort(
       "{.fun plot_fit_residuals} received {lun} unrecognized argument{?s}: {.val {unused}}.",
@@ -1339,7 +1371,7 @@ plot_fit_residuals <- function(
     }
   }
 
-  return(suppressWarnings(PlotFTIR::plot_ftir(
+  (suppressWarnings(PlotFTIR::plot_ftir(
     plotdata,
     plot_title = plot_title,
     legend_title = legend_title,
@@ -1617,15 +1649,21 @@ plot_fit_ftir_peaks <- function(
 #'   to optimize:
 #' * [spect_em_gmm()] optimizes Gauss shaped component peaks with the parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
-#' * [spect_em_lmm()] optimizes Lorentz shaped component peaks with the parameters:
-#'   * `gam` - width (gamma) of the peak(s). Can be thought of as standard deviation.
-#' * [spect_em_pvmm()] optimizes pseudo-Voigt shaped component peaks (a blending of Gauss and Lorentz) with the following parameters:
+#' * [spect_em_lmm()] optimizes Lorentz shaped component peaks with the
+#' parameters:
+#'   * `gam` - width (gamma) of the peak(s). Can be thought of as standard
+#'   deviation.
+#' * [spect_em_pvmm()] optimizes pseudo-Voigt shaped component peaks (a blending
+#' of Gauss and Lorentz) with the following parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
-#'   * `eta` - mixing of Gauss and Lorentz distribution for the component (proportion of Lorentz from 0-1)
-#' * [spect_em_dsgmm()] optimizes Doniach-Šunjić-Gauss shaped component peaks (pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
+#'   * `eta` - mixing of Gauss and Lorentz distribution for the component
+#'   (proportion of Lorentz from 0-1)
+#' * [spect_em_dsgmm()] optimizes Doniach-Šunjić-Gauss shaped component peaks
+#' (pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
 #'   * `alpha` - proportion asymmetric (0-1) of the component peak
-#'   * `eta` - mixing of Gauss and Lorentz distribution for the component (proportion of Lorentz from 0-1)
+#'   * `eta` - mixing of Gauss and Lorentz distribution for the component
+#'   (proportion of Lorentz from 0-1)
 #'
 #'   Optimisation des pics (emplacement des composants/nombre d'ondes, largeur
 #'   des composants, surface proportionnelle et/ou paramètres de forme) pour
@@ -1633,27 +1671,36 @@ plot_fit_ftir_peaks <- function(
 #'   d'absorption. Utilise les algorithmes de maximisation de l'espérance de
 #'   Matsumura *et. al.*. La fonction spécifique appelée produit différents
 #'   types de pics et a différents paramètres d'entrée à optimiser :
-#' * [spect_em_gmm()] optimise les pics des composants en forme de Gauss avec les paramètres :
+#' * [spect_em_gmm()] optimise les pics des composants en forme de Gauss avec
+#' les paramètres :
 #'   * `sigma` - écart-type (sigma) du pic de la composante
-#' * [spect_em_lmm()] optimise les pics des composants en forme de Lorentz avec les paramètres :
-#'   * `gam` - largeur (gamma) du (des) pic(s). On peut l'assimiler à un écart-type.
-#' * [spect_em_pvmm()] optimise les pics des composantes en forme de pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres suivants :
+#' * [spect_em_lmm()] optimise les pics des composants en forme de Lorentz avec
+#' les paramètres :
+#'   * `gam` - largeur (gamma) du (des) pic(s). On peut l'assimiler à un
+#'   écart-type.
+#' * [spect_em_pvmm()] optimise les pics des composantes en forme de
+#' pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres
+#' suivants :
 #'   * `sigma` - écart-type (sigma) du pic de la composante
-#'   * `eta` - mélange des distributions de Gauss et de Lorentz pour le composant (proportion de Lorentz de 0 à 1)
-#' * [spect_em_dsgmm()] optimise les pics des composantes en forme de Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique) avec les paramètres suivants :
+#'   * `eta` - mélange des distributions de Gauss et de Lorentz pour le
+#'   composant (proportion de Lorentz de 0 à 1)
+#' * [spect_em_dsgmm()] optimise les pics des composantes en forme de
+#' Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique)
+#' avec les paramètres suivants :
 #'   * `sigma` - écart-type (sigma) du pic de la composante.
 #'   * `alpha` - proportion asymétrique (0-1) du pic de la composante
-#'   * `eta` - mélange des distributions de Gauss et de Lorentz pour le composant (proportion de Lorentz de 0 à 1)
+#'   * `eta` - mélange des distributions de Gauss et de Lorentz pour le
+#'   composant (proportion de Lorentz de 0 à 1)
 #' @param x A numeric vector of x values (wavenumbers) of the spectra against
 #'   which the components are being optimized.
 #'
 #'   Un tableau numérique des valeurs x (nombres d'ondes) des spectres par
 #'   rapport auxquels les composants sont optimisés.
-#' @param y (`numeric`) A numeric vector of absorbance values (of same length as `x`) of the
-#'   spectra against which the components are being optimized.
+#' @param y (`numeric`) A numeric vector of absorbance values (of same length as
+#'   `x`) of the spectra against which the components are being optimized.
 #'
-#'   Un tableau numérique des valeurs d'absorption (de la même longueur que `x`) des
-#'   spectres par rapport auxquels les composants sont optimisés.
+#'   Un tableau numérique des valeurs d'absorption (de la même longueur que `x`)
+#'   des spectres par rapport auxquels les composants sont optimisés.
 #' @param mu A numeric vector of component peak centers.
 #'
 #'   Un tableau numérique des centres de pics des composants.
@@ -1662,11 +1709,13 @@ plot_fit_ftir_peaks <- function(
 #'
 #'   Un tableau numérique des valeurs d'écart-type (sigma) des pics des
 #'   composants. Doit être de la même longueur que `mu`.
-#' @param alpha (`numeric`) A numeric vector of component proportion asymmetric (alpha)
-#'   values. Must all be between 0 and 1. Must be the same length as `mu`.
+#' @param alpha (`numeric`) A numeric vector of component proportion asymmetric
+#'   (alpha) values. Must all be between 0 and 1. Must be the same length as
+#'   `mu`.
 #'
-#'   Un tableau numérique des valeurs de proportion asymétrique (alpha) des composants.
-#'   Doit être compris entre 0 et 1. Doit être de la même longueur que `mu`.
+#'   Un tableau numérique des valeurs de proportion asymétrique (alpha) des
+#'   composants. Doit être compris entre 0 et 1. Doit être de la même longueur
+#'   que `mu`.
 #' @param eta A numeric vector of component mixing of Gauss and Lorentz
 #'   characteristics. Must all be between 0 and 1. Must be the same length as
 #'   `mu`.
@@ -1726,8 +1775,13 @@ plot_fit_ftir_peaks <- function(
 #' @seealso [fit_peaks()]
 #'
 #' @references
-#' * Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2019) "Spectrum adapted expectation-maximization algorithm for high-throughput peak shift analysis". Science and technology of advanced materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123
-#' * Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum adapted expectation-conditional maximization algorithm for extending high–throughput peak separation method in XPS analysis". Science and Technology of Advanced Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
+#' * Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2019)
+#' "Spectrum adapted expectation-maximization algorithm for high-throughput peak shift analysis".
+#' Science and technology of advanced materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123
+#' * Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021)
+#' "Spectrum adapted expectation-conditional maximization algorithm for extending high–throughput
+#' peak separation method in XPS analysis". Science and Technology of Advanced Materials: Methods,
+#' 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
 #'
 #' @name optimization
 #' @md
@@ -1817,10 +1871,10 @@ spect_em_dsgmm <- function(
     }
     n_k <- apply(w_k, 1, sum)
     n_k[which(is.na(n_k))] <- 0
-    mu_cal <- c()
-    sigma_cal <- c()
-    alpha_cal <- c()
-    eta_cal <- c()
+    mu_cal <- numeric()
+    sigma_cal <- numeric()
+    alpha_cal <- numeric()
+    eta_cal <- numeric()
     mix_ratio <- n_k / sum(y)
 
     # Update Mu
@@ -2057,7 +2111,8 @@ spect_em_gmm <- function(
   }
 
   # mu: component peak centres
-  # sigma: component peak widths (specifically, standard deviation of the normal distribution centred at mu)
+  # sigma: component peak widths (specifically, standard deviation of the normal
+  # distribution centred at mu)
   # mix_ratio: component peak heights (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
@@ -2152,8 +2207,8 @@ spect_em_lmm <- function(
     }
     n_k <- apply(w_k, 1, sum)
     n_k[which(is.na(n_k))] <- 0
-    mu_cal <- c()
-    gam_cal <- c()
+    mu_cal <- numeric()
+    gam_cal <- numeric()
     mix_ratio <- n_k / sum(y)
 
     # Update Mu
@@ -2216,7 +2271,8 @@ spect_em_lmm <- function(
   }
 
   # mu: component peak centres
-  # gam: component peak widths (specifically, scale parameter of the lorenzian centred at mu)
+  # gam: component peak widths (specifically, scale parameter of the lorenzian
+  # centred at mu)
   # mix_ratio: component peak heights (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
@@ -2319,9 +2375,9 @@ spect_em_pvmm <- function(
     }
     n_k <- apply(w_k, 1, sum)
     n_k[which(is.na(n_k))] <- 0
-    mu_cal <- c()
-    sigma_cal <- c()
-    eta_cal <- c()
+    mu_cal <- numeric()
+    sigma_cal <- numeric()
+    eta_cal <- numeric()
     mix_ratio <- n_k / sum(y)
 
     # Update mu
@@ -2403,8 +2459,10 @@ spect_em_pvmm <- function(
     cal_time <- difftime(Sys.time(), start_cal, units = "sec")
   }
   # mu: component peak centres
-  # sigma: component peak widths (specifically, standard deviation of the component centred at mu)
-  # eta: mixing of Gauss and Lorentz distribution for the component (proportion Lorentz 0-1)
+  # sigma: component peak widths (specifically, standard deviation of the
+  # component centred at mu)
+  # eta: mixing of Gauss and Lorentz distribution for the component (proportion
+  # Lorentz 0-1)
   # mix_ratio: component peak heights (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
@@ -2452,11 +2510,7 @@ spect_em_pvmm <- function(
       ((x - mu)^2 + (sqrt(2 * log(2)) * sigma)^2)^((1 - alpha) / 2)) *
       cos(
         (pi * alpha / 2) +
-          (1 - alpha) *
-            atan(
-              (x - mu) /
-                (sqrt(2 * log(2)) * sigma)
-            )
+          (1 - alpha) * atan((x - mu) / (sqrt(2 * log(2)) * sigma))
       ))) +
     (1 - eta) * stats::dnorm(x, mu, sigma)) /
     sum(
@@ -2465,24 +2519,20 @@ spect_em_pvmm <- function(
           ((x - mu)^2 + (sqrt(2 * log(2)) * sigma)^2)^((1 - alpha) / 2)) *
           cos(
             (pi * alpha / 2) +
-              (1 - alpha) *
-                atan(
-                  (x - mu) /
-                    (sqrt(2 * log(2)) * sigma)
-                )
+              (1 - alpha) * atan((x - mu) / (sqrt(2 * log(2)) * sigma))
           ))) +
         (1 - eta) * stats::dnorm(x, mu, sigma))
     )
 }
 
 .d_cauchy <- function(x, mu, gam) {
-  return((stats::dcauchy(x, mu, gam)) / sum(stats::dcauchy(x, mu, gam)))
+  ((stats::dcauchy(x, mu, gam)) / sum(stats::dcauchy(x, mu, gam)))
 }
 
 .truncated_l <- function(x, mu, gam) {
-  return(.d_cauchy(x = x, mu = mu[1], gam = gam[1]))
+  (.d_cauchy(x = x, mu = mu[1], gam = gam[1]))
 }
 
 .truncated_g <- function(x, mu, sigma) {
-  return(stats::dnorm(x = x, mean = mu[1], sd = sigma[1]))
+  (stats::dnorm(x = x, mean = mu[1], sd = sigma[1]))
 }

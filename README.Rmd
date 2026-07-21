@@ -12,7 +12,6 @@ knitr::opts_chunk$set(
   out.width = "66.67%",
   dpi = 300
 )
-library(magrittr)
 library(PlotFTIR)
 ```
 
@@ -169,6 +168,21 @@ Functions are provided for adjusting the baseline of spectra, adding or subtract
 * `add_scalar_value()` and `subtract_scalar_value()`
 * `normalize_spectra()`
 * `average_spectra()`
+
+## Peak Fitting
+
+Peaks can be found in spectra by calling `find_ftir_peaks()`. Once peaks are identified, you can fit component shapes to overlapping absorption bands using Expectation-Maximization algorithms. The functions `find_ftir_peaks()` and `fit_peaks()` detect peak locations and fit Voigt, Gaussian, Lorentzian, or Doniach-Sunjic-Gauss component shapes to decompose complex spectra. Peak detection requires the optional `signal` package for Savitzky-Golay smoothing.
+
+```{r peakfit_en}
+subset_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_10_0", ]
+subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_spectrum$wavenumber > 1000, ]
+
+fitted <- fit_peaks(subset_spectrum, method = "voigt")
+
+plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
+```
+
+A [detailed vignette](vignettes/peak_fitting.Rmd) demonstrates a complete peak fitting workflow on biodiesel-diesel blend spectra, from identifying functional groups through evaluating fit quality.
 
 ## Reading Files
 
@@ -332,6 +346,22 @@ Des fonctions sont fournies pour ajuster la ligne de base des spectres, ajouter 
 * `add_scalar_value()` et `subtract_scalar_value()`
 * `normalize_spectra()`
 * `average_spectra()`
+
+## Ajustement des pics
+
+Une fois les pics identifiés, vous pouvez ajuster des formes de composantes aux bandes d'absorption chevauchantes à l'aide d'algorithmes d'espérance-maximisation.
+Les fonctions `find_ftir_peaks()` et `fit_peaks()` détectent les emplacements des pics et ajustent des formes de composantes Voigt, Gaussienne, Lorentzienne ou Doniach-Sunjic-Gauss pour décomposer les spectres complexes.
+La détection des pics nécessite le paquetage optionnel `signal` pour le lissage de Savitzky-Golay ; les algorithmes d'ajustement nécessitent le paquetage `EMpeaksR`.
+
+```{r peakfit_fr}
+subset_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_10_0", ]
+subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_spectrum$wavenumber > 1000, ]
+
+fitted <- fit_peaks(subset_spectrum, method = "voigt")
+plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
+```
+
+Une [vignette détaillée](vignettes/peak_fitting.Rmd) présente un flux de travail complet d'ajustement de pics sur les spectres de mélanges diesel-biodiesel, de l'identification des groupes fonctionnels à l'évaluation de la qualité de l'ajustement.
 
 ## Lecture des fichiers
 

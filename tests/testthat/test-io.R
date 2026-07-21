@@ -306,12 +306,14 @@ test_that("reading .jdx works", {
     "Could not confirm `infrared` data file."
   )
   # 2D NMR Data
-  expect_error(
-    suppressWarnings(
-      read_ftir(
-        path = system.file("extdata", "isasspc1.dx", package = "readJDX")
-      ),
-      "Could not confirm `infrared` data file."
+  suppressWarnings(
+    expect_error(
+      suppressWarnings(
+        read_ftir(
+          path = system.file("extdata", "isasspc1.dx", package = "readJDX")
+        ),
+        "Could not confirm `infrared` data file."
+      )
     )
   )
 })

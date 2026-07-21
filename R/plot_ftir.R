@@ -65,6 +65,13 @@ plot_ftir_core <- function(
     ))
   }
 
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg scales} package installation.",
+      i = "Install {.pkg scales} with {.run install.packages('scales')}"
+    ))
+  }
+
   ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
     cli::cli_abort(

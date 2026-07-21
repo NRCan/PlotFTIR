@@ -422,9 +422,9 @@ recalculate_baseline <- function(
   }
 
   if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
+    cli::cli_abort(
       "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2."
-    ))
+    )
   }
   if (!(all(is.na(wavenumber_range)) || all(is.numeric(wavenumber_range)))) {
     cli::cli_abort(c(
@@ -788,11 +788,11 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   }
 
   if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
+    cli::cli_abort(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2."
-    ))
+    )
   }
-  if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
+  if (anyNA(wavenumber_range) || !all(is.numeric(wavenumber_range))) {
     cli::cli_abort(c(
       "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
       x = "You provided a {.obj_type_friendly wavenumber_range}."
