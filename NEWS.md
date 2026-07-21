@@ -1,4 +1,4 @@
-# PlotFTIR (development version)
+# PlotFTIR 1.3.0
 
 * `print()` now provides pretty printing for PlotFTIR data structures, showing spectral range, resolution, intensity type, number of samples, and sample IDs. ([#27](https://github.com/NRCan/PlotFTIR/issues/27))
 * Updated to use `ggplot2::coord_transform()` instead of `coord_trans`, which is now deprecated. ([#25](https://github.com/NRCan/PlotFTIR/issues/25))
