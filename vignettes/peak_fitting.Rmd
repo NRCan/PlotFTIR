@@ -3,7 +3,7 @@ title: "Peak Fitting of FTIR Spectra"
 author: "Philip Bulsink"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{peak_fitting}
+  %\VignetteIndexEntry{Peak Fitting of FTIR Spectra}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,9 +24,6 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(PlotFTIR)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
 
 tempdir <- withr::local_tempdir()
 ```
@@ -88,7 +85,7 @@ detected_peaks <- find_ftir_peaks(subset_spectrum)
 detected_peaks
 ```
 
-The algorithm detected 10 peaks across the fingerprint region. These locations will serve as initial estimates for the fitting procedure. Note that the peak detection is performed on smoothed data, so the exact wavenumbers may differ slightly from visual inspection of the raw spectrum — this is expected and desirable, as it reduces the influence of noise on peak positioning.
+The algorithm detected `r nrow(detected_peaks)` peaks across the fingerprint region. These locations will serve as initial estimates for the fitting procedure. Note that the peak detection is performed on smoothed data, so the exact wavenumbers may differ slightly from visual inspection of the raw spectrum — this is expected and desirable, as it reduces the influence of noise on peak positioning.
 
 ## Fitting Peaks: Choosing a Model
 
@@ -103,7 +100,7 @@ fitted_voigt <- fit_peaks(subset_spectrum, method = "voigt")
 fit_peak_df(fitted_voigt)
 ```
 
-The output shows the fitted parameters for each peak: wavenumber location (`wavenumber`), width (`sigma`), shape parameter (`eta`), and relative contribution (`mix_ratio`). The Voigt fit found peaks at approximately 1735, 1460, 1378, 1167, and 1100 cm⁻¹ — these correspond to known C-H bending, C-C stretching, and C-O stretching vibrations in hydrocarbon chains.
+The output shows the fitted parameters for each peak: wavenumber location (`wavenumber`), width (`sigma`), shape parameter (`eta`), and relative contribution (`mix_ratio`). The Voigt fit found large peaks at approximately 1457, 1378, and 1366 cm⁻¹ — these correspond to known C-H bending and C-C stretching vibrations in hydrocarbon chains.
 
 ### Gaussian Profile
 
@@ -312,7 +309,7 @@ detected_peaks <- find_ftir_peaks(subset_spectrum)
 detected_peaks
 ```
 
-L'algorithme a détecté 10 pics sur la région de l'empreinte digitale. Ces emplacements serviront d'estimations initiales pour la procédure d'ajustement. Notez que la détection des pics est effectuée sur des données lissées, donc les nombres d'ondes exacts peuvent différer légèrement de l'inspection visuelle du spectre brut — ce qui est attendu et souhaitable, car cela réduit l'influence du bruit sur le positionnement des pics.
+L'algorithme a détecté `r nrow(detected_peaks)` pics sur la région de l'empreinte digitale. Ces emplacements serviront d'estimations initiales pour la procédure d'ajustement. Notez que la détection des pics est effectuée sur des données lissées, donc les nombres d'ondes exacts peuvent différer légèrement de l'inspection visuelle du spectre brut — ce qui est attendu et souhaitable, car cela réduit l'influence du bruit sur le positionnement des pics.
 
 ## Ajustement des Pics : Choix d'un Modèle
 
@@ -327,7 +324,7 @@ fitted_voigt <- fit_peaks(subset_spectrum, method = "voigt")
 fit_peak_df(fitted_voigt)
 ```
 
-La sortie montre les paramètres ajustés pour chaque pic : l'emplacement du nombre d'ondes (`wavenumber`), la largeur (`sigma`), le paramètre de forme (`eta`) et la contribution relative (`mix_ratio`). L'ajustement de Voigt a trouvé des pics aux alentours de 1735, 1460, 1378, 1167 et 1100 cm⁻¹ — ceux-ci correspondent aux vibrations connues de flexion C-H, d'étirement C-C et d'étirement C-O dans les chaînes hydrocarbonées.
+La sortie montre les paramètres ajustés pour chaque pic : l'emplacement du nombre d'ondes (`wavenumber`), la largeur (`sigma`), le paramètre de forme (`eta`) et la contribution relative (`mix_ratio`). L'ajustement de Voigt a trouvé des pics aux alentours de 1457, 1378, and 1366 cm⁻¹ — ceux-ci correspondent aux vibrations connues de flexion C-H, et d'étirement C-C dans les chaînes hydrocarbonées.
 
 ### Profil Gaussien
 
