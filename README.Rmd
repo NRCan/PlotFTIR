@@ -213,6 +213,14 @@ library(PlotFTIR)
 plot_ftir(sample_spectra, lang = "fr")
 ```
 
+Vous pouvez examiner la structure de vos données à l'aide de la méthode d'impression :
+
+```{r print_data_fr}
+print(biodiesel)
+```
+
+Ceci affichera la plage spectrale, la résolution inférée, le type d'intensité, le nombre d'échantillons et les identifiants des échantillons.
+
 Vous pouvez également tracer les spectres de manière empilée/décalée au lieu de les superposer :
 ```{r stack_plot_fr}
 plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = "fr")

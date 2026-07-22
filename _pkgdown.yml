@@ -1,4 +1,42 @@
 url: https://nrcan.github.io/PlotFTIR/
 detemplate:
   bootstrap: 5
+  light-switch: true
+
+reference:
+- title: "Data Loading and Exchange"
+  desc: >
+    Functions for loading data or converting to and from other spectral R packages
+  contents:
+  - starts_with("read")
+  - matches("chemospec")
+  - plotftir_to_ir
+  - ir_to_plotftir
+  - check_ftir_data
+  - print.PlotFTIR_data
+  - biodiesel
+  - sample_spectra
+- title: "Spectral Mathematical Changes"
+  desc: >
+    Functions for changing or modifying spectra numerically
+  contents:
+  - matches("scalar_value")
+  - average_spectra
+  - matches("transmittance")
+  - normalize_spectra
+  - recalculate_baseline
+- title: "Plotting and Graphical Changes"
+  desc: > 
+    Functions for plotting specta and annotating or manipulating plots
+  contents:
+  - plot_ftir
+  - plot_ftir_stacked
+  - add_band
+  - add_wavenumber_marker
+  - compress_low_energy
+  - highlight_sample
+  - move_plot_legend
+  - matches("plot_sample_ids")
+  - save_plot
+  - zoom_in_on_range
 
