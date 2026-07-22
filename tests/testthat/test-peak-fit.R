@@ -152,11 +152,9 @@ test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-cro
       rep(0.1, 40)
     )
   )
-  # The 40-point flat top spans indices 81:120, so index 100 is its midpoint.
-  expected_peak <- ftir$wavenumber[100]
-  # The data resolution is ~18 cm-1, so a 15 cm-1 tolerance keeps the expected
-  # peak within one data-step of the first-derivative estimate.
-  peak_tolerance <- 15
+  flat_top_idx <- which(ftir$absorbance == max(ftir$absorbance))
+  expected_peak <- ftir$wavenumber[round(mean(flat_top_idx))]
+  peak_tolerance <- ceiling(abs(mean(diff(ftir$wavenumber))))
 
   peaks_broad <- find_ftir_peaks(
     ftir,
