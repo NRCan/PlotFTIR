@@ -136,7 +136,7 @@ test_that("find_ftir_peaks merges close peaks using representative approach", {
   expect_type(peaks_wider_merge, "double")
 })
 
-test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-crossing (#noissue)", {
+test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-crossing (#33)", {
   if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
@@ -374,7 +374,7 @@ test_that("zero_threshold sets to zero values below threshold", {
   )
 })
 
-test_that(".first_derivative_zero_crossings finds positive-to-negative transitions (#noissue)", {
+test_that(".first_derivative_zero_crossings finds positive-to-negative transitions (#33)", {
   expect_equal(
     PlotFTIR:::.first_derivative_zero_crossings(c(1, 0.5, 0, 0, -0.5, -1)),
     4

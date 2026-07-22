@@ -324,6 +324,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     }
   }
 
+  # Savitzky-Golay boundary effects extend roughly half a smoothing window, so
+  # collapse any edge cluster within that region to the interior-most peak.
   edge_guard <- max(sg_n_norm, sg_n_deriv) * resolution / 2
   all_peaks <- .collapse_edge_peak_cluster(
     all_peaks = all_peaks,
