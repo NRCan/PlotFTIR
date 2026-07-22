@@ -78,7 +78,9 @@ ftir_data <- ftir_data[
 ]
 
 # First, fit the peaks using the default 'voigt' method
+\dontrun{
 fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+}
 
 # --- Example 1: Plot residuals with default settings ---
 \dontrun{

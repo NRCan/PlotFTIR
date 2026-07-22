@@ -115,6 +115,7 @@ if(requireNamespace('signal')){
   print(fit_peak_df(fitted_voigt_default))
   print(paste("Convergence:", fitted_voigt_default$convergence))
 }
+
 \dontrun{
 # Example 2: Fit peaks using the 'gauss' method
 fitted_gauss <- fit_peaks(ftir_data, method = "gauss")
@@ -165,6 +166,6 @@ Technology of Advanced Materials: Methods, 1(1), pp 45-55.
 doi:10.1080/27660400.2021.1899449
 }
 \seealso{
-\code{\link[=spect_em_gmm]{spect_em_gmm()}}, \code{\link[=spect_em_lmm]{spect_em_lmm()}}, \code{\link[=spect_em_pvmm]{spect_em_pvmm()}},
-\code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}}
+\code{\link[EMpeaksR:spect_em_gmm]{spect_em_gmm()}}, \code{\link[EMpeaksR:spect_em_lmm]{spect_em_lmm()}}, \code{\link[EMpeaksR:spect_em_pvmm]{spect_em_pvmm()}},
+\code{\link[EMpeaksR:spect_em_dsgmm]{spect_em_dsgmm()}}
 }

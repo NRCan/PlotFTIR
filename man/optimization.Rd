@@ -2,13 +2,13 @@
 % Please edit documentation in R/peak-fit.R
 \name{optimization}
 \alias{optimization}
-\alias{spect_em_dsgmm}
-\alias{spect_em_gmm}
-\alias{spect_em_lmm}
-\alias{spect_em_pvmm}
+\alias{.spect_em_dsgmm}
+\alias{.spect_em_gmm}
+\alias{.spect_em_lmm}
+\alias{.spect_em_pvmm}
 \title{Peak Optimization}
 \usage{
-spect_em_dsgmm(
+.spect_em_dsgmm(
   x,
   y,
   mu,
@@ -22,7 +22,7 @@ spect_em_dsgmm(
   verbose = FALSE
 )
 
-spect_em_gmm(
+.spect_em_gmm(
   x,
   y,
   mu,
@@ -34,7 +34,7 @@ spect_em_gmm(
   verbose = FALSE
 )
 
-spect_em_lmm(
+.spect_em_lmm(
   x,
   y,
   mu,
@@ -46,7 +46,7 @@ spect_em_lmm(
   verbose = FALSE
 )
 
-spect_em_pvmm(
+.spect_em_pvmm(
   x,
   y,
   mu,
@@ -162,24 +162,24 @@ maximization algorithms from Matsumura \emph{et. al.}. The specific function
 called results in different peak types and has different input parameters
 to optimize:
 \itemize{
-\item \code{\link[=spect_em_gmm]{spect_em_gmm()}} optimizes Gauss shaped component peaks with the parameters:
+\item \code{\link[=.spect_em_gmm]{.spect_em_gmm()}} optimizes Gauss shaped component peaks with the parameters:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
 }
-\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimizes Lorentz shaped component peaks with the
+\item \code{\link[=.spect_em_lmm]{.spect_em_lmm()}} optimizes Lorentz shaped component peaks with the
 parameters:
 \itemize{
 \item \code{gam} - width (gamma) of the peak(s). Can be thought of as standard
 deviation.
 }
-\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimizes pseudo-Voigt shaped component peaks (a blending
+\item \code{\link[=.spect_em_pvmm]{.spect_em_pvmm()}} optimizes pseudo-Voigt shaped component peaks (a blending
 of Gauss and Lorentz) with the following parameters:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
 \item \code{eta} - mixing of Gauss and Lorentz distribution for the component
 (proportion of Lorentz from 0-1)
 }
-\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimizes Doniach-Šunjić-Gauss shaped component peaks
+\item \code{\link[=.spect_em_dsgmm]{.spect_em_dsgmm()}} optimizes Doniach-Šunjić-Gauss shaped component peaks
 (pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
@@ -194,18 +194,18 @@ tous les pics de composants fournis par rapport à une intensité
 d'absorption. Utilise les algorithmes de maximisation de l'espérance de
 Matsumura \emph{et. al.}. La fonction spécifique appelée produit différents
 types de pics et a différents paramètres d'entrée à optimiser :
-\item \code{\link[=spect_em_gmm]{spect_em_gmm()}} optimise les pics des composants en forme de Gauss avec
+\item \code{\link[=.spect_em_gmm]{.spect_em_gmm()}} optimise les pics des composants en forme de Gauss avec
 les paramètres :
 \itemize{
 \item \code{sigma} - écart-type (sigma) du pic de la composante
 }
-\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimise les pics des composants en forme de Lorentz avec
+\item \code{\link[=.spect_em_lmm]{.spect_em_lmm()}} optimise les pics des composants en forme de Lorentz avec
 les paramètres :
 \itemize{
 \item \code{gam} - largeur (gamma) du (des) pic(s). On peut l'assimiler à un
 écart-type.
 }
-\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimise les pics des composantes en forme de
+\item \code{\link[=.spect_em_pvmm]{.spect_em_pvmm()}} optimise les pics des composantes en forme de
 pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres
 suivants :
 \itemize{
@@ -213,7 +213,7 @@ suivants :
 \item \code{eta} - mélange des distributions de Gauss et de Lorentz pour le
 composant (proportion de Lorentz de 0 à 1)
 }
-\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimise les pics des composantes en forme de
+\item \code{\link[=.spect_em_dsgmm]{.spect_em_dsgmm()}} optimise les pics des composantes en forme de
 Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique)
 avec les paramètres suivants :
 \itemize{
@@ -238,3 +238,4 @@ peak separation method in XPS analysis". Science and Technology of Advanced Mate
 \seealso{
 \code{\link[=fit_peaks]{fit_peaks()}}
 }
+\keyword{internal}

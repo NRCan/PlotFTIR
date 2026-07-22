@@ -929,7 +929,7 @@ test_that("component-optimization dsgmm error checking is ok", {
   )
 
   expect_error(
-    PlotFTIR:::spect_em_dsgmm(
+    .spect_em_dsgmm(
       x = c(4001, ftir$wavenumber),
       y = ftir$absorbance,
       mu = runif(10)
@@ -937,7 +937,7 @@ test_that("component-optimization dsgmm error checking is ok", {
     "vectors must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_dsgmm(
+    .spect_em_dsgmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -946,7 +946,7 @@ test_that("component-optimization dsgmm error checking is ok", {
     "must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_dsgmm(
+    .spect_em_dsgmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -964,7 +964,7 @@ test_that("component-optimization gmm error checking is ok", {
   )
 
   expect_error(
-    PlotFTIR:::spect_em_gmm(
+    .spect_em_gmm(
       x = c(4001, ftir$wavenumber),
       y = ftir$absorbance,
       mu = runif(10)
@@ -972,7 +972,7 @@ test_that("component-optimization gmm error checking is ok", {
     "vectors must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_gmm(
+    .spect_em_gmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -981,7 +981,7 @@ test_that("component-optimization gmm error checking is ok", {
     "must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_gmm(
+    .spect_em_gmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -999,7 +999,7 @@ test_that("component-optimization lmm error checking is ok", {
   )
 
   expect_error(
-    PlotFTIR:::spect_em_lmm(
+    .spect_em_lmm(
       x = c(4001, ftir$wavenumber),
       y = ftir$absorbance,
       mu = runif(10),
@@ -1008,7 +1008,7 @@ test_that("component-optimization lmm error checking is ok", {
     "vectors must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_lmm(
+    .spect_em_lmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -1017,7 +1017,7 @@ test_that("component-optimization lmm error checking is ok", {
     "must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_lmm(
+    .spect_em_lmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -1035,7 +1035,7 @@ test_that("component-optimization pvmm error checking is ok", {
   )
 
   expect_error(
-    PlotFTIR:::spect_em_pvmm(
+    .spect_em_pvmm(
       x = c(4001, ftir$wavenumber),
       y = ftir$absorbance,
       mu = runif(10)
@@ -1043,7 +1043,7 @@ test_that("component-optimization pvmm error checking is ok", {
     "vectors must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_pvmm(
+    .spect_em_pvmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -1052,7 +1052,7 @@ test_that("component-optimization pvmm error checking is ok", {
     "must be of the same length"
   )
   expect_error(
-    PlotFTIR:::spect_em_pvmm(
+    .spect_em_pvmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = runif(10),
@@ -1087,7 +1087,7 @@ test_that("component-optimization verbose calls are ok", {
   )
 
   expect_message(
-    PlotFTIR:::spect_em_gmm(
+    .spect_em_gmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = mu_list,
@@ -1096,7 +1096,7 @@ test_that("component-optimization verbose calls are ok", {
     "Converged in "
   )
   expect_message(
-    PlotFTIR:::spect_em_lmm(
+    .spect_em_lmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = mu_list,
@@ -1105,7 +1105,7 @@ test_that("component-optimization verbose calls are ok", {
     "Converged in "
   )
   expect_message(
-    PlotFTIR:::spect_em_pvmm(
+    .spect_em_pvmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = mu_list,
@@ -1114,7 +1114,7 @@ test_that("component-optimization verbose calls are ok", {
     "Converged in "
   )
   expect_message(
-    PlotFTIR:::spect_em_dsgmm(
+    .spect_em_dsgmm(
       x = ftir$wavenumber,
       y = ftir$absorbance,
       mu = mu_list,
@@ -1148,22 +1148,22 @@ test_that("component-optimization fixed-mu is ok", {
     1970
   )
 
-  gmm_loose <- PlotFTIR:::spect_em_gmm(
+  gmm_loose <- .spect_em_gmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded
   )
-  lmm_loose <- PlotFTIR:::spect_em_lmm(
+  lmm_loose <- .spect_em_lmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded
   )
-  pvmm_loose <- PlotFTIR:::spect_em_pvmm(
+  pvmm_loose <- .spect_em_pvmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded
   )
-  dsgmm_loose <- PlotFTIR:::spect_em_dsgmm(
+  dsgmm_loose <- .spect_em_dsgmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded
@@ -1174,25 +1174,25 @@ test_that("component-optimization fixed-mu is ok", {
   expect_false(all(pvmm_loose$mu == mu_list_rounded))
   expect_false(all(dsgmm_loose$mu == mu_list_rounded))
 
-  gmm_fixed <- PlotFTIR:::spect_em_gmm(
+  gmm_fixed <- .spect_em_gmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded,
     fixed_mu = TRUE
   )
-  lmm_fixed <- PlotFTIR:::spect_em_lmm(
+  lmm_fixed <- .spect_em_lmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded,
     fixed_mu = TRUE
   )
-  pvmm_fixed <- PlotFTIR:::spect_em_pvmm(
+  pvmm_fixed <- .spect_em_pvmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded,
     fixed_mu = TRUE
   )
-  dsgmm_fixed <- PlotFTIR:::spect_em_dsgmm(
+  dsgmm_fixed <- .spect_em_dsgmm(
     x = ftir$wavenumber,
     y = ftir$absorbance,
     mu = mu_list_rounded,

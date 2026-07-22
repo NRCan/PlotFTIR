@@ -565,6 +565,7 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'   print(fit_peak_df(fitted_voigt_default))
 #'   print(paste("Convergence:", fitted_voigt_default$convergence))
 #' }
+#'
 #' \dontrun{
 #' # Example 2: Fit peaks using the 'gauss' method
 #' fitted_gauss <- fit_peaks(ftir_data, method = "gauss")
@@ -674,7 +675,7 @@ fit_peaks <- function(
 
   if (canonical_method == "gauss") {
     utils::capture.output(
-      res <- spect_em_gmm(
+      res <- .spect_em_gmm(
         x = ftir$wavenumber,
         y = ftir$absorbance,
         mu = peaklist,
@@ -688,7 +689,7 @@ fit_peaks <- function(
     )
   } else if (canonical_method == "voigt") {
     utils::capture.output(
-      res <- spect_em_pvmm(
+      res <- .spect_em_pvmm(
         x = ftir$wavenumber,
         y = ftir$absorbance,
         mu = peaklist,
@@ -703,7 +704,7 @@ fit_peaks <- function(
     )
   } else if (canonical_method == "lorentz") {
     utils::capture.output(
-      res <- spect_em_lmm(
+      res <- .spect_em_lmm(
         x = ftir$wavenumber,
         y = ftir$absorbance,
         mu = peaklist,
@@ -717,7 +718,7 @@ fit_peaks <- function(
     )
   } else {
     utils::capture.output(
-      res <- spect_em_dsgmm(
+      res <- .spect_em_dsgmm(
         x = ftir$wavenumber,
         y = ftir$absorbance,
         mu = peaklist,
@@ -762,16 +763,16 @@ fit_peaks <- function(
 #' ftir_data <- ftir_data[
 #'   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 #' ]
+#' if(requireNamespace('signal')){
+#'   # First, fit the peaks (using the default 'voigt' method)
+#'   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 #'
-
-#' # First, fit the peaks (using the default 'voigt' method)
-#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#'   # Now, convert the fitted model object to a data frame
+#'   peak_df_voigt <- fit_peak_df(fitted_voigt)
 #'
-#' # Now, convert the fitted model object to a data frame
-#' peak_df_voigt <- fit_peak_df(fitted_voigt)
-#'
-#' print("Peak Data Frame from Voigt Fit:")
-#' print(peak_df_voigt)
+#'   print("Peak Data Frame from Voigt Fit:")
+#'   print(peak_df_voigt)
+#' }
 fit_peak_df <- function(fitted_peaks) {
   peak_table <-
     data.frame(
@@ -1078,7 +1079,9 @@ fit_peak_df <- function(fitted_peaks) {
 #' ]
 #'
 #' # First, fit the peaks using the default 'voigt' method
-#' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#' \dontrun{
+#' #' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#' }
 #'
 #' # --- Example 1: Plot components only (default) ---
 #' \dontrun{
@@ -1356,7 +1359,9 @@ plot_components <- function(
 #' ]
 #'
 #' # First, fit the peaks using the default 'voigt' method
+#' \dontrun{
 #' fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
+#' }
 #'
 #' # --- Example 1: Plot residuals with default settings ---
 #' \dontrun{
@@ -1753,18 +1758,18 @@ plot_fit_ftir_peaks <- function(
 #'   maximization algorithms from Matsumura *et. al.*. The specific function
 #'   called results in different peak types and has different input parameters
 #'   to optimize:
-#' * [spect_em_gmm()] optimizes Gauss shaped component peaks with the parameters:
+#' * [.spect_em_gmm()] optimizes Gauss shaped component peaks with the parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
-#' * [spect_em_lmm()] optimizes Lorentz shaped component peaks with the
+#' * [.spect_em_lmm()] optimizes Lorentz shaped component peaks with the
 #' parameters:
 #'   * `gam` - width (gamma) of the peak(s). Can be thought of as standard
 #'   deviation.
-#' * [spect_em_pvmm()] optimizes pseudo-Voigt shaped component peaks (a blending
+#' * [.spect_em_pvmm()] optimizes pseudo-Voigt shaped component peaks (a blending
 #' of Gauss and Lorentz) with the following parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
 #'   * `eta` - mixing of Gauss and Lorentz distribution for the component
 #'   (proportion of Lorentz from 0-1)
-#' * [spect_em_dsgmm()] optimizes Doniach-Šunjić-Gauss shaped component peaks
+#' * [.spect_em_dsgmm()] optimizes Doniach-Šunjić-Gauss shaped component peaks
 #' (pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
 #'   * `sigma` - standard deviation (sigma) of the component peak
 #'   * `alpha` - proportion asymmetric (0-1) of the component peak
@@ -1777,20 +1782,20 @@ plot_fit_ftir_peaks <- function(
 #'   d'absorption. Utilise les algorithmes de maximisation de l'espérance de
 #'   Matsumura *et. al.*. La fonction spécifique appelée produit différents
 #'   types de pics et a différents paramètres d'entrée à optimiser :
-#' * [spect_em_gmm()] optimise les pics des composants en forme de Gauss avec
+#' * [.spect_em_gmm()] optimise les pics des composants en forme de Gauss avec
 #' les paramètres :
 #'   * `sigma` - écart-type (sigma) du pic de la composante
-#' * [spect_em_lmm()] optimise les pics des composants en forme de Lorentz avec
+#' * [.spect_em_lmm()] optimise les pics des composants en forme de Lorentz avec
 #' les paramètres :
 #'   * `gam` - largeur (gamma) du (des) pic(s). On peut l'assimiler à un
 #'   écart-type.
-#' * [spect_em_pvmm()] optimise les pics des composantes en forme de
+#' * [.spect_em_pvmm()] optimise les pics des composantes en forme de
 #' pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres
 #' suivants :
 #'   * `sigma` - écart-type (sigma) du pic de la composante
 #'   * `eta` - mélange des distributions de Gauss et de Lorentz pour le
 #'   composant (proportion de Lorentz de 0 à 1)
-#' * [spect_em_dsgmm()] optimise les pics des composantes en forme de
+#' * [.spect_em_dsgmm()] optimise les pics des composantes en forme de
 #' Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique)
 #' avec les paramètres suivants :
 #'   * `sigma` - écart-type (sigma) du pic de la composante.
@@ -1890,11 +1895,12 @@ plot_fit_ftir_peaks <- function(
 #' 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
 #'
 #' @name optimization
+#' @keywords internal
 #' @md
 NULL
 
 #' @rdname optimization
-spect_em_dsgmm <- function(
+.spect_em_dsgmm <- function(
   x,
   y,
   mu,
@@ -2120,7 +2126,7 @@ spect_em_dsgmm <- function(
 
 
 #' @rdname optimization
-spect_em_gmm <- function(
+.spect_em_gmm <- function(
   x,
   y,
   mu,
@@ -2244,7 +2250,7 @@ spect_em_gmm <- function(
 }
 
 #' @rdname optimization
-spect_em_lmm <- function(
+.spect_em_lmm <- function(
   x,
   y,
   mu,
@@ -2404,7 +2410,7 @@ spect_em_lmm <- function(
 }
 
 #' @rdname optimization
-spect_em_pvmm <- function(
+.spect_em_pvmm <- function(
   x,
   y,
   mu,

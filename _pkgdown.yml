@@ -26,7 +26,7 @@ reference:
   - normalize_spectra
   - recalculate_baseline
 - title: "Plotting and Graphical Changes"
-  desc: > 
+  desc: >
     Functions for plotting specta and annotating or manipulating plots
   contents:
   - plot_ftir
@@ -40,13 +40,12 @@ reference:
   - save_plot
   - zoom_in_on_range
 - title: "Peak Fitting"
-  desc: > 
+  desc: >
     Functions for finding peaks and performing deconvolution, and plotting the results
   contents:
   - find_ftir_peaks
   - fit_peak_df
   - fit_peaks
-  - optimization 
   - plot_components
-  - plot_fit_ftir_peaks 
+  - plot_fit_ftir_peaks
   - plot_fit_residuals
