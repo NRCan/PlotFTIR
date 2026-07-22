@@ -83,7 +83,7 @@ ftir_data <- ftir_data[
   ftir_data$wavenumber < 1500 & ftir_data$wavenumber > 1000,
 ]
 
-if (!requireNamespace("signal", quietly = TRUE)) {
+if (requireNamespace("signal", quietly = TRUE)) {
   # First, fit the peaks using the default 'voigt' method
   fitted_voigt <- fit_peaks(ftir_data, method = "voigt")
 }

@@ -66,11 +66,11 @@ which the components are being optimized.
 Un tableau numérique des valeurs x (nombres d'ondes) des spectres par
 rapport auxquels les composants sont optimisés.}
 
-\item{y}{(\code{numeric}) A numeric vector of absorbance values (of same length as \code{x}) of the
-spectra against which the components are being optimized.
+\item{y}{(\code{numeric}) A numeric vector of absorbance values (of same length as
+\code{x}) of the spectra against which the components are being optimized.
 
-Un tableau numérique des valeurs d'absorption (de la même longueur que \code{x}) des
-spectres par rapport auxquels les composants sont optimisés.}
+Un tableau numérique des valeurs d'absorption (de la même longueur que \code{x})
+des spectres par rapport auxquels les composants sont optimisés.}
 
 \item{mu}{A numeric vector of component peak centers.
 
@@ -82,11 +82,13 @@ values. Must be the same length as \code{mu}.
 Un tableau numérique des valeurs d'écart-type (sigma) des pics des
 composants. Doit être de la même longueur que \code{mu}.}
 
-\item{alpha}{(\code{numeric}) A numeric vector of component proportion asymmetric (alpha)
-values. Must all be between 0 and 1. Must be the same length as \code{mu}.
+\item{alpha}{(\code{numeric}) A numeric vector of component proportion asymmetric
+(alpha) values. Must all be between 0 and 1. Must be the same length as
+\code{mu}.
 
-Un tableau numérique des valeurs de proportion asymétrique (alpha) des composants.
-Doit être compris entre 0 et 1. Doit être de la même longueur que \code{mu}.}
+Un tableau numérique des valeurs de proportion asymétrique (alpha) des
+composants. Doit être compris entre 0 et 1. Doit être de la même longueur
+que \code{mu}.}
 
 \item{eta}{A numeric vector of component mixing of Gauss and Lorentz
 characteristics. Must all be between 0 and 1. Must be the same length as
@@ -164,20 +166,26 @@ to optimize:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
 }
-\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimizes Lorentz shaped component peaks with the parameters:
+\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimizes Lorentz shaped component peaks with the
+parameters:
 \itemize{
-\item \code{gam} - width (gamma) of the peak(s). Can be thought of as standard deviation.
+\item \code{gam} - width (gamma) of the peak(s). Can be thought of as standard
+deviation.
 }
-\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimizes pseudo-Voigt shaped component peaks (a blending of Gauss and Lorentz) with the following parameters:
+\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimizes pseudo-Voigt shaped component peaks (a blending
+of Gauss and Lorentz) with the following parameters:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
-\item \code{eta} - mixing of Gauss and Lorentz distribution for the component (proportion of Lorentz from 0-1)
+\item \code{eta} - mixing of Gauss and Lorentz distribution for the component
+(proportion of Lorentz from 0-1)
 }
-\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimizes Doniach-Šunjić-Gauss shaped component peaks (pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
+\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimizes Doniach-Šunjić-Gauss shaped component peaks
+(pseudo-Voigt but can be skew/asymmetrical) with the following parameters:
 \itemize{
 \item \code{sigma} - standard deviation (sigma) of the component peak
 \item \code{alpha} - proportion asymmetric (0-1) of the component peak
-\item \code{eta} - mixing of Gauss and Lorentz distribution for the component (proportion of Lorentz from 0-1)
+\item \code{eta} - mixing of Gauss and Lorentz distribution for the component
+(proportion of Lorentz from 0-1)
 }
 
 Optimisation des pics (emplacement des composants/nombre d'ondes, largeur
@@ -186,31 +194,45 @@ tous les pics de composants fournis par rapport à une intensité
 d'absorption. Utilise les algorithmes de maximisation de l'espérance de
 Matsumura \emph{et. al.}. La fonction spécifique appelée produit différents
 types de pics et a différents paramètres d'entrée à optimiser :
-\item \code{\link[=spect_em_gmm]{spect_em_gmm()}} optimise les pics des composants en forme de Gauss avec les paramètres :
+\item \code{\link[=spect_em_gmm]{spect_em_gmm()}} optimise les pics des composants en forme de Gauss avec
+les paramètres :
 \itemize{
 \item \code{sigma} - écart-type (sigma) du pic de la composante
 }
-\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimise les pics des composants en forme de Lorentz avec les paramètres :
+\item \code{\link[=spect_em_lmm]{spect_em_lmm()}} optimise les pics des composants en forme de Lorentz avec
+les paramètres :
 \itemize{
-\item \code{gam} - largeur (gamma) du (des) pic(s). On peut l'assimiler à un écart-type.
+\item \code{gam} - largeur (gamma) du (des) pic(s). On peut l'assimiler à un
+écart-type.
 }
-\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimise les pics des composantes en forme de pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres suivants :
+\item \code{\link[=spect_em_pvmm]{spect_em_pvmm()}} optimise les pics des composantes en forme de
+pseudo-Voigt (un mélange de Gauss et de Lorentz) avec les paramètres
+suivants :
 \itemize{
 \item \code{sigma} - écart-type (sigma) du pic de la composante
-\item \code{eta} - mélange des distributions de Gauss et de Lorentz pour le composant (proportion de Lorentz de 0 à 1)
+\item \code{eta} - mélange des distributions de Gauss et de Lorentz pour le
+composant (proportion de Lorentz de 0 à 1)
 }
-\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimise les pics des composantes en forme de Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique) avec les paramètres suivants :
+\item \code{\link[=spect_em_dsgmm]{spect_em_dsgmm()}} optimise les pics des composantes en forme de
+Doniach-Šunjić-Gauss (pseudo-Voigt mais peut être asymétrique/asymétrique)
+avec les paramètres suivants :
 \itemize{
 \item \code{sigma} - écart-type (sigma) du pic de la composante.
 \item \code{alpha} - proportion asymétrique (0-1) du pic de la composante
-\item \code{eta} - mélange des distributions de Gauss et de Lorentz pour le composant (proportion de Lorentz de 0 à 1)
+\item \code{eta} - mélange des distributions de Gauss et de Lorentz pour le
+composant (proportion de Lorentz de 0 à 1)
 }
 }
 }
 \references{
 \itemize{
-\item Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2019) "Spectrum adapted expectation-maximization algorithm for high-throughput peak shift analysis". Science and technology of advanced materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123
-\item Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum adapted expectation-conditional maximization algorithm for extending high–throughput peak separation method in XPS analysis". Science and Technology of Advanced Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
+\item Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2019)
+"Spectrum adapted expectation-maximization algorithm for high-throughput peak shift analysis".
+Science and technology of advanced materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123
+\item Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021)
+"Spectrum adapted expectation-conditional maximization algorithm for extending high–throughput
+peak separation method in XPS analysis". Science and Technology of Advanced Materials: Methods,
+1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
 }
 }
 \seealso{

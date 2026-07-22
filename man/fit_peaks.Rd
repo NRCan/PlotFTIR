@@ -20,10 +20,11 @@ fit_peaks(
 Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 \code{sample_id}, \code{wavenumber}, et \code{absorbance}.}
 
-\item{peaklist}{(\code{numeric}) The locations of peaks from \verb{[find_ftir_peaks()]}. If none
-provided, will search for peaks using the default parameters of that
-function. Note that you could provide a common list of peaks for fitting
-multiple different spectra to compare results between samples.
+\item{peaklist}{(\code{numeric}) The locations of peaks from
+\verb{[find_ftir_peaks()]}. If none provided, will search for peaks using the
+default parameters of that function. Note that you could provide a common
+list of peaks for fitting multiple different spectra to compare results
+between samples.
 
 Les emplacements des pics de \verb{[find_ftir_peaks()]}. Si aucune valeur n'est
 fournie, les pics seront recherchés en utilisant les paramètres par défaut
@@ -31,11 +32,11 @@ de cette fonction. Notez que vous pouvez fournir une liste commune de pics
 pour l'ajustement de plusieurs spectres différents afin de comparer les
 résultats entre les échantillons.}
 
-\item{method}{(\code{character}) The peak style / fitting method. Theoretically FTIR peaks are
-Lorentz shaped, but with Gaussian broadening the pseudo-Voigt shape
-matches best. Some success is seen using Doniach-Šunjić-Gauss peak shapes
-since these can adopt undetected shoulder peaks in an asymmetric measure
-for each peak. Options are:
+\item{method}{(\code{character}) The peak style / fitting method. Theoretically
+FTIR peaks are Lorentz shaped, but with Gaussian broadening the
+pseudo-Voigt shape matches best. Some success is seen using
+Doniach-Šunjić-Gauss peak shapes since these can adopt undetected shoulder
+peaks in an asymmetric measure for each peak. Options are:
 \itemize{
 \item \code{voigt} (default): Fit Voigt shaped peaks \code{\link[EMpeaksR:spect_em_pvmm]{EMpeaksR::spect_em_pvmm()}}
 \item \code{gauss} Fit Gauss shaped peaks \code{\link[EMpeaksR:spect_em_gmm]{EMpeaksR::spect_em_gmm()}}
@@ -54,8 +55,8 @@ asymétrique pour chaque pic. Les options sont les suivantes :
 \item \code{dsg} Ajuster les pics en forme de Doniach-Šunjić-Gauss \code{\link[EMpeaksR:spect_em_dsgmm]{EMpeaksR::spect_em_dsgmm()}}
 }}
 
-\item{fixed_peaks}{(\code{logical}) Boolean, whether to fix the peak locations to the provided
-values or allow the optimizer to move peaks as needed.
+\item{fixed_peaks}{(\code{logical}) Boolean, whether to fix the peak locations to
+the provided values or allow the optimizer to move peaks as needed.
 
 Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
 fournies ou permettre à l'optimiseur de déplacer les pics selon les
@@ -71,10 +72,11 @@ Paramètres de contrôle pour les fonctions d'ajustement (\code{conv_cri} et/ou
 nécessaire.}
 }
 \value{
-An \code{EMpeaksR} style fitted model. See the documentation for each peak
-shape.
+An \code{EMpeaksR} style fitted model. See the documentation for each
+peak shape.
 
-Un modèle ajusté de type \code{EMpeaksR}. Voir la documentation pour chaque forme de pic.
+Un modèle ajusté de type \code{EMpeaksR}. Voir la documentation pour chaque
+forme de pic.
 }
 \description{
 Once peaks are found by \code{\link[=find_ftir_peaks]{find_ftir_peaks()}}, they can be fitted
@@ -155,10 +157,11 @@ Matsumura, T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y.
 (2019) "Spectrum adapted expectation-maximization algorithm for
 high-throughput peak shift analysis". Science and technology of advanced
 materials, 20(1), pp 733-745. doi:10.1080/14686996.2019.1620123 Matsumura,
-T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum adapted
-expectation-conditional maximization algorithm for extending high–throughput
-peak separation method in XPS analysis". Science and Technology of Advanced
-Materials: Methods, 1(1), pp 45-55. doi:10.1080/27660400.2021.1899449
+T., Nagamura, N., Akaho, S., Nagata, K., & Ando, Y. (2021) "Spectrum
+adapted expectation-conditional maximization algorithm for extending
+high–throughput peak separation method in XPS analysis". Science and
+Technology of Advanced Materials: Methods, 1(1), pp 45-55.
+doi:10.1080/27660400.2021.1899449
 }
 \seealso{
 \code{\link[=spect_em_gmm]{spect_em_gmm()}}, \code{\link[=spect_em_lmm]{spect_em_lmm()}}, \code{\link[=spect_em_pvmm]{spect_em_pvmm()}},

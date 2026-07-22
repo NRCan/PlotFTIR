@@ -325,25 +325,18 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   }
 
   edge_guard <- max(sg_n_norm, sg_n_deriv) * resolution / 2
-  low_edge_peaks <- all_peaks[
-    all_peaks <= min(ftir$wavenumber, na.rm = TRUE) + edge_guard
-  ]
-  if (length(low_edge_peaks) > 1) {
-    all_peaks <- c(
-      all_peaks[all_peaks > min(ftir$wavenumber, na.rm = TRUE) + edge_guard],
-      max(low_edge_peaks)
-    )
-  }
-
-  high_edge_peaks <- all_peaks[
-    all_peaks >= max(ftir$wavenumber, na.rm = TRUE) - edge_guard
-  ]
-  if (length(high_edge_peaks) > 1) {
-    all_peaks <- c(
-      all_peaks[all_peaks < max(ftir$wavenumber, na.rm = TRUE) - edge_guard],
-      min(high_edge_peaks)
-    )
-  }
+  all_peaks <- .collapse_edge_peak_cluster(
+    all_peaks = all_peaks,
+    boundary = min(ftir$wavenumber, na.rm = TRUE),
+    edge_guard = edge_guard,
+    keep = max
+  )
+  all_peaks <- .collapse_edge_peak_cluster(
+    all_peaks = all_peaks,
+    boundary = max(ftir$wavenumber, na.rm = TRUE),
+    edge_guard = edge_guard,
+    keep = min
+  )
 
   all_peaks <- sort(all_peaks)
 
@@ -351,6 +344,16 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 }
 
 
+#' Merge peak candidates
+#'
+#' @param all_peaks (`numeric`) The peaks collected so far.
+#' @param candidate_peaks (`numeric`) Additional peaks to merge into
+#'   `all_peaks`.
+#' @param window_merge (`numeric(1)`) The maximum distance within which peaks
+#'   are treated as the same feature.
+#' @returns (`numeric`) The merged peak locations.
+#' @keywords internal
+#' @noRd
 .merge_peak_candidates <- function(all_peaks, candidate_peaks, window_merge) {
   for (i in seq_along(candidate_peaks)) {
     matches <- abs(all_peaks - candidate_peaks[i]) < window_merge
@@ -362,6 +365,33 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     }
   }
   all_peaks
+}
+
+
+#' Collapse edge peak clusters
+#'
+#' @param all_peaks (`numeric`) The detected peak locations.
+#' @param boundary (`numeric(1)`) The edge wavenumber being evaluated.
+#' @param edge_guard (`numeric(1)`) The width of the edge region to collapse.
+#' @param keep (`function`) Either [min()] or [max()] to keep the interior-most
+#'   peak in the edge cluster.
+#' @returns (`numeric`) The peak locations with edge clusters collapsed.
+#' @keywords internal
+#' @noRd
+.collapse_edge_peak_cluster <- function(all_peaks, boundary, edge_guard, keep) {
+  if (identical(keep, max)) {
+    edge_peaks <- all_peaks[all_peaks <= boundary + edge_guard]
+    interior_peaks <- all_peaks[all_peaks > boundary + edge_guard]
+  } else {
+    edge_peaks <- all_peaks[all_peaks >= boundary - edge_guard]
+    interior_peaks <- all_peaks[all_peaks < boundary - edge_guard]
+  }
+
+  if (length(edge_peaks) <= 1) {
+    return(all_peaks)
+  }
+
+  c(interior_peaks, keep(edge_peaks))
 }
 
 
@@ -401,6 +431,13 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 }
 
 
+#' Find first-derivative zero crossings
+#'
+#' @param x (`numeric`) A first-derivative signal after thresholding.
+#' @returns (`numeric`) The indices where the derivative crosses from positive
+#'   to negative.
+#' @keywords internal
+#' @noRd
 .first_derivative_zero_crossings <- function(x) {
   nonzero_idx <- which(x != 0)
   if (length(nonzero_idx) < 2) {

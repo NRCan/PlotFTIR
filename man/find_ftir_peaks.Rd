@@ -7,9 +7,10 @@
 find_ftir_peaks(ftir, call = rlang::caller_env(), ...)
 }
 \arguments{
-\item{ftir}{(\code{data.frame}) A data.frame in long format with a single FTIR spectra in columns
-\code{sample_id}, \code{wavenumber}, and \code{absorbance}. The \code{absorbance} column may be
-replaced by a \code{transmittance} column for transmittance plots.
+\item{ftir}{(\code{data.frame}) A data.frame in long format with a single FTIR
+spectra in columns \code{sample_id}, \code{wavenumber}, and \code{absorbance}. The
+\code{absorbance} column may be replaced by a \code{transmittance} column for
+transmittance plots.
 
 Un data.frame au format long avec un seul spectre IRTF dans les colonnes
 \code{sample_id}, \code{wavenumber}, et \code{absorbance}. La colonne \code{absorbance} peut
@@ -21,28 +22,57 @@ L'environnement de l'appelant pour les messages d'erreur.}
 
 \item{...}{Additional optional parameters to pass to peak finding algorithm.
 \itemize{
-\item \code{sg_p_norm} The polynomial degree used in smoothing the spectra for finding peaks by signal maxima. Default \code{3}.
-\item \code{sg_p_deriv} The polynomial degree used in smoothing the derivative for finding peaks by minima. Default \code{3}.
-\item \code{sg_n_norm} The number of points used in smoothing the spectra for finding peaks by signal maxima. Default \code{13}.
-\item \code{sg_n_deriv} The number of points used in smoothing the derivative for finding peaks by minima. Default \code{15}.
-\item \code{window_norm} The width of the window (in wavenumbers) to ensure that a peak is a true maxima and not just noise. Default \code{10}. Works best on data with consistent resolution, and will round up to the next data point.
-\item \code{window_deriv} The width of the window (in wavenumbers) to ensure that a derivative minima is a true minima and not just noise. Default \code{5}. Works best on data with consistent resolution, and will round up to the next data point.
-\item \code{zero_norm} Spectra have baseline noise removed before searching for peaks by setting signal value below the zero threshold to 0. Default \code{1e-2}.
-\item \code{zero_deriv}Derivative have baseline noise removed before searching for peaks by setting values below the zero threshold to 0. Default \code{1e-4}.
-\item \code{window_merge} The width of the window (in wavenumbers) within which peaks detected by different methods are merged into a single representative peak. Default \code{5}. Works best on data with consistent resolution.
+\item \code{sg_p_norm} The polynomial degree used in smoothing the spectra for finding
+peaks by signal maxima. Default \code{3}.
+\item \code{sg_p_deriv} The polynomial degree used in smoothing the derivative for
+finding peaks by minima. Default \code{3}.
+\item \code{sg_n_norm} The number of points used in smoothing the spectra for finding
+peaks by signal maxima. Default \code{13}.
+\item \code{sg_n_deriv} The number of points used in smoothing the derivative for
+finding peaks by minima. Default \code{15}.
+\item \code{window_norm} The width of the window (in wavenumbers) to ensure that a
+peak is a true maxima and not just noise. Default \code{10}. Works best on data
+with consistent resolution, and will round up to the next data point.
+\item \code{window_deriv} The width of the window (in wavenumbers) to ensure that a
+derivative minima is a true minima and not just noise. Default \code{5}. Works
+best on data with consistent resolution, and will round up to the next data
+point.
+\item \code{zero_norm} Spectra have baseline noise removed before searching for peaks
+by setting signal value below the zero threshold to 0. Default \code{1e-2}.
+\item \code{zero_deriv}Derivative have baseline noise removed before searching for
+peaks by setting values below the zero threshold to 0. Default \code{1e-4}.
+\item \code{window_merge} The width of the window (in wavenumbers) within which peaks
+detected by different methods are merged into a single representative peak.
+Default \code{5}. Works best on data with consistent resolution.
 
 Paramètres optionnels supplémentaires à transmettre à l'algorithme de
 recherche de pics. #' * \code{sg_p_norm} Le degré polynomial utilisé pour lisser
 les spectres afin de trouver les pics par les maxima du signal. Valeur par
 défaut \code{3}.
-\item \code{sg_p_deriv} Le degré polynomial utilisé dans le lissage de la dérivée pour trouver les pics par les minima. Par défaut \code{3}.
-\item \code{sg_n_norm} Le nombre de points utilisés pour lisser les spectres afin de trouver les pics par maxima du signal. Valeur par défaut \code{13}.
-\item \code{sg_n_deriv} Le nombre de points utilisés dans le lissage de la dérivée pour trouver les pics par minima. Par défaut \code{15}.
-\item \code{window_norm} La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un pic est un vrai maxima et pas seulement du bruit. Valeur par défaut \code{10}. Fonctionne mieux sur des données avec une résolution cohérente, et arrondit au point de données suivant.
-\item \code{window_deriv} La largeur de la fenêtre (en wavenumbers) pour s'assurer qu'un minima de dérivée est un vrai minima et pas seulement du bruit. Valeur par défaut \code{5}. Fonctionne mieux sur des données avec une résolution cohérente, et arrondira au point de données suivant.
-\item \code{zero_norm} Les spectres sont débarrassés du bruit de base avant de rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil zéro. Valeur par défaut \code{1e-2}.
-\item \code{zero_deriv}La dérivée est débarrassée du bruit de base avant la recherche des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par défaut \code{1e-4}.
-\item \code{window_merge} La largeur de la fenêtre (en wavenumbers) dans laquelle les pics détectés par différentes méthodes sont fusionnés en un seul pic représentatif. Par défaut \code{5}. Fonctionne mieux sur des données avec une résolution cohérente.
+\item \code{sg_p_deriv} Le degré polynomial utilisé dans le lissage de la dérivée pour
+trouver les pics par les minima. Par défaut \code{3}.
+\item \code{sg_n_norm} Le nombre de points utilisés pour lisser les spectres afin de
+trouver les pics par maxima du signal. Valeur par défaut \code{13}.
+\item \code{sg_n_deriv} Le nombre de points utilisés dans le lissage de la dérivée
+pour trouver les pics par minima. Par défaut \code{15}.
+\item \code{window_norm} La largeur de la fenêtre (en wavenumbers) pour s'assurer
+qu'un pic est un vrai maxima et pas seulement du bruit. Valeur par défaut
+\code{10}. Fonctionne mieux sur des données avec une résolution cohérente, et
+arrondit au point de données suivant.
+\item \code{window_deriv} La largeur de la fenêtre (en wavenumbers) pour s'assurer
+qu'un minima de dérivée est un vrai minima et pas seulement du bruit. Valeur
+par défaut \code{5}. Fonctionne mieux sur des données avec une résolution
+cohérente, et arrondira au point de données suivant.
+\item \code{zero_norm} Les spectres sont débarrassés du bruit de base avant de
+rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil
+zéro. Valeur par défaut \code{1e-2}.
+\item \code{zero_deriv}La dérivée est débarrassée du bruit de base avant la recherche
+des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par
+défaut \code{1e-4}.
+\item \code{window_merge} La largeur de la fenêtre (en wavenumbers) dans laquelle les
+pics détectés par différentes méthodes sont fusionnés en un seul pic
+représentatif. Par défaut \code{5}. Fonctionne mieux sur des données avec une
+résolution cohérente.
 }}
 }
 \value{
@@ -56,12 +86,12 @@ spectres IRTF fournis.
 This function finds peaks in FTIR spectra by identifying minima
 of the double derivative, then re-scanning for maxima of peaks missed by
 the derivative method. It also uses first derivative zero-crossings to find
-broad asymmetric peaks that might be missed by the second derivative.
-Peaks detected by different methods within a specified wavenumber window
-are merged into a single representative peak location. The spectra is
-smoothed by a Savitzky-Golay filter prior to analysis and as such there are
-a number of optional tuning parameters that can be provided (the defaults
-work well for typical spectra).
+broad asymmetric peaks that might be missed by the second derivative. Peaks
+detected by different methods within a specified wavenumber window are
+merged into a single representative peak location. The spectra is smoothed
+by a Savitzky-Golay filter prior to analysis and as such there are a number
+of optional tuning parameters that can be provided (the defaults work well
+for typical spectra).
 
 Cette fonction permet de trouver des pics dans les spectres IRTF en
 identifiant les minima de la double dérivée, puis en recherchant à nouveau
