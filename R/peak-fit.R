@@ -564,7 +564,7 @@ fit_peaks <- function(
   alpha <- `if`("alpha" %in% names(args), args$alpha, rep(1e-4, n))
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
-  ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
 
   if (canonical_method == "gauss") {
     utils::capture.output(
@@ -1025,7 +1025,7 @@ plot_components <- function(
   lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
-  ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
 
   argnames <- names(list(...))
   if (
@@ -1311,7 +1311,7 @@ plot_fit_residuals <- function(
   lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
-  ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
 
   method <- .get_fit_method(fitted_peaks = fitted_peaks)
 
@@ -1512,7 +1512,7 @@ plot_fit_ftir_peaks <- function(
   lang <- .process_language(lang, call = call)
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
-  ftir$absorbance <- ftir$absorbance - min(abs(ftir$absorbance), na.rm = TRUE)
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
 
   argnames <- names(list(...))
   if (
