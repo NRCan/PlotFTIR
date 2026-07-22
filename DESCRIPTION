@@ -20,7 +20,7 @@ Imports:
     rlang,
     scales
 Depends: 
-    R (>= 3.3)
+    R (>= 3.5)
 Suggests: 
     testthat (>= 3.0.0),
     withr,
@@ -36,5 +36,5 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues
-URL: https://github.com/NRCan/PlotFTIR
+URL: https://github.com/NRCan/PlotFTIR, https://nrcan.github.io/PlotFTIR/
 Config/roxygen2/version: 8.0.0

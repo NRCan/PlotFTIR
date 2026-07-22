@@ -14,3 +14,6 @@
 ^revdep$
 cobertura.xml
 ^AGENTS\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
