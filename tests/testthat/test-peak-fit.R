@@ -152,8 +152,8 @@ test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-cro
       rep(0.1, 40)
     )
   )
-  flat_top_idx <- which(ftir$absorbance == max(ftir$absorbance))
-  expected_peak <- ftir$wavenumber[round(mean(flat_top_idx))]
+  flat_top_indices <- which(ftir$absorbance == max(ftir$absorbance))
+  expected_peak <- ftir$wavenumber[round(mean(flat_top_indices))]
   peak_tolerance <- ceiling(abs(mean(diff(ftir$wavenumber))))
 
   peaks_broad <- find_ftir_peaks(

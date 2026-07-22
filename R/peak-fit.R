@@ -294,8 +294,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     all_peaks,
     first_deriv_peaks,
     # First-derivative zero crossings can land between coarse data points, so
-    # use either the caller's merge window or one full data-step, whichever is
-    # wider. Adding the two would over-merge genuinely separate peaks.
+    # use either the caller's merge window or one full data-point spacing,
+    # whichever is wider. Adding the two would over-merge separate peaks.
     max(window_merge, resolution)
   )
   all_peaks <- .merge_peak_candidates(all_peaks, norm_peaks, window_merge)
@@ -441,7 +441,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'
 #' @param x (`numeric`) A first-derivative signal after thresholding.
 #' @returns (`numeric`) The indices where the derivative crosses from positive
-#'   to negative.
+#'   to negative, averaging the bounding indices when a crossing spans one or
+#'   more thresholded zeros.
 #' @keywords internal
 #' @noRd
 .first_derivative_zero_crossings <- function(x) {
