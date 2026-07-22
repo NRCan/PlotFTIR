@@ -24,6 +24,8 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(PlotFTIR)
+library(ggplot2)
+biodiesel <- PlotFTIR::biodiesel
 
 tempdir <- withr::local_tempdir()
 ```
@@ -43,13 +45,13 @@ data(biodiesel)
 head(biodiesel)
 ```
 
-The output shows the long-format structure: `wavenumber`, `absorbance`, and `sample_id` columns with 11 distinct samples. The `biodiesel_0` sample (pure diesel) serves as our baseline for comparison.
+The data is in the long-format structure: `wavenumber`, `absorbance`, and `sample_id` columns with 11 distinct samples. The `biodiesel_0` sample (pure diesel) serves as our baseline for comparison.
 
 ### Visualizing the Raw Spectrum
 
 Before attempting peak fitting, it is important to understand the raw spectral landscape. The fingerprint region of the pure diesel sample already shows several discernible features:
 
-```{r plot_raw_spectrum}
+```{r plot_raw_spectrum, fig.cap="FTIR Spectra of pure diesel, from 1800-1000 cm-1."}
 sample_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_0", ]
 
 plot_ftir(
@@ -85,7 +87,7 @@ detected_peaks <- find_ftir_peaks(subset_spectrum)
 detected_peaks
 ```
 
-The algorithm detected `r nrow(detected_peaks)` peaks across the fingerprint region. These locations will serve as initial estimates for the fitting procedure. Note that the peak detection is performed on smoothed data, so the exact wavenumbers may differ slightly from visual inspection of the raw spectrum — this is expected and desirable, as it reduces the influence of noise on peak positioning.
+The algorithm detected `r length(detected_peaks)` peaks across the fingerprint region. These locations will serve as initial estimates for the fitting procedure. Note that the peak detection is performed on smoothed data, so the exact wavenumbers may differ slightly from visual inspection of the raw spectrum — this is expected and desirable, as it reduces the influence of noise on peak positioning.
 
 ## Fitting Peaks: Choosing a Model
 
@@ -139,7 +141,7 @@ The DSG fit introduces the `alpha` parameter, which controls the degree of asymm
 
 To understand how each model represents the data, we can overlay the fitted spectra on the original:
 
-```{r compare_fits}
+```{r compare_fits, fig.cap="Plots of each type of peak fit, comparing the results against the original spectrum."}
 # Generate fitted spectra for each model
 voigt_fit <- PlotFTIR:::.get_fit_spectra(subset_spectrum, fitted_voigt)
 gauss_fit <- PlotFTIR:::.get_fit_spectra(subset_spectrum, fitted_gauss)
@@ -155,7 +157,7 @@ comparison_data <- data.frame(
 
 # Plot comparison
 ggplot(comparison_data, aes(x = wavenumber, y = absorbance, color = type)) +
-  geom_line(size = 0.8) +
+  geom_line(linewidth = 0.8) +
   facet_wrap(~type, ncol = 1, scales = "free_y") +
   labs(
     title = "Comparison of Peak Fitting Models",
@@ -171,7 +173,7 @@ The Voigt and Lorentzian fits produce the closest representations of the origina
 
 Once a fit is complete, it is useful to examine the individual peak components that comprise the overall model. The `plot_components()` function decomposes the fitted spectrum into its constituent peaks, revealing which functional groups contribute to each region of the spectrum.
 
-```{r plot_components}
+```{r plot_components, fig.cap="Plotted components of a pseudo-voigt peak-shape fitted diesel."}
 plot_components(
   subset_spectrum,
   fitted_voigt,
@@ -186,7 +188,7 @@ Each colored line represents a single fitted peak component. The thick black lin
 
 A good peak fit should leave residuals (the difference between observed and fitted values) that resemble random noise. Systematic patterns in the residuals indicate that the model is missing important features.
 
-```{r plot_residuals}
+```{r plot_residuals, fig.cap="Residuals of pseudo-voigt peak fitting"}
 plot_fit_residuals(
   subset_spectrum,
   fitted_voigt,
@@ -215,7 +217,7 @@ for (sid in sample_ids) {
   peak_table <- rbind(peak_table, peak_df)
 }
 
-peak_table
+head(peak_table)
 ```
 
 The resulting table contains fitted peak parameters for every sample. By filtering for specific peaks (e.g., the carbonyl peak near 1740 cm⁻¹), you can quantify how peak intensity, width, and position correlate with biodiesel concentration. This is the foundation of quantitative FTIR analysis: peak fitting converts qualitative spectral features into measurable, comparable numerical data.
@@ -272,7 +274,7 @@ La sortie montre la structure au format long : les colonnes `wavenumber`, `absor
 
 Avant de tenter un ajustement de pics, il est important de comprendre le paysage spectral brut. La région de l'empreinte digitale de l'échantillon de diesel pur révèle déjà plusieurs caractéristiques discernables :
 
-```{r plot_raw_spectrum_fr}
+```{r plot_raw_spectrum_fr, fig.cap="Spectres FTIR du diesel pur, de 1800 à 1000 cm-1."}
 sample_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_0", ]
 
 plot_ftir(
@@ -309,7 +311,7 @@ detected_peaks <- find_ftir_peaks(subset_spectrum)
 detected_peaks
 ```
 
-L'algorithme a détecté `r nrow(detected_peaks)` pics sur la région de l'empreinte digitale. Ces emplacements serviront d'estimations initiales pour la procédure d'ajustement. Notez que la détection des pics est effectuée sur des données lissées, donc les nombres d'ondes exacts peuvent différer légèrement de l'inspection visuelle du spectre brut — ce qui est attendu et souhaitable, car cela réduit l'influence du bruit sur le positionnement des pics.
+L'algorithme a détecté `r length(detected_peaks)` pics sur la région de l'empreinte digitale. Ces emplacements serviront d'estimations initiales pour la procédure d'ajustement. Notez que la détection des pics est effectuée sur des données lissées, donc les nombres d'ondes exacts peuvent différer légèrement de l'inspection visuelle du spectre brut — ce qui est attendu et souhaitable, car cela réduit l'influence du bruit sur le positionnement des pics.
 
 ## Ajustement des Pics : Choix d'un Modèle
 
@@ -363,7 +365,7 @@ L'ajustement DSG introduit le paramètre `alpha`, qui contrôle le degré d'asym
 
 Pour comprendre comment chaque modèle représente les données, nous pouvons superposer les spectres ajustés sur l'original :
 
-```{r compare_fits_fr}
+```{r compare_fits_fr, fig.cap="Graphiques de chaque type d'ajustement de pic, comparant les résultats au spectre original."}
 # Générer les spectres ajustés pour chaque modèle
 voigt_fit <- PlotFTIR:::.get_fit_spectra(subset_spectrum, fitted_voigt)
 gauss_fit <- PlotFTIR:::.get_fit_spectra(subset_spectrum, fitted_gauss)
@@ -379,7 +381,7 @@ comparison_data <- data.frame(
 
 # Tracer la comparaison
 ggplot(comparison_data, aes(x = wavenumber, y = absorbance, color = type)) +
-  geom_line(size = 0.8) +
+  geom_line(linewidth = 0.8) +
   facet_wrap(~type, ncol = 1, scales = "free_y") +
   labs(
     title = "Comparaison des Modèles d'Ajustement de Pics",
@@ -395,7 +397,7 @@ Les ajustements de Voigt et de Lorentz produisent les représentations les plus 
 
 Une fois un ajustement terminé, il est utile d'examiner les composants individuels des pics qui composent le modèle global. La fonction `plot_components()` décompose le spectre ajusté en ses pics constitutifs, révélant quels groupes fonctionnels contribuent à chaque région du spectre.
 
-```{r plot_components_fr}
+```{r plot_components_fr, fig.cap="Composantes tracées d'un moteur diesel équipé d'un profil de pic pseudo-Voigt."}
 plot_components(
   subset_spectrum,
   fitted_voigt,
@@ -411,7 +413,7 @@ Chaque ligne colorée représente un pic ajusté individuel. La ligne épaisse n
 
 Un bon ajustement de pics devrait laisser des résidus (la différence entre les valeurs observées et ajustées) qui ressemblent à du bruit aléatoire. Des motifs systématiques dans les résidus indiquent que le modèle manque de caractéristiques importantes.
 
-```{r plot_residuals_fr}
+```{r plot_residuals_fr, fig.cap="Résidus de l'ajustement de pic pseudo-Voigt"}
 plot_fit_residuals(
   subset_spectrum,
   fitted_voigt,
@@ -441,7 +443,7 @@ for (sid in sample_ids) {
   peak_table <- rbind(peak_table, peak_df)
 }
 
-peak_table
+head(peak_table)
 ```
 
 Le tableau résultant contient les paramètres de pics ajustés pour chaque échantillon. En filtrant pour des pics spécifiques (par exemple, le pic de carbonyle vers 1740 cm⁻¹), vous pouvez quantifier comment l'intensité, la largeur et la position du pic corrélatent avec la concentration en biodiesel. C'est le fondement de l'analyse quantitative IRTF : l'ajustement de pics convertit les caractéristiques spectrales qualitatives en données numériques mesurables et comparables.

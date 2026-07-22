@@ -18,7 +18,7 @@ test_that("find_ftir_peaks handles input errors ok", {
   expect_error(
     find_ftir_peaks(ftir, zero_deriv = "non-numeric"),
     "`zero_deriv` must be numeric"
-  ) # incorrect argumenet
+  ) # incorrect argument
 
   # Multiple sample spectra passed in
   ftir <- data.frame(
@@ -342,14 +342,14 @@ test_that("All functions validate ftir data structure", {
 
 # === Section 5: Helper Function Tests ===
 
-test_that("maxima function detects local maximas", {
+test_that(".maxima function detects local maximas", {
   x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
   expect_equal(PlotFTIR:::.maxima(x), 5)
   x <- c(1, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
   expect_equal(PlotFTIR:::.maxima(x, window = 2), c(5, 9))
 })
 
-test_that("minima function detects local minimas", {
+test_that(".minima function detects local minimas", {
   x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
   expect_equal(PlotFTIR:::.minima(x), c(1, 9))
   x <- c(3, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)

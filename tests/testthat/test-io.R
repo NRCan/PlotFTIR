@@ -311,9 +311,9 @@ test_that("reading .jdx works", {
       suppressWarnings(
         read_ftir(
           path = system.file("extdata", "isasspc1.dx", package = "readJDX")
-        ),
-        "Could not confirm `infrared` data file."
-      )
+        )
+      ),
+      "Could not confirm `infrared` data file."
     )
   )
 })
@@ -539,12 +539,13 @@ test_that("interface to ir is ok for PlotFTIR data (#35)", {
 
   adjusted_2$id_sample <- NULL
 
-  expect_warning(adjusted_2 <- ir_to_plotftir(ir_data = adjusted_2, what = c(1,2,4)),
+  expect_warning(
+    adjusted_2 <- ir_to_plotftir(ir_data = adjusted_2, what = c(1, 2, 4)),
     regexp = "Could not find sample spectra ids from",
-    fixed = TRUE)
+    fixed = TRUE
+  )
 
-  expect_equal(unique(adjusted_2$sample_id), as.character(c(1,2,4)))
-
+  expect_equal(unique(adjusted_2$sample_id), as.character(c(1, 2, 4)))
 })
 
 test_that("Interface to ChemoSpec is ok", {
