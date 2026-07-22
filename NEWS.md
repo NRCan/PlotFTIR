@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* Updated package data to properly print properly after v1.3.0.
+
 # PlotFTIR 1.3.0
 
 * `print()` now provides pretty printing for PlotFTIR data structures, showing spectral range, resolution, intensity type, number of samples, and sample IDs. ([#27](https://github.com/NRCan/PlotFTIR/issues/27))
