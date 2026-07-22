@@ -72,7 +72,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
 #' check_ftir_data(biodiesel)
 check_ftir_data <- function(ftir) {
   fn <- try(deparse(sys.calls()[[sys.nframe() - 1]]), silent = TRUE)
-  if (inherits(fn, 'try-error')) {
+  if (inherits(fn, "try-error")) {
     fn <- "PlotFTIR::check_ftir_data"
   } else {
     fn <- paste0("PlotFTIR::", strsplit(fn, "(", fixed = TRUE)[[1]][1])
@@ -194,7 +194,11 @@ print.PlotFTIR_data <- function(x, ...) {
   if (length(samples) <= 5) {
     cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
   } else {
-    cat("  Sample IDs:", paste(utils::head(samples, 5), collapse = ", "), "...\n")
+    cat(
+      "  Sample IDs:",
+      paste(utils::head(samples, 5), collapse = ", "),
+      "...\n"
+    )
   }
   invisible(x)
 }
@@ -221,4 +225,67 @@ intensity_type <- function(ftir) {
   # implied else
   ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
   return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
+}
+
+
+#' Process Language Parameter
+#'
+#' @description Internal helper to normalize the `lang` parameter to a
+#'   two-letter code ('en' or 'fr'). Accepts common aliases and falls back to
+#'   the package option `PlotFTIR.lang`.
+#'
+#'   Assistant interne pour normaliser le paramètre `lang` en un code à deux
+#'   lettres ('en' ou 'fr'). Accepte les alias courants et utilise par défaut
+#'   l'option de package `PlotFTIR.lang`.
+#'
+#' @param lang Character string with language preference, or `NA`.
+#'
+#'   Chaîne de caractères avec la préférence de langue, ou `NA`.
+#'
+#' @param call The calling environment for error messages.
+#'
+#'   L'environnement d'appel pour les messages d'erreur.
+#'
+#' @return A two-character string: 'en' or 'fr'.
+#'
+#'   Une chaîne de deux caractères : 'en' ou 'fr'.
+#'
+#' @keywords internal
+#' @export
+#' @md
+.process_language <- function(lang, call = rlang::caller_env()) {
+  if (!is.null(lang) && !is.na(lang) && length(lang) > 0) {
+    l <- tryCatch(
+      match.arg(
+        lang,
+        choices = c(
+          "en",
+          "english",
+          "anglais",
+          "fr",
+          "french",
+          "francais",
+          "fran\u00e7ais"
+        ),
+        several.ok = FALSE
+      ),
+      error = function(x) {
+        cli::cli_warn(
+          "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'. Use default.",
+          call = call
+        )
+        NA_character_
+      }
+    )
+  } else {
+    l <- NA_character_
+  }
+  if (is.na(l)) {
+    l <- getOption("PlotFTIR.lang", default = "en")
+  }
+  if (substr(l, 1, 2) %in% c("an", "en")) {
+    return("en")
+  } else {
+    return("fr")
+  }
 }

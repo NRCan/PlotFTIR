@@ -17,8 +17,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     cli,
-    rlang,
-    scales
+    rlang
 Depends: 
     R (>= 3.5)
 Suggests: 
@@ -32,7 +31,10 @@ Suggests:
     ir,
     ChemoSpec,
     R.utils,
-    readJDX
+    readJDX,
+    EMpeaksR,
+    signal,
+    scales
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues

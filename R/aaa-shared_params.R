@@ -38,6 +38,9 @@
 #' @param legend_title Title for legend. Defaults to "Sample ID".
 #'   Titre de la légende. Par défaut "Sample ID".
 #'
+#' @param fitted_peaks An object returned by [fit_peaks()].
+#'   Un objet retourné par [fit_peaks()].
+#'
 #' @name .shared-params
 #' @keywords internal
 NULL

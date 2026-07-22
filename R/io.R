@@ -429,7 +429,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
-      if (intensity == 'transmittance' & max(ftir_data$intensity < 1.2)) {
+      if (intensity == "transmittance" && max(ftir_data$intensity < 1.2)) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
         ftir_data$intensity <- ftir_data$intensity * 100
@@ -446,7 +446,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     intensity <- intensity_type(ftir_data)
   }
 
-  if (intensity == 'absorbance') {
+  if (intensity == "absorbance") {
     ftir_data$absorbance <- ftir_data$intensity
   } else {
     ftir_data$transmittance <- ftir_data$intensity
@@ -575,7 +575,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
     what <- seq_along(ir_data$spectra)
   }
 
-  if (suppressWarnings(any(is.na(as.numeric(what))))) {
+  if (suppressWarnings(anyNA(as.numeric(what)))) {
     if (all(what %in% ir_data$id_sample)) {
       what <- which(what %in% ir_data$id_sample)
     } else {

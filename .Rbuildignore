@@ -12,8 +12,12 @@
 ^LICENSE$
 ^paper$
 ^revdep$
-cobertura.xml
+cobertura\.xml$
 ^AGENTS\.md$
+^\.kilo$
+^\.git$
+^\.lintr$
+^\.vscode$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

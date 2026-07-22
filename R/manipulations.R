@@ -66,7 +66,7 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   }
 
   if ("transmittance" %in% colnames(data)) {
-    if ('normal' %in% attr(ftir_spectra_plot, 'spectra_style')) {
+    if ("normal" %in% attr(ftir_spectra_plot, "spectra_style")) {
       yrange <- c(0, 100)
     } else {
       yrange <- c(0, max(c(data$transmittance, 100), na.rm = TRUE))
@@ -106,6 +106,13 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
 compress_trans <- function(intercept = 2000, ratio = 5) {
   # For FTIR, note that the plot has scale_x_reverse() always applied to it.
   # So, we're really talking about intercept as a -1*intercept
+
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg scales} package installation.",
+      i = "Install {.pkg scales} with {.run install.packages('scales')}"
+    ))
+  }
 
   intercept <- intercept * -1
 

@@ -116,6 +116,14 @@ test_that("compress region is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
+  if (!require("scales", quietly = TRUE)) {
+    expect_error(
+      compress_low_energy(biodiesel_plot),
+      "requires scales package installation",
+      fixed = TRUE
+    )
+    testthat::skip("scales not available for testing manipulations")
+  }
 
   expect_error(
     compress_low_energy("abc"),
@@ -230,7 +238,7 @@ test_that("labelled plot is ok", {
       biodiesel_plot,
       wavenumber = 1740,
       text = "CO Stretch",
-      line_aesthetics = 'dashed'
+      line_aesthetics = "dashed"
     ),
     "`line_aesthetics` must be a named list. You provided",
     fixed = TRUE

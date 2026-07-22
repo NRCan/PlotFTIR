@@ -38,6 +38,9 @@ le deuxième élément comme sous-titre.}
 
 \item{legend_title}{Title for legend. Defaults to "Sample ID".
 Titre de la légende. Par défaut "Sample ID".}
+
+\item{fitted_peaks}{An object returned by [fit_peaks()].
+Un objet retourné par [fit_peaks()].}
 }
 \description{
 These parameters are used in multiple functions. They are defined here to
