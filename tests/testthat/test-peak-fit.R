@@ -136,7 +136,7 @@ test_that("find_ftir_peaks merges close peaks using representative approach", {
   expect_type(peaks_wider_merge, "double")
 })
 
-test_that("find_ftir_peaks finds broad peaks via first derivative zero-crossing", {
+test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-crossing (#noissue)", {
   if (!requireNamespace("signal", quietly = TRUE)) {
     testthat::skip("signal not available for testing")
   }
@@ -145,10 +145,11 @@ test_that("find_ftir_peaks finds broad peaks via first derivative zero-crossing"
     sample_id = "sample1",
     wavenumber = round(seq(4000, 400, length.out = 200)),
     absorbance = c(
-      rep(0.1, 50),
-      seq(0.1, 3, length.out = 60), # broad rising
-      seq(3, 0.1, length.out = 60), # broad falling
-      rep(0.1, 30)
+      rep(0.1, 40),
+      seq(0.1, 3, length.out = 40),
+      rep(3, 40),
+      seq(3, 0.1, length.out = 40),
+      rep(0.1, 40)
     )
   )
 
@@ -162,7 +163,7 @@ test_that("find_ftir_peaks finds broad peaks via first derivative zero-crossing"
     window_deriv = 30
   )
 
-  expect_type(peaks_broad, "double")
+  expect_true(any(abs(peaks_broad - 2209) <= 15))
 })
 
 # === Section 3: fit_peaks() Core Tests ===
@@ -370,6 +371,17 @@ test_that("zero_threshold sets to zero values below threshold", {
   expect_equal(
     PlotFTIR:::.zero_threshold(x, threshold = 1e-2),
     c(1, -0.01, 0, 0)
+  )
+})
+
+test_that(".first_derivative_zero_crossings finds positive-to-negative transitions (#noissue)", {
+  expect_equal(
+    PlotFTIR:::.first_derivative_zero_crossings(c(1, 0.5, 0, 0, -0.5, -1)),
+    4
+  )
+  expect_equal(
+    PlotFTIR:::.first_derivative_zero_crossings(c(0, 0, 0)),
+    numeric()
   )
 })
 

@@ -245,6 +245,12 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     n = sg_n_deriv,
     m = 2
   )
+  sg_deriv_first <- signal::sgolayfilt(
+    ftir$absorbance,
+    p = sg_p_deriv,
+    n = sg_n_deriv,
+    m = 1
+  )
 
   if (zero_norm > max(abs(sg), na.rm = TRUE)) {
     cli::cli_abort(
@@ -275,21 +281,21 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     .zero_threshold(sg_deriv, zero_deriv),
     ceiling(window_deriv / resolution)
   )]
+  first_deriv_peaks <- ftir$wavenumber[.first_derivative_zero_crossings(
+    .zero_threshold(sg_deriv_first, zero_deriv)
+  )]
   norm_peaks <- ftir$wavenumber[.maxima(
     .zero_threshold(sg, zero_norm),
     ceiling(window_norm / resolution)
   )]
 
   all_peaks <- deriv_peaks
-  for (i in seq_along(norm_peaks)) {
-    matches <- abs(all_peaks - norm_peaks[i]) < window_merge
-    if (sum(matches) == 0) {
-      all_peaks <- c(all_peaks, norm_peaks[i])
-    } else {
-      avg_idx <- which(matches)[1]
-      all_peaks[avg_idx] <- mean(c(all_peaks[avg_idx], norm_peaks[i]))
-    }
-  }
+  all_peaks <- .merge_peak_candidates(
+    all_peaks,
+    first_deriv_peaks,
+    max(window_merge, resolution)
+  )
+  all_peaks <- .merge_peak_candidates(all_peaks, norm_peaks, window_merge)
 
   all_peaks <- sort(all_peaks)
 
@@ -318,7 +324,44 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     }
   }
 
+  edge_guard <- max(sg_n_norm, sg_n_deriv) * resolution / 2
+  low_edge_peaks <- all_peaks[
+    all_peaks <= min(ftir$wavenumber, na.rm = TRUE) + edge_guard
+  ]
+  if (length(low_edge_peaks) > 1) {
+    all_peaks <- c(
+      all_peaks[all_peaks > min(ftir$wavenumber, na.rm = TRUE) + edge_guard],
+      max(low_edge_peaks)
+    )
+  }
+
+  high_edge_peaks <- all_peaks[
+    all_peaks >= max(ftir$wavenumber, na.rm = TRUE) - edge_guard
+  ]
+  if (length(high_edge_peaks) > 1) {
+    all_peaks <- c(
+      all_peaks[all_peaks < max(ftir$wavenumber, na.rm = TRUE) - edge_guard],
+      min(high_edge_peaks)
+    )
+  }
+
+  all_peaks <- sort(all_peaks)
+
   return(all_peaks)
+}
+
+
+.merge_peak_candidates <- function(all_peaks, candidate_peaks, window_merge) {
+  for (i in seq_along(candidate_peaks)) {
+    matches <- abs(all_peaks - candidate_peaks[i]) < window_merge
+    if (sum(matches) == 0) {
+      all_peaks <- c(all_peaks, candidate_peaks[i])
+    } else {
+      avg_idx <- which(matches)[1]
+      all_peaks[avg_idx] <- mean(c(all_peaks[avg_idx], candidate_peaks[i]))
+    }
+  }
+  all_peaks
 }
 
 
@@ -355,6 +398,20 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 .zero_threshold <- function(x, threshold = 1e-4) {
   x[abs(x) < threshold] <- 0
   return(x)
+}
+
+
+.first_derivative_zero_crossings <- function(x) {
+  nonzero_idx <- which(x != 0)
+  if (length(nonzero_idx) < 2) {
+    return(numeric())
+  }
+
+  left_idx <- nonzero_idx[-length(nonzero_idx)]
+  right_idx <- nonzero_idx[-1]
+  crossings <- sign(x[left_idx]) > 0 & sign(x[right_idx]) < 0
+
+  round((left_idx[crossings] + right_idx[crossings]) / 2)
 }
 
 
