@@ -1,8 +1,13 @@
 # PlotFTIR (development version)
 
-* Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. (@pbulsink, #noissue)
-* `print()` now provides pretty printing for PlotFTIR data structures, showing spectral range, resolution, intensity type, number of samples, and sample IDs. (#27)
-* Updated to use `ggplot2::coord_transform()` instead of `coord_trans`, which is now deprecated. (#25)
+* Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. ([#33](https://github.com/NRCan/PlotFTIR/issues/35))
+* Updated package data to properly print properly after v1.3.0.
+
+# PlotFTIR 1.3.0
+
+* `print()` now provides pretty printing for PlotFTIR data structures, showing spectral range, resolution, intensity type, number of samples, and sample IDs. ([#27](https://github.com/NRCan/PlotFTIR/issues/27))
+* Updated to use `ggplot2::coord_transform()` instead of `coord_trans`, which is now deprecated. ([#25](https://github.com/NRCan/PlotFTIR/issues/25))
+* Resolved issue with data exchange with `ir` package. ([#35](https://github.com/NRCan/PlotFTIR/issues/35))
 
 # PlotFTIR 1.2.1
 

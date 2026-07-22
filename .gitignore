@@ -59,3 +59,4 @@ cobertura.xml
 .kilo/*
 tests/testthat/_problems*
 test_changes.R
+docs
