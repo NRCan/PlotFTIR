@@ -105,25 +105,27 @@ certain nombre de paramètres de réglage facultatifs peuvent être fournis
 (les valeurs par défaut fonctionnent bien pour les spectres typiques).
 }
 \examples{
-# Load the isopropanol sample spectrum from the PlotFTIR package
-ftir_data <- PlotFTIR::sample_spectra[
-  PlotFTIR::sample_spectra$sample_id == "isopropanol",
-]
+if(requireNamespace('signal')){
+  # Load the isopropanol sample spectrum from the PlotFTIR package
+  ftir_data <- PlotFTIR::sample_spectra[
+    PlotFTIR::sample_spectra$sample_id == "isopropanol",
+  ]
 
-# Find peaks using default settings
-peaks_default <- find_ftir_peaks(ftir_data)
-print("Peaks found with default settings:")
-print(peaks_default)
+  # Find peaks using default settings
+  peaks_default <- find_ftir_peaks(ftir_data)
+  print("Peaks found with default settings:")
+  print(peaks_default)
 
-# Find peaks with adjusted smoothing and window parameters
-# Example: Less smoothing on derivative, wider window for normal peaks
-peaks_adjusted <- find_ftir_peaks(
-  ftir_data,
-  sg_n_deriv = 11, # Fewer points for derivative smoothing
-  window_norm = 15 # Wider window (wavenumbers) for normal peak check
-)
-print("Peaks found with adjusted settings:")
-print(peaks_adjusted)
+  # Find peaks with adjusted smoothing and window parameters
+  # Example: Less smoothing on derivative, wider window for normal peaks
+  peaks_adjusted <- find_ftir_peaks(
+    ftir_data,
+    sg_n_deriv = 11, # Fewer points for derivative smoothing
+    window_norm = 15 # Wider window (wavenumbers) for normal peak check
+  )
+  print("Peaks found with adjusted settings:")
+  print(peaks_adjusted)
+}
 }
 \references{
 Savitzky, A.; Golay, M.J.E. (1964). "Smoothing and

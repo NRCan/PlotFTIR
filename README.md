@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
+# PlotFTIR <a href="https://nrcan.github.io/PlotFTIR/"><img src="man/figures/logo.png" align="right" height="139" alt="PlotFTIR website" /></a>
 
 ([Français](#introduction-et-installation))
 
@@ -126,7 +126,7 @@ add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 
 <div class="figure">
 
-<img src="man/figures/README-biodiesel_labelled_en, -1.png" alt="FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch." width="66.67%" />
+<img src="man/figures/README-biodiesel_labelled_en-1.png" alt="FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch." width="66.67%" />
 <p class="caption">
 
 FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating

@@ -94,25 +94,27 @@
 #'   Differentiation of Data by Simplified Least Squares Procedures". Analytical
 #'   Chemistry 36. pp. 1627–1639. doi:10.1021/ac60214a047
 #' @examples
-#' # Load the isopropanol sample spectrum from the PlotFTIR package
-#' ftir_data <- PlotFTIR::sample_spectra[
-#'   PlotFTIR::sample_spectra$sample_id == "isopropanol",
-#' ]
+#' if(requireNamespace('signal')){
+#'   # Load the isopropanol sample spectrum from the PlotFTIR package
+#'   ftir_data <- PlotFTIR::sample_spectra[
+#'     PlotFTIR::sample_spectra$sample_id == "isopropanol",
+#'   ]
 #'
-#' # Find peaks using default settings
-#' peaks_default <- find_ftir_peaks(ftir_data)
-#' print("Peaks found with default settings:")
-#' print(peaks_default)
+#'   # Find peaks using default settings
+#'   peaks_default <- find_ftir_peaks(ftir_data)
+#'   print("Peaks found with default settings:")
+#'   print(peaks_default)
 #'
-#' # Find peaks with adjusted smoothing and window parameters
-#' # Example: Less smoothing on derivative, wider window for normal peaks
-#' peaks_adjusted <- find_ftir_peaks(
-#'   ftir_data,
-#'   sg_n_deriv = 11, # Fewer points for derivative smoothing
-#'   window_norm = 15 # Wider window (wavenumbers) for normal peak check
-#' )
-#' print("Peaks found with adjusted settings:")
-#' print(peaks_adjusted)
+#'   # Find peaks with adjusted smoothing and window parameters
+#'   # Example: Less smoothing on derivative, wider window for normal peaks
+#'   peaks_adjusted <- find_ftir_peaks(
+#'     ftir_data,
+#'     sg_n_deriv = 11, # Fewer points for derivative smoothing
+#'     window_norm = 15 # Wider window (wavenumbers) for normal peak check
+#'   )
+#'   print("Peaks found with adjusted settings:")
+#'   print(peaks_adjusted)
+#' }
 find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   # check dependencies
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -554,14 +556,15 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #' ]
 #'
 #' # Example 1: Fit peaks using the default 'voigt' method
-#' # Peaks will be found automatically using find_ftir_peaks defaults
-#' fitted_voigt_default <- fit_peaks(ftir_data)
-#' print("Fitted Voigt Peaks (Default):")
+#' if(requireNamespace('signal')){
+#'   # Peaks will be found automatically using find_ftir_peaks defaults
+#'   fitted_voigt_default <- fit_peaks(ftir_data)
+#'   print("Fitted Voigt Peaks (Default):")
 #'
-#' # Show key results like final parameters and convergence status
-#' print(fit_peak_df(fitted_voigt_default))
-#' print(paste("Convergence:", fitted_voigt_default$convergence))
-#'
+#'   # Show key results like final parameters and convergence status
+#'   print(fit_peak_df(fitted_voigt_default))
+#'   print(paste("Convergence:", fitted_voigt_default$convergence))
+#' }
 #' \dontrun{
 #' # Example 2: Fit peaks using the 'gauss' method
 #' fitted_gauss <- fit_peaks(ftir_data, method = "gauss")
