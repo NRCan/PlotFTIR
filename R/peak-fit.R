@@ -294,7 +294,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     all_peaks,
     first_deriv_peaks,
     # First-derivative zero crossings can land between coarse data points, so
-    # allow at least one data-step when merging them back into existing peaks.
+    # use either the caller's merge window or one full data-step, whichever is
+    # wider. Adding the two would over-merge genuinely separate peaks.
     max(window_merge, resolution)
   )
   all_peaks <- .merge_peak_candidates(all_peaks, norm_peaks, window_merge)
