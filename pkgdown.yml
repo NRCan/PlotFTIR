@@ -1,0 +1,9 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  plotting_ftir_spectra: plotting_ftir_spectra.html
+last_built: 2026-07-22T00:11Z
+urls:
+  reference: https://nrcan.github.io/PlotFTIR/reference
+  article: https://nrcan.github.io/PlotFTIR/articles
