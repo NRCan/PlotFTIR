@@ -46,7 +46,7 @@
 #' point.
 #' * `zero_norm` Spectra have baseline noise removed before searching for peaks
 #' by setting signal value below the zero threshold to 0. Default `1e-2`.
-#' * `zero_deriv`Derivative have baseline noise removed before searching for
+#' * `zero_deriv` Derivative have baseline noise removed before searching for
 #' peaks by setting values below the zero threshold to 0. Default `1e-4`.
 #' * `window_merge` The width of the window (in wavenumbers) within which peaks
 #' detected by different methods are merged into a single representative peak.
@@ -74,7 +74,7 @@
 #' * `zero_norm` Les spectres sont débarrassés du bruit de base avant de
 #' rechercher les pics en fixant à 0 la valeur du signal en dessous du seuil
 #' zéro. Valeur par défaut `1e-2`.
-#' * `zero_deriv`La dérivée est débarrassée du bruit de base avant la recherche
+#' * `zero_deriv` La dérivée est débarrassée du bruit de base avant la recherche
 #' des pics en fixant à 0 les valeurs inférieures au seuil zéro. Valeur par
 #' défaut `1e-4`.
 #' * `window_merge` La largeur de la fenêtre (en wavenumbers) dans laquelle les
