@@ -146,12 +146,14 @@ test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-cro
     wavenumber = round(seq(4000, 400, length.out = 200)),
     absorbance = c(
       rep(0.1, 40),
-      seq(0.1, 3, length.out = 40),
-      rep(3, 40),
-      seq(3, 0.1, length.out = 40),
+      seq(0.1, 3, length.out = 40), # flat-topped rising edge
+      rep(3, 40), # flat top
+      seq(3, 0.1, length.out = 40), # flat-topped falling edge
       rep(0.1, 40)
     )
   )
+  expected_peak <- ftir$wavenumber[100]
+  peak_tolerance <- 15
 
   peaks_broad <- find_ftir_peaks(
     ftir,
@@ -163,7 +165,7 @@ test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-cro
     window_deriv = 30
   )
 
-  expect_true(any(abs(peaks_broad - 2209) <= 15))
+  expect_true(any(abs(peaks_broad - expected_peak) <= peak_tolerance))
 })
 
 # === Section 3: fit_peaks() Core Tests ===

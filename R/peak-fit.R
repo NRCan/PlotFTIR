@@ -293,6 +293,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   all_peaks <- .merge_peak_candidates(
     all_peaks,
     first_deriv_peaks,
+    # First-derivative zero crossings can land between coarse data points, so
+    # allow at least one data-step when merging them back into existing peaks.
     max(window_merge, resolution)
   )
   all_peaks <- .merge_peak_candidates(all_peaks, norm_peaks, window_merge)
@@ -450,6 +452,8 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   right_idx <- nonzero_idx[-1]
   crossings <- sign(x[left_idx]) > 0 & sign(x[right_idx]) < 0
 
+  # Average the bounding indices to approximate the zero-crossing location,
+  # including crossings that span one or more thresholded zeros.
   round((left_idx[crossings] + right_idx[crossings]) / 2)
 }
 
