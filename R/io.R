@@ -614,9 +614,9 @@ ir_to_df <- function(ir, what) {
   }
 
   irdata <- ir::ir_get_spectrum(ir, what = what)
-  if(!is.null(names(irdata))) {
+  if (!is.null(names(irdata))) {
     sample_ids <- names(irdata)
-  } else if('id_sample' %in% names(ir)){
+  } else if ('id_sample' %in% names(ir)) {
     sample_ids <- as.vector(ir$id_sample[what])
   } else {
     cli::cli_warn(
