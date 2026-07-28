@@ -50,8 +50,9 @@ read_ftir <- function(
 ) {
   # Check inputs
   if (length(path) != 1 || !is.character(path)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value.",
+      "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg path} doit être une valeur de chaîne unique."
     )
   }
   if (
@@ -63,25 +64,29 @@ read_ftir <- function(
     path <- dirname(path)
   }
   if (length(file) != 1 || !is.character(file)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir}. {.arg file} must be a single string value."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir}. {.arg file} must be a single string value.",
+      "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg file} doit être une valeur de chaîne unique."
     )
   }
   if (length(sample_name) != 1) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a single string value or single {.val NA}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a single string value or single {.val NA}.",
+      "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit être une valeur de chaîne unique ou un seul {.val NA}."
     )
   }
   if (!is.na(sample_name) && !is.character(sample_name)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a string value or {.val NA}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a string value or {.val NA}.",
+      "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit être une valeur de chaîne ou {.val NA}."
     )
   }
 
   # check file exists
   if (!file.exists(file.path(path, file))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir}. File {.val {file.path(path, file)}} does not appear to exist."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir}. File {.val {file.path(path, file)}} does not appear to exist.",
+      "Erreur dans {.fn PlotFTIR::read_ftir}. Le fichier {.val {file.path(path, file)}} ne semble pas exister."
     )
   }
 
@@ -124,10 +129,16 @@ read_ftir <- function(
       ...
     ))
   } else {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::read_ftir}. Input file of type {{filetype}} could not be processed.",
-      i = "PlotFTIR currently supports .csv/.txt, .asp and .jdx/.dx files."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn PlotFTIR::read_ftir}. Input file of type {{filetype}} could not be processed.",
+        i = "PlotFTIR currently supports .csv/.txt, .asp and .jdx/.dx files."
+      ),
+      c(
+        "Erreur dans {.fn PlotFTIR::read_ftir}. Le fichier d'entrée de type {{filetype}} n'a pas pu être traité.",
+        i = "PlotFTIR prend actuellement en charge les fichiers .csv/.txt, .asp et .jdx/.dx."
+      )
+    )
   }
 }
 
@@ -187,24 +198,37 @@ read_ftir_directory <- function(
 ) {
   # Check inputs
   if (length(path) != 1 || !is.character(path)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::read_ftir_directory}. {.arg path} must be a single string value.",
-      i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn PlotFTIR::read_ftir_directory}. {.arg path} must be a single string value.",
+        i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."
+      ),
+      c(
+        "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg path} doit être une valeur de chaîne unique.",
+        i = "{.fn PlotFTIR::read_ftir_directory} ne peut lire plusieurs fichiers qu'à partir d'un seul répertoire."
+      )
+    )
   }
 
   if (!all(is.character(files))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_ftir_directory}. {.arg file} must be a vector of string values."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::read_ftir_directory}. {.arg file} must be a vector of string values.",
+      "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg file} doit être un vecteur de valeurs de chaîne."
     )
   }
 
   if (!all(is.na(sample_names))) {
     if (length(sample_names) != length(files)) {
-      cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::read_ftir_directory}: If providing {.arg sample_names} the same number of names as the number of {.arg files} must be provided.",
-        i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"
-      ))
+      .pkg_abort(
+        c(
+          "Error in {.fn PlotFTIR::read_ftir_directory}: If providing {.arg sample_names} the same number of names as the number of {.arg files} must be provided.",
+          i = "You provided {length(sample_names)} {.arg sample_name{?s}} and {length(files)} {.arg file{?s}}"
+        ),
+        c(
+          "Erreur dans {.fn PlotFTIR::read_ftir_directory}: Si vous fournissez des {.arg sample_names}, le même nombre de noms que celui de {.arg files} doit être fourni.",
+          i = "Vous avez fourni {length(sample_names)} {.arg sample_name{?s}} et {length(files)} {.arg file{?s}}"
+        )
+      )
     }
   } else {
     sample_names <- rep(NA_character_, length(files))
@@ -230,20 +254,32 @@ read_ftir_directory <- function(
         }
       },
       error = function(e) {
-        cli::cli_warn(c(
-          "{e}",
-          i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."
-        ))
+        .pkg_warn(
+          c(
+            "{e}",
+            i = "{.fn PlotFTIR::read_ftir_directory} will try to continue with the next file."
+          ),
+          c(
+            "{e}",
+            i = "{.fn PlotFTIR::read_ftir_directory} essaiera de continuer avec le fichier suivant."
+          )
+        )
       }
     )
   }
   if (nrow(ftir) > 0) {
     return(ftir)
   } else {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::read_ftir_directory}: No spectral data was read from files.",
-      i = "Check input file list and directory."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn PlotFTIR::read_ftir_directory}: No spectral data was read from files.",
+        i = "Check input file list and directory."
+      ),
+      c(
+        "Erreur dans {.fn PlotFTIR::read_ftir_directory}: Aucune donnée spectrale n'a été lue à partir des fichiers.",
+        i = "Vérifiez la liste et le répertoire des fichiers d'entrée."
+      )
+    )
   }
 }
 
@@ -253,11 +289,18 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
 
   if (ncol(input_file) > 2) {
     # this file is too ambiguous to read
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR:::read_ftir_csv}. Input file has too many columns.",
-      x = "{.fn PlotFTIR::read_ftir} is only equipped to read single spectra files.",
-      i = "Input .csv files should have only wavenumber and {.arg intensity}, {.arg absorbance}, or {.arg transmittance} values."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn PlotFTIR:::read_ftir_csv}. Input file has too many columns.",
+        x = "{.fn PlotFTIR::read_ftir} is only equipped to read single spectra files.",
+        i = "Input .csv files should have only wavenumber and {.arg intensity}, {.arg absorbance}, or {.arg transmittance} values."
+      ),
+      c(
+        "Erreur dans {.fn PlotFTIR:::read_ftir_csv}. Le fichier d'entrée contient trop de colonnes.",
+        x = "{.fn PlotFTIR::read_ftir} n'est équipé que pour lire des fichiers spectraux uniques.",
+        i = "Les fichiers .csv d'entrée ne devraient contenir que les valeurs de nombre d'ondes et {.arg intensity}, {.arg absorbance}, ou {.arg transmittance}."
+      )
+    )
   }
 
   colnames(input_file) <- tolower(colnames(input_file))
@@ -273,23 +316,31 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
         stats::cor(input_file[, 1], seq_along(input_file[, 1])) == 1 &&
           stats::cor(input_file[, 2], seq_along(input_file[, 2])) < 0.95
       ) {
-        cli::cli_inform(
-          "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[1]}} is {.val wavenumber}."
+        .pkg_inform(
+          "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[1]}} is {.val wavenumber}.",
+          "{.fn PlotFTIR:::read_ftir_csv} a déduit que la colonne de données d'entrée {.arg {colnames(input_file)[1]}} est {.val wavenumber}."
         )
         colnames(input_file)[1] <- "wavenumber"
       } else if (
         stats::cor(input_file[, 2], seq_along(input_file[, 2])) == 1 &&
           stats::cor(input_file[, 1], seq_along(input_file[, 1])) < 0.95
       ) {
-        cli::cli_inform(
-          "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[2]}} is {.val wavenumber}."
+        .pkg_inform(
+          "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[2]}} is {.val wavenumber}.",
+          "{.fn PlotFTIR:::read_ftir_csv} a déduit que la colonne de données d'entrée {.arg {colnames(input_file)[2]}} est {.val wavenumber}."
         )
         colnames(input_file)[2] <- "wavenumber"
       } else {
-        cli::cli_abort(c(
-          "Error in {.fn PlotFTIR:::read_ftir_csv}. Could not confidently determine which column contains wavenumber data.",
-          i = "Check the input file or provide a {.arg col.names} input parameter to simplify reading data."
-        ))
+        .pkg_abort(
+          c(
+            "Error in {.fn PlotFTIR:::read_ftir_csv}. Could not confidently determine which column contains wavenumber data.",
+            i = "Check the input file or provide a {.arg col.names} input parameter to simplify reading data."
+          ),
+          c(
+            "Erreur dans {.fn PlotFTIR:::read_ftir_csv}. Impossible de déterminer avec certitude quelle colonne contient les données de nombre d'ondes.",
+            i = "Vérifiez le fichier d'entrée ou fournissez un paramètre d'entrée {.arg col.names} pour simplifier la lecture des données."
+          )
+        )
       }
     }
   }
@@ -298,8 +349,9 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
       !("transmittance" %in% colnames(input_file))
   ) {
     if (intensity_type(input_file) == "transmittance") {
-      cli::cli_inform(
-        "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val transmittance}."
+      .pkg_inform(
+        "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val transmittance}.",
+        "{.fn PlotFTIR:::read_ftir_csv} a déduit que la colonne de données d'entrée {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} est {.val transmittance}."
       )
       colnames(input_file)[
         colnames(input_file) != "wavenumber"
@@ -307,8 +359,9 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
       attr(input_file, "intensity") <- "transmittance"
     } else {
       # must be intensity = absorbance
-      cli::cli_inform(
-        "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val absorbance}."
+      .pkg_inform(
+        "{.fn PlotFTIR:::read_ftir_csv} has deduced that input data column {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} is {.val absorbance}.",
+        "{.fn PlotFTIR:::read_ftir_csv} a déduit que la colonne de données d'entrée {.arg {colnames(input_file)[colnames(input_file) != 'wavenumber']}} est {.val absorbance}."
       )
       colnames(input_file)[colnames(input_file) != "wavenumber"] <- "absorbance"
       attr(input_file, "intensity") <- "absorbance"
@@ -355,15 +408,17 @@ read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
 
   if (intensity_type(ftir_data) == "transmittance") {
     # must be intensity = transmittance
-    cli::cli_inform(
-      "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units."
+    .pkg_inform(
+      "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units.",
+      "{.fn PlotFTIR:::read_ftir_spc} a déduit que les données d'entrée sont en unités {.val transmittance}."
     )
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "transmittance"
     attr(input_file, "intensity") <- "transmittance"
   } else {
     # must be intensity = absorbance
-    cli::cli_inform(
-      "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val absorbance} units."
+    .pkg_inform(
+      "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val absorbance} units.",
+      "{.fn PlotFTIR:::read_ftir_spc} a déduit que les données d'entrée sont en unités {.val absorbance}."
     )
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "absorbance"
     attr(input_file, "intensity") <- "absorbance"
@@ -376,10 +431,16 @@ read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
 
 read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   if (!requireNamespace("readJDX", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg readJDX} package installation for this function.",
-      i = "Install {.pkg readJDX} with {.run install.packages('readJDX')}"
-    ))
+    .pkg_abort(
+      c(
+        "{.pkg PlotFTIR} requires {.pkg readJDX} package installation for this function.",
+        i = "Install {.pkg readJDX} with {.run install.packages('readJDX')}"
+      ),
+      c(
+        "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg readJDX} pour cette fonction.",
+        i = "Installez le paquet {.pkg readJDX} avec la commande {.run install.packages('readJDX')}"
+      )
+    )
   }
 
   jdx <- readJDX::readJDX(file = file.path(path, file))
@@ -387,17 +448,22 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   # Check that data is IR and not NMR/GC/etc.
   metadata <- jdx$metadata
   if (!any(grepl("DATATYPE|DATA TYPE", metadata))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not find `datatype` in file metadata."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not find `datatype` in file metadata.",
+      "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de trouver `datatype` dans les métadonnées du fichier."
     )
   }
   if (
     !grepl("INFRARED", toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)]))
   ) {
-    cli::cli_abort(
+    .pkg_abort(
       c(
         "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not confirm `infrared` data file.",
         i = "If you believe this is an error, submit a bug to {.href https://github.com/NRCan/PlotFTIR} with the .jdx file."
+      ),
+      c(
+        "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de confirmer le fichier de données `infrared`.",
+        i = "Si vous pensez qu'il s'agit d'une erreur, soumettez un bogue à {.href https://github.com/NRCan/PlotFTIR} avec le fichier .jdx."
       )
     )
   }
@@ -415,10 +481,16 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     sample_name <- sample_name_jdx
   } else {
     if (sample_name != sample_name_jdx) {
-      cli::cli_alert_warning(c(
-        'Note: provided sample name of "{sample_name}" does not match that contained in the .jdx file: "{sample_name_jdx}".',
-        i = "Will use the provided sample name."
-      ))
+      .pkg_warn(
+        c(
+          'Note: provided sample name of "{sample_name}" does not match that contained in the .jdx file: "{sample_name_jdx}".',
+          i = "Will use the provided sample name."
+        ),
+        c(
+          'Remarque: le nom d\'échantillon fourni "{sample_name}" ne correspond pas à celui contenu dans le fichier .jdx: "{sample_name_jdx}".',
+          i = "Utilisation du nom d'échantillon fourni."
+        )
+      )
     }
   }
 
@@ -435,10 +507,16 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
         ftir_data$intensity <- ftir_data$intensity * 100
       } else {
         i_new <- intensity_type(ftir_data)
-        cli::cli_alert_danger(c(
+      .pkg_warn(
+        c(
           "Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units.",
           x = "Continuing with data in {i_new} units."
-        ))
+        ),
+        c(
+          "Avertissement dans {.fn PlotFTIR:::read_ftir_jdx}: Le fichier suggère une intensité de {intensity} unités qui ne correspond pas à l'intensité détectée de {i_new} unités.",
+          x = "Continuation avec les données en unités {i_new}."
+        )
+      )
         intensity <- i_new
       }
     }
@@ -463,18 +541,30 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
 
 read_ftir_spc <- function(path, file, sample_name = NA_character_, ...) {
-  cli::cli_abort(c(
-    "Error in {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR is not (yet) able to read .spc files.",
-    i = "The {.pkg hyperSpec} package may be able to read this file."
-  ))
+  .pkg_abort(
+    c(
+      "Error in {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR is not (yet) able to read .spc files.",
+      i = "The {.pkg hyperSpec} package may be able to read this file."
+    ),
+    c(
+      "Erreur dans {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR ne peut pas encore lire les fichiers .spc.",
+      i = "Le paquet {.pkg hyperSpec} peut peut-être lire ce fichier."
+    )
+  )
 }
 
 
 read_ftir_a2r <- function(path, file, sample_name = NA_character_, ...) {
-  cli::cli_abort(c(
-    "Error in {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR is not (yet) able to read .a2r files.",
-    i = "The {.pkg hyperSpec} package may be able to read this file."
-  ))
+  .pkg_abort(
+    c(
+      "Error in {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR is not (yet) able to read .a2r files.",
+      i = "The {.pkg hyperSpec} package may be able to read this file."
+    ),
+    c(
+      "Erreur dans {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR ne peut pas encore lire les fichiers .a2r.",
+      i = "Le paquet {.pkg hyperSpec} peut peut-être lire ce fichier."
+    )
+  )
 }
 
 
@@ -509,15 +599,22 @@ read_ftir_a2r <- function(path, file, sample_name = NA_character_, ...) {
 #' }
 save_plot <- function(ftir_spectra_plot, filename, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
-    ))
+    .pkg_abort(
+      c(
+        "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+        i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+      ),
+      c(
+        "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
+        i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
+      )
+    )
   }
 
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.",
+      "Erreur dans {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
     )
   }
 
@@ -557,17 +654,24 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
 ir_to_plotftir <- function(ir_data, what = NA) {
   # Package Checks
   if (!requireNamespace("ir", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
-      i = "Install {.pkg ir} with {.run install.packages('ir')}"
-    ))
+    .pkg_abort(
+      c(
+        "{.pkg PlotFTIR} requires {.pkg ir} package installation for this function.",
+        i = "Install {.pkg ir} with {.run install.packages('ir')}"
+      ),
+      c(
+        "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ir} pour cette fonction.",
+        i = "Installez le paquet {.pkg ir} avec la commande {.run install.packages('ir')}"
+      )
+    )
   }
 
   # Param checks
 
   if (!("ir" %in% class(ir_data))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir_data}}.",
+      "Erreur dans {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} doit être de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir_data}}."
     )
   }
 
@@ -579,16 +683,18 @@ ir_to_plotftir <- function(ir_data, what = NA) {
     if (all(what %in% ir_data$id_sample)) {
       what <- which(what %in% ir_data$id_sample)
     } else {
-      cli::cli_abort(
-        "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}."
+      .pkg_abort(
+        "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.",
+        "Erreur dans {.fn PlotFTIR::ir_to_plotftir}. {.arg what} doit contenir les numéros de lignes des spectres d'échantillon à extraire, ou les noms exacts correspondant à ceux dans {.code ir_data$id_sample}."
       )
     }
   }
 
   if (all(is.numeric(what))) {
     if (max(what, na.rm = TRUE) > nrow(ir_data) || min(what) < 1) {
-      cli::cli_abort(
-        "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}."
+      .pkg_abort(
+        "Error in {.fn PlotFTIR::ir_to_plotftir}. {.arg what} must contain the row numbers of sample spectra to extract, or exact names matching what is in {.code ir_data$id_sample}.",
+        "Erreur dans {.fn PlotFTIR::ir_to_plotftir}. {.arg what} doit contenir les numéros de lignes des spectres d'échantillon à extraire, ou les noms exacts correspondant à ceux dans {.code ir_data$id_sample}."
       )
     }
   }
@@ -608,8 +714,9 @@ ir_to_df <- function(ir, what) {
 
   # Param checks
   if (!("ir" %in% class(ir))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::ir_to_df}. {.arg ir} must be of class {.cls ir}, produced by the {.pkg ir} package. You provided {.obj_type_friendly {ir}}.",
+      "Erreur dans {.fn PlotFTIR::ir_to_df}. {.arg ir} doit être de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir}}."
     )
   }
 
@@ -619,9 +726,9 @@ ir_to_df <- function(ir, what) {
   } else if ('id_sample' %in% names(ir)) {
     sample_ids <- as.vector(ir$id_sample[what])
   } else {
-    cli::cli_warn(
+    .pkg_warn(
       "Could not find sample spectra ids from {.pkg ir} object.",
-      i = "Sample IDs assigned index numerical values.",
+      "Impossible de trouver les identifiants de spectres d'échantillon à partir de l'objet {.pkg ir}.",
       call = rlang::caller_fn()
     )
     sample_ids <- as.vector(as.character(what))

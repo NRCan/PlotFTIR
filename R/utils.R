@@ -28,14 +28,21 @@
 get_plot_sample_ids <- function(ftir_spectra_plot) {
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-      i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
-    ))
+    .pkg_abort(
+      c(
+        "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+        i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+      ),
+      c(
+        "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
+        i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
+      )
+    )
   }
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+    .pkg_abort(
+      "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}.",
+      "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
     )
   }
   return(as.factor(unique(ftir_spectra_plot$data$sample_id)))
@@ -79,42 +86,61 @@ check_ftir_data <- function(ftir) {
   }
 
   if ("ir" %in% class(ftir)) {
-    cli::cli_inform("Converting {.pkg ir} data to {.pkg PlotFTIR} structure.")
+    .pkg_inform(
+      "Converting {.pkg ir} data to {.pkg PlotFTIR} structure.",
+      "Conversion des données {.pkg ir} en structure {.pkg PlotFTIR}."
+    )
     ftir <- ir_to_plotftir(ftir)
   }
 
   if ("Spectra" %in% class(ftir)) {
-    cli::cli_inform(
-      "Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure."
+    .pkg_inform(
+      "Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure.",
+      "Conversion des données {.pkg ChemoSpec} en structure {.pkg PlotFTIR}."
     )
     ftir <- chemospec_to_plotftir(ftir)
   }
 
   if (!(is.data.frame(ftir))) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."
+    .pkg_abort(
+      "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}.",
+      "Erreur dans {.fn {fn}}. {.arg ftir} doit être un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
     )
   }
   if (!("sample_id" %in% colnames(ftir))) {
-    cli::cli_abort(c(
-      "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
-      i = "It must contain a column named {.var sample_id}."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+        i = "It must contain a column named {.var sample_id}."
+      ),
+      c(
+        "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne.",
+        i = "Il doit contenir une colonne nommée {.var sample_id}."
+      )
+    )
   }
   if (!("wavenumber" %in% colnames(ftir))) {
-    cli::cli_abort(c(
-      "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
-      i = "It must contain a column named {.var wavenumber}."
-    ))
+    .pkg_abort(
+      c(
+        "Error in {.fn {fn}}. {.arg ftir} is missing a column.",
+        i = "It must contain a column named {.var wavenumber}."
+      ),
+      c(
+        "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne.",
+        i = "Il doit contenir une colonne nommée {.var wavenumber}."
+      )
+    )
   }
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+    .pkg_abort(
+      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns.",
+      "Erreur dans {.fn {fn}}. {.arg ftir} doit avoir une des colonnes {.var absorbance} ou {.var transmittance}."
     )
   }
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+    .pkg_abort(
+      "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns.",
+      "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir les deux colonnes {.var absorbance} et {.var transmittance}."
     )
   }
   if (
@@ -123,8 +149,9 @@ check_ftir_data <- function(ftir) {
         c("sample_id", "wavenumber", "absorbance", "transmittance"))
     )
   ) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+    .pkg_abort(
+      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}.",
+      "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance} ou {.var transmittance}."
     )
   }
   if (
@@ -137,8 +164,9 @@ check_ftir_data <- function(ftir) {
           "normalized transmittance"
         ))
   ) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} has unexpected attributes."
+    .pkg_abort(
+      "Error in {.fn {fn}}. {.arg ftir} has unexpected attributes.",
+      "Erreur dans {.fn {fn}}. {.arg ftir} a des attributs inattendus."
     )
   }
 

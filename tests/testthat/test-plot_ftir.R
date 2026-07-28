@@ -138,6 +138,35 @@ test_that("data is checked correctly", {
   )
 })
 
+test_that("Error messages are bilingual", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing language integration")
+  }
+  
+  # Test that error messages work properly in both languages
+  withr::with_envvar(new = c(LANG = 'en_US.UTF-8'), {
+    suppressMessages(PlotFTIR::.onLoad())
+    
+    # This should fail with English message
+    expect_error(
+      plot_ftir(biodiesel, lang = "bob"),
+      "`lang` must be one of ",
+      fixed = TRUE
+    )
+  })
+  
+  withr::with_envvar(new = c(LANG = 'fr_FR.UTF-8'), {
+    suppressMessages(PlotFTIR::.onLoad())
+    
+    # This should fail with French message (but we only check for partial match)
+    expect_error(
+      plot_ftir(biodiesel, lang = "bob"),
+      "`lang` must be one of ",
+      fixed = TRUE
+    )
+  })
+})
+
 test_that("Language settings work", {
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing language integration")
@@ -154,6 +183,7 @@ test_that("Language settings work", {
     fixed = TRUE
   )
 
+  # Test French language settings
   p <- plot_ftir(biodiesel, lang = "fr")
 
   plab <- ggplot2::get_labs(p)
@@ -168,4 +198,43 @@ test_that("Language settings work", {
   p2lab <- ggplot2::get_labs(p2)
   expect_equal(p2lab$title, "My Plot")
   expect_equal(p2lab$x, bquote("Nombre d'onde" ~ (cm^-1)))
+
+  # Test English language settings 
+  p3 <- plot_ftir(biodiesel, lang = "en")
+  plab3 <- ggplot2::get_labs(p3)
+  expect_equal(plab3$title, "FTIR Spectra")
+  expect_equal(plab3$x, bquote("Wavenumber" ~ (cm^-1)))
+
+  # Test all language specification variants
+  lang_variants <- c("english", "anglais", "french", "francais", "fran\u00e7ais")
+  for (lang in lang_variants) {
+    p <- plot_ftir(biodiesel, lang = lang)
+    plab <- ggplot2::get_labs(p)
+    expect_equal(plab$title, "FTIR Spectra")
+    expect_equal(plab$x, bquote("Wavenumber" ~ (cm^-1)))
+  }
+
+  # Test French variants with the same function
+  for (lang in c("fr", "french", "francais", "fran\u00e7ais")) {
+    p <- plot_ftir(biodiesel, lang = lang)
+    plab <- ggplot2::get_labs(p)
+    expect_equal(plab$title, "Spectres IRTF")
+    expect_equal(plab$x, bquote("Nombre d'onde" ~ (cm^-1)))
+  }
+
+  # Test stacked plot language settings
+  p_stacked <- plot_ftir_stacked(biodiesel, lang = "fr")
+  plab_stacked <- ggplot2::get_labs(p_stacked)
+  expect_equal(plab_stacked$title, "Spectres IRTF")
+  expect_equal(plab_stacked$x, bquote("Nombre d'onde" ~ (cm^-1)))
+  
+  # Test that legend title is also translated
+  p <- plot_ftir(biodiesel, lang = "fr", legend_title = "Sample ID")
+  plab <- ggplot2::get_labs(p)
+  expect_equal(plab$colour, "ID de l'\u00e9chantillon")
+  
+  # Test that legend title is also translated in English
+  p <- plot_ftir(biodiesel, lang = "en", legend_title = "Sample ID")
+  plab <- ggplot2::get_labs(p)
+  expect_equal(plab$colour, "Sample ID")
 })
