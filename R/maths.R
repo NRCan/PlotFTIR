@@ -63,7 +63,12 @@ average_spectra <- function(
   }
 
   if (!is.character(average_id)) {
-    cli::cli_abort("{.arg average_id} must be a character value.")
+    .pkg_abort(
+      list(
+        'en' = "{.arg average_id} must be a character value.",
+        'fr' = "{.arg average_id} doit être une valeur de chaîne."
+      )
+    )
   }
 
   # drop everything not needed
@@ -94,10 +99,19 @@ average_spectra <- function(
     avg_spectra$sample_id <- average_id
   } else {
     # Mismatch in wavenumbers. Try first to subset data, then if not Can we interpolate & average across the whole range?
-    cli::cli_warn(c(
-      "There is a mismatch in the wavenumber axis between sample_ids.",
-      i = "Only wavenumber ranges within all samples will be averaged, using linear interpolation."
-    ))
+    .pkg_warn(
+      list(
+        en = c(
+          "There is a mismatch in the wavenumber axis between sample_ids.",
+          i = "Only wavenumber ranges within all samples will be averaged, using linear interpolation."
+        ),
+        fr = c(
+          "Il y a un écart dans l'axe du nombre d'ondes entre les sample_ids.",
+          i = "Seules les plages de nombres d'ondes comprises dans tous les échantillons seront moyennées, en utilisant une interpolation linéaire."
+        )
+      ),
+      call = rlang::caller_env()
+    )
 
     # Determine the range over which data should be averaged
     max_min <- max(sapply(
@@ -256,10 +270,17 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
   }
 
   if (!is.numeric(value)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::add_scalar_value}. Provided {.arg value} must be numeric.",
-      x = "You provided {.obj_type_friendly value}."
-    ))
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_scalar_value}. Provided {.arg value} must be numeric. You provided {.obj_type_friendly value}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_scalar_value}. Le {.arg value} fourni doit être numérique. Vous avez fourni {.obj_type_friendly value}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if ("absorbance" %in% colnames(ftir)) {
@@ -283,11 +304,19 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
   ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(value)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric.",
-      x = "You provided {.obj_type_friendly value}."
-    ))
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric. You provided {.obj_type_friendly value}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::subtract_scalar_value}. Le {.arg value} fourni doit être numérique. Vous avez fourni {.obj_type_friendly value}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
+
   return(add_scalar_value(
     ftir = ftir,
     sample_ids = sample_ids,
@@ -415,55 +444,139 @@ recalculate_baseline <- function(
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          i = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
+          i = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2."
-    ))
+    .pkg_abort(
+      c(
+        'en' = "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2.",
+        'fr' = "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être d'une longueur de 1 ou 2."
+      )
+    )
   }
   if (!(all(is.na(wavenumber_range)) || all(is.numeric(wavenumber_range)))) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
-      x = "You provided a {.obj_type_friendly wavenumber_range}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
+          i = cli::format_inline(
+            "You provided a {.obj_type_friendly wavenumber_range}."
+          )
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être {.code numeric} ou {.code NA}.",
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (!is.logical(individually)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg individually} must be a boolean value.",
-      x = "You provided a {.obj_type_friendly individually}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg individually} must be a boolean value.",
+          i = cli::format_inline(
+            "You provided a {.obj_type_friendly individually}."
+          )
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg individually} doit être une valeur booléenne.",
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly individually}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   permitted_methods <- c("point", "average", "minimum", "maximum")
   if (length(method) != 1 || !(method %in% permitted_methods)) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg method} must be a string.",
-      i = "{.arg method} must be one of {.val {permitted_methods}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg method} must be a string.",
+          i = cli::format_inline("You provided a {.obj_type_friendly method}.")
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg method} doit être une chaîne de caractères.",
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly method}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (method == "point" && length(wavenumber_range) == 2) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
-      i = "The value at the provided wavenumber will be used to baseline adjust data."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be one numeric value if {.code method = 'point'}.",
+          i = cli::format_inline(
+            "You provided a {.obj_type_friendly wavenumber_range}."
+          )
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être une valeur numérique si {.code method = 'point'}.",
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
   if (
     method %in%
       c("minimum", "maximum") &&
       all(length(wavenumber_range) == 1, !is.na(wavenumber_range))
   ) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}.",
-      i = "The minimum (for absorbance spectra) or maximum (for transmittance spectra) value between the provided wavenumbers will be used to baseline adjust data.",
-      i = "To adjust by a single point, call the function with {.code method = 'point'}"
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          cli::format_inline(
+            "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be {.code NA} or two numeric values if {.code method = '{method}'}."
+          ),
+          i = cli::format_inline(
+            "You provided a {.obj_type_friendly wavenumber_range}."
+          ),
+          i = "To adjust by a single point, call the function with {.code method = 'point'}"
+        ),
+        fr = c(
+          cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être {.code NA} ou deux valeurs numériques si {.code method = '{method}'}."
+          ),
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
+          ),
+          i = "Pour ajuster par un point unique, appelez la fonction avec {.code method = 'point'}"
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (method == "point") {
@@ -482,10 +595,24 @@ recalculate_baseline <- function(
               wavenumber_range >
                 max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)
           ) {
-            cli::cli_warn(c(
-              "Warning in {.fn PlotFTIR::recalculate_baseline}. Provided wavenumber is not within spectral range.",
-              i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
-            ))
+            wn <- ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
+            .pkg_warn(
+              list(
+                en = c(
+                  "Warning in {.fn PlotFTIR::recalculate_baseline}. Provided wavenumber is not within spectral range.",
+                  i = cli::format_inline(
+                    "Using {round(wn, 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
+                  )
+                ),
+                fr = c(
+                  "Avertissement dans {.fn PlotFTIR::recalculate_baseline}. La fréquence fournie n'est pas comprise dans la plage spectrale.",
+                  i = cli::format_inline(
+                    "Utilisation de {round(wn, 0)} cm-1 au lieu de {round(wavenumber_range, 0)} cm-1 fourni."
+                  )
+                )
+              ),
+              call = rlang::caller_env()
+            )
           } else if (
             min(abs(
               wavenumber_range -
@@ -493,10 +620,23 @@ recalculate_baseline <- function(
             )) >
               10
           ) {
-            cli::cli_warn(c(
-              "Warning in {.fn PlotFTIR::recalculate_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
-              i = "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
-            ))
+            .pkg_warn(
+              list(
+                en = c(
+                  "Warning in {.fn PlotFTIR::recalculate_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
+                  cli::format_inline(
+                    "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1.",
+                  )
+                ),
+                fr = c(
+                  "Avertissement dans {.fn PlotFTIR::recalculate_baseline}. Aucune valeur de fréquence dans le spectre à 10 cm-1 du point fourni.",
+                  cli::format_inline(
+                    "Utilisation de {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 au lieu de {round(wavenumber_range, 0)} cm-1 fourni."
+                  )
+                )
+              ),
+              call = rlang::caller_env()
+            )
           }
           adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(
             abs(
@@ -573,18 +713,36 @@ recalculate_baseline <- function(
     }
   } else if (method == "average") {
     if (all(is.na(wavenumber_range))) {
-      cli::cli_warn(c(
-        "Adjusting spectra baseline by the average of all values is not analytically useful",
-        i = "Provide a wavenumber range to adjust by the average in that spectral region."
-      ))
+      .pkg_warn(
+        list(
+          en = c(
+            "Adjusting spectra baseline by the average of all values is not analytically useful",
+            i = "Provide a wavenumber range to adjust by the average in that spectral region."
+          ),
+          fr = c(
+            "Ajuster la ligne de base du spectre par la moyenne de toutes les valeurs n'est pas analytiquement utile.",
+            i = "Fournissez une plage de fréquences pour ajuster par la moyenne dans cette région spectrale."
+          )
+        ),
+        call = rlang::caller_env()
+      )
       wavenumber_range <- range(
         ftir[ftir$sample_id %in% sample_ids, ]$wavenumber
       )
     } else if (length(wavenumber_range) != 2) {
-      cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be two numeric values.",
-        i = "The average value between the provided wavenumbers will be used to baseline adjust data."
-      ))
+      .pkg_abort(
+        list(
+          en = c(
+            "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be two numeric values.",
+            i = "The average value between the provided wavenumbers will be used to baseline adjust data."
+          ),
+          fr = c(
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être deux valeurs numériques.",
+            i = "La valeur moyenne entre les fréquences fournies sera utilisée pour ajuster la ligne de base des données."
+          )
+        ),
+        call = rlang::caller_env()
+      )
     }
     if (individually) {
       for (i in seq_along(sample_ids)) {
@@ -763,10 +921,19 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
       attr(ftir, "intensity") == "transmittance"
   ) {
     # Can't normalize transmission spectra
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::normalize_spectra}: Normalization of transmittance spectra not supported.",
-      i = "Convert spectra to absorbance using {.fn transmittance_to_absorbance} then try again."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::normalize_spectra}: Normalization of transmittance spectra not supported.",
+          i = "Convert spectra to absorbance using {.fn transmittance_to_absorbance} then try again."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::normalize_spectra}: La normalisation des spectres de transmittance n'est pas prise en charge.",
+          i = "Convertissez les spectres en absorbance en utilisant {.fn transmittance_to_absorbance} puis réessayez."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (length(sample_ids) <= 1) {
@@ -777,10 +944,23 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::normalize_spectra}. All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          i = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
+          i = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (all(is.na(wavenumber_range))) {
@@ -788,15 +968,31 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   }
 
   if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2."
-    ))
+    .pkg_abort(
+      c(
+        'en' = "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2.",
+        'fr' = "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit être d'une longueur de 2."
+      )
+    )
   }
   if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
-      x = "You provided a {.obj_type_friendly wavenumber_range}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be {.code numeric} or {.code NA}.",
+          i = cli::format_inline(
+            "You provided a {.obj_type_friendly wavenumber_range}."
+          )
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit être {.code numeric} ou {.code NA}.",
+          i = cli::format_inline(
+            "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   for (i in seq_along(sample_ids)) {
@@ -884,8 +1080,11 @@ absorbance_to_transmittance <- function(ftir) {
       attr(ftir, "intensity") %in%
         c("transmittance", "normalized transmittance")
   ) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must be absorbance data or contain a {.var absorbance} column."
+    .pkg_abort(
+      c(
+        'en' = "Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must be absorbance data or contain a {.var absorbance} column.",
+        'fr' = "Erreur dans {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} doit être des données d'absorbance ou contenir une colonne {.var absorbance}."
+      )
     )
   }
   ftir$transmittance <- (10^(ftir$absorbance * -1)) * 100
@@ -913,8 +1112,11 @@ transmittance_to_absorbance <- function(ftir) {
     !("transmittance" %in% colnames(ftir)) ||
       attr(ftir, "intensity") %in% c("absorbance", "normalized absorbance")
   ) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column."
+    .pkg_abort(
+      c(
+        'en' = "Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column.",
+        'fr' = "Erreur dans {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} doit être des données de transmittance ou contenir une colonne {.var transmittance}."
+      )
     )
   }
 

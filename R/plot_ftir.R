@@ -61,12 +61,13 @@ plot_ftir_core <- function(
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     .pkg_abort(
       c(
-        "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-        i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+        en = "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+        fr = "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}."
       ),
-      c(
-        "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
-        i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
+      call = rlang::caller_env(),
+      i = c(
+        en = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}",
+        fr = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
       )
     )
   }
@@ -74,27 +75,31 @@ plot_ftir_core <- function(
   ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
     .pkg_abort(
-      "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.",
-      "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} doit être une chaîne de caractères ou un vecteur de chaînes de caractères avec une longueur maximale de deux."
+      c(
+        en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.",
+        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} doit être une chaîne de caractères ou un vecteur de chaînes de caractères avec une longueur maximale de deux."
+      )
     )
   }
   if (!is.character(legend_title) || length(legend_title) > 1) {
     .pkg_abort(
-      "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.",
-      "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} doit être une unique chaîne de caractères."
+      c(
+        en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.",
+        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} doit être une unique chaîne de caractères."
+      )
     )
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    .pkg_warn(
-      c(
+    .pkg_warn(list(
+      en = c(
         "Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
-        i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+        i = cli::format_inline("You have a total of {length(unique(ftir$sample_id))} unique sample IDs.")
       ),
-      c(
+      fr = c(
         "Avertissement dans {.fn PlotFTIR:::plot_ftir_core}. La palette de couleurs utilisée fonctionne mieux avec 12 échantillons uniques ou moins dans {.arg ftir}.",
-        i = "Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'échantillon uniques."
+        i = cli::format_inline("Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'échantillon uniques.")
       )
-    )
+    ), call = rlang::caller_env())
   }
 
   # if language is provided, check against permitted, else use default from options
@@ -251,16 +256,16 @@ plot_ftir_stacked <- function(
   ftir <- check_ftir_data(ftir)
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
-    .pkg_abort(
-      "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.",
-      "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit être une valeur numérique unique."
-    )
+    .pkg_abort(list(
+      en = "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.",
+      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit être une valeur numérique unique."
+    ))
   }
   if (stack_offset < 0 || stack_offset > 200) {
-    .pkg_abort(
-      "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.",
-      "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit être compris entre 0 et 200."
-    )
+    .pkg_abort(list(
+      en = "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.",
+      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit être compris entre 0 et 200."
+    ))
   }
 
   mode <- attr(ftir, "intensity")

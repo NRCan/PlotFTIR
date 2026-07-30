@@ -1,3 +1,8 @@
+withr::local_options(list(
+  cli.num_colors = 1,
+  cli.unicode = FALSE
+))
+
 test_that("reading csv works", {
   # Create a temporary CSV with wavenumber and absorbance columns
   data <- data.frame(
@@ -442,6 +447,11 @@ test_that("plot saves", {
 })
 
 test_that("interface to ir is ok", {
+  withr::local_options(list(
+    cli.num_colors = 1,
+    cli.unicode = FALSE
+  ))
+  
   if (!requireNamespace("ir", quietly = TRUE)) {
     expect_error(
       ir_to_plotftir(data.frame("testdata" = LETTERS)),
@@ -547,6 +557,11 @@ test_that("interface to ir is ok for PlotFTIR data (#35)", {
 })
 
 test_that("Interface to ChemoSpec is ok", {
+  withr::local_options(list(
+    cli.num_colors = 1,
+    cli.unicode = FALSE
+  ))
+  
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     expect_error(
       plotftir_to_chemospec(biodiesel),

@@ -142,8 +142,16 @@ test_that('.onAttach respects manually-set PlotFTIR.lang option', {
 test_that('Language strings work for simple and complex cases', {
   # Test that language specifications are correctly normalized
   # This should work with both full names and abbreviations
-  expected_langs <- c("en", "english", "anglais", "fr", "french", "francais", "fran\u00e7ais")
-  
+  expected_langs <- c(
+    "en",
+    "english",
+    "anglais",
+    "fr",
+    "french",
+    "francais",
+    "fran\u00e7ais"
+  )
+
   for (lang in expected_langs) {
     # Test that each language specification is accepted by plot functions
     expect_no_error({

@@ -1,47 +1,94 @@
-#' Bilingual Error Handling for PlotFTIR
+#' Bilingual Error Handling Functions
 #'
-#' @description Provides bilingual error, warning, and information handling functions
-#'   that respect the user's language setting from `options("PlotFTIR.lang")`.
-#'   All messages are bilingual (English/French) and automatically displayed in
-#'   the appropriate language.
+#' Helper functions for generating bilingual error and warning messages
 #'
-#' @param message_en English version of the message
-#' @param message_fr French version of the message
-#' @param call The calling environment for error positioning
-#' @param ... Additional arguments to pass to cli functions
-#'
-#' @keywords internal
+#' @noRd
 NULL
 
-.pkg_abort <- function(message_en, message_fr, call = rlang::caller_env(), ...) {
+#' Get current language setting
+#'
+#' @return character string with the current language code
+.get_language <- function() {
   lang <- getOption("PlotFTIR.lang", default = "en")
-  l <- substr(lang, 1, 2)
-  
-  if (l == "fr") {
-    cli::cli_abort(message_fr, call = call, ...)
+  if (lang %in% c("en", "fr")) {
+    return(lang)
   } else {
-    cli::cli_abort(message_en, call = call, ...)
+    return("en")
   }
 }
 
-.pkg_warn <- function(message_en, message_fr, call = rlang::caller_env(), ...) {
-  lang <- getOption("PlotFTIR.lang", default = "en")
-  l <- substr(lang, 1, 2)
-  
-  if (l == "fr") {
-    cli::cli_warn(message_fr, call = call, ...)
-  } else {
-    cli::cli_warn(message_en, call = call, ...)
+#' Bilingual abort function
+#'
+#' @param messages Named character vector with language codes as names and
+#'   messages as values
+#' @param call The call to use for the error
+#' @param ... Additional arguments passed to cli_abort
+#' @noRd
+.pkg_abort <- function(messages, call = rlang::caller_env(), ...) {
+  if (
+    all(!is.character(messages), !is.list(messages), is.null(names(messages)))
+  ) {
+    stop("messages must be a named character vector or a named list of vectors")
   }
+
+  lang <- .get_language()
+  message <- messages[[lang]]
+
+  if (is.null(message)) {
+    # Fallback to English if language not found
+    message <- messages[["en"]]
+  }
+
+  cli::cli_abort(message, call = call, ...)
 }
 
-.pkg_inform <- function(message_en, message_fr, call = rlang::caller_env(), ...) {
-  lang <- getOption("PlotFTIR.lang", default = "en")
-  l <- substr(lang, 1, 2)
-  
-  if (l == "fr") {
-    cli::cli_inform(message_fr, call = call, ...)
-  } else {
-    cli::cli_inform(message_en, call = call, ...)
+#' Bilingual warning function
+#'
+#' @param messages Named character vector with language codes as names and
+#'   messages as values
+#' @param call The call to use for the warning
+#' @param ... Additional arguments passed to cli_warn
+#' @noRd
+.pkg_warn <- function(messages, call = rlang::caller_env(), ...) {
+  if (
+    all(!is.character(messages), !is.list(messages), is.null(names(messages)))
+  ) {
+    stop("messages must be a named character vector or a named list of vectors")
   }
+
+  lang <- .get_language()
+  message <- messages[[lang]]
+
+  if (is.null(message)) {
+    # Fallback to English if language not found
+    message <- messages[["en"]]
+  }
+
+  cli::cli_warn(message, call = call, ...)
 }
+
+#' Bilingual inform function
+#'
+#' @param messages Named character vector with language codes as names and
+#'   messages as values
+#' @param call The call to use for the inform
+#' @param ... Additional arguments passed to cli_inform
+#' @noRd
+.pkg_inform <- function(messages, call = rlang::caller_env(), ...) {
+  if (
+    all(!is.character(messages), !is.list(messages), is.null(names(messages)))
+  ) {
+    stop("messages must be a named character vector or a named list of vectors")
+  }
+
+  lang <- .get_language()
+  message <- messages[[lang]]
+
+  if (is.null(message)) {
+    # Fallback to English if language not found
+    message <- messages[["en"]]
+  }
+
+  cli::cli_inform(message, call = call, ...)
+}
+
