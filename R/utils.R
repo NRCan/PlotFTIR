@@ -214,28 +214,54 @@ check_ftir_data <- function(ftir) {
 #' @export
 #' @method print PlotFTIR_data
 print.PlotFTIR_data <- function(x, ...) {
-  cat("PlotFTIR data:\n")
+  # Calculate all values first to avoid repetition
   wn <- sort(unique(x$wavenumber))
-  cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\n")
   res <- diff(wn)
-  if (length(res) == 0) {
-    cat("  Resolution: none\n")
-  } else if (length(unique(res)) == 1) {
-    cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
-  } else {
-    cat("  Resolution: variable\n")
-  }
-  cat("  Intensity type:", attr(x, "intensity"), "\n")
   samples <- unique(x$sample_id)
-  cat("  Number of samples:", length(samples), "\n")
-  if (length(samples) <= 5) {
-    cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
+  
+  lang <- .get_language()
+  
+  if (lang == "fr") {
+    cat("Données PlotFTIR:\n")
+    if (length(res) == 0) {
+      cat("  Résolution: aucune\n")
+    } else if (length(unique(res)) == 1) {
+      cat("  Résolution:", unique(res), "cm\u207b\u00b9\\n")
+    } else {
+      cat("  Résolution: variable\n")
+    }
+    cat("  Type d'intensité:", attr(x, "intensity"), "\n")
+    cat("  Nombre d'échantillons:", length(samples), "\n")
+    if (length(samples) <= 5) {
+      cat("  ID d'échantillon:", paste(samples, collapse = ", "), "\n")
+    } else {
+      cat(
+        "  ID d'échantillon:",
+        paste(utils::head(samples, 5), collapse = ", "),
+        "...\n"
+      )
+    }
   } else {
-    cat(
-      "  Sample IDs:",
-      paste(utils::head(samples, 5), collapse = ", "),
-      "...\n"
-    )
+    # English by default
+    cat("PlotFTIR data:\n")
+    if (length(res) == 0) {
+      cat("  Resolution: none\n")
+    } else if (length(unique(res)) == 1) {
+      cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
+    } else {
+      cat("  Resolution: variable\n")
+    }
+    cat("  Intensity type:", attr(x, "intensity"), "\n")
+    cat("  Number of samples:", length(samples), "\n")
+    if (length(samples) <= 5) {
+      cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
+    } else {
+      cat(
+        "  Sample IDs:",
+        paste(utils::head(samples, 5), collapse = ", "),
+        "...\n"
+      )
+    }
   }
   invisible(x)
 }
