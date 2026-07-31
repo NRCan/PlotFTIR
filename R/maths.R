@@ -56,10 +56,19 @@ average_spectra <- function(
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
+          x = "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (!is.character(average_id)) {
@@ -263,10 +272,19 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
+          x = "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (!is.numeric(value)) {
