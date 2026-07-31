@@ -601,7 +601,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
-      if (intensity == 'transmittance' & max(ftir_data$intensity < 1.2)) {
+      if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
         ftir_data$intensity <- ftir_data$intensity * 100
@@ -906,7 +906,7 @@ ir_to_df <- function(ir, what) {
   irdata <- ir::ir_get_spectrum(ir, what = what)
   if (!is.null(names(irdata))) {
     sample_ids <- names(irdata)
-  } else if ('id_sample' %in% names(ir)) {
+  } else if ("id_sample" %in% names(ir)) {
     sample_ids <- as.vector(ir$id_sample[what])
   } else {
     .pkg_warn(

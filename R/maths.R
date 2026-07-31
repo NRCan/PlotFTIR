@@ -55,7 +55,7 @@ average_spectra <- function(
   }
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
-    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))] # nolint: object_usage_linter.
     .pkg_abort(
       list(
         en = c(
@@ -78,8 +78,8 @@ average_spectra <- function(
   if (!is.character(average_id)) {
     .pkg_abort(
       list(
-        'en' = "{.arg average_id} must be a character value.",
-        'fr' = "{.arg average_id} doit être une valeur de chaîne."
+        en = "{.arg average_id} must be a character value.",
+        fr = "{.arg average_id} doit être une valeur de chaîne."
       )
     )
   }
@@ -275,7 +275,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
   }
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
-    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))] # nolint: object_usage_linter.
     .pkg_abort(
       list(
         en = c(
@@ -469,7 +469,7 @@ recalculate_baseline <- function(
   }
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
-    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))] # nolint: object_usage_linter.
     .pkg_abort(
       list(
         en = c(
@@ -492,8 +492,8 @@ recalculate_baseline <- function(
   if (length(wavenumber_range) < 1 || length(wavenumber_range) > 2) {
     .pkg_abort(
       c(
-        'en' = "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2.",
-        'fr' = "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être d'une longueur de 1 ou 2."
+        en = "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2.",
+        fr = "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit être d'une longueur de 1 ou 2."
       )
     )
   }
@@ -993,7 +993,7 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   }
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
-    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))] # nolint: object_usage_linter.
     .pkg_abort(
       list(
         en = c(
@@ -1020,12 +1020,12 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
   if (length(wavenumber_range) < 2 || length(wavenumber_range) > 2) {
     .pkg_abort(
       c(
-        'en' = "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2.",
-        'fr' = "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit être d'une longueur de 2."
+        en = "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2.",
+        fr = "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit être d'une longueur de 2."
       )
     )
   }
-  if (any(is.na(wavenumber_range)) | !all(is.numeric(wavenumber_range))) {
+  if (any(is.na(wavenumber_range)) || !all(is.numeric(wavenumber_range))) {
     .pkg_abort(
       list(
         en = c(
@@ -1164,8 +1164,8 @@ transmittance_to_absorbance <- function(ftir) {
   ) {
     .pkg_abort(
       c(
-        'en' = "Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column.",
-        'fr' = "Erreur dans {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} doit être des données de transmittance ou contenir une colonne {.var transmittance}."
+        en = "Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column.",
+        fr = "Erreur dans {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} doit être des données de transmittance ou contenir une colonne {.var transmittance}."
       )
     )
   }

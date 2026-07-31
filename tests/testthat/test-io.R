@@ -556,9 +556,13 @@ test_that("interface to ir is ok for PlotFTIR data (#35)", {
   adjusted_2$id_sample <- NULL
 
   expect_warning_bilingual(
-    adjusted_2 <- ir_to_plotftir(ir_data = adjusted_2, what = c(1, 2, 4)),
+    ir_to_plotftir(ir_data = adjusted_2, what = c(1, 2, 4)),
     en = "Could not find sample spectra ids from",
     fr = "Impossible de trouver les identifiants de spectres d'échantillon"
+  )
+
+  suppressWarnings(
+    adjusted_2 <- ir_to_plotftir(ir_data = adjusted_2, what = c(1, 2, 4))
   )
 
   expect_equal(unique(adjusted_2$sample_id), as.character(c(1, 2, 4)))
