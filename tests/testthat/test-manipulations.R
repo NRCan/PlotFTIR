@@ -4,10 +4,10 @@ test_that("zoom in is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       zoom_in_on_range(123),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
     testthat::skip("ggplot2 not available for testing manipulations")
   }
@@ -15,25 +15,25 @@ test_that("zoom in is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
-  expect_error(
+  expect_error_bilingual(
     zoom_in_on_range("abc"),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
-  expect_error(
+  expect_error_bilingual(
     zoom_in_on_range(biodiesel_plot, zoom_range = 100),
-    "`zoom_range` must be a numeric vector of length two.",
-    fixed = TRUE
+    en = "`zoom_range` must be a numeric vector of length two.",
+    fr = "`zoom_range` doit être un vecteur numérique de longueur deux."
   )
-  expect_error(
+  expect_error_bilingual(
     zoom_in_on_range(biodiesel_plot, zoom_range = c("a", "b")),
-    "`zoom_range` must be a numeric vector of length two.",
-    fixed = TRUE
+    en = "`zoom_range` must be a numeric vector of length two.",
+    fr = "`zoom_range` doit être un vecteur numérique de longueur deux."
   )
-  expect_error(
+  expect_error_bilingual(
     zoom_in_on_range(biodiesel_plot, zoom_range = c(200, 2000)),
-    "`zoom_range` must be values between 701 and 3999 cm^-1.",
-    fixed = TRUE
+    en = "`zoom_range` must be values between 701 and 3999 cm^-1.",
+    fr = "`zoom_range` doit être des valeurs comprises entre 701 et 3999 cm^-1."
   )
 
   # Plots should come out mostly the same.
@@ -104,10 +104,10 @@ test_that("compress region is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       compress_low_energy(123),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing manipulations")
@@ -117,35 +117,35 @@ test_that("compress region is ok", {
 
   # test arg checks.
 
-  expect_error(
+  expect_error_bilingual(
     compress_low_energy("abc"),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
 
-  expect_error(
+  expect_error_bilingual(
     compress_low_energy(biodiesel_plot, cutoff = "bob"),
-    "`cutoff` must be a numeric value. You provided a string.",
-    fixed = TRUE
+    en = "`cutoff` must be a numeric value. You provided a string.",
+    fr = "`cutoff` doit être une valeur numérique. Vous avez fourni a string."
   )
-  expect_error(
+  expect_error_bilingual(
     compress_low_energy(biodiesel_plot, cutoff = 100),
-    "`cutoff` must be a value between 701 and 3999 cm^-1.",
-    fixed = TRUE
+    en = "`cutoff` must be a value between 701 and 3999 cm^-1.",
+    fr = "`cutoff` doit être une valeur comprise entre 701 et 3999 cm^-1."
   )
-  expect_error(
+  expect_error_bilingual(
     compress_low_energy(biodiesel_plot, compression_ratio = "bob"),
-    "`compression_ratio` must be a numeric value. You provided a string.",
-    fixed = TRUE
+    en = "`compression_ratio` must be a numeric value. You provided a string.",
+    fr = "`compression_ratio` doit être une valeur numérique. Vous avez fourni a string."
   )
-  expect_error(
+  expect_error_bilingual(
     compress_low_energy(
       biodiesel_plot,
       cutoff = 2000,
       compression_ratio = 1000
     ),
-    "`compression_ratio` must be a value between 0.01 and 100",
-    fixed = TRUE
+    en = "`compression_ratio` must be a value between 0.01 and 100",
+    fr = "`compression_ratio` doit être une valeur comprise entre 0.01 et 100"
   )
 
   # Plots should come out mostly the same.
@@ -174,10 +174,10 @@ test_that("labelled plot is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       add_wavenumber_marker(123, 1740, "CO Stretch"),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing manipulations")
@@ -186,65 +186,65 @@ test_that("labelled plot is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker("abc", 1500),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
 
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(biodiesel_plot, wavenumber = "abc"),
-    "`wavenumber` must be a numeric value. You provided a string.",
-    fixed = TRUE
+    en = "`wavenumber` must be a numeric value. You provided a string.",
+    fr = "`wavenumber` doit être une valeur numérique. Vous avez fourni a string."
   )
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(biodiesel_plot, wavenumber = 1000, text = mtcars),
-    "`text` must be character or numeric, you provided a data frame.",
-    fixed = TRUE
+    en = "`text` must be character or numeric, you provided a data frame.",
+    fr = "`text` doit être une chaîne de caractères ou numérique, vous avez fourni a data frame."
   )
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(
       biodiesel_plot,
       wavenumber = 1000,
       text = c("This is", "too long")
     ),
-    "`text` should be character or numeric, but not a vector of length greater than one.",
-    fixed = TRUE
+    en = "`text` should be character or numeric, but not a vector of length greater than one.",
+    fr = "`text` doit être une chaîne de caractères ou numérique, mais pas un vecteur de longueur supérieure à un."
   )
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(
       biodiesel_plot,
       wavenumber = 1000,
       text = biodiesel_plot
     ),
-    "`text` must be character or numeric, you provided a <gg",
-    fixed = TRUE
+    en = "`text` must be character or numeric, you provided a <gg",
+    fr = "`text` doit être une chaîne de caractères ou numérique, vous avez fourni a <gg"
   )
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(biodiesel_plot, wavenumber = 5000),
-    "`wavenumber` must be a value between 701 and 3999 cm^-1.",
-    fixed = TRUE
+    en = "`wavenumber` must be a value between 701 and 3999 cm^-1.",
+    fr = "`wavenumber` doit être une valeur comprise entre 701 et 3999 cm^-1."
   )
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(
       biodiesel_plot,
       wavenumber = 1740,
       text = "CO Stretch",
       line_aesthetics = 'dashed'
     ),
-    "`line_aesthetics` must be a named list. You provided",
-    fixed = TRUE
+    en = "`line_aesthetics` must be a named list. You provided",
+    fr = "`line_aesthetics` doit être une liste nommée. Vous avez fourni"
   )
 
-  expect_error(
+  expect_error_bilingual(
     add_wavenumber_marker(
       biodiesel_plot,
       wavenumber = 1740,
       text = "CO Stretch",
       label_aesthetics = 'bold'
     ),
-    "`label_aesthetics` must be a named list. You provided",
-    fixed = TRUE
+    en = "`label_aesthetics` must be a named list. You provided",
+    fr = "`label_aesthetics` doit être une liste nommée. Vous avez fourni"
   )
 
   # Plots should come out mostly the same.
@@ -271,10 +271,10 @@ test_that("-.ggplot is ok", {
   }
   biodiesel_plot <- plot_ftir(biodiesel)
 
-  expect_error(
+  expect_error_bilingual(
     biodiesel_plot - NULL,
-    "Cannot use `-.gg()` with a single argument, ",
-    fixed = TRUE
+    en = "Cannot use `-.gg()` with a single argument, ",
+    fr = "Impossible d'utiliser `-.gg()` avec un seul argument, "
   )
 })
 
@@ -292,10 +292,10 @@ test_that("rename is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       rename_plot_sample_ids(123, sample_ids = new_ids),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing renames")
@@ -316,16 +316,16 @@ test_that("rename is ok", {
   expect_true("Toluene" %in% rp$scales$scales[[1]]$labels)
   expect_true("C7 Alkane" %in% rp$scales$scales[[1]]$labels)
 
-  expect_error(
+  expect_error_bilingual(
     rename_plot_sample_ids(sample_spectra, new_ids),
-    "`ftir_spectra_plot` must be a ggplot object. You provided ",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided ",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni "
   )
 
-  expect_error(
+  expect_error_bilingual(
     rename_plot_sample_ids(p, c(new_ids, "test" = "failure")),
-    "All provided 'old names' must be in the `ftir_spectra_plot`.",
-    fixed = TRUE
+    en = "All provided 'old names' must be in the `ftir_spectra_plot`.",
+    fr = "Tous les « anciens noms » fournis doivent être dans le `ftir_spectra_plot`."
   )
 
   # check only partial names still makes a plot
@@ -340,10 +340,10 @@ test_that("legend moving is ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
-    expect_error(
+    expect_error_bilingual(
       move_plot_legend(123, position = "bottom"),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing manipulations")
@@ -353,35 +353,35 @@ test_that("legend moving is ok", {
 
   # test arg checks.
 
-  expect_error(
+  expect_error_bilingual(
     move_plot_legend("abc", position = "bottom"),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
 
-  expect_error(
+  expect_error_bilingual(
     move_plot_legend(biodiesel_plot, position = "bob"),
-    "`position` must be one of ",
-    fixed = TRUE
+    en = "`position` must be one of ",
+    fr = "`position` doit être l'un des "
   )
-  expect_error(
+  expect_error_bilingual(
     move_plot_legend(
       biodiesel_plot,
       position = "bottom",
       justification = "bob"
     ),
-    "`justification` must be one of ",
-    fixed = TRUE
+    en = "`justification` must be one of ",
+    fr = "`justification` doit être l'un des "
   )
-  expect_error(
+  expect_error_bilingual(
     move_plot_legend(biodiesel_plot, direction = "bob"),
-    "`direction` must be one of ",
-    fixed = TRUE
+    en = "`direction` must be one of ",
+    fr = "`direction` doit être l'un des "
   )
-  expect_error(
+  expect_error_bilingual(
     move_plot_legend(biodiesel_plot, legend_title_position = "bob"),
-    "`legend_title_position` must be one of ",
-    fixed = TRUE
+    en = "`legend_title_position` must be one of ",
+    fr = "`legend_title_position` doit être l'un des "
   )
 
   # Plots should come out mostly the same.
@@ -411,10 +411,10 @@ test_that("highlighting is ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
-    expect_error(
+    expect_error_bilingual(
       highlight_sample(123, "test"),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing manipulations")
@@ -423,10 +423,10 @@ test_that("highlighting is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   if (!require("gghighlight", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       highlight_sample(biodiesel_plot, "test"),
-      "requires gghighlight package installation",
-      fixed = TRUE
+      en = "requires gghighlight package installation",
+      fr = "nécessite l'installation du paquet gghighlight"
     )
 
     testthat::skip("gghighlight not available for testing manipulations")
@@ -434,16 +434,16 @@ test_that("highlighting is ok", {
 
   # test arg checks.
 
-  expect_error(
+  expect_error_bilingual(
     highlight_sample("abc", "sample"),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
 
-  expect_error(
+  expect_error_bilingual(
     highlight_sample(biodiesel_plot, "sample"),
-    "All provided `sample_ids` must be in the `ftir_spectra_plot`.",
-    fixed = TRUE
+    en = "All provided `sample_ids` must be in the `ftir_spectra_plot`.",
+    fr = "Tous les `sample_ids` fournis doivent être dans le `ftir_spectra_plot`."
   )
 
   # Plots should come out mostly the same.
@@ -470,10 +470,10 @@ test_that("add_band is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       add_band(123),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
     testthat::skip("ggplot2 not available for testing manipulations")
   }
@@ -481,49 +481,49 @@ test_that("add_band is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
-  expect_error(
+  expect_error_bilingual(
     add_band("abc"),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni a string"
   )
-  expect_error(
+  expect_error_bilingual(
     add_band(biodiesel_plot, wavenumber_range = 100),
-    "`wavenumber_range` must be a numeric vector of length two.",
-    fixed = TRUE
+    en = "`wavenumber_range` must be a numeric vector of length two.",
+    fr = "`wavenumber_range` doit être un vecteur numérique de longueur deux."
   )
-  expect_error(
+  expect_error_bilingual(
     add_band(biodiesel_plot, wavenumber_range = c("a", "b")),
-    "`wavenumber_range` must be a numeric vector of length two.",
-    fixed = TRUE
+    en = "`wavenumber_range` must be a numeric vector of length two.",
+    fr = "`wavenumber_range` doit être un vecteur numérique de longueur deux."
   )
-  expect_error(
+  expect_error_bilingual(
     add_band(biodiesel_plot, wavenumber_range = c(200, 2000)),
-    "`wavenumber_range` must be values between 701 and 3999 cm^-1.",
-    fixed = TRUE
+    en = "`wavenumber_range` must be values between 701 and 3999 cm^-1.",
+    fr = "`wavenumber_range` doit être des valeurs comprises entre 701 et 3999 cm^-1."
   )
 
-  expect_error(
+  expect_error_bilingual(
     add_band(biodiesel_plot, wavenumber_range = c(1000, 2000), text = mtcars),
-    "`text` must be character or numeric, you provided a data frame.",
-    fixed = TRUE
+    en = "`text` must be character or numeric, you provided a data frame.",
+    fr = "`text` doit être de type caractère ou numérique, vous avez fourni a data frame."
   )
-  expect_error(
+  expect_error_bilingual(
     add_band(
       biodiesel_plot,
       wavenumber_range = c(1000, 2000),
       text = biodiesel_plot
     ),
-    "`text` must be character or numeric, you provided a <gg",
-    fixed = TRUE
+    en = "`text` must be character or numeric, you provided a <gg",
+    fr = "`text` doit être de type caractère ou numérique, vous avez fourni a <gg"
   )
-  expect_error(
+  expect_error_bilingual(
     add_band(
       biodiesel_plot,
       wavenumber_range = c(1000, 2000),
       text = c("This is", "too long")
     ),
-    "`text` should be character or numeric, but not a vector of length greater than one.",
-    fixed = TRUE
+    en = "`text` should be character or numeric, but not a vector of length greater than one.",
+    fr = "`text` doit être de type caractère ou numérique, mais pas un vecteur de longueur supérieure à un."
   )
   # Plots should come out mostly the same.
   banded_plot <- add_band(biodiesel_plot, c(1000, 2000))

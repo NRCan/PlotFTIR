@@ -1,10 +1,10 @@
 test_that("Plots are generated", {
   # Test for ggplot2 else skip
   if (!require("ggplot2", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       plot_ftir(biodiesel),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing plot production")
@@ -53,88 +53,90 @@ test_that("data is checked correctly", {
     "transmittance" = runif(length(LETTERS)) * 100
   )
 
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(ftir = "abc"),
-    "`ftir` must be a data frame. You provided a string."
+    en = "`ftir` must be a data frame. You provided a string.",
+    fr = "`ftir` doit être un data.frame. Vous avez fourni a string."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(ftir = data.frame("a" = 1:10)),
-    "It must contain a column named",
-    fixed = TRUE
+    en = "It must contain a column named",
+    fr = "Il doit contenir une colonne nommée"
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    "Error in `PlotFTIR::plot_ftir()`. `ftir` must have one of `absorbance` or `transmittance` columns.",
-    fixed = TRUE
+    en = "`ftir` must have one of `absorbance` or `transmittance` columns.",
+    fr = "`ftir` doit avoir une des colonnes `absorbance` ou `transmittance`."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(ftir = full_data_df),
-    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fixed = TRUE
+    en = "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
+    fr = "`ftir` ne peut pas contenir les deux colonnes `absorbance` et `transmittance`."
   )
 
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(ftir = "abc"),
-    "`ftir` must be a data frame. You provided a string."
+    en = "`ftir` must be a data frame. You provided a string.",
+    fr = "`ftir` doit être un data.frame. Vous avez fourni a string."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(ftir = data.frame("a" = 1:10)),
-    "`ftir` is missing a column",
-    fixed = TRUE
+    en = "`ftir` is missing a column",
+    fr = "`ftir` ne contient pas une colonne"
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    "`ftir` must have one of `absorbance` or `transmittance` columns.",
-    fixed = TRUE
+    en = "`ftir` must have one of `absorbance` or `transmittance` columns.",
+    fr = "`ftir` doit avoir une des colonnes `absorbance` ou `transmittance`."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df),
-    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fixed = TRUE
+    en = "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
+    fr = "`ftir` ne peut pas contenir les deux colonnes `absorbance` et `transmittance`."
   )
 
   colnames(full_data_df)[4] <- "logabs"
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(ftir = full_data_df),
-    "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
-    fixed = TRUE
+    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
+    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance` ou `transmittance`."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(biodiesel, 1234),
-    "`plot_title` must be a character string or vector of strings with length not more than two.",
-    fixed = TRUE
+    en = "`plot_title` must be a character string or vector of strings with length not more than two.",
+    fr = "`plot_title` doit être une chaîne de caractères ou un vecteur de chaînes de caractères avec une longueur maximale de deux."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(biodiesel, c("My Plot", "My Subplot", "My Extrasubplot")),
-    "`plot_title` must be a character string or vector of strings with length not more than two.",
-    fixed = TRUE
+    en = "`plot_title` must be a character string or vector of strings with length not more than two.",
+    fr = "`plot_title` doit être une chaîne de caractères ou un vecteur de chaînes de caractères avec une longueur maximale de deux."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir(biodiesel, legend_title = 1234),
-    "`legend_title` must be a single character string.",
-    fixed = TRUE
+    en = "`legend_title` must be a single character string.",
+    fr = "`legend_title` doit être une unique chaîne de caractères."
   )
 
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df),
-    "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
-    fixed = TRUE
+    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
+    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance` ou `transmittance`."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(biodiesel, stack_offset = "abc"),
-    "`stack_offset` must be a single numeric value.",
-    fixed = TRUE
+    en = "`stack_offset` must be a single numeric value.",
+    fr = "`stack_offset` doit être une valeur numérique unique."
   )
-  expect_error(
+  expect_error_bilingual(
     plot_ftir_stacked(biodiesel, stack_offset = -10),
-    "`stack_offset` must be between 0 and 200.",
-    fixed = TRUE
+    en = "`stack_offset` must be between 0 and 200.",
+    fr = "`stack_offset` doit être compris entre 0 et 200."
   )
 
-  expect_warning(
+  expect_warning_bilingual(
     plot_ftir(rbind(biodiesel, sample_spectra)),
-    "The color palette in use works best with 12 or fewer unique samples in",
-    fixed = TRUE
+    en = "The color palette in use works best with 12 or fewer unique samples in",
+    fr = "La palette de couleurs utilisée fonctionne mieux avec 12 échantillons uniques ou moins dans"
   )
 })
 

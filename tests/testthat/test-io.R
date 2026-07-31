@@ -35,10 +35,10 @@ test_that("reading csv works", {
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
-  expect_message(
+  expect_message_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "has deduced that input data",
-    fixed = TRUE
+    en = "has deduced that input data",
+    fr = "a déduit que la colonne de données d'entrée"
   )
   suppressMessages(result <- read_ftir(path = tmppath, file = tmpfile))
 
@@ -73,10 +73,10 @@ test_that("reading csv works", {
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
-  expect_message(
+  expect_message_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "has deduced that input data",
-    fixed = TRUE
+    en = "has deduced that input data",
+    fr = "a déduit que la colonne de données d'entrée"
   )
   suppressMessages(result <- read_ftir(path = tmppath, file = tmpfile))
 
@@ -95,10 +95,10 @@ test_that("reading csv works", {
   write.csv(data, file = temp_file, row.names = FALSE)
 
   # Read the data using read_ftir
-  expect_message(
+  expect_message_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "has deduced that input data",
-    fixed = TRUE
+    en = "has deduced that input data",
+    fr = "a déduit que la colonne de données d'entrée"
   )
   suppressMessages(
     result <- read_ftir(path = tmppath, file = tmpfile, sample_name = "test")
@@ -117,77 +117,77 @@ test_that("reading csv works", {
     sample_id = "test"
   )
   write.csv(data, file = temp_file, row.names = FALSE)
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "Input file has too many columns",
-    fixed = TRUE
+    en = "Input file has too many columns",
+    fr = "Le fichier d'entrée contient trop de colonnes"
   )
 
   data <- data.frame("row" = 1000:1500, "col" = 2000:2500)
   write.csv(data, file = temp_file, row.names = FALSE)
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "Could not confidently determine which column contains wavenumber",
-    fixed = TRUE
+    en = "Could not confidently determine which column contains wavenumber",
+    fr = "Impossible de déterminer avec certitude quelle colonne contient les données de nombre d'ondes"
   )
 })
 
 test_that("read_ftir handles invalid arguments", {
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = NULL, file = "file.csv"),
-    regexp = "must be a single string value",
-    fixed = TRUE
+    en = "must be a single string value",
+    fr = "doit être une valeur de chaîne unique"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = "path", file = NULL),
-    regexp = "must be a single string value",
-    fixed = TRUE
+    en = "must be a single string value",
+    fr = "doit être une valeur de chaîne unique"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = c("path1", "path2"), file = "file.csv"),
-    regexp = "must be a single string value",
-    fixed = TRUE
+    en = "must be a single string value",
+    fr = "doit être une valeur de chaîne unique"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = "path", file = c("file1.csv", "file2.csv")),
-    regexp = "must be a single string value",
-    fixed = TRUE
+    en = "must be a single string value",
+    fr = "doit être une valeur de chaîne unique"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = ".", file = "file.csv", sample_name = c("name1", "name2")),
-    regexp = "must be a single string value or single",
-    fixed = TRUE
+    en = "must be a single string value or single",
+    fr = "doit être une valeur de chaîne unique ou un seul"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = ".", file = "file.csv", sample_name = 123),
-    regexp = "must be a string value",
-    fixed = TRUE
+    en = "must be a string value",
+    fr = "doit être une valeur de chaîne"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = ".", file = "nonexistent_file.csv"),
-    regexp = 'nonexistent_file.csv" does not appear to exist',
-    fixed = TRUE
+    en = 'nonexistent_file.csv" does not appear to exist',
+    fr = 'nonexistent_file.csv" ne semble pas exister'
   )
   tempfile <- withr::local_tempfile(fileext = ".docx")
   file.create(tempfile)
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = dirname(tempfile), file = basename(tempfile)),
-    regexp = "could not be processed",
-    fixed = TRUE
+    en = "could not be processed",
+    fr = "n'a pas pu être traité"
   )
   tempfile <- withr::local_tempfile(fileext = ".a2r")
   file.create(tempfile)
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = dirname(tempfile), file = basename(tempfile)),
-    regexp = "PlotFTIR is not (yet) able to read .a2r files",
-    fixed = TRUE
+    en = "PlotFTIR is not (yet) able to read .a2r files",
+    fr = "PlotFTIR ne peut pas encore lire les fichiers .a2r"
   )
   tempfile <- withr::local_tempfile(fileext = ".spc")
   file.create(tempfile)
-  expect_error(
+  expect_error_bilingual(
     read_ftir(path = dirname(tempfile), file = basename(tempfile)),
-    regexp = "PlotFTIR is not (yet) able to read .spc files",
-    fixed = TRUE
+    en = "PlotFTIR is not (yet) able to read .spc files",
+    fr = "PlotFTIR ne peut pas encore lire les fichiers .spc"
   )
 })
 
@@ -216,10 +216,10 @@ test_that("reading asp works", {
   )
 
   # Read the data using read_ftir
-  expect_message(
+  expect_message_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "has deduced that input data",
-    fixed = TRUE
+    en = "has deduced that input data",
+    fr = "a déduit que les données d'entrée"
   )
   suppressMessages(result <- read_ftir(path = tmppath, file = tmpfile))
 
@@ -250,10 +250,10 @@ test_that("reading asp works", {
   )
 
   # Read the data using read_ftir
-  expect_message(
+  expect_message_bilingual(
     read_ftir(path = tmppath, file = tmpfile),
-    regexp = "has deduced that input data",
-    fixed = TRUE
+    en = "has deduced that input data",
+    fr = "a déduit que les données d'entrée"
   )
   suppressMessages(
     result <- read_ftir(path = tmppath, file = tmpfile, sample_name = "test")
@@ -269,10 +269,10 @@ test_that("reading asp works", {
 
 test_that("reading .jdx works", {
   if (!requireNamespace("readJDX", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       read_ftir_jdx(data.frame("testdata" = LETTERS)),
-      regexp = "requires readJDX package installation for this function.",
-      fixed = TRUE
+      en = "requires readJDX package installation for this function.",
+      fr = "nécessite l'installation du paquet readJDX pour cette fonction."
     )
     testthat::skip("readJDX not available for testing interface")
   }
@@ -289,12 +289,14 @@ test_that("reading .jdx works", {
   expect_equal(names(jdx_jdx)[4], unique(jdx_ftir$sample_id))
   expect_equal(nrow(jdx_ftir), nrow(jdx_jdx[[4]]))
   expect_true('transmittance' %in% colnames(jdx_ftir))
-  expect_message(
+  expect_message_bilingual(
     read_ftir(
       path = system.file("extdata", "SBO.jdx", package = "readJDX"),
       sample_name = 'test_sample'
     ),
-    "does not match that contained in the .jdx file"
+    en = "does not match that contained in the .jdx file",
+    fr = "ne correspond pas à celui contenu dans le fichier .jdx",
+    fixed = FALSE
   )
 
   #More IR Data
@@ -304,20 +306,24 @@ test_that("reading .jdx works", {
   expect_equal(unique(jdx_ir2$sample_id), "Demo IR Spectrum")
 
   # NMR Data
-  expect_error(
+  expect_error_bilingual(
     read_ftir(
       path = system.file("extdata", "PCRF.jdx", package = "readJDX")
     ),
-    "Could not confirm `infrared` data file."
+    en = "Could not confirm `infrared` data file.",
+    fr = "Impossible de confirmer le fichier de données",
+    fixed = FALSE
   )
   # 2D NMR Data
-  expect_error(
+  expect_error_bilingual(
     suppressWarnings(
       read_ftir(
         path = system.file("extdata", "isasspc1.dx", package = "readJDX")
-      ),
-      "Could not confirm `infrared` data file."
-    )
+      )
+    ),
+    en = "Could not confirm `infrared` data file.",
+    fr = "Impossible de confirmer le fichier de données",
+    fixed = FALSE
   )
 })
 
@@ -366,21 +372,21 @@ test_that("Reading multiple files works", {
   expect_equal(round(result$absorbance, 4), rep(round(data$absorbance, 4), 2))
 
   # Checking for issues
-  expect_error(
+  expect_error_bilingual(
     suppressWarnings(read_ftir_directory(
       path = tmppath,
       files = c("fake.csv", "fake2.csv")
     )),
-    regexp = "No spectral data was read from files",
-    fixed = TRUE
+    en = "No spectral data was read from files",
+    fr = "Aucune donnée spectrale n'a été lue à partir des fichiers"
   )
-  expect_warning(
+  expect_warning_bilingual(
     read_ftir_directory(
       path = tmppath,
       files = c(tmpfile1, tmpfile2, "fake.csv")
     ),
-    regexp = 'fake.csv" does not appear to exist',
-    fixed = TRUE
+    en = 'fake.csv" does not appear to exist',
+    fr = 'fake.csv" ne semble pas exister'
   )
   suppressWarnings(
     result2 <- read_ftir_directory(
@@ -391,31 +397,31 @@ test_that("Reading multiple files works", {
 
   expect_equal(result, result2)
 
-  expect_error(
+  expect_error_bilingual(
     read_ftir_directory(
       path = tmppath,
       files = c(tmpfile1, tmpfile2),
       sample_names = c("One", "Two", "Extra")
     ),
-    regexp = "You provided 3 `sample_names` and 2 `files`",
-    fixed = TRUE
+    en = "You provided 3 `sample_names` and 2 `files`",
+    fr = "Vous avez fourni 3 `sample_names` et 2 `files`"
   )
 
-  expect_error(
+  expect_error_bilingual(
     read_ftir_directory(
       path = c(tmppath, tmppath),
       files = c(tmpfile1, tmpfile2)
     ),
-    regexp = "must be a single string value",
-    fixed = TRUE
+    en = "must be a single string value",
+    fr = "doit être une valeur de chaîne unique"
   )
-  expect_error(
+  expect_error_bilingual(
     read_ftir_directory(
       path = tmppath,
       files = c(tmpfile1, as.data.frame(tmpfile2))
     ),
-    regexp = "must be a vector of string values",
-    fixed = TRUE
+    en = "must be a vector of string values",
+    fr = "doit être un vecteur de valeurs de chaîne"
   )
 })
 
@@ -424,10 +430,10 @@ test_that("plot saves", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       save_plot(123),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
     testthat::skip("ggplot2 not available for testing file saving")
   }
@@ -439,10 +445,10 @@ test_that("plot saves", {
   expect_true(file.exists(temp_file))
 
   # test arg checks.
-  expect_error(
+  expect_error_bilingual(
     save_plot("abc", filename = temp_file),
-    "`ftir_spectra_plot` must be a ggplot object. You provided a string",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided a string",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni"
   )
 })
 
@@ -453,50 +459,52 @@ test_that("interface to ir is ok", {
   ))
 
   if (!requireNamespace("ir", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       ir_to_plotftir(data.frame("testdata" = LETTERS)),
-      regexp = "requires ir package installation for this function.",
-      fixed = TRUE
+      en = "requires ir package installation for this function.",
+      fr = "nécessite l'installation du paquet ir pour cette fonction."
     )
-    expect_error(
+    expect_error_bilingual(
       ir_to_df(data.frame("testdata" = LETTERS)),
-      regexp = "requires ir package installation for this function.",
-      fixed = TRUE
+      en = "requires ir package installation for this function.",
+      fr = "nécessite l'installation du paquet ir pour cette fonction."
     )
-    expect_error(
+    expect_error_bilingual(
       plotftir_to_ir(biodiesel),
-      regexp = "requires ir package installation for this function.",
-      fixed = TRUE
+      en = "requires ir package installation for this function.",
+      fr = "nécessite l'installation du paquet ir pour cette fonction."
     )
     testthat::skip("ir not available for testing interface")
   }
 
   irdata <- ir::ir_sample_data
   # Param checks
-  expect_error(
+  expect_error_bilingual(
     ir_to_plotftir(biodiesel),
-    regexp = "must be of class <ir>, produced by the ir package.",
-    fixed = TRUE
+    en = "must be of class <ir>, produced by the ir package.",
+    fr = "doit être de la classe <ir>, produit par le paquet ir."
   )
-  expect_error(
+  expect_error_bilingual(
     ir_to_df(biodiesel),
-    regexp = "must be of class <ir>, produced by the ir package.",
-    fixed = TRUE
+    en = "must be of class <ir>, produced by the ir package.",
+    fr = "doit être de la classe <ir>, produit par le paquet ir."
   )
-  expect_error(
+  expect_error_bilingual(
     ir_to_plotftir(irdata, what = c(1, "two")),
-    regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`",
-    fixed = TRUE
+    en = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`",
+    fr = "doit contenir les numéros de lignes des spectres d'échantillon à extraire, ou les noms exacts correspondant à ceux dans `ir_data$id_sample`"
   )
-  expect_error(
+  expect_error_bilingual(
     ir_to_plotftir(irdata, what = c(1, 1e6)),
-    regexp = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`",
-    fixed = TRUE
+    en = "must contain the row numbers of sample spectra to extract, or exact names matching what is in `ir_data$id_sample`",
+    fr = "doit contenir les numéros de lignes des spectres d'échantillon à extraire, ou les noms exacts correspondant à ceux dans `ir_data$id_sample`"
   )
 
-  expect_error(
+  expect_error_bilingual(
     plotftir_to_ir(biodiesel, metadata = "bob"),
-    regexp = "must be either `NA` or a <data.frame>"
+    en = "must be either `NA` or a <data.frame>",
+    fr = "doit être soit `NA` soit un <data.frame>",
+    fixed = FALSE
   )
 
   allir <- ir_to_plotftir(irdata)
@@ -547,10 +555,10 @@ test_that("interface to ir is ok for PlotFTIR data (#35)", {
 
   adjusted_2$id_sample <- NULL
 
-  expect_warning(
+  expect_warning_bilingual(
     adjusted_2 <- ir_to_plotftir(ir_data = adjusted_2, what = c(1, 2, 4)),
-    regexp = "Could not find sample spectra ids from",
-    fixed = TRUE
+    en = "Could not find sample spectra ids from",
+    fr = "Impossible de trouver les identifiants de spectres d'échantillon"
   )
 
   expect_equal(unique(adjusted_2$sample_id), as.character(c(1, 2, 4)))
@@ -563,24 +571,24 @@ test_that("Interface to ChemoSpec is ok", {
   ))
 
   if (!requireNamespace("R.utils", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       plotftir_to_chemospec(biodiesel),
-      regexp = "requires R.utils package installation for this function.",
-      fixed = TRUE
+      en = "requires R.utils package installation for this function.",
+      fr = "nécessite l'installation du paquet R.utils pour cette fonction."
     )
     testthat::skip("R.utils not available for testing interface")
   }
 
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
-    expect_error(
+    expect_error_bilingual(
       chemospec_to_plotftir(data.frame("testdata" = LETTERS)),
-      regexp = "requires ChemoSpec package installation for this function.",
-      fixed = TRUE
+      en = "requires ChemoSpec package installation for this function.",
+      fr = "nécessite l'installation du paquet ChemoSpec pour cette fonction."
     )
-    expect_error(
+    expect_error_bilingual(
       plotftir_to_chemospec(biodiesel),
-      regexp = "requires ChemoSpec package installation for this function.",
-      fixed = TRUE
+      en = "requires ChemoSpec package installation for this function.",
+      fr = "nécessite l'installation du paquet ChemoSpec pour cette fonction."
     )
     testthat::skip("ChemoSpec not available for testing interface")
   }
@@ -588,15 +596,15 @@ test_that("Interface to ChemoSpec is ok", {
   data("SrE.IR", package = "ChemoSpec", envir = environment())
   data("SrE.NMR", package = "ChemoSpec", envir = environment())
 
-  expect_error(
+  expect_error_bilingual(
     chemospec_to_plotftir(SrE.NMR),
-    regexp = "must be of IR spectra, this data appears to be from another instrument.",
-    fixed = TRUE
+    en = "must be of IR spectra, this data appears to be from another instrument.",
+    fr = "doit être des spectres IR, ces données semblent provenir d'un autre instrument."
   )
-  expect_error(
+  expect_error_bilingual(
     chemospec_to_plotftir(data.frame("A" = LETTERS)),
-    regexp = "must be of class <Spectra>, produced by the ChemoSpec package. You provided ",
-    fixed = TRUE
+    en = "must be of class <Spectra>, produced by the ChemoSpec package. You provided ",
+    fr = "doit être de la classe <Spectra>, produite par le package ChemoSpec. Vous avez fourni"
   )
 
   csftir <- chemospec_to_plotftir(SrE.IR)
@@ -605,40 +613,40 @@ test_that("Interface to ChemoSpec is ok", {
   expect_equal(colnames(csftir), c("wavenumber", "absorbance", "sample_id"))
   expect_equal(length(unique(csftir$sample_id)), length(SrE.IR$names))
 
-  expect_error(
+  expect_error_bilingual(
     plotftir_to_chemospec(biodiesel, group_colours = "blue"),
-    regexp = ", or a vector of the same length as group_crit",
-    fixed = TRUE
+    en = ", or a vector of the same length as group_crit",
+    fr = ", ou un vecteur de la même longueur que group_crit"
   )
-  expect_error(
+  expect_error_bilingual(
     plotftir_to_chemospec(
       biodiesel,
       group_crit = c("biodiesel", "unknown"),
       group_colours = c("orange", "green", "blue")
     ),
-    regexp = ", or a vector of the same length as group_crit",
-    fixed = TRUE
+    en = ", or a vector of the same length as group_crit",
+    fr = ", ou un vecteur de la même longueur que group_crit"
   )
-  expect_message(
+  expect_message_bilingual(
     plotftir_to_chemospec(
       biodiesel,
       group_crit = c("biodiesel", "unknown"),
       group_colours = c("red", "blue"),
       description = "This is a very long description with 57 characters in it."
     ),
-    regexp = "ChemoSpec advises that description is 40 characters or less. Your description is 57 characters",
-    fixed = TRUE
+    en = "ChemoSpec advises that description is 40 characters or less. Your description is 57 characters",
+    fr = "ChemoSpec conseille que description fasse 40 caractères ou moins. Votre description fait 57 caractères"
   )
 
-  expect_message(
+  expect_message_bilingual(
     plotftir_to_chemospec(biodiesel),
-    regexp = " to ensure enough colours available for groups.",
-    fixed = TRUE
+    en = " to ensure enough colours available for groups.",
+    fr = " pour garantir suffisamment de couleurs disponibles pour les groupes."
   )
-  expect_error(
+  expect_error_bilingual(
     plotftir_to_chemospec(rbind(biodiesel, sample_spectra)),
-    regexp = " has to make 12 or less groups for ChemoSpec to be happy",
-    fixed = TRUE
+    en = " has to make 12 or less groups for ChemoSpec to be happy",
+    fr = " doit créer 12 groupes ou moins pour que ChemoSpec soit satisfait"
   )
 
   csdata <- plotftir_to_chemospec(

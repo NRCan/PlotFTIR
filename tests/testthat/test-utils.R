@@ -4,10 +4,10 @@ test_that("Plot SampleID extraction is ok", {
     # Of course, we can't generate a plot to feed to the manipulations.
     # This means that we can pass any value, the `ggplot` presence is tested first.
 
-    expect_error(
+    expect_error_bilingual(
       get_plot_sample_ids(123),
-      "requires ggplot2 package installation",
-      fixed = TRUE
+      en = "requires ggplot2 package installation",
+      fr = "nécessite l'installation du paquet ggplot2"
     )
 
     testthat::skip("ggplot2 not available for testing plot production")
@@ -17,10 +17,10 @@ test_that("Plot SampleID extraction is ok", {
 
   expect_equal(get_plot_sample_ids(p), as.factor(unique(biodiesel$sample_id)))
 
-  expect_error(
+  expect_error_bilingual(
     get_plot_sample_ids(biodiesel),
-    "`ftir_spectra_plot` must be a ggplot object. You provided ",
-    fixed = TRUE
+    en = "`ftir_spectra_plot` must be a ggplot object. You provided ",
+    fr = "`ftir_spectra_plot` doit être un objet ggplot. Vous avez fourni "
   )
 })
 
@@ -41,10 +41,10 @@ test_that("Checking FTIR data works", {
 
   bad_ftir <- biodiesel
   attr(bad_ftir, "intensity") <- "test"
-  expect_error(
+  expect_error_bilingual(
     check_ftir_data(bad_ftir),
-    "has unexpected attributes.",
-    fixed = TRUE
+    en = "has unexpected attributes.",
+    fr = "a des attributs inattendus."
   )
 
   no_attr_ftir <- biodiesel
