@@ -30,10 +30,14 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     .pkg_abort(
       list(
-        en = c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-          i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"),
-        fr = c("{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
-          i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}")
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+          i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
+          i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
+        )
       ),
       call = rlang::caller_env(),
     )
@@ -41,8 +45,12 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       )
     )
   }
@@ -109,16 +117,24 @@ check_ftir_data <- function(ftir) {
   if (!(is.data.frame(ftir))) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} doit être un data.frame. Vous avez fourni {.obj_type_friendly ftir}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit être un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
+        )
       )
     )
   }
   if (!("sample_id" %in% colnames(ftir))) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var sample_id}."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var sample_id}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var sample_id}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var sample_id}."
+        )
       ),
       call = rlang::caller_env(),
     )
@@ -126,8 +142,12 @@ check_ftir_data <- function(ftir) {
   if (!("wavenumber" %in% colnames(ftir))) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var wavenumber}."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var wavenumber}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var wavenumber}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var wavenumber}."
+        )
       ),
       call = rlang::caller_env(),
     )
@@ -135,16 +155,24 @@ check_ftir_data <- function(ftir) {
   if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} doit avoir une des colonnes {.var absorbance} ou {.var transmittance}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit avoir une des colonnes {.var absorbance} ou {.var transmittance}."
+        )
       )
     )
   }
   if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir les deux colonnes {.var absorbance} et {.var transmittance}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir les deux colonnes {.var absorbance} et {.var transmittance}."
+        )
       )
     )
   }
@@ -156,8 +184,12 @@ check_ftir_data <- function(ftir) {
   ) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance} ou {.var transmittance}.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance} ou {.var transmittance}."
+        )
       )
     )
   }
@@ -173,8 +205,12 @@ check_ftir_data <- function(ftir) {
   ) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn {fn}}. {.arg ftir} has unexpected attributes."),
-        fr = cli::format_inline("Erreur dans {.fn {fn}}. {.arg ftir} a des attributs inattendus.")
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} has unexpected attributes."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} a des attributs inattendus."
+        )
       )
     )
   }
@@ -218,11 +254,12 @@ print.PlotFTIR_data <- function(x, ...) {
   wn <- sort(unique(x$wavenumber))
   res <- diff(wn)
   samples <- unique(x$sample_id)
-  
+
   lang <- .get_language()
-  
+
   if (lang == "fr") {
     cat("Données PlotFTIR:\n")
+    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
     if (length(res) == 0) {
       cat("  Résolution: aucune\n")
     } else if (length(unique(res)) == 1) {
@@ -233,10 +270,10 @@ print.PlotFTIR_data <- function(x, ...) {
     cat("  Type d'intensité:", attr(x, "intensity"), "\n")
     cat("  Nombre d'échantillons:", length(samples), "\n")
     if (length(samples) <= 5) {
-      cat("  ID d'échantillon:", paste(samples, collapse = ", "), "\n")
+      cat("  ID des échantillon:", paste(samples, collapse = ", "), "\n")
     } else {
       cat(
-        "  ID d'échantillon:",
+        "  ID des échantillons:",
         paste(utils::head(samples, 5), collapse = ", "),
         "...\n"
       )
@@ -244,6 +281,7 @@ print.PlotFTIR_data <- function(x, ...) {
   } else {
     # English by default
     cat("PlotFTIR data:\n")
+    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
     if (length(res) == 0) {
       cat("  Resolution: none\n")
     } else if (length(unique(res)) == 1) {

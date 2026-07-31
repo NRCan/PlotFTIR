@@ -60,11 +60,15 @@ average_spectra <- function(
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
-          x = "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          )
         )
       ),
       call = rlang::caller_env()
@@ -276,11 +280,15 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent être dans les données {.arg ftir}.",
-          x = "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas présents: {.val {mismatch}}."
+          )
         )
       ),
       call = rlang::caller_env()
@@ -613,7 +621,16 @@ recalculate_baseline <- function(
               wavenumber_range >
                 max(ftir[ftir$sample_id == sample_ids[i], ]$wavenumber)
           ) {
-            wn <- ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))]
+            wn <- ftir[ftir$sample_id == sample_ids[i], ]$wavenumber[which(
+              abs(
+                wavenumber_range -
+                  ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
+              ) ==
+                min(abs(
+                  wavenumber_range -
+                    ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
+                ))
+            )]
             .pkg_warn(
               list(
                 en = c(
@@ -631,6 +648,9 @@ recalculate_baseline <- function(
               ),
               call = rlang::caller_env()
             )
+            adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(
+              ftir[ftir$sample_id == sample_ids[i], ]$wavenumber == wn
+            )]
           } else if (
             min(abs(
               wavenumber_range -
@@ -638,34 +658,46 @@ recalculate_baseline <- function(
             )) >
               10
           ) {
+            adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(
+              abs(
+                wavenumber_range -
+                  ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
+              ) ==
+                min(abs(
+                  wavenumber_range -
+                    ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
+                ))
+            )]
             .pkg_warn(
               list(
                 en = c(
                   "Warning in {.fn PlotFTIR::recalculate_baseline}. No wavenumber values in spectra within 10 cm-1 of supplied point.",
                   cli::format_inline(
-                    "Using {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1.",
+                    "Using {round(adj, 0)} cm-1 instead of provided {round(wavenumber_range, 0)} cm-1."
                   )
                 ),
                 fr = c(
                   "Avertissement dans {.fn PlotFTIR::recalculate_baseline}. Aucune valeur de fréquence dans le spectre à 10 cm-1 du point fourni.",
                   cli::format_inline(
-                    "Utilisation de {round(ftir[ftir$sample_id == sample_ids[i],]$wavenumber[which(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber) == min(abs(wavenumber_range - ftir[ftir$sample_id == sample_ids[i],]$wavenumber)))], 0)} cm-1 au lieu de {round(wavenumber_range, 0)} cm-1 fourni."
+                    "Utilisation de {round(adj, 0)} cm-1 au lieu de {round(wavenumber_range, 0)} cm-1 fourni."
                   )
                 )
               ),
               call = rlang::caller_env()
             )
-          }
-          adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(
-            abs(
-              wavenumber_range -
-                ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
-            ) ==
-              min(abs(
+          } else {
+            adj <- ftir[ftir$sample_id == sample_ids[i], ]$absorbance[which(
+              abs(
                 wavenumber_range -
                   ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
-              ))
-          )]
+              ) ==
+                min(abs(
+                  wavenumber_range -
+                    ftir[ftir$sample_id == sample_ids[i], ]$wavenumber
+                ))
+            )]
+          }
+
           ftir[ftir$sample_id == sample_ids[i], ]$absorbance <- ftir[
             ftir$sample_id == sample_ids[i],
           ]$absorbance -

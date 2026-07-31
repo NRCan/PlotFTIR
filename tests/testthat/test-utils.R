@@ -52,13 +52,28 @@ test_that("Checking FTIR data works", {
   expect_equal(attr(check_ftir_data(no_attr_ftir), "intensity"), "absorbance")
 })
 
-test_that("Print PlotFTIR data works", {
-  # Capture the output
-  output <- capture.output(print(check_ftir_data(biodiesel)))
-  expect_true(any(grepl("PlotFTIR data:", output)))
-  expect_true(any(grepl("Spectral range:", output)))
-  expect_true(any(grepl("Resolution:", output)))
-  expect_true(any(grepl("Intensity type:", output)))
-  expect_true(any(grepl("Number of samples:", output)))
-  expect_true(any(grepl("Sample IDs:", output)))
+test_that("Print PlotFTIR data works in english", {
+  withr::with_options(new = c(PlotFTIR.lang = 'en'), {
+    output <- capture.output(print(check_ftir_data(biodiesel)))
+
+    expect_true(any(grepl("PlotFTIR data:", output)))
+    expect_true(any(grepl("Spectral range", output)))
+    expect_true(any(grepl("Resolution", output)))
+    expect_true(any(grepl("Intensity type", output)))
+    expect_true(any(grepl("Number of samples", output)))
+    expect_true(any(grepl("Sample IDs", output)))
+  })
+})
+
+test_that("Print PlotFTIR data works in french", {
+  withr::with_options(new = c(PlotFTIR.lang = 'fr'), {
+    output <- capture.output(print(check_ftir_data(biodiesel)))
+
+    expect_true(any(grepl("Donn", output)))
+    expect_true(any(grepl("Plage spectrale", output)))
+    expect_true(any(grepl("solution", output)))
+    expect_true(any(grepl("Type d'intensit", output)))
+    expect_true(any(grepl("Nombre d'", output)))
+    expect_true(any(grepl("ID des ", output)))
+  })
 })

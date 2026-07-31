@@ -90,16 +90,23 @@ plot_ftir_core <- function(
     )
   }
   if (length(unique(ftir$sample_id)) > 12) {
-    .pkg_warn(list(
-      en = c(
-        "Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
-        i = cli::format_inline("You have a total of {length(unique(ftir$sample_id))} unique sample IDs.")
+    .pkg_warn(
+      list(
+        en = c(
+          "Warning in {.fn PlotFTIR:::plot_ftir_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
+          i = cli::format_inline(
+            "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+          )
+        ),
+        fr = c(
+          "Avertissement dans {.fn PlotFTIR:::plot_ftir_core}. La palette de couleurs utilisée fonctionne mieux avec 12 échantillons uniques ou moins dans {.arg ftir}.",
+          i = cli::format_inline(
+            "Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'échantillon uniques."
+          )
+        )
       ),
-      fr = c(
-        "Avertissement dans {.fn PlotFTIR:::plot_ftir_core}. La palette de couleurs utilisée fonctionne mieux avec 12 échantillons uniques ou moins dans {.arg ftir}.",
-        i = cli::format_inline("Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'échantillon uniques.")
-      )
-    ), call = rlang::caller_env())
+      call = rlang::caller_env()
+    )
   }
 
   # if language is provided, check against permitted, else use default from options

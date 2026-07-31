@@ -128,15 +128,15 @@ test_that('.detect_system_language defaults to English for unsupported languages
   withr::with_envvar(new = c(LANG = 'nl_NL.UTF-8'), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
-  
+
   withr::with_envvar(new = c(LANG = 'es_ES.UTF-8'), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
-  
+
   withr::with_envvar(new = c(LANGUAGE = 'nl:en'), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
-  
+
   withr::with_envvar(new = c(LANGUAGE = 'es:fr'), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })

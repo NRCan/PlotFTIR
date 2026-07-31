@@ -145,7 +145,6 @@ test_that("Error messages are bilingual", {
 
   # Test that error messages work properly in both languages
   withr::with_envvar(new = c(LANG = 'en_US.UTF-8'), {
-
     # This should fail with English message
     expect_error(
       plot_ftir(biodiesel, lang = "bob"),
@@ -155,7 +154,6 @@ test_that("Error messages are bilingual", {
   })
 
   withr::with_envvar(new = c(LANG = 'fr_FR.UTF-8'), {
-
     # This should fail with French message (but we only check for partial match)
     expect_error(
       plot_ftir(biodiesel, lang = "bob"),

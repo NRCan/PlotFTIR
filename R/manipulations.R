@@ -55,8 +55,12 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::zoom_in_on_range}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -79,8 +83,12 @@ zoom_in_on_range <- function(ftir_spectra_plot, zoom_range = c(1000, 1900)) {
   ) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} doit être des valeurs comprises entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::zoom_in_on_range}. {.arg zoom_range} doit être des valeurs comprises entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -264,8 +272,12 @@ compress_low_energy <- function(
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -274,8 +286,12 @@ compress_low_energy <- function(
   if (!is.numeric(cutoff)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {cutoff}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a numeric value. You provided {.obj_type_friendly {cutoff}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {cutoff}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -285,8 +301,12 @@ compress_low_energy <- function(
   if (cutoff < min(data$wavenumber) || cutoff > max(data$wavenumber)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} doit être une valeur comprise entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg cutoff} doit être une valeur comprise entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -295,8 +315,12 @@ compress_low_energy <- function(
   if (!is.numeric(compression_ratio)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a numeric value. You provided {.obj_type_friendly {compression_ratio}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {compression_ratio}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} must be a numeric value. You provided {.obj_type_friendly {compression_ratio}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::compress_low_energy}. {.arg compression_ratio} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {compression_ratio}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -424,8 +448,12 @@ add_wavenumber_marker <- function(
   if (!is.numeric(wavenumber)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {wavenumber}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a numeric value. You provided {.obj_type_friendly {wavenumber}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} doit être une valeur numérique. Vous avez fourni {.obj_type_friendly {wavenumber}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -435,16 +463,24 @@ add_wavenumber_marker <- function(
     if (is.data.frame(text) || is.matrix(text)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} doit être une chaîne de caractères ou numérique, vous avez fourni {.obj_type_friendly {text}}.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} doit être une chaîne de caractères ou numérique, vous avez fourni {.obj_type_friendly {text}}."
+          )
         ),
         call = rlang::caller_env()
       )
     } else if (!is.numeric(text) && !is.character(text)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} doit être une chaîne de caractères ou numérique, vous avez fourni {.obj_type_friendly {text}}.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg text} doit être une chaîne de caractères ou numérique, vous avez fourni {.obj_type_friendly {text}}."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -464,8 +500,12 @@ add_wavenumber_marker <- function(
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -482,8 +522,12 @@ add_wavenumber_marker <- function(
   if (!is.list(line_aesthetics)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg line_aesthetics} must be a named list. You provided {.obj_type_friendly {line_aesthetics}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg line_aesthetics} doit être une liste nommée. Vous avez fourni {.obj_type_friendly {line_aesthetics}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg line_aesthetics} must be a named list. You provided {.obj_type_friendly {line_aesthetics}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg line_aesthetics} doit être une liste nommée. Vous avez fourni {.obj_type_friendly {line_aesthetics}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -492,8 +536,12 @@ add_wavenumber_marker <- function(
   if (!is.list(label_aesthetics)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg label_aesthetics} must be a named list. You provided {.obj_type_friendly {label_aesthetics}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg label_aesthetics} doit être une liste nommée. Vous avez fourni {.obj_type_friendly {label_aesthetics}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg label_aesthetics} must be a named list. You provided {.obj_type_friendly {label_aesthetics}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg label_aesthetics} doit être une liste nommée. Vous avez fourni {.obj_type_friendly {label_aesthetics}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -503,8 +551,12 @@ add_wavenumber_marker <- function(
   if (wavenumber < min(data$wavenumber) || wavenumber > max(data$wavenumber)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} doit être une valeur comprise entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} must be a value between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_wavenumber_marker}. {.arg wavenumber} doit être une valeur comprise entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -593,8 +645,12 @@ rename_plot_sample_ids <- function(ftir_spectra_plot, sample_ids) {
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::rename_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -731,8 +787,12 @@ move_plot_legend <- function(
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -742,8 +802,12 @@ move_plot_legend <- function(
     if (!(position %in% allowed_positions)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::move_plot_legend}. {.arg position} must be one of {.or {.val {allowed_positions}}}, or NULL."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg position} doit être l'un des {.or {.val {allowed_positions}}}, ou NULL.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::move_plot_legend}. {.arg position} must be one of {.or {.val {allowed_positions}}}, or NULL."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg position} doit être l'un des {.or {.val {allowed_positions}}}, ou NULL."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -754,8 +818,12 @@ move_plot_legend <- function(
     if (!(justification %in% allowed_justifications)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::move_plot_legend}. Error in {.fn PlotFTIR::move_plot_legend}. {.arg justification} must be one of {.or {.val {allowed_justifications}}}, or NULL."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::move_plot_legend}. Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg justification} doit être l'un des {.or {.val {allowed_justifications}}}, ou NULL.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::move_plot_legend}. Error in {.fn PlotFTIR::move_plot_legend}. {.arg justification} must be one of {.or {.val {allowed_justifications}}}, or NULL."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::move_plot_legend}. Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg justification} doit être l'un des {.or {.val {allowed_justifications}}}, ou NULL."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -766,8 +834,12 @@ move_plot_legend <- function(
     if (!(direction %in% allowed_directions)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::move_plot_legend}. {.arg direction} must be one of {.or {.val {allowed_directions}}}, or NULL."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg direction} doit être l'un des {.or {.val {allowed_directions}}}, ou NULL.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::move_plot_legend}. {.arg direction} must be one of {.or {.val {allowed_directions}}}, or NULL."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg direction} doit être l'un des {.or {.val {allowed_directions}}}, ou NULL."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -778,8 +850,12 @@ move_plot_legend <- function(
     if (!(legend_title_position %in% allowed_title_pos)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} must be one of {.or {.val {allowed_title_pos}}}, or NULL."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} doit être l'un des {.or {.val {allowed_title_pos}}}, ou NULL.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} must be one of {.or {.val {allowed_title_pos}}}, or NULL."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::move_plot_legend}. {.arg legend_title_position} doit être l'un des {.or {.val {allowed_title_pos}}}, ou NULL."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -867,8 +943,12 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -879,8 +959,12 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
   if (!(all(sample_ids %in% preexisting_sampleids))) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::highlight_sample}. All provided {.arg sample_ids} must be in the {.arg ftir_spectra_plot}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::highlight_sample}. Tous les {.arg sample_ids} fournis doivent être dans le {.arg ftir_spectra_plot}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::highlight_sample}. All provided {.arg sample_ids} must be in the {.arg ftir_spectra_plot}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::highlight_sample}. Tous les {.arg sample_ids} fournis doivent être dans le {.arg ftir_spectra_plot}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -965,8 +1049,12 @@ add_band <- function(
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -976,16 +1064,24 @@ add_band <- function(
     if (is.data.frame(text) || is.matrix(text)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_band}. {.arg text} doit être de type caractère ou numérique, vous avez fourni {.obj_type_friendly {text}}.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::add_band}. {.arg text} doit être de type caractère ou numérique, vous avez fourni {.obj_type_friendly {text}}."
+          )
         ),
         call = rlang::caller_env()
       )
     } else if (!is.numeric(text) && !is.character(text)) {
       .pkg_abort(
         list(
-          en = cli::format_inline("Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."),
-          fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_band}. {.arg text} doit être de type caractère ou numérique, vous avez fourni {.obj_type_friendly {text}}.")
+          en = cli::format_inline(
+            "Error in {.fn PlotFTIR::add_band}. {.arg text} must be character or numeric, you provided {.obj_type_friendly {text}}."
+          ),
+          fr = cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::add_band}. {.arg text} doit être de type caractère ou numérique, vous avez fourni {.obj_type_friendly {text}}."
+          )
         ),
         call = rlang::caller_env()
       )
@@ -1032,8 +1128,12 @@ add_band <- function(
   ) {
     .pkg_abort(
       list(
-        en = cli::format_inline("Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."),
-        fr = cli::format_inline("Erreur dans {.fn PlotFTIR::add_band}. {.arg wavenumber_range} doit être des valeurs comprises entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1.")
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::add_band}. {.arg wavenumber_range} must be values between {round(min(data$wavenumber))} and {round(max(data$wavenumber))} cm^-1."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::add_band}. {.arg wavenumber_range} doit être des valeurs comprises entre {round(min(data$wavenumber))} et {round(max(data$wavenumber))} cm^-1."
+        )
       ),
       call = rlang::caller_env()
     )

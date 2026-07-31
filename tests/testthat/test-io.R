@@ -451,7 +451,7 @@ test_that("interface to ir is ok", {
     cli.num_colors = 1,
     cli.unicode = FALSE
   ))
-  
+
   if (!requireNamespace("ir", quietly = TRUE)) {
     expect_error(
       ir_to_plotftir(data.frame("testdata" = LETTERS)),
@@ -561,7 +561,7 @@ test_that("Interface to ChemoSpec is ok", {
     cli.num_colors = 1,
     cli.unicode = FALSE
   ))
-  
+
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     expect_error(
       plotftir_to_chemospec(biodiesel),
