@@ -18,7 +18,11 @@
       regexpr("(?i)^[a-z]{2}", lang_env, perl = TRUE)
     )
     if (length(lang_match) > 0 && nzchar(lang_match)) {
-      return(tolower(lang_match))
+      detected_lang <- tolower(lang_match)
+      # Only accept English or French; default to English for other languages
+      if (detected_lang %in% c("en", "fr")) {
+        return(detected_lang)
+      }
     }
   }
 
@@ -30,7 +34,11 @@
       regexpr("(?i)^[a-z]{2}", language_env, perl = TRUE)
     )
     if (length(lang_match) > 0 && nzchar(lang_match)) {
-      return(tolower(lang_match))
+      detected_lang <- tolower(lang_match)
+      # Only accept English or French; default to English for other languages
+      if (detected_lang %in% c("en", "fr")) {
+        return(detected_lang)
+      }
     }
   }
 
@@ -42,11 +50,15 @@
       regexpr("(?i)^[a-z]{2}", messages_locale, perl = TRUE)
     )
     if (length(lang_match) > 0 && nzchar(lang_match)) {
-      return(tolower(lang_match))
+      detected_lang <- tolower(lang_match)
+      # Only accept English or French; default to English for other languages
+      if (detected_lang %in% c("en", "fr")) {
+        return(detected_lang)
+      }
     }
   }
 
-  # Default to English if no language detected
+  # Default to English if no language detected or unsupported language
   return("en")
 }
 

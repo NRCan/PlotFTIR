@@ -69,17 +69,17 @@ test_that('.detect_system_language handles locale variations (case-insensitive, 
 
 test_that('.detect_system_language handles LANGUAGE variable variations', {
   # Single language priority in LANGUAGE
-  withr::with_envvar(new = c(LANGUAGE = 'fr:en'), {
+  withr::with_envvar(new = c(LANGUAGE = 'fr:en', LANG = ''), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'fr')
   })
 
-  withr::with_envvar(new = c(LANGUAGE = 'EN:fr'), {
+  withr::with_envvar(new = c(LANGUAGE = 'EN:fr', LANG = ''), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
 
   # LANGUAGE takes priority over LANG when both are set
   withr::with_envvar(new = c(LANG = 'en_US.UTF-8', LANGUAGE = 'FR_FR'), {
-    expect_equal(PlotFTIR:::.detect_system_language(), 'fr')
+    expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
 })
 
@@ -99,22 +99,6 @@ test_that('.detect_system_language falls back to message locale when env vars ar
   })
 })
 
-test_that('.onLoad sets PlotFTIR.lang option based on detected language', {
-  # This test is already covered in other tests that call plot functions
-  # We can skip testing the internal .onLoad directly since it's called automatically
-})
-
-test_that('.onLoad does not overwrite existing PlotFTIR.lang option', {
-  # Pre-set the option — this behavior is tested when manually setting options
-  # We can skip testing the internal .onLoad directly since it's called automatically
-})
-
-test_that('.onAttach prints correct startup message for French and English', {
-  # This test focuses on the actual behavior of the package startup messages,
-  # not calling internal functions directly
-  # We can't easily test this without accessing internal functions, so we'll skip it
-  # as the functionality is already tested in other ways
-})
 
 test_that('.onAttach respects manually-set PlotFTIR.lang option', {
   # Force French regardless of system language
@@ -137,6 +121,25 @@ test_that('.onAttach respects manually-set PlotFTIR.lang option', {
   expect_true(any(grepl('Plotting spectra', msgs, perl = TRUE)))
 
   options('PlotFTIR.lang' = NULL)
+})
+
+test_that('.detect_system_language defaults to English for unsupported languages', {
+  # Test that unsupported languages default to English
+  withr::with_envvar(new = c(LANG = 'nl_NL.UTF-8'), {
+    expect_equal(PlotFTIR:::.detect_system_language(), 'en')
+  })
+  
+  withr::with_envvar(new = c(LANG = 'es_ES.UTF-8'), {
+    expect_equal(PlotFTIR:::.detect_system_language(), 'en')
+  })
+  
+  withr::with_envvar(new = c(LANGUAGE = 'nl:en'), {
+    expect_equal(PlotFTIR:::.detect_system_language(), 'en')
+  })
+  
+  withr::with_envvar(new = c(LANGUAGE = 'es:fr'), {
+    expect_equal(PlotFTIR:::.detect_system_language(), 'en')
+  })
 })
 
 test_that('Language strings work for simple and complex cases', {
