@@ -767,6 +767,252 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
 #'   # Add a band to -OH region:
 #'   add_band(p, c(3600, 3100), "-OH Stretch")
 #' }
+#' Smooth Spectra Using Savitzky-Golay Filter
+#'
+#' @description Applies a moving-window polynomial filter to denoise spectra.
+#'   Based on the Savitzky-Golay algorithm, which fits an order m polynomial
+#'   within a sliding window of length 2*n+1 to preserve peak shapes better
+#'   than simple boxcar averaging.
+#'
+#'   Applique un filtre polynomial à fenêtre mobile pour atténuer le bruit des
+#'   spectres. Basé sur l'algorithme de Savitzky-Golay, qui ajuste un polynôme
+#'   d'ordre m dans une fenêtre glissante de longueur 2*n+1 afin de préserver
+#'   les formes d'ondes mieux qu'une moyenne simple.
+#'
+#' @inheritParams .shared-params
+#'
+#' @param window_length The length of the smoothing window (must be odd).
+#'   Default is 7. Must be at least `polyorder + 1`.
+#'
+#'   La longueur de la fenêtre de lissage (doit être impaire).
+#'   Par défaut, 7. Doit être au moins `polyorder + 1`.
+#'
+#' @param polyorder The order of the polynomial fit within the window.
+#'   Default is 2. Must be less than `window_length`.
+#'
+#'   L'ordre du polynôme à ajuster dans la fenêtre.
+#'   Par défaut, 2. Doit être inférieur à `window_length`.
+#'
+#' @return a data.frame containing the smoothed Raman spectra with the same
+#'   structure as the input (`wavenumber`, `intensity`, `sample_id`).
+#'
+#'   un data.frame contenant les spectres Raman lissés avec la même structure
+#'   que l'entrée (`wavenumber`, `intensity`, `sample_id`).
+#'
+#' @export
+#'
+#' @examples
+#' if (requireNamespace("signal", quietly = TRUE)) {
+#'   # Generate synthetic Raman data with noise
+#'   wn <- seq(100, 2000, by = 2)
+#'   signal <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+#'   noisy <- signal + rnorm(length(wn), sd = 10)
+#'
+#'   raman_noisy <- data.frame(
+#'     wavenumber = wn,
+#'     intensity = noisy,
+#'     sample_id = "noisy_sample"
+#'   )
+#'
+#'   # Smooth the spectra
+#'   raman_smooth <- smooth_spectra(raman_noisy, window_length = 11, polyorder = 2)
+#' }
+smooth_spectra <- function(
+  ftir,
+  sample_ids = NA,
+  window_length = 7,
+  polyorder = 2
+) {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg signal} package installation for this function.",
+      i = "Install {.pkg signal} with {.run install.packages('signal')}"
+    ))
+  }
+
+  ftir <- check_ftir_data(ftir)
+  
+  if (attr(ftir, "intensity") == "intensity") {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg ftir} intensity attribute not set.",
+      i = "Expected 'raman' or 'normalized raman'."
+    ))
+  }
+
+  if (length(sample_ids) <= 1) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
+      sample_ids <- unique(ftir$sample_id)
+    }
+  }
+
+  if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    cli::cli_abort(c(
+      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+    ))
+  }
+
+  if (!is.numeric(window_length) || length(window_length) != 1 || window_length < 1) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be a positive integer."
+    )
+  }
+  
+  if (window_length != round(window_length)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be an integer."
+    )
+  }
+  
+  if (window_length %% 2 == 0) {
+    cli::cli_inform(c(
+      "{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd)."
+    ))
+    window_length <- window_length + 1
+  }
+
+  if (!is.numeric(polyorder) || length(polyorder) != 1 || polyorder < 0) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be a non-negative integer."
+    )
+  }
+  
+  if (polyorder >= window_length) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be less than {.arg window_length}."
+    )
+  }
+
+  for (sid in sample_ids) {
+    idx <- ftir$sample_id == sid
+    intensity_vec <- ftir[idx, "intensity"]
+    
+    n <- floor(window_length / 2)
+    
+    smoothed <- signal::sgolayfilt(x = intensity_vec, m = polyorder, n = n)
+    
+    ftir[idx, "intensity"] <- smoothed
+  }
+
+  return(ftir)
+}
+
+#' Correct Spectrum Baseline
+#'
+#' @description Fits and subtracts a baseline from spectra using Asymmetric
+#'   Least Squares (AsLS), as described by Eilers (2004). Commonly used in
+#'   Raman spectroscopy to remove fluorescence background that manifests as
+#'   a broad, slowly varying signal.
+#'
+#'   Ajuste et soustrait une ligne de base des spectres à l'aide du Moindre
+#'   Carré Asymétrique (AsLS), comme décrit par Eilers (2004). Couramment
+#'   utilisé en spectroscopie Raman pour éliminer le fond de fluorescence qui
+#'   se manifeste comme un signal large et lentement variable.
+#'
+#' @inheritParams .shared-params
+#'
+#' @param lambda The smoothness parameter. Larger values give smoother baselines.
+#'   Default is 1e6. Typical range: 1e3 to 1e9.
+#'
+#'   Le paramètre de lissage. Des valeurs plus élevées donnent des lignes de base
+#'   plus lisses. Par défaut, 1e6. Plage typique : 1e3 à 1e9.
+#'
+#' @param p The asymmetry parameter. Controls how much positive residuals are
+#'   favored over negative ones. Must be in (0, 0.5]. Default is 0.001.
+#'
+#'   Le paramètre d'asymétrie. Contrôle dans quelle mesure les résidus positifs
+#'   sont favorisés par rapport aux négatifs. Doit être dans (0, 0.5]. Par défaut,
+#'   0.001.
+#'
+#' @return a data.frame containing the baseline-corrected Raman spectra with an
+#'   additional `baseline_fitted` column showing the fitted baseline for
+#'   transparency and reproducibility.
+#'
+#'   un data.frame contenant les spectres Raman corrigés de la ligne de base avec
+#'   une colonne supplémentaire `baseline_fitted` montrant la ligne de base
+#'   ajustée pour la transparence et la reproductibilité.
+#'
+#' @export
+#'
+#' @examples
+#' if (requireNamespace("baseline", quietly = TRUE)) {
+#'   # Generate synthetic Raman data with baseline
+#'   wn <- seq(100, 2000, by = 2)
+#'   signal <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+#'   baseline <- 0.001 * (wn - 100)^2
+#'   measured <- signal + baseline + rnorm(length(wn), sd = 5)
+#'
+#'   raman_data <- data.frame(
+#'     wavenumber = wn,
+#'     intensity = measured,
+#'     sample_id = "sample_with_baseline"
+#'   )
+#'
+#'   # Correct the baseline
+#'   raman_corrected <- baseline_correct(raman_data, lambda = 1e6, p = 0.001)
+#' }
+baseline_correct <- function(
+  ftir,
+  sample_ids = NA,
+  lambda = 1e6,
+  p = 0.001
+) {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "{.pkg PlotFTIR} requires {.pkg baseline} package installation for this function.",
+      i = "Install {.pkg baseline} with {.run install.packages('baseline')}"
+    ))
+  }
+
+  ftir <- check_ftir_data(ftir)
+  
+  if (attr(ftir, "intensity") == "intensity") {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR::baseline_correct}. {.arg ftir} intensity attribute not set.",
+      i = "Expected 'raman' or 'normalized raman'."
+    ))
+  }
+
+  if (length(sample_ids) <= 1) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
+      sample_ids <- unique(ftir$sample_id)
+    }
+  }
+
+  if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    cli::cli_abort(c(
+      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+    ))
+  }
+
+  if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::baseline_correct}. {.arg lambda} must be a positive numeric value."
+    )
+  }
+
+  if (!is.numeric(p) || length(p) != 1 || p <= 0 || p > 0.5) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::baseline_correct}. {.arg p} must be a numeric value in (0, 0.5]."
+    )
+  }
+
+  for (sid in sample_ids) {
+    idx <- ftir$sample_id == sid
+    intensity_vec <- ftir[idx, "intensity"]
+    
+    baseline_fit <- baseline::als(y = intensity_vec, lambda = lambda, p = p)
+    
+    ftir[idx, "baseline_fitted"] <- baseline_fit$fit
+    ftir[idx, "intensity"] <- intensity_vec - baseline_fit$fit
+  }
+
+  return(ftir)
+}
+
 add_band <- function(
   ftir_spectra_plot,
   wavenumber_range,

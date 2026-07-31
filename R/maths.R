@@ -931,3 +931,105 @@ transmittance_to_absorbance <- function(ftir) {
 
   return(ftir)
 }
+
+#' Normalize Raman Intensity Spectra
+#'
+#' @description Scales spectra to a common intensity reference. Supports two
+#'   methods: (1) vector norm (L2 normalization — each spectrum has unit length),
+#'   or (2) maximum peak scaling (each spectrum's highest point is set to 1).
+#'   Both are standard practices in Raman spectroscopy for comparing relative
+#'   band intensities across samples.
+#'
+#'   Met à l'échelle les spectres selon une référence d'intensité commune.
+#'   Supporte deux méthodes : (1) norme vectorielle (normalisation L2), ou
+#'   (2) mise à l'échelle par le pic maximum (le point le plus élevé de chaque
+#'   spectre est fixé à 1). Les deux sont des pratiques standard en spectroscopie
+#'   Raman pour comparer les intensités relatives des bandes entre échantillons.
+#'
+#' @inheritParams .shared-params
+#'
+#' @param method One of two values:
+#' * `"vector"` — L2 normalization: each spectrum is divided by its Euclidean norm.
+#' * `"max"` — Maximum scaling: each spectrum is divided by its maximum intensity value.
+#'
+#'   Une des deux valeurs :
+#' * `"vector"` — Normalisation L2 : chaque spectre est divisé par sa norme euclidienne.
+#' * `"max"` — Mise à l'échelle maximale : chaque spectre est divisé par sa valeur d'intensité maximale.
+#'
+#' @return A data.frame containing the normalized Raman spectra with
+#'   `attr(ftir, "intensity")` set to `"normalized raman"`.
+#'
+#'   Un data.frame contenant les spectres Raman normalisés avec
+#'   `attr(ftir, "intensity")` défini sur `"normalized raman"`.
+#'
+#' @export
+#'
+#' @examples
+#' # Normalize all samples using vector norm (L2)
+#' normalize_raman(raman_data, method = "vector")
+#'
+#' # Normalize all samples by maximum peak height
+#' normalize_raman(raman_data, method = "max")
+normalize_raman <- function(
+  ftir,
+  sample_ids = NA,
+  method = "vector"
+) {
+  ftir <- check_ftir_data(ftir)
+  
+  if (attr(ftir, "intensity") == "intensity") {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR::normalize_raman}. {.arg ftir} intensity attribute not set.",
+      i = "Expected 'raman' or 'normalized raman'."
+    ))
+  }
+
+  if (length(sample_ids) <= 1) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
+      sample_ids <- unique(ftir$sample_id)
+    }
+  }
+
+  if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    cli::cli_abort(c(
+      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+    ))
+  }
+
+  permitted_methods <- c("vector", "max")
+  if (length(method) != 1 || !(method %in% permitted_methods)) {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR::normalize_raman}. {.arg method} must be a string.",
+      i = "{.arg method} must be one of {.val {permitted_methods}}."
+    ))
+  }
+
+  for (sid in sample_ids) {
+    idx <- ftir$sample_id == sid
+    intensity_vec <- ftir[idx, "intensity"]
+
+    if (method == "vector") {
+      norm_val <- sqrt(sum(intensity_vec^2))
+      if (norm_val == 0) {
+        cli::cli_abort(
+          "Error in {.fn PlotFTIR::normalize_raman}. Cannot normalize spectrum with zero magnitude."
+        )
+      }
+      ftir[idx, "intensity"] <- intensity_vec / norm_val
+    } else if (method == "max") {
+      max_val <- max(intensity_vec)
+      if (max_val == 0) {
+        cli::cli_abort(
+          "Error in {.fn PlotFTIR::normalize_raman}. Cannot normalize spectrum with zero maximum."
+        )
+      }
+      ftir[idx, "intensity"] <- intensity_vec / max_val
+    }
+  }
+
+  attr(ftir, "intensity") <- "normalized raman"
+
+  return(ftir)
+}

@@ -643,3 +643,145 @@ test_that("Interface to ChemoSpec is ok", {
 
   expect_true("ggplot" %in% suppressWarnings(class(plot_ftir(SrE.IR))))
 })
+
+describe("read_raman", {
+  test_that("parses RRUFF header metadata into attributes", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    raman_content <- c(
+      "##FILETYPE=Raman",
+      "##RAMAN WAVELENGTH=532.0",
+      "##TITLE=Graphite spectrum",
+      "100, 1000",
+      "200, 800",
+      "300, 600"
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    result <- read_raman(path = tmppath, file = tmpfile)
+    
+    expect_equal(colnames(result), c("wavenumber", "intensity", "sample_id"))
+    expect_true("PlotFTIR_data" %in% class(result))
+    expect_equal(attr(result, "intensity"), "raman")
+    expect_equal(length(unique(result$sample_id)), 1)
+  })
+  
+  test_that("reads two-column wavenumber/intensity data correctly", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    wn <- seq(100, 2000, by = 10)
+    intensity <- 100 * exp(-(wn - 500)^2 / 5000) + 50
+    data_lines <- paste(wn, ",", intensity, sep = "")
+    
+    raman_content <- c(
+      "##FILETYPE=Raman",
+      data_lines
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    result <- read_raman(path = tmppath, file = tmpfile)
+    
+    expect_equal(nrow(result), length(wn))
+    expect_equal(result$wavenumber, wn)
+    expect_equal(round(result$intensity, 4), round(intensity, 4))
+  })
+  
+  test_that("sample_name parameter overrides filename-derived name", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    raman_content <- c(
+      "##FILETYPE=Raman",
+      "100, 1000"
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    result <- read_raman(path = tmppath, file = tmpfile, sample_name = "custom_sample")
+    
+    expect_equal(result$sample_id[1], "custom_sample")
+  })
+  
+  test_that("errors on non-Raman file without FILETYPE=Raman header", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    raman_content <- c(
+      "100, 1000",
+      "200, 800"
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    expect_error(
+      read_raman(path = tmppath, file = tmpfile),
+      regexp = "does not appear to be Raman data",
+      fixed = TRUE
+    )
+  })
+  
+  test_that("handles sample_id column in input gracefully", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    raman_content <- c(
+      "##FILETYPE=Raman",
+      "100, 1000"
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    result <- read_raman(path = tmppath, file = tmpfile)
+    
+    expect_false("sample_id" %in% colnames(result))
+    expect_true("sample_id" %in% names(result))
+  })
+  
+  test_that("read_raman handles invalid arguments", {
+    temp_file <- withr::local_tempfile(fileext = ".csv")
+    tmppath <- dirname(temp_file)
+    tmpfile <- basename(temp_file)
+    
+    raman_content <- c(
+      "##FILETYPE=Raman",
+      "100, 1000"
+    )
+    
+    writeLines(raman_content, temp_file)
+    
+    expect_error(
+      read_raman(path = NULL, file = tmpfile),
+      regexp = "must be a single string value",
+      fixed = TRUE
+    )
+    
+    expect_error(
+      read_raman(path = tmppath, file = NULL),
+      regexp = "must be a single string value",
+      fixed = TRUE
+    )
+    
+    expect_error(
+      read_raman(path = tmppath, file = tmpfile, sample_name = c("a", "b")),
+      regexp = "must be a single string value or single",
+      fixed = TRUE
+    )
+  })
+  
+  test_that("errors on non-existent file", {
+    expect_error(
+      read_raman(path = ".", file = "nonexistent.csv"),
+      regexp = 'nonexistent.csv" does not appear to exist',
+      fixed = TRUE
+    )
+  })
+})

@@ -870,6 +870,171 @@ plotftir_to_chemospec <- function(
 }
 
 
+read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
+  lines <- readLines(con = file.path(path, file), n = 30)
+  
+  raman_header_found <- any(grepl("^##filetype=raman", tolower(lines), perl = TRUE))
+  if (!raman_header_found) {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR:::read_raman_csv}. File does not appear to be Raman data.",
+      i = "Expected first 30 lines to contain a line starting with '##FILETYPE=Raman' (case-insensitive).",
+      x = "This function is specifically for RRUFF-style Raman spectra files."
+    ))
+  }
+  
+  header_lines <- grep("^##", lines, value = TRUE, perl = TRUE)
+  raman_metadata <- list()
+  for (line in header_lines) {
+    if (grepl("=", line)) {
+      eq_pos <- regexpr("=", line)[1]
+      key <- trimws(substr(line, 3, eq_pos - 1))
+      value <- trimws(substr(line, eq_pos + 1, nchar(line)))
+      raman_metadata[[key]] <- value
+    }
+  }
+  
+  data_lines <- lines[!grepl("^#", lines)]
+  data_rows <- strsplit(data_lines, ",")
+  data_rows <- data_rows[sapply(data_rows, length) == 2]
+  
+  if (length(data_rows) == 0) {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR:::read_raman_csv}. No valid data rows found.",
+      i = "Data rows must contain exactly two comma-separated numeric values."
+    ))
+  }
+  
+  wavenumber <- numeric(length(data_rows))
+  intensity <- numeric(length(data_rows))
+  
+  for (i in seq_along(data_rows)) {
+    parsed <- suppressWarnings(as.numeric(data_rows[[i]]))
+    if (!all(is.finite(parsed))) {
+      cli::cli_abort(c(
+        "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}.",
+        x = "All wavenumber and intensity values must be numeric."
+      ))
+    }
+    wavenumber[i] <- parsed[1]
+    intensity[i] <- parsed[2]
+  }
+  
+  if (is.na(sample_name)) {
+    sample_name <- tools::file_path_sans_ext(file)
+  }
+  
+  ftir_data <- data.frame(
+    "wavenumber" = wavenumber,
+    "intensity" = intensity,
+    "sample_id" = sample_name
+  )
+  
+  attr(ftir_data, "raman_metadata") <- raman_metadata
+  
+  ftir_data <- check_ftir_data(ftir_data)
+  attr(ftir_data, "intensity") <- "raman"
+  
+  return(ftir_data)
+}
+
+#' Read Raman file
+#'
+#' @description
+#' Reads an RRUFF-style Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
+#'
+#' Lit un fichier de spectres Raman au format RRUFF et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
+#'
+#' @param path
+#' Path to the file. Default is the current working directory, as `"."`. Can include the filename, in which case provide `NA` as the filename.
+#'
+#' Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme `"."`. Peut inclure le nom du fichier, auquel cas il faut fournir `NA` comme nom de fichier.
+#'
+#' @param file
+#' File name, required. If the file and path are provided together as `path`, then `NA` is accepted.
+#'
+#' Nom du fichier, obligatoire. Si le fichier et le chemin sont fournis ensemble en tant que `chemin`, alors `NA` est accepté.
+#'
+#' @param sample_name
+#' Name for sample_id column in the returned data.frame. If not provided, the file name is used without the extension.
+#'
+#' Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, le nom du fichier est utilisé sans l'extension.
+#'
+#' @param ...
+#' Additional parameters to pass to the file reading function.
+#'
+#' Paramètres supplémentaires à transmettre à la fonction de lecture de fichier.
+#'
+#' @return
+#' a data.frame containing the Raman spectral data from the file, with attributes:
+#' `intensity` set to `"raman"` or `"normalized raman"`, and `raman_metadata` containing all `##KEY=VALUE` header lines parsed as a named list.
+#'
+#' un data.frame contenant les données spectrales Raman du fichier, avec les attributs :
+#' `intensity` défini sur `"raman"` ou `"normalized raman"`, et `raman_metadata` contenant toutes les lignes d'en-tête `##KEY=VALUE` analysées sous forme de liste nommée.
+#'
+#' @export
+#'
+#' @examples
+#' # Reading an RRUFF Raman file:
+#' # raman_data <- read_raman("./data/Graphite__R090047_Raman.txt")
+#' @md
+read_raman <- function(
+  path = ".",
+  file = NA_character_,
+  sample_name = NA_character_,
+  ...
+) {
+  if (length(path) != 1 || !is.character(path)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::read_raman}. {.arg path} must be a single string value."
+    )
+  }
+  if (
+    any(is.na(file), is.null(file)) &&
+      (tolower(tools::file_ext(path)) %in%
+        c("txt", "csv"))
+  ) {
+    file <- basename(path)
+    path <- dirname(path)
+  }
+  if (length(file) != 1 || !is.character(file)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::read_raman}. {.arg file} must be a single string value."
+    )
+  }
+  if (length(sample_name) != 1) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a single string value or single {.val NA}."
+    )
+  }
+  if (!is.na(sample_name) && !is.character(sample_name)) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a string value or {.val NA}."
+    )
+  }
+
+  if (!file.exists(file.path(path, file))) {
+    cli::cli_abort(
+      "Error in {.fn PlotFTIR::read_raman}. File {.val {file.path(path, file)}} does not appear to exist."
+    )
+  }
+
+  filetype <- tolower(tools::file_ext(file))
+
+  if (filetype %in% c("csv", "txt")) {
+    return(read_raman_csv(
+      path = path,
+      file = file,
+      sample_name = sample_name,
+      ...
+    ))
+  } else {
+    cli::cli_abort(c(
+      "Error in {.fn PlotFTIR::read_raman}. Input file of type {{filetype}} could not be processed.",
+      i = "PlotFTIR currently supports .csv/.txt files for Raman data."
+    ))
+  }
+}
+
 #' `ChemoSec` to `PlotFTIR` conversions
 #'
 #' @description
@@ -879,7 +1044,7 @@ plotftir_to_chemospec <- function(
 #'
 #' @param csdata
 #' `ChemoSpec` data to convert to `PlotFTIR.`
-#' Données `ChemoSpec` a convertir à `PlotFTIR`.
+#' Données `ChemoSpec` a convertir à `PlotFTIR.`
 #'
 #' @return
 #' a data.frame compatible with `PlotFTIR` functions

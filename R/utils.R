@@ -107,24 +107,25 @@ check_ftir_data <- function(ftir) {
       i = "It must contain a column named {.var wavenumber}."
     ))
   }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+  if (!("absorbance" %in% colnames(ftir)) && !("transmittance" %in% colnames(ftir)) && !("intensity" %in% colnames(ftir))) {
     cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
     )
   }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
-    )
+  if (sum(c("absorbance" %in% colnames(ftir), "transmittance" %in% colnames(ftir), "intensity" %in% colnames(ftir))) != 1) {
+    cli::cli_abort(c(
+      "Error in {.fn {fn}}. {.arg ftir} must contain exactly one intensity column.",
+      x = "Found {sum(colnames(ftir) == 'absorbance')} absorbance, {sum(colnames(ftir) == 'transmittance')} transmittance, and {sum(colnames(ftir) == 'intensity')} intensity columns."
+    ))
   }
   if (
     any(
       !(colnames(ftir) %in%
-        c("sample_id", "wavenumber", "absorbance", "transmittance"))
+        c("sample_id", "wavenumber", "absorbance", "transmittance", "intensity"))
     )
   ) {
     cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance}, {.var transmittance}, or {.var intensity}."
     )
   }
   if (
@@ -133,8 +134,10 @@ check_ftir_data <- function(ftir) {
         c(
           "absorbance",
           "transmittance",
+          "raman",
           "normalized absorbance",
-          "normalized transmittance"
+          "normalized transmittance",
+          "normalized raman"
         ))
   ) {
     cli::cli_abort(
@@ -188,7 +191,14 @@ print.PlotFTIR_data <- function(x, ...) {
   } else {
     cat("  Resolution: variable\n")
   }
-  cat("  Intensity type:", attr(x, "intensity"), "\n")
+  intensity <- attr(x, "intensity")
+  if (intensity %in% c("raman", "normalized raman")) {
+    cat("  Technique: Raman\n")
+  } else if (intensity == "absorbance" || intensity == "normalized absorbance") {
+    cat("  Intensity type: Absorbance\n")
+  } else if (intensity == "transmittance" || intensity == "normalized transmittance") {
+    cat("  Intensity type: % Transmittance\n")
+  }
   samples <- unique(x$sample_id)
   cat("  Number of samples:", length(samples), "\n")
   if (length(samples) <= 5) {
@@ -216,6 +226,13 @@ intensity_type <- function(ftir) {
     return("absorbance")
   } else if ("transmittance" %in% colnames(ftir)) {
     return("transmittance")
+  } else if ("intensity" %in% colnames(ftir)) {
+    intensity_attr <- attr(ftir, "intensity")
+    if (is.null(intensity_attr) || intensity_attr == "") {
+      ftir <- check_ftir_data(ftir)
+      return(attr(ftir, "intensity"))
+    }
+    return(intensity_attr)
   }
 
   # implied else
