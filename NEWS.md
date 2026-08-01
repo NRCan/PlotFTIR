@@ -1,6 +1,7 @@
 # PlotFTIR (development version)
 
-* Updated package data to properly print properly after v1.3.0.
+* Updated package data to properly print after v1.3.0.
+* Added bilingual error codes and bilingual pretty printing (#40)
 
 # PlotFTIR 1.3.0
 

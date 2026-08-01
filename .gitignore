@@ -55,6 +55,6 @@ inst/doc
 revdep/
 cobertura.xml
 docs
-testthat-problems.rds
-.kilo/
-*/_problems/*
+tests/testthat/testthat-problems.rds
+tests/testthat/_problems/*
+.kilo/*
