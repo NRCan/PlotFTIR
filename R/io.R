@@ -347,7 +347,7 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
           x = "Les fichiers .csv d'entr\u00e9e ne devraient contenir que les valeurs de nombre d'ondes et {.arg intensity}, {.arg absorbance}, ou {.arg transmittance}."
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
 
@@ -489,8 +489,8 @@ read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
     # must be intensity = transmittance
     .pkg_inform(
       list(
-        en = "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val transmittance} units.",
-        fr = "{.fn PlotFTIR:::read_ftir_spc} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont en unit\u00e9s {.val transmittance}."
+        en = "{.fn PlotFTIR:::read_ftir_asp} has deduced that input data is in {.val transmittance} units.",
+        fr = "{.fn PlotFTIR:::read_ftir_asp} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont en unit\u00e9s {.val transmittance}."
       ),
       call = rlang::caller_env()
     )
@@ -500,8 +500,8 @@ read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
     # must be intensity = absorbance
     .pkg_inform(
       list(
-        en = "{.fn PlotFTIR:::read_ftir_spc} has deduced that input data is in {.val absorbance} units.",
-        fr = "{.fn PlotFTIR:::read_ftir_spc} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont en unit\u00e9s {.val absorbance}."
+        en = "{.fn PlotFTIR:::read_ftir_asp} has deduced that input data is in {.val absorbance} units.",
+        fr = "{.fn PlotFTIR:::read_ftir_asp} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont en unit\u00e9s {.val absorbance}."
       ),
       call = rlang::caller_env()
     )
@@ -527,7 +527,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
           i = "Installez le paquet {.pkg readJDX} avec la commande {.run install.packages('readJDX')}"
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
 

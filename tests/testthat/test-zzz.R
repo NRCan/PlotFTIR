@@ -77,7 +77,7 @@ test_that('.detect_system_language handles LANGUAGE variable variations', {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })
 
-  # LANGUAGE takes priority over LANG when both are set
+  # LANG takes priority over LANGUAGE when both are set
   withr::with_envvar(new = c(LANG = 'en_US.UTF-8', LANGUAGE = 'FR_FR'), {
     expect_equal(PlotFTIR:::.detect_system_language(), 'en')
   })

@@ -60,22 +60,23 @@ plot_ftir_core <- function(
   # Package Checks
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     .pkg_abort(
-      c(
-        en = "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-        fr = "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg ggplot2}."
+      list(
+        en = c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+        i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg ggplot2}.",
+          i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
+        )
       ),
-      call = rlang::caller_env(),
-      i = c(
-        en = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}",
-        fr = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
-      )
+      call = rlang::caller_env()
     )
   }
 
   ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
     .pkg_abort(
-      c(
+      list(
         en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.",
         fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} doit \u00eatre une cha\u00eene de caract\u00e8res ou un vecteur de cha\u00eenes de caract\u00e8res avec une longueur maximale de deux."
       )
@@ -83,7 +84,7 @@ plot_ftir_core <- function(
   }
   if (!is.character(legend_title) || length(legend_title) > 1) {
     .pkg_abort(
-      c(
+      list(
         en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.",
         fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} doit \u00eatre une unique cha\u00eene de caract\u00e8res."
       )

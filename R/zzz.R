@@ -87,7 +87,7 @@
       c("fr", "fra", "french", "francais", "fran\u00e7ais")
   ) {
     packageStartupMessage(
-      'Trac\u00e9 des spectres avec PlotFTIR. Veuillez citer si les tracu00e9s sont utilisu00e9s dans un publication (`citation("plotFTIR")`).'
+      'Trac\u00e9 des spectres avec PlotFTIR. Veuillez citer si les tracu00e9s sont utilisu00e9s dans une publication (`citation("plotFTIR")`).'
     )
   } else {
     packageStartupMessage(

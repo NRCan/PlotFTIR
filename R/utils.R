@@ -39,7 +39,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
           i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
   if (!ggplot2::is_ggplot(ftir_spectra_plot)) {
@@ -270,7 +270,7 @@ print.PlotFTIR_data <- function(x, ...) {
     cat("  Type d'intensit\u00e9:", attr(x, "intensity"), "\n")
     cat("  Nombre d'\u00e9chantillons:", length(samples), "\n")
     if (length(samples) <= 5) {
-      cat("  ID des \u00e9chantillon:", paste(samples, collapse = ", "), "\n")
+      cat("  ID des \u00e9chantillons:", paste(samples, collapse = ", "), "\n")
     } else {
       cat(
         "  ID des \u00e9chantillons:",
