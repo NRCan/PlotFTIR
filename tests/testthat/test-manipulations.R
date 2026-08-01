@@ -279,13 +279,6 @@ test_that("-.ggplot is ok", {
 })
 
 test_that("rename is ok", {
-  new_ids <- c(
-    "toluene" = "Toluene",
-    "heptanes" = "C7 Alkane",
-    "isopropanol" = "IPA",
-    "paper" = "White Paper",
-    "polystyrene" = "PS Film"
-  )
 
   # Test for ggplot2 else skip
   if (!require("ggplot2", quietly = TRUE)) {
@@ -324,8 +317,8 @@ test_that("rename is ok", {
 
   expect_error_bilingual(
     rename_plot_sample_ids(p, c(new_ids, "test" = "failure")),
-    en = "All provided 'old names' must be in the `ftir_spectra_plot`.",
-    fr = "Tous les « anciens noms » fournis doivent être dans le `ftir_spectra_plot`."
+    en = "All provided `old names` must be in the `ftir_spectra_plot`.",
+    fr = "Tous les `anciens noms` fournis doivent être dans le `ftir_spectra_plot`."
   )
 
   # check only partial names still makes a plot
