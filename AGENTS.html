@@ -104,6 +104,7 @@
 <li>Bilingual guarantee: All user-facing text in French and English.</li>
 <li>Error handling: Use <code>.pkg_abort()</code> for bilingual errors; gate optional packages with <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>.</li>
 <li>Issue numbers: Never guess; verify from user, branch name, or <code>gh issue list</code>.</li>
+<li>All in-code non-ascii characters (é, etc) must be escaped with proper unicode (e.g. /u00e9). Non-ascii characters may be used in comments and are preferred for docstrings</li>
 </ul><hr></div>
 <div class="section level2">
 <h2 id="standard-workflow">Standard workflow<a class="anchor" aria-label="anchor" href="#standard-workflow"></a></h2>

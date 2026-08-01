@@ -142,8 +142,7 @@ are stored).</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spectra</span><span class="op">)</span></span>
 <span><span class="co">#&gt; PlotFTIR data:</span></span>
-<span><span class="co">#&gt;   Spectral range: 650.4205 - 659.7388 cm⁻¹</span></span>
-<span><span class="co">#&gt;   Resolution: variable</span></span>
+<span><span class="co">#&gt;   Spectral range: 650.4205 - 659.7388 cm⁻¹\n  Resolution: variable</span></span>
 <span><span class="co">#&gt;   Intensity type: absorbance </span></span>
 <span><span class="co">#&gt;   Number of samples: 1 </span></span>
 <span><span class="co">#&gt;   Sample IDs: toluene</span></span></code></pre></div>
@@ -151,8 +150,7 @@ are stored).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">spectra</span><span class="op">)</span></span>
 <span><span class="co">#&gt; PlotFTIR data:</span></span>
-<span><span class="co">#&gt;   Spectral range: 650.4205 - 3999.434 cm⁻¹</span></span>
-<span><span class="co">#&gt;   Resolution: variable</span></span>
+<span><span class="co">#&gt;   Spectral range: 650.4205 - 3999.434 cm⁻¹\n  Resolution: variable</span></span>
 <span><span class="co">#&gt;   Intensity type: absorbance </span></span>
 <span><span class="co">#&gt;   Number of samples: 5 </span></span>
 <span><span class="co">#&gt;   Sample IDs: toluene, heptanes, isopropanol, paper, polystyrene</span></span></code></pre></div>
@@ -275,7 +273,7 @@ annotated per your need.</p>
 <span>  <span class="fu"><a href="../reference/add_wavenumber_marker.html">add_wavenumber_marker</a></span><span class="op">(</span>wavenumber <span class="op">=</span> <span class="fl">817</span>, text <span class="op">=</span> <span class="st">"C-C-O\nsymmetric"</span>, line_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#ff420e"</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/add_wavenumber_marker.html">add_wavenumber_marker</a></span><span class="op">(</span>wavenumber <span class="op">=</span> <span class="fl">1380</span>, text <span class="op">=</span> <span class="st">"CH3"</span>, line_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/rename_plot_sample_ids.html">rename_plot_sample_ids</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C7 Alkane"</span> <span class="op">=</span> <span class="st">"heptanes"</span>, <span class="st">"2-Propanol"</span> <span class="op">=</span> <span class="st">"isopropanol"</span>, <span class="st">"Toluene"</span> <span class="op">=</span> <span class="st">"toluene"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `add_wavenumber_marker()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Error in `PlotFTIR::add_wavenumber_marker()`. `line_aesthetics` must</span></span>
 <span><span class="co">#&gt;   be a named list. You provided a character vector.</span></span></code></pre></div>
 </div>
@@ -469,8 +467,7 @@ stockés).</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spectres</span><span class="op">)</span></span>
 <span><span class="co">#&gt; PlotFTIR data:</span></span>
-<span><span class="co">#&gt;   Spectral range: 650.4205 - 659.7388 cm⁻¹</span></span>
-<span><span class="co">#&gt;   Resolution: variable</span></span>
+<span><span class="co">#&gt;   Spectral range: 650.4205 - 659.7388 cm⁻¹\n  Resolution: variable</span></span>
 <span><span class="co">#&gt;   Intensity type: absorbance </span></span>
 <span><span class="co">#&gt;   Number of samples: 1 </span></span>
 <span><span class="co">#&gt;   Sample IDs: toluene</span></span></code></pre></div>
@@ -600,7 +597,7 @@ fonction de vos échantillons et annotés selon vos besoins.</p>
 <span>  <span class="fu"><a href="../reference/add_wavenumber_marker.html">add_wavenumber_marker</a></span><span class="op">(</span>wavenumber <span class="op">=</span> <span class="fl">817</span>, text <span class="op">=</span> <span class="st">"C-C-O\nsymétrique"</span>, line_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#ff420e"</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/add_wavenumber_marker.html">add_wavenumber_marker</a></span><span class="op">(</span>wavenumber <span class="op">=</span> <span class="fl">1380</span>, text <span class="op">=</span> <span class="st">"CH3"</span>, line_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/rename_plot_sample_ids.html">rename_plot_sample_ids</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C7 alcane"</span> <span class="op">=</span> <span class="st">"heptanes"</span>, <span class="st">"2-Propanol"</span> <span class="op">=</span> <span class="st">"isopropanol"</span>, <span class="st">"Toluene"</span> <span class="op">=</span> <span class="st">"toluene"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `add_wavenumber_marker()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Error in `PlotFTIR::add_wavenumber_marker()`. `line_aesthetics` must</span></span>
 <span><span class="co">#&gt;   be a named list. You provided a character vector.</span></span></code></pre></div>
 </div>
