@@ -155,10 +155,14 @@ test_that('Language strings work for simple and complex cases', {
     "fran\u00e7ais"
   )
 
-  for (lang in expected_langs) {
-    # Test that each language specification is accepted by plot functions
-    expect_no_error({
-      plot_ftir(biodiesel, lang = lang)
-    })
+  if(requireNamespace("ggplot2", quietly = TRUE)) {
+    for (lang in expected_langs) {
+      # Test that each language specification is accepted by plot functions
+      expect_no_error({
+        plot_ftir(biodiesel, lang = lang)
+      })
+    }
+  } else {
+    testthat::skip("ggplot2 not available for testing language integration")
   }
 })

@@ -65,7 +65,7 @@ average_spectra <- function(
           )
         ),
         fr = c(
-          "Tous les {.arg sample_ids} fournis doivent \u00catre dans les donn\u00e9es {.arg ftir}.",
+          "Tous les {.arg sample_ids} fournis doivent \u00e9tre dans les donn\u00e9es {.arg ftir}.",
           x = cli::format_inline(
             "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
           )
@@ -79,7 +79,7 @@ average_spectra <- function(
     .pkg_abort(
       list(
         en = "{.arg average_id} must be a character value.",
-        fr = "{.arg average_id} doit \u00catre une valeur de cha\u00eene."
+        fr = "{.arg average_id} doit \u00e9tre une valeur de cha\u00eene."
       )
     )
   }
@@ -285,7 +285,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
           )
         ),
         fr = c(
-          "Tous les {.arg sample_ids} fournis doivent \u00catre dans les donn\u00e9es {.arg ftir}.",
+          "Tous les {.arg sample_ids} fournis doivent \u00e9tre dans les donn\u00e9es {.arg ftir}.",
           x = cli::format_inline(
             "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
           )
@@ -302,7 +302,7 @@ add_scalar_value <- function(ftir, value, sample_ids = NA) {
           "Error in {.fn PlotFTIR::add_scalar_value}. Provided {.arg value} must be numeric. You provided {.obj_type_friendly value}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::add_scalar_value}. Le {.arg value} fourni doit \u00catre num\u00e9rique. Vous avez fourni {.obj_type_friendly value}."
+          "Erreur dans {.fn PlotFTIR::add_scalar_value}. Le {.arg value} fourni doit \u00e9tre num\u00e9rique. Vous avez fourni {.obj_type_friendly value}."
         )
       ),
       call = rlang::caller_env()
@@ -336,7 +336,7 @@ subtract_scalar_value <- function(ftir, value, sample_ids = NA) {
           "Error in {.fn PlotFTIR::subtract_scalar_value}. Provided {.arg value} must be numeric. You provided {.obj_type_friendly value}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::subtract_scalar_value}. Le {.arg value} fourni doit \u00catre num\u00e9rique. Vous avez fourni {.obj_type_friendly value}."
+          "Erreur dans {.fn PlotFTIR::subtract_scalar_value}. Le {.arg value} fourni doit \u00e9tre num\u00e9rique. Vous avez fourni {.obj_type_friendly value}."
         )
       ),
       call = rlang::caller_env()
@@ -479,7 +479,7 @@ recalculate_baseline <- function(
           )
         ),
         fr = c(
-          "Tous les {.arg sample_ids} fournis doivent \u00catre dans les donn\u00e9es {.arg ftir}.",
+          "Tous les {.arg sample_ids} fournis doivent \u00e9tre dans les donn\u00e9es {.arg ftir}.",
           i = cli::format_inline(
             "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
           )
@@ -493,7 +493,7 @@ recalculate_baseline <- function(
     .pkg_abort(
       c(
         en = "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be of length 1 or 2.",
-        fr = "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00catre d'une longueur de 1 ou 2."
+        fr = "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00e9tre d'une longueur de 1 ou 2."
       )
     )
   }
@@ -507,7 +507,7 @@ recalculate_baseline <- function(
           )
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00catre {.code numeric} ou {.code NA}.",
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00e9tre {.code numeric} ou {.code NA}.",
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
           )
@@ -527,7 +527,7 @@ recalculate_baseline <- function(
           )
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg individually} doit \u00catre une valeur bool\u00e9enne.",
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg individually} doit \u00e9tre une valeur bool\u00e9enne.",
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly individually}."
           )
@@ -546,7 +546,7 @@ recalculate_baseline <- function(
           i = cli::format_inline("You provided a {.obj_type_friendly method}.")
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg method} doit \u00catre une cha\u00eene de caract\u00e8res.",
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg method} doit \u00e9tre une cha\u00eene de caract\u00e8res.",
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly method}."
           )
@@ -566,7 +566,7 @@ recalculate_baseline <- function(
           )
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00catre une valeur num\u00e9rique si {.code method = 'point'}.",
+          "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00e9tre une valeur num\u00e9rique si {.code method = 'point'}.",
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
           )
@@ -593,7 +593,7 @@ recalculate_baseline <- function(
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00catre {.code NA} ou deux valeurs num\u00e9riques si {.code method = '{method}'}."
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00e9tre {.code NA} ou deux valeurs num\u00e9riques si {.code method = '{method}'}."
           ),
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
@@ -787,7 +787,7 @@ recalculate_baseline <- function(
             i = "The average value between the provided wavenumbers will be used to baseline adjust data."
           ),
           fr = c(
-            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00catre deux valeurs num\u00e9riques.",
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00e9tre deux valeurs num\u00e9riques.",
             i = "La valeur moyenne entre les fr\u00e9quences fournies sera utilis\u00e9e pour ajuster la ligne de base des donn\u00e9es."
           )
         ),
@@ -1003,7 +1003,7 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
           )
         ),
         fr = c(
-          "Tous les {.arg sample_ids} fournis doivent \u00catre dans les donn\u00e9es {.arg ftir}.",
+          "Tous les {.arg sample_ids} fournis doivent \u00e9tre dans les donn\u00e9es {.arg ftir}.",
           i = cli::format_inline(
             "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
           )
@@ -1021,7 +1021,7 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
     .pkg_abort(
       c(
         en = "Error in {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} must be of length 2.",
-        fr = "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit \u00catre d'une longueur de 2."
+        fr = "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit \u00e9tre d'une longueur de 2."
       )
     )
   }
@@ -1035,7 +1035,7 @@ normalize_spectra <- function(ftir, sample_ids = NA, wavenumber_range = NA) {
           )
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit \u00catre {.code numeric} ou {.code NA}.",
+          "Erreur dans {.fn PlotFTIR::normalize_spectra}. {.arg wavenumber_range} doit \u00e9tre {.code numeric} ou {.code NA}.",
           i = cli::format_inline(
             "Vous avez fourni un {.obj_type_friendly wavenumber_range}."
           )
@@ -1133,7 +1133,7 @@ absorbance_to_transmittance <- function(ftir) {
     .pkg_abort(
       c(
         'en' = "Error in {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} must be absorbance data or contain a {.var absorbance} column.",
-        'fr' = "Erreur dans {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} doit \u00catre des donn\u00e9es d'absorbance ou contenir une colonne {.var absorbance}."
+        'fr' = "Erreur dans {.fn PlotFTIR::absorbance_to_transmittance}. {.arg ftir} doit \u00e9tre des donn\u00e9es d'absorbance ou contenir une colonne {.var absorbance}."
       )
     )
   }
@@ -1165,7 +1165,7 @@ transmittance_to_absorbance <- function(ftir) {
     .pkg_abort(
       c(
         en = "Error in {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} must be transmittance data or contain a {.var transmittance} column.",
-        fr = "Erreur dans {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} doit \u00catre des donn\u00e9es de transmittance ou contenir une colonne {.var transmittance}."
+        fr = "Erreur dans {.fn PlotFTIR::transmittance_to_absorbance}. {.arg ftir} doit \u00e9tre des donn\u00e9es de transmittance ou contenir une colonne {.var transmittance}."
       )
     )
   }

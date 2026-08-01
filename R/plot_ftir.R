@@ -77,7 +77,7 @@ plot_ftir_core <- function(
     .pkg_abort(
       c(
         en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} must be a character string or vector of strings with length not more than two.",
-        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} doit \u00catre une cha\u00eene de caract\u00e8res ou un vecteur de cha\u00eenes de caract\u00e8res avec une longueur maximale de deux."
+        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg plot_title} doit \u00e9tre une cha\u00eene de caract\u00e8res ou un vecteur de cha\u00eenes de caract\u00e8res avec une longueur maximale de deux."
       )
     )
   }
@@ -85,7 +85,7 @@ plot_ftir_core <- function(
     .pkg_abort(
       c(
         en = "Error in {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} must be a single character string.",
-        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} doit \u00catre une unique cha\u00eene de caract\u00e8res."
+        fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_core}. {.arg legend_title} doit \u00e9tre une unique cha\u00eene de caract\u00e8res."
       )
     )
   }
@@ -265,13 +265,13 @@ plot_ftir_stacked <- function(
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     .pkg_abort(list(
       en = "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be a single numeric value.",
-      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit \u00catre une valeur num\u00e9rique unique."
+      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit \u00e9tre une valeur num\u00e9rique unique."
     ))
   }
   if (stack_offset < 0 || stack_offset > 200) {
     .pkg_abort(list(
       en = "Error in {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} must be between 0 and 200.",
-      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit \u00catre compris entre 0 et 200."
+      fr = "Erreur dans {.fn PlotFTIR:::plot_ftir_stacked}. {.arg stack_offset} doit \u00e9tre compris entre 0 et 200."
     ))
   }
 
