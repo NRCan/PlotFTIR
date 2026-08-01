@@ -49,7 +49,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
           "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit \u00catre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+          "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit \u00eatre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
         )
       )
     )
@@ -121,7 +121,7 @@ check_ftir_data <- function(ftir) {
           "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} doit \u00catre un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit \u00eatre un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
         )
       )
     )
