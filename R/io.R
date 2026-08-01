@@ -495,7 +495,7 @@ read_ftir_asp <- function(path, file, sample_name = NA_character_, ...) {
       call = rlang::caller_env()
     )
     colnames(ftir_data)[colnames(ftir_data) == "intensity"] <- "transmittance"
-    attr(input_file, "intensity") <- "transmittance"
+    attr(ftir_data, "intensity") <- "transmittance"
   } else {
     # must be intensity = absorbance
     .pkg_inform(
