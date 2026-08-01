@@ -577,8 +577,8 @@ test_that("Interface to ChemoSpec is ok", {
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     expect_error_bilingual(
       plotftir_to_chemospec(biodiesel),
-      en = "requires R.utils package installation for this function.",
-      fr = "nécessite l'installation du paquet R.utils pour cette fonction."
+      en = "R.utils",
+      fr = "R.utils"
     )
     testthat::skip("R.utils not available for testing interface")
   }

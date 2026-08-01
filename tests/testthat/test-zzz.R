@@ -92,6 +92,10 @@ test_that('.detect_system_language falls back to message locale when env vars ar
         regexpr('(?i)^[a-z]{2}', msg_locale, perl = TRUE)
       )
       expected_lang <- tolower(lang_match)
+      # Non-matching locales (e.g. "C.UTF-8") default to English, matching the function behaviour
+      if (length(expected_lang) == 0 || !nzchar(expected_lang)) {
+        expected_lang <- 'en'
+      }
       expect_equal(PlotFTIR:::.detect_system_language(), expected_lang)
     } else {
       expect_equal(PlotFTIR:::.detect_system_language(), 'en')
@@ -143,6 +147,9 @@ test_that('.detect_system_language defaults to English for unsupported languages
 })
 
 test_that('Language strings work for simple and complex cases', {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    skip("ggplot2 is required for this test")
+  }
   # Test that language specifications are correctly normalized
   # This should work with both full names and abbreviations
   expected_langs <- c(
