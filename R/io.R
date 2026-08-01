@@ -53,7 +53,7 @@ read_ftir <- function(
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_ftir}. {.arg path} must be a single string value.",
-        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg path} doit \u00e9tre une valeur de cha\u00eene unique."
+        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg path} doit \u00catre une valeur de cha\u00eene unique."
       ),
       call = rlang::caller_env()
     )
@@ -70,7 +70,7 @@ read_ftir <- function(
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_ftir}. {.arg file} must be a single string value.",
-        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg file} doit \u00e9tre une valeur de cha\u00eene unique."
+        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg file} doit \u00catre une valeur de cha\u00eene unique."
       ),
       call = rlang::caller_env()
     )
@@ -79,7 +79,7 @@ read_ftir <- function(
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a single string value or single {.val NA}.",
-        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit \u00e9tre une valeur de cha\u00eene unique ou un seul {.val NA}."
+        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit \u00catre une valeur de cha\u00eene unique ou un seul {.val NA}."
       ),
       call = rlang::caller_env()
     )
@@ -88,7 +88,7 @@ read_ftir <- function(
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_ftir}. {.arg sample_name} must be a string value or {.val NA}.",
-        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit \u00e9tre une valeur de cha\u00eene ou {.val NA}."
+        fr = "Erreur dans {.fn PlotFTIR::read_ftir}. {.arg sample_name} doit \u00catre une valeur de cha\u00eene ou {.val NA}."
       ),
       call = rlang::caller_env()
     )
@@ -158,7 +158,7 @@ read_ftir <- function(
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::read_ftir}. Le fichier d'entr\u00e9e de type {filetype} n'a pas pu \u00e9tre trait\u00e9."
+            "Erreur dans {.fn PlotFTIR::read_ftir}. Le fichier d'entr\u00e9e de type {filetype} n'a pas pu \u00catre trait\u00e9."
           ),
           i = "PlotFTIR prend actuellement en charge les fichiers .csv/.txt, .asp et .jdx/.dx."
         )
@@ -231,7 +231,7 @@ read_ftir_directory <- function(
           i = "{.fn PlotFTIR::read_ftir_directory} can only read multiple files from one directory."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg path} doit \u00e9tre une valeur de cha\u00eene unique.",
+          "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg path} doit \u00catre une valeur de cha\u00eene unique.",
           i = "{.fn PlotFTIR::read_ftir_directory} ne peut lire plusieurs fichiers qu'\u00e0 partir d'un seul r\u00e9pertoire."
         )
       ),
@@ -243,7 +243,7 @@ read_ftir_directory <- function(
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_ftir_directory}. {.arg file} must be a vector of string values.",
-        fr = "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg file} doit \u00e9tre un vecteur de valeurs de cha\u00eene."
+        fr = "Erreur dans {.fn PlotFTIR::read_ftir_directory}. {.arg file} doit \u00catre un vecteur de valeurs de cha\u00eene."
       )
     )
   }
@@ -259,7 +259,7 @@ read_ftir_directory <- function(
             )
           ),
           fr = c(
-            "Erreur dans {.fn PlotFTIR::read_ftir_directory}: Si vous fournissez des {.arg sample_names}, le m\u00e9me nombre de noms que celui de {.arg files} doit \u00e9tre fourni.",
+            "Erreur dans {.fn PlotFTIR::read_ftir_directory}: Si vous fournissez des {.arg sample_names}, le m\u00came nombre de noms que celui de {.arg files} doit \u00catre fourni.",
             i = cli::format_inline(
               "Vous avez fourni {length(sample_names)} {.arg sample_name{?s}} et {length(files)} {.arg file{?s}}"
             )
@@ -658,7 +658,7 @@ read_ftir_spc <- function(
       ),
       fr = c(
         "Erreur dans {.fn PlotFTIR:::read_ftir_spc}. PlotFTIR ne peut pas encore lire les fichiers .spc.",
-        i = "Le paquet {.pkg hyperSpec} peut peut-\u00e9tre lire ce fichier."
+        i = "Le paquet {.pkg hyperSpec} peut peut-\u00catre lire ce fichier."
       )
     ),
     call = call
@@ -681,7 +681,7 @@ read_ftir_a2r <- function(
       ),
       fr = c(
         "Erreur dans {.fn PlotFTIR:::read_ftir_a2r}. PlotFTIR ne peut pas encore lire les fichiers .a2r.",
-        i = "Le paquet {.pkg hyperSpec} peut peut-\u00e9tre lire ce fichier."
+        i = "Le paquet {.pkg hyperSpec} peut peut-\u00catre lire ce fichier."
       )
     ),
     call = call
@@ -745,7 +745,7 @@ save_plot <- function(ftir_spectra_plot, filename, ...) {
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} doit \u00e9tre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+            "Erreur dans {.fn PlotFTIR::save_plt}. {.arg ftir_spectra_plot} doit \u00catre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
           )
         )
       ),
@@ -816,7 +816,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} doit \u00e9tre de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir_data}}."
+            "Erreur dans {.fn PlotFTIR::ir_to_plotftir}. {.arg ir_data} doit \u00catre de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir_data}}."
           )
         )
       ),
@@ -895,7 +895,7 @@ ir_to_df <- function(ir, what) {
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::ir_to_df}. {.arg ir} doit \u00e9tre de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir}}."
+            "Erreur dans {.fn PlotFTIR::ir_to_df}. {.arg ir} doit \u00catre de la classe {.cls ir}, produit par le paquet {.pkg ir}. Vous avez fourni {.obj_type_friendly {ir}}."
           )
         )
       ),
@@ -1009,7 +1009,7 @@ plotftir_to_ir <- function(ftir, metadata = NULL) {
             "Error in {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} must be either {.code NA} or a {.cls data.frame}."
           ),
           fr = c(
-            "Erreur dans {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} doit \u00e9tre soit {.code NA} soit un {.cls data.frame}."
+            "Erreur dans {.fn PlotFTIR::plotftir_to_ir}. {.arg metadata} doit \u00catre soit {.code NA} soit un {.cls data.frame}."
           )
         ),
         call = rlang::caller_env()
@@ -1144,7 +1144,7 @@ plotftir_to_chemospec <- function(
             "Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}."
           ),
           fr = c(
-            "Erreur dans {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} doit \u00e9tre l'un de {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, ou un vecteur de la m\u00e9me longueur que {.param group_crit}."
+            "Erreur dans {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} doit \u00catre l'un de {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, ou un vecteur de la m\u00came longueur que {.param group_crit}."
           )
         ),
         call = rlang::caller_env()
@@ -1157,7 +1157,7 @@ plotftir_to_chemospec <- function(
           "Error in {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} must be one of {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, or a vector of the same length as {.param group_crit}."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} doit \u00e9tre l'un de {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, ou un vecteur de la m\u00e9me longueur que {.param group_crit}."
+          "Erreur dans {.fn PlotFTIR::plotftir_to_chemospec}. {.arg group_colours} doit \u00catre l'un de {.code 'auto'}, {.code 'Col7'}, {.code 'Col8'}, {.code 'Col12'}, ou un vecteur de la m\u00came longueur que {.param group_crit}."
         )
       ),
       call = rlang::caller_env()
@@ -1291,7 +1291,7 @@ chemospec_to_plotftir <- function(csdata) {
         ),
         fr = c(
           cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} doit \u00e9tre de la classe {.cls Spectra}, produite par le package {.pkg ChemoSpec}. Vous avez fourni {.obj_type_friendly {csdata}}."
+            "Erreur dans {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} doit \u00catre de la classe {.cls Spectra}, produite par le package {.pkg ChemoSpec}. Vous avez fourni {.obj_type_friendly {csdata}}."
           )
         )
       ),
@@ -1305,7 +1305,7 @@ chemospec_to_plotftir <- function(csdata) {
           "Error in {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} must be of IR spectra, this data appears to be from another instrument."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} doit \u00e9tre des spectres IR, ces donn\u00e9es semblent provenir d'un autre instrument."
+          "Erreur dans {.fn PlotFTIR::chemospec_to_plotftir}. {.arg csdata} doit \u00catre des spectres IR, ces donn\u00e9es semblent provenir d'un autre instrument."
         )
       ),
       call = rlang::caller_env()
