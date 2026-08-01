@@ -35,7 +35,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
           i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
         ),
         fr = c(
-          "{.pkg PlotFTIR} nécessite l'installation du paquet {.pkg ggplot2}.",
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg ggplot2}.",
           i = "Installez le paquet {.pkg ggplot2} avec la commande {.run install.packages('ggplot2')}"
         )
       ),
@@ -49,7 +49,7 @@ get_plot_sample_ids <- function(ftir_spectra_plot) {
           "Error in {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit être un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+          "Erreur dans {.fn PlotFTIR::get_plot_sample_ids}. {.arg ftir_spectra_plot} doit \u00catre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
         )
       )
     )
@@ -98,7 +98,7 @@ check_ftir_data <- function(ftir) {
     .pkg_inform(
       list(
         en = "Converting {.pkg ir} data to {.pkg PlotFTIR} structure.",
-        fr = "Conversion des données {.pkg ir} en structure {.pkg PlotFTIR}."
+        fr = "Conversion des donn\u00e9es {.pkg ir} en structure {.pkg PlotFTIR}."
       )
     )
     ftir <- ir_to_plotftir(ftir)
@@ -108,7 +108,7 @@ check_ftir_data <- function(ftir) {
     .pkg_inform(
       list(
         en = "Converting {.pkg ChemoSpec} data to {.pkg PlotFTIR} structure.",
-        fr = "Conversion des données {.pkg ChemoSpec} en structure {.pkg PlotFTIR}."
+        fr = "Conversion des donn\u00e9es {.pkg ChemoSpec} en structure {.pkg PlotFTIR}."
       )
     )
     ftir <- chemospec_to_plotftir(ftir)
@@ -121,7 +121,7 @@ check_ftir_data <- function(ftir) {
           "Error in {.fn {fn}}. {.arg ftir} must be a data frame. You provided {.obj_type_friendly ftir}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} doit être un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit \u00catre un data.frame. Vous avez fourni {.obj_type_friendly ftir}."
         )
       )
     )
@@ -133,7 +133,7 @@ check_ftir_data <- function(ftir) {
           "Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var sample_id}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var sample_id}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var sample_id}."
         )
       ),
       call = rlang::caller_env(),
@@ -146,7 +146,7 @@ check_ftir_data <- function(ftir) {
           "Error in {.fn {fn}}. {.arg ftir} is missing a column. It must contain a column named {.var wavenumber}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nommée {.var wavenumber}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var wavenumber}."
         )
       ),
       call = rlang::caller_env(),
@@ -258,22 +258,22 @@ print.PlotFTIR_data <- function(x, ...) {
   lang <- .get_language()
 
   if (lang == "fr") {
-    cat("Données PlotFTIR:\n")
+    cat("Donn\u00e9es PlotFTIR:\n")
     cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
     if (length(res) == 0) {
-      cat("  Résolution: aucune\n")
+      cat("  R\u00e9solution: aucune\n")
     } else if (length(unique(res)) == 1) {
-      cat("  Résolution:", unique(res), "cm\u207b\u00b9\\n")
+      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9\\n")
     } else {
-      cat("  Résolution: variable\n")
+      cat("  R\u00e9solution: variable\n")
     }
-    cat("  Type d'intensité:", attr(x, "intensity"), "\n")
-    cat("  Nombre d'échantillons:", length(samples), "\n")
+    cat("  Type d'intensit\u00e9:", attr(x, "intensity"), "\n")
+    cat("  Nombre d'\u00e9chantillons:", length(samples), "\n")
     if (length(samples) <= 5) {
-      cat("  ID des échantillon:", paste(samples, collapse = ", "), "\n")
+      cat("  ID des \u00e9chantillon:", paste(samples, collapse = ", "), "\n")
     } else {
       cat(
-        "  ID des échantillons:",
+        "  ID des \u00e9chantillons:",
         paste(utils::head(samples, 5), collapse = ", "),
         "...\n"
       )
