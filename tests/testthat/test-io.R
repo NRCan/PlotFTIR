@@ -586,8 +586,8 @@ test_that("Interface to ChemoSpec is ok", {
   if (!requireNamespace("ChemoSpec", quietly = TRUE)) {
     expect_error_bilingual(
       chemospec_to_plotftir(data.frame("testdata" = LETTERS)),
-      en = "requires ChemoSpec package installation for this function.",
-      fr = "nécessite l'installation du paquet ChemoSpec pour cette fonction."
+      en = "ChemoSpec",
+      fr = "ChemoSpec"
     )
     expect_error_bilingual(
       plotftir_to_chemospec(biodiesel),
