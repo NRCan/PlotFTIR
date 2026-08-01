@@ -67,6 +67,7 @@ See [vignettes/plotting_ftir_spectra.Rmd](vignettes/plotting_ftir_spectra.Rmd) f
 - Bilingual guarantee: All user-facing text in French and English.
 - Error handling: Use `.pkg_abort()` for bilingual errors; gate optional packages with `requireNamespace()`.
 - Issue numbers: Never guess; verify from user, branch name, or `gh issue list`.
+- All in-code non-ascii characters (é, etc) must be escaped with proper unicode (e.g. /u00e9). Non-ascii characters may be used in comments and are preferred for docstrings
 
 ---
 
