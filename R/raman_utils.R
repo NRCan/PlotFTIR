@@ -68,12 +68,21 @@ find_peak_maxima <- function(
   compute_fwhm = FALSE
 ) {
   ftir <- check_ftir_data(ftir)
-  
+
   if (!attr(ftir, "intensity") %in% c("raman", "normalized raman")) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg ftir} intensity attribute not set.",
-      i = "Expected 'raman' or 'normalized raman'."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg ftir} intensity attribute not set.",
+          i = "Expected 'raman' or 'normalized raman'."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::find_peak_maxima}. L'attribut {.arg ftir} d'intensit\u00e9 n'est pas d\u00e9fini.",
+          i = "Attendu 'raman' ou 'normalized raman'."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (length(sample_ids) <= 1) {
@@ -84,27 +93,55 @@ find_peak_maxima <- function(
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
-  }
-
-  if (!is.null(height) && (!is.numeric(height) || length(height) != 1)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg height} must be a single numeric value or NULL."
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
     )
   }
 
-  if (!is.null(distance) && (!is.numeric(distance) || length(distance) != 1 || distance <= 0)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg distance} must be a positive numeric value or NULL."
+  if (!is.null(height) && (!is.numeric(height) || length(height) != 1)) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg height} must be a single numeric value or NULL.",
+        fr = "Erreur dans {.fn PlotFTIR::find_peak_maxima}. {.arg height} doit \u00eatre une valeur num\u00e9rique unique ou NULL."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  if (
+    !is.null(distance) &&
+      (!is.numeric(distance) || length(distance) != 1 || distance <= 0)
+  ) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg distance} must be a positive numeric value or NULL.",
+        fr = "Erreur dans {.fn PlotFTIR::find_peak_maxima}. {.arg distance} doit \u00eatre une valeur num\u00e9rique positive ou NULL."
+      ),
+      call = rlang::caller_env()
     )
   }
 
   if (!is.logical(compute_fwhm) || length(compute_fwhm) != 1) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg compute_fwhm} must be a logical value."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::find_peak_maxima}. {.arg compute_fwhm} must be a logical value.",
+        fr = "Erreur dans {.fn PlotFTIR::find_peak_maxima}. {.arg compute_fwhm} doit \u00eatre une valeur bool\u00e9enne."
+      ),
+      call = rlang::caller_env()
     )
   }
 
@@ -113,7 +150,10 @@ find_peak_maxima <- function(
   median_spacing <- median(diff(sorted_wn))
 
   if (is.null(height)) {
-    max_intensity <- max(ftir[ftir$sample_id %in% sample_ids, "intensity"], na.rm = TRUE)
+    max_intensity <- max(
+      ftir[ftir$sample_id %in% sample_ids, "intensity"],
+      na.rm = TRUE
+    )
     height <- 0.05 * max_intensity
   }
 
@@ -156,7 +196,7 @@ find_peak_maxima <- function(
 
     if (length(peak_indices) > 1 && distance > 0) {
       sorted_peaks <- peaks_df[order(-peaks_df$intensity), ]
-      
+
       kept_indices <- integer(0)
       for (i in seq_len(nrow(sorted_peaks))) {
         current_wn <- sorted_peaks$wavenumber[i]
@@ -180,66 +220,74 @@ find_peak_maxima <- function(
       for (i in seq_len(nrow(peaks_df))) {
         peak_idx <- which(wavenumber == peaks_df$wavenumber[i])
         half_max <- peaks_df$intensity[i] / 2
-        
-wn_left <- wavenumber[1]
-wn_right <- wavenumber[n]
-int_left <- intensity[1]
-int_right <- intensity[n]
 
-for (j in seq_along(intensity)) {
-  if (j == 1) next
-  if (intensity[j - 1] <= half_max && intensity[j] > half_max) {
-    if (intensity[j] - intensity[j - 1] > 0) {
-      wn_left <- wavenumber[j - 1] + (wavenumber[j] - wavenumber[j - 1]) *
-        (half_max - intensity[j - 1]) / (intensity[j] - intensity[j - 1])
-    } else {
-      wn_left <- wavenumber[j - 1]
+        wn_left <- wavenumber[1]
+        wn_right <- wavenumber[n]
+        int_left <- intensity[1]
+        int_right <- intensity[n]
+
+        for (j in seq_along(intensity)) {
+          if (j == 1) {
+            next
+          }
+          if (intensity[j - 1] <= half_max && intensity[j] > half_max) {
+            if (intensity[j] - intensity[j - 1] > 0) {
+              wn_left <- wavenumber[j - 1] +
+                (wavenumber[j] - wavenumber[j - 1]) *
+                  (half_max - intensity[j - 1]) /
+                  (intensity[j] - intensity[j - 1])
+            } else {
+              wn_left <- wavenumber[j - 1]
+            }
+            break
+          }
+        }
+
+        for (j in seq_along(intensity)) {
+          if (j == 1) {
+            next
+          }
+          if (intensity[j - 1] > half_max && intensity[j] <= half_max) {
+            if (intensity[j - 1] - intensity[j] > 0) {
+              wn_right <- wavenumber[j - 1] +
+                (wavenumber[j] - wavenumber[j - 1]) *
+                  (half_max - intensity[j - 1]) /
+                  (intensity[j - 1] - intensity[j])
+            } else {
+              wn_right <- wavenumber[j]
+            }
+            break
+          }
+        }
+
+        fwhm_values[i] <- abs(wn_right - wn_left)
+      }
+
+      peaks_df$fwhm <- fwhm_values
     }
-    break
-  }
-}
 
-for (j in seq_along(intensity)) {
-  if (j == 1) next
-  if (intensity[j - 1] > half_max && intensity[j] <= half_max) {
-    if (intensity[j - 1] - intensity[j] > 0) {
-      wn_right <- wavenumber[j - 1] + (wavenumber[j] - wavenumber[j - 1]) *
-        (half_max - intensity[j - 1]) / (intensity[j - 1] - intensity[j])
+    results_list[[sid]] <- peaks_df
+  }
+
+  if (length(results_list) == 0) {
+    if (compute_fwhm) {
+      return(data.frame(
+        sample_id = character(),
+        wavenumber = numeric(),
+        intensity = numeric(),
+        fwhm = numeric()
+      ))
     } else {
-      wn_right <- wavenumber[j]
+      return(data.frame(
+        sample_id = character(),
+        wavenumber = numeric(),
+        intensity = numeric()
+      ))
     }
-    break
   }
-}
 
-fwhm_values[i] <- abs(wn_right - wn_left)
-}
-      
-peaks_df$fwhm <- fwhm_values
-}
+  results <- do.call(rbind, results_list)
+  rownames(results) <- NULL
 
-results_list[[sid]] <- peaks_df
-}
-
-if (length(results_list) == 0) {
-  if (compute_fwhm) {
-    return(data.frame(
-      sample_id = character(),
-      wavenumber = numeric(),
-      intensity = numeric(),
-      fwhm = numeric()
-    ))
-  } else {
-    return(data.frame(
-      sample_id = character(),
-      wavenumber = numeric(),
-      intensity = numeric()
-    ))
-  }
-}
-
-results <- do.call(rbind, results_list)
-rownames(results) <- NULL
-
-return(results)
+  return(results)
 }

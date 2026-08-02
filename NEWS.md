@@ -1,5 +1,6 @@
 # PlotFTIR (development version)
 
+* Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).
 * Updated package data to properly print after v1.3.0.
 * Added bilingual error codes and bilingual pretty printing (#40)
 

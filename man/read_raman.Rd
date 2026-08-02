@@ -31,11 +31,11 @@ un data.frame contenant les données spectrales Raman du fichier, avec les attri
 \code{intensity} défini sur \code{"raman"} ou \code{"normalized raman"}, et \code{raman_metadata} contenant toutes les lignes d'en-tête \verb{##KEY=VALUE} analysées sous forme de liste nommée.
 }
 \description{
-Reads an RRUFF-style Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
+Reads a Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
 
-Lit un fichier de spectres Raman au format RRUFF et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
+Lit un fichier de spectres Raman et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 }
 \examples{
-# Reading an RRUFF Raman file:
-# raman_data <- read_raman("./data/Graphite__R090047_Raman.txt")
+# Reading a Raman file:
+# raman_data <- read_raman("./data/Graphite_Raman.txt")
 }

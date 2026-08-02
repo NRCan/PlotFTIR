@@ -279,7 +279,6 @@ test_that("-.ggplot is ok", {
 })
 
 test_that("rename is ok", {
-
   # Test for ggplot2 else skip
   if (!require("ggplot2", quietly = TRUE)) {
     # Of course, we can't generate a plot to feed to the manipulations.

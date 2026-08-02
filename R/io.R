@@ -607,7 +607,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
         ftir_data$intensity <- ftir_data$intensity * 100
       } else {
         i_new <- intensity_type(ftir_data)
-        .pkg_warn(c(
+        .pkg_warn(
           list(
             en = c(
               "Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units.",
@@ -619,7 +619,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
             )
           ),
           call = rlang::caller_env()
-        ))
+        )
         intensity <- i_new
       }
     }
@@ -1234,17 +1234,29 @@ plotftir_to_chemospec <- function(
 
 
 read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
-  lines <- readLines(con = file.path(path, file), n = 30)
-  
-  raman_header_found <- any(grepl("^##filetype=raman", tolower(lines), perl = TRUE))
+  lines <- readLines(con = file.path(path, file))
+
+  raman_header_found <- any(grepl(
+    "^##filetype=raman",
+    tolower(lines),
+    perl = TRUE
+  ))
   if (!raman_header_found) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR:::read_raman_csv}. File does not appear to be Raman data.",
-      i = "Expected first 30 lines to contain a line starting with '##FILETYPE=Raman' (case-insensitive).",
-      x = "This function is specifically for RRUFF-style Raman spectra files."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR:::read_raman_csv}. File does not appear to be Raman data.",
+          i = "Expected first 30 lines to contain a line starting with '##FILETYPE=Raman' (case-insensitive)."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Le fichier ne semble pas \u00eatre des donn\u00e9es Raman.",
+          i = "Les 30 premi\u00e8res lignes doivent contenir une ligne commen\u00e7ant par '##FILETYPE=Raman' (insensible \u00e0 la casse)."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
-  
+
   header_lines <- grep("^##", lines, value = TRUE, perl = TRUE)
   raman_metadata <- list()
   for (line in header_lines) {
@@ -1255,57 +1267,75 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
       raman_metadata[[key]] <- value
     }
   }
-  
+
   data_lines <- lines[!grepl("^#", lines)]
   data_rows <- strsplit(data_lines, ",")
   data_rows <- data_rows[sapply(data_rows, length) == 2]
-  
+
   if (length(data_rows) == 0) {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR:::read_raman_csv}. No valid data rows found.",
-      i = "Data rows must contain exactly two comma-separated numeric values."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR:::read_raman_csv}. No valid data rows found.",
+          i = "Data rows must contain exactly two comma-separated numeric values."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Aucune ligne de donn\u00e9es valide trouv\u00e9e.",
+          i = "Les lignes de donn\u00e9es doivent contenir exactement deux valeurs num\u00e9riques s\u00e9par\u00e9es par des virgules."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
-  
+
   wavenumber <- numeric(length(data_rows))
   intensity <- numeric(length(data_rows))
-  
+
   for (i in seq_along(data_rows)) {
     parsed <- suppressWarnings(as.numeric(data_rows[[i]]))
     if (!all(is.finite(parsed))) {
-      cli::cli_abort(c(
-        "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}.",
-        x = "All wavenumber and intensity values must be numeric."
-      ))
+      .pkg_abort(
+        list(
+          en = c(
+            "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}.",
+            x = "All wavenumber and intensity values must be numeric."
+          ),
+          fr = c(
+            "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}.",
+            x = "Toutes les valeurs de nombre d'ondes et d'intensit\u00e9 doivent \u00eatre num\u00e9riques."
+          )
+        ),
+        call = rlang::caller_env()
+      )
     }
     wavenumber[i] <- parsed[1]
     intensity[i] <- parsed[2]
   }
-  
+
   if (is.na(sample_name)) {
     sample_name <- tools::file_path_sans_ext(file)
   }
-  
+
   ftir_data <- data.frame(
     "wavenumber" = wavenumber,
     "intensity" = intensity,
     "sample_id" = sample_name
   )
-  
+
   attr(ftir_data, "raman_metadata") <- raman_metadata
-  
+
   ftir_data <- check_ftir_data(ftir_data)
   attr(ftir_data, "intensity") <- "raman"
-  
+
   return(ftir_data)
 }
 
 #' Read Raman file
 #'
 #' @description
-#' Reads an RRUFF-style Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
+#' Reads a Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
 #'
-#' Lit un fichier de spectres Raman au format RRUFF et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
+#' Lit un fichier de spectres Raman et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
 #'
 #' @param path
 #' Path to the file. Default is the current working directory, as `"."`. Can include the filename, in which case provide `NA` as the filename.
@@ -1337,8 +1367,8 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
 #' @export
 #'
 #' @examples
-#' # Reading an RRUFF Raman file:
-#' # raman_data <- read_raman("./data/Graphite__R090047_Raman.txt")
+#' # Reading a Raman file:
+#' # raman_data <- read_raman("./data/Graphite_Raman.txt")
 #' @md
 read_raman <- function(
   path = ".",
@@ -1347,8 +1377,12 @@ read_raman <- function(
   ...
 ) {
   if (length(path) != 1 || !is.character(path)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_raman}. {.arg path} must be a single string value."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg path} must be a single string value.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg path} doit \u00eatre une valeur de cha\u00eene unique."
+      ),
+      call = rlang::caller_env()
     )
   }
   if (
@@ -1360,24 +1394,44 @@ read_raman <- function(
     path <- dirname(path)
   }
   if (length(file) != 1 || !is.character(file)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_raman}. {.arg file} must be a single string value."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg file} must be a single string value.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg file} doit \u00eatre une valeur de cha\u00eene unique."
+      ),
+      call = rlang::caller_env()
     )
   }
   if (length(sample_name) != 1) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a single string value or single {.val NA}."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a single string value or single {.val NA}.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg sample_name} doit \u00eatre une valeur de cha\u00eene unique ou un seul {.val NA}."
+      ),
+      call = rlang::caller_env()
     )
   }
   if (!is.na(sample_name) && !is.character(sample_name)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a string value or {.val NA}."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a string value or {.val NA}.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg sample_name} doit \u00eatre une valeur de cha\u00eene ou {.val NA}."
+      ),
+      call = rlang::caller_env()
     )
   }
 
   if (!file.exists(file.path(path, file))) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::read_raman}. File {.val {file.path(path, file)}} does not appear to exist."
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::read_raman}. File {.val {file.path(path, file)}} does not appear to exist."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::read_raman}. Le fichier {.val {file.path(path, file)}} ne semble pas exister."
+        )
+      ),
+      call = rlang::caller_env()
     )
   }
 
@@ -1391,10 +1445,23 @@ read_raman <- function(
       ...
     ))
   } else {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::read_raman}. Input file of type {{filetype}} could not be processed.",
-      i = "PlotFTIR currently supports .csv/.txt files for Raman data."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          cli::format_inline(
+            "Error in {.fn PlotFTIR::read_raman}. Input file of type {{filetype}} could not be processed."
+          ),
+          i = "PlotFTIR currently supports .csv/.txt files for Raman data."
+        ),
+        fr = c(
+          cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::read_raman}. Le fichier d'entr\u00e9e de type {{filetype}} n'a pas pu \u00eatre trait\u00e9."
+          ),
+          i = "PlotFTIR prend actuellement en charge les fichiers .csv/.txt pour les donn\u00e9es Raman."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 }
 

@@ -979,50 +979,6 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
   return(p)
 }
 
-#' Add Band
-#'
-#' @description
-#' Add a shaded band (with optional text overlay) to a FTIR spectral region, to visually highlight an area.
-#'
-#' Ajoutez une bande ombrée (avec un texte en option) à une région spectrale FTIR, pour mettre visuellement en évidence une zone.
-#'
-#' @inheritParams .shared-params
-#'
-#' @param wavenumber_range A vector of length two, with the wavenumber range of the shaded band.
-#'   Order of provided limits is not important.
-#'
-#'   Un vecteur de longueur deux, avec la gamme de nombres d'ondes de la bande ombrée.
-#'   L'ordre des limites fournies n'est pas important.
-#'
-#'
-#' @param text The text of the label over the band (optional).
-#'
-#'   Le texte de l'étiquette au-dessus du bande (facultatif).
-#'
-#' @param colour A colour for the shaded band. Note that alpha will be set to 0.5.
-#'  A default blue band will be added if not provided.
-#'  See `vignette("ggplot2-specs", "ggplot2")` for more information on aesthetics in graphics.
-#'
-#'  Une couleur pour la bande ombrée. Notez que la valeur alpha est fixée à 0,5.
-#'  Une bande bleue sera ajoutée par défaut si aucune valeur n'est fournie.
-#'  Voir `vignette(« ggplot2-specs », « ggplot2 »)` pour plus d'informations sur l'esthétique dans les graphiques.
-#'
-#' @return the FTIR plot as a ggplot2 object, with the shaded band added.
-#'
-#' le tracé FTIR en tant qu'objet ggplot2, avec la bande ombrée ajoutée.
-#'
-#' @export
-#' @md
-#' @seealso [add_wavenumber_marker()]
-#'
-#' @examples
-#' if (requireNamespace("ggplot2", quietly = TRUE)) {
-#'   # Generate a plot
-#'   p <- plot_ftir(sample_spectra)
-#'
-#'   # Add a band to -OH region:
-#'   add_band(p, c(3600, 3100), "-OH Stretch")
-#' }
 #' Smooth Spectra Using Savitzky-Golay Filter
 #'
 #' @description Applies a moving-window polynomial filter to denoise spectra.
@@ -1080,19 +1036,37 @@ smooth_spectra <- function(
   polyorder = 2
 ) {
   if (!requireNamespace("signal", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg signal} package installation for this function.",
-      i = "Install {.pkg signal} with {.run install.packages('signal')}"
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg signal} package installation for this function.",
+          i = "Install {.pkg signal} with {.run install.packages('signal')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg signal} pour cette fonction.",
+          i = "Installez {.pkg signal} avec {.run install.packages('signal')}"
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   ftir <- check_ftir_data(ftir)
-  
+
   if (attr(ftir, "intensity") == "intensity") {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg ftir} intensity attribute not set.",
-      i = "Expected 'raman' or 'normalized raman'."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::smooth_spectra}. {.arg ftir} intensity attribute not set.",
+          i = "Expected 'raman' or 'normalized raman'."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::smooth_spectra}. L'attribut {.arg ftir} d'intensit\u00e9 n'est pas d\u00e9fini.",
+          i = "Attendu 'raman' ou 'normalized raman'."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (length(sample_ids) <= 1) {
@@ -1103,51 +1077,84 @@ smooth_spectra <- function(
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
+          x = "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
-  if (!is.numeric(window_length) || length(window_length) != 1 || window_length < 1) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be a positive integer."
+  if (
+    !is.numeric(window_length) ||
+      length(window_length) != 1 ||
+      window_length < 1
+  ) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be a positive integer.",
+        fr = "Erreur dans {.fn PlotFTIR::smooth_spectra}. {.arg window_length} doit \u00eatre un entier positif."
+      ),
+      call = rlang::caller_env()
     )
   }
-  
+
   if (window_length != round(window_length)) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be an integer."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::smooth_spectra}. {.arg window_length} must be an integer.",
+        fr = "Erreur dans {.fn PlotFTIR::smooth_spectra}. {.arg window_length} doit \u00eatre un entier."
+      ),
+      call = rlang::caller_env()
     )
   }
-  
+
   if (window_length %% 2 == 0) {
-    cli::cli_inform(c(
-      "{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd)."
-    ))
+    .pkg_inform(
+      list(
+        en = "{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd).",
+        fr = "{.fn PlotFTIR::smooth_spectra} a automatiquement corrig\u00e9 {.arg window_length} de {as.integer(window_length)} \u00e0 {as.integer(window_length + 1)} (doit \u00eatre impair)."
+      ),
+      call = rlang::caller_env()
+    )
     window_length <- window_length + 1
   }
 
   if (!is.numeric(polyorder) || length(polyorder) != 1 || polyorder < 0) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be a non-negative integer."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be a non-negative integer.",
+        fr = "Erreur dans {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} doit \u00eatre un entier non n\u00e9gatif."
+      ),
+      call = rlang::caller_env()
     )
   }
-  
+
   if (polyorder >= window_length) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be less than {.arg window_length}."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} must be less than {.arg window_length}.",
+        fr = "Erreur dans {.fn PlotFTIR::smooth_spectra}. {.arg polyorder} doit \u00eatre inf\u00e9rieur \u00e0 {.arg window_length}."
+      ),
+      call = rlang::caller_env()
     )
   }
 
   for (sid in sample_ids) {
     idx <- ftir$sample_id == sid
     intensity_vec <- ftir[idx, "intensity"]
-    
+
     n <- floor(window_length / 2)
-    
+
     smoothed <- signal::sgolayfilt(x = intensity_vec, m = polyorder, n = n)
-    
+
     ftir[idx, "intensity"] <- smoothed
   }
 
@@ -1215,19 +1222,37 @@ baseline_correct <- function(
   p = 0.001
 ) {
   if (!requireNamespace("baseline", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg baseline} package installation for this function.",
-      i = "Install {.pkg baseline} with {.run install.packages('baseline')}"
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg baseline} package installation for this function.",
+          i = "Install {.pkg baseline} with {.run install.packages('baseline')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg baseline} pour cette fonction.",
+          i = "Installez {.pkg baseline} avec {.run install.packages('baseline')}"
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   ftir <- check_ftir_data(ftir)
-  
+
   if (attr(ftir, "intensity") == "intensity") {
-    cli::cli_abort(c(
-      "Error in {.fn PlotFTIR::baseline_correct}. {.arg ftir} intensity attribute not set.",
-      i = "Expected 'raman' or 'normalized raman'."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::baseline_correct}. {.arg ftir} intensity attribute not set.",
+          i = "Expected 'raman' or 'normalized raman'."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::baseline_correct}. L'attribut {.arg ftir} d'intensit\u00e9 n'est pas d\u00e9fini.",
+          i = "Attendu 'raman' ou 'normalized raman'."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (length(sample_ids) <= 1) {
@@ -1238,30 +1263,47 @@ baseline_correct <- function(
 
   if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
     mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
-    cli::cli_abort(c(
-      "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-      x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
+          x = "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   if (!is.numeric(lambda) || length(lambda) != 1 || lambda <= 0) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::baseline_correct}. {.arg lambda} must be a positive numeric value."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::baseline_correct}. {.arg lambda} must be a positive numeric value.",
+        fr = "Erreur dans {.fn PlotFTIR::baseline_correct}. {.arg lambda} doit \u00eatre une valeur num\u00e9rique positive."
+      ),
+      call = rlang::caller_env()
     )
   }
 
   if (!is.numeric(p) || length(p) != 1 || p <= 0 || p > 0.5) {
-    cli::cli_abort(
-      "Error in {.fn PlotFTIR::baseline_correct}. {.arg p} must be a numeric value in (0, 0.5]."
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::baseline_correct}. {.arg p} must be a numeric value in (0, 0.5].",
+        fr = "Erreur dans {.fn PlotFTIR::baseline_correct}. {.arg p} doit \u00eatre une valeur num\u00e9rique dans (0, 0,5]."
+      ),
+      call = rlang::caller_env()
     )
   }
 
   for (sid in sample_ids) {
     idx <- ftir$sample_id == sid
     intensity_vec <- ftir[idx, "intensity"]
-    
+
     baseline_fit <- baseline::als(y = intensity_vec, lambda = lambda, p = p)
-    
+
     ftir[idx, "baseline_fitted"] <- baseline_fit$fit
     ftir[idx, "intensity"] <- intensity_vec - baseline_fit$fit
   }
@@ -1269,6 +1311,50 @@ baseline_correct <- function(
   return(ftir)
 }
 
+#' Add Band
+#'
+#' @description
+#' Add a shaded band (with optional text overlay) to a FTIR spectral region, to visually highlight an area.
+#'
+#' Ajoutez une bande ombrée (avec un texte en option) à une région spectrale FTIR, pour mettre visuellement en évidence une zone.
+#'
+#' @inheritParams .shared-params
+#'
+#' @param wavenumber_range A vector of length two, with the wavenumber range of the shaded band.
+#'   Order of provided limits is not important.
+#'
+#'   Un vecteur de longueur deux, avec la gamme de nombres d'ondes de la bande ombrée.
+#'   L'ordre des limites fournies n'est pas important.
+#'
+#'
+#' @param text The text of the label over the band (optional).
+#'
+#'   Le texte de l'étiquette au-dessus du bande (facultatif).
+#'
+#' @param colour A colour for the shaded band. Note that alpha will be set to 0.5.
+#'  A default blue band will be added if not provided.
+#'  See `vignette("ggplot2-specs", "ggplot2")` for more information on aesthetics in graphics.
+#'
+#'  Une couleur pour la bande ombrée. Notez que la valeur alpha est fixée à 0,5.
+#'  Une bande bleue sera ajoutée par défaut si aucune valeur n'est fournie.
+#'  Voir `vignette(« ggplot2-specs », « ggplot2 »)` pour plus d'informations sur l'esthétique dans les graphiques.
+#'
+#' @return the FTIR plot as a ggplot2 object, with the shaded band added.
+#'
+#' le tracé FTIR en tant qu'objet ggplot2, avec la bande ombrée ajoutée.
+#'
+#' @export
+#' @md
+#' @seealso [add_wavenumber_marker()]
+#'
+#' @examples
+#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'   # Generate a plot
+#'   p <- plot_ftir(sample_spectra)
+#'
+#'   # Add a band to -OH region:
+#'   add_band(p, c(3600, 3100), "-OH Stretch")
+#' }
 add_band <- function(
   ftir_spectra_plot,
   wavenumber_range,

@@ -56,30 +56,38 @@ test_that("average_spectra works - balanced spectra", {
   expect_equal(average$sample_id[1], "averaged_spectra") # Expect default ID
   expect_equal(average$absorbance[average$wavenumber == 1000], 0.3) # Expect mean absorbance
 
-  expect_error(average_spectra("not_a_data_frame"))
-  expect_error(
+  expect_error_bilingual(
+    average_spectra("not_a_data_frame"),
+    en = "must be a data frame",
+    fr = "doit être un data.frame"
+  )
+  expect_error_bilingual(
     average_spectra(ftir_data[, c("wavenumber", "absorbance")]),
-    regexp = "is missing a column",
-    fixed = TRUE
+    en = "is missing a column. It must contain a column named `sample_id`",
+    fr = "ne contient pas une colonne. Il doit contenir une colonne nommée `sample_id`"
   )
-  expect_error(
+  expect_error_bilingual(
     average_spectra(ftir_data[, c("wavenumber", "sample_id")]),
-    regexp = "must have one of",
-    fixed = TRUE
+    en = "must have one of `absorbance`, `transmittance`, or `intensity` columns",
+    fr = "doit contenir une des colonnes `absorbance`, `transmittance`, ou `intensity`"
   )
-  expect_error(
+  expect_error_bilingual(
     average_spectra(ftir_data[, c("sample_id", "absorbance")]),
-    regexp = "is missing a column",
-    fixed = TRUE
+    en = "is missing a column. It must contain a column named `wavenumber`",
+    fr = "ne contient pas une colonne. Il doit contenir une colonne nommée `wavenumber`"
   )
 
-  expect_error(
+  expect_error_bilingual(
     average_spectra(ftir_data, sample_ids = "invalid_id"),
-    regexp = "All provided",
-    fixed = TRUE
+    en = "All provided `sample_ids` must be in `ftir` data.",
+    fr = "Tous les `sample_ids` fournis doivent être dans les données `ftir`."
   )
 
-  expect_error(average_spectra(ftir_data, average_id = 10))
+  expect_error_bilingual(
+    average_spectra(ftir_data, average_id = 10),
+    en = "`average_id` must be a character value",
+    fr = "`average_id` doit être une valeur de chaîne"
+  )
 
   ftir_data_mismatch <- ftir_data
   ftir_data_mismatch$wavenumber[ftir_data_mismatch$sample_id == "C"] <- c(
@@ -87,10 +95,10 @@ test_that("average_spectra works - balanced spectra", {
     1051
   )
 
-  expect_warning(
+  expect_warning_bilingual(
     average_spectra(ftir_data_mismatch, sample_ids = c("A", "C")),
-    regexp = "There is a mismatch in the wavenumber axis between sample_ids",
-    fixed = TRUE
+    en = "There is a mismatch in the wavenumber axis between sample_ids.",
+    fr = "Il y a un écart dans l'axe du nombre d'ondes entre les sample_ids."
   )
 })
 
@@ -120,10 +128,10 @@ test_that("average_spectra works unbalanced", {
       ftir_data$wavenumber < 1000),
   ]
 
-  expect_warning(
+  expect_warning_bilingual(
     average_spectra(ftir_data),
-    regexp = "There is a mismatch in the wavenumber axis between sample_ids",
-    fixed = TRUE
+    en = "There is a mismatch in the wavenumber axis between sample_ids.",
+    fr = "Il y a un écart dans l'axe du nombre d'ondes entre les sample_ids."
   )
 
   suppressWarnings(avg_123 <- average_spectra(ftir_data))
@@ -201,21 +209,21 @@ test_that("add_subtract_scalar_value works", {
   ) # Expect modified absorbance for B
   expect_equal(modified_data$absorbance[modified_data$sample_id == "C"], 0.5) # Expect unchanged absorbance for C
 
-  expect_error(
+  expect_error_bilingual(
     add_scalar_value(ftir_data, value = "invalid"),
-    regexp = "Provided `value` must be numeric",
-    fixed = TRUE
+    en = "must be numeric",
+    fr = "doit être numérique"
   )
-  expect_error(
+  expect_error_bilingual(
     subtract_scalar_value(ftir_data, value = "invalid"),
-    regexp = "Provided `value` must be numeric",
-    fixed = TRUE
+    en = "must be numeric",
+    fr = "doit être numérique"
   )
 
-  expect_error(
+  expect_error_bilingual(
     add_scalar_value(ftir_data, value = 0.5, sample_ids = "invalid_id"),
-    regexp = "All provided `sample_ids` must be in `ftir` data",
-    fixed = TRUE
+    en = "All provided `sample_ids` must be in `ftir` data.",
+    fr = "Tous les `sample_ids` fournis doivent être dans les données `ftir`."
   )
 
   expect_equal(attr(modified_data, "intensity"), "absorbance")
@@ -237,66 +245,66 @@ test_that("add_subtract_scalar_value works", {
 
 
 test_that("Baseline error checking works", {
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline("not_a_dataframe"),
-    regexp = "must be a data frame. You provided a string",
-    fixed = TRUE
+    en = "must be a data frame",
+    fr = "doit être un data.frame"
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, method = "failure"),
-    regexp = "must be a string",
-    fixed = TRUE
+    en = "`method` must be a string.",
+    fr = "`method` doit être une chaîne de caractères."
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, individually = "failure"),
-    regexp = "must be a boolean value",
-    fixed = TRUE
+    en = "`individually` must be a boolean value",
+    fr = "`individually` doit être une valeur booléenne"
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, sample_ids = "A"),
-    regexp = "All provided `sample_ids` must be in `ftir` data.",
-    fixed = TRUE
+    en = "All provided `sample_ids` must be in `ftir` data.",
+    fr = "Tous les `sample_ids` fournis doivent être dans les données `ftir`."
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, wavenumber_range = c(1, 2, 3)),
-    regexp = "must be of length 1 or 2",
-    fixed = TRUE
+    en = "`wavenumber_range` must be of length 1 or 2",
+    fr = "`wavenumber_range` doit être d'une longueur de 1 ou 2"
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, wavenumber_range = c("one", "two")),
-    regexp = "`wavenumber_range` must be `numeric` or `NA`.",
-    fixed = TRUE
+    en = "`wavenumber_range` must be `numeric` or `NA`.",
+    fr = "`wavenumber_range` doit être `numeric` ou `NA`."
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(
       biodiesel,
       method = "point",
       wavenumber_range = c(1, 2)
     ),
-    regexp = "must be one numeric value",
-    fixed = TRUE
+    en = "`wavenumber_range` must be one numeric value if `method = 'point'`.",
+    fr = "`wavenumber_range` doit être une valeur numérique si `method = 'point'`."
   )
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, method = "point", wavenumber_range = NA),
-    regexp = "must be a single numeric value",
-    fixed = TRUE
+    en = "`wavenumber_range` must be a single numeric value.",
+    fr = "`wavenumber_range` doit être une seule valeur numérique."
   )
 
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, method = "minimum", wavenumber_range = 1),
-    regexp = "or two numeric values if `method = 'minimum'`",
-    fixed = TRUE
+    en = "`wavenumber_range` must be `NA` or two numeric values if `method = 'minimum'`.",
+    fr = "`wavenumber_range` doit être `NA` ou deux valeurs numériques si `method = 'minimum'`."
   )
-  expect_error(
+  expect_error_bilingual(
     recalculate_baseline(biodiesel, method = "maximum", wavenumber_range = 1),
-    regexp = "or two numeric values if `method = 'maximum'`",
-    fixed = TRUE
+    en = "`wavenumber_range` must be `NA` or two numeric values if `method = 'maximum'`.",
+    fr = "`wavenumber_range` doit être `NA` ou deux valeurs numériques si `method = 'maximum'`."
   )
 
   expect_error(
@@ -317,10 +325,10 @@ test_that("Baseline - average works", {
     absorbance = c(0.1, 0.2, 0.3, 0.2, 0.3, 0.4, 0.3, 0.4, 0.5)
   )
 
-  expect_warning(
+  expect_warning_bilingual(
     recalculate_baseline(ftir_data, method = "average", individually = TRUE),
-    regexp = "Adjusting spectra baseline by the average of all values is not analytically useful",
-    fixed = TRUE
+    en = "Adjusting spectra baseline by the average of all values is not analytically useful",
+    fr = "Ajuster la ligne de base du spectre par la moyenne de toutes les valeurs n'est pas analytiquement utile."
   )
   suppressWarnings(
     recalculated_ftir <- recalculate_baseline(
@@ -487,10 +495,10 @@ test_that("Baseline - average works", {
   ftir_data$transmittance <- c(100, 90, 80, 90, 80, 70, 80, 70, 60)
   ftir_data$absorbance <- NULL
 
-  expect_warning(
+  expect_warning_bilingual(
     recalculate_baseline(ftir_data, method = "average", individually = TRUE),
-    regexp = "Adjusting spectra baseline by the average of all values is not analytically useful",
-    fixed = TRUE
+    en = "Adjusting spectra baseline by the average of all values is not analytically useful",
+    fr = "Ajuster la ligne de base du spectre par la moyenne de toutes les valeurs n'est pas analytiquement utile."
   )
   suppressWarnings(
     recalculated_ftir <- recalculate_baseline(
@@ -679,26 +687,26 @@ test_that("Baseline - point works", {
   )
   expect_equal(attr(recalculated_ftir, "intensity"), "absorbance")
 
-  suppressWarnings(expect_warning(
+  suppressWarnings(expect_warning_bilingual(
     recalculate_baseline(
       ftir_data,
       method = "point",
       wavenumber_range = 500,
       individually = TRUE
     ),
-    regexp = "Provided wavenumber is not within spectral range",
-    fixed = TRUE
+    en = "Provided wavenumber is not within spectral range.",
+    fr = "La fréquence fournie n'est pas comprise dans la plage spectrale."
   ))
 
-  suppressWarnings(expect_warning(
+  suppressWarnings(expect_warning_bilingual(
     recalculate_baseline(
       ftir_data,
       method = "point",
       wavenumber_range = 1012.5,
       individually = TRUE
     ),
-    regexp = "No wavenumber values in spectra within 10 cm-1 of supplied point",
-    fixed = TRUE
+    en = "No wavenumber values in spectra within 10 cm-1 of supplied point.",
+    fr = "Aucune valeur de fréquence dans le spectre à 10 cm-1 du point fourni."
   ))
 
   recalculated_ftir <- recalculate_baseline(
@@ -1425,40 +1433,40 @@ test_that("Baseline - minimum/maximum works", {
 
 
 test_that("Normalization works", {
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra("not_a_dataframe"),
-    regexp = "must be a data frame. You provided a string",
-    fixed = TRUE
+    en = "must be a data frame",
+    fr = "doit être un data.frame"
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(biodiesel, sample_ids = "A"),
-    regexp = "All provided `sample_ids` must be in `ftir` data.",
-    fixed = TRUE
+    en = "All provided `sample_ids` must be in `ftir` data.",
+    fr = "Tous les `sample_ids` fournis doivent être dans les données `ftir`."
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(biodiesel, wavenumber_range = c(1, 2, 3)),
-    regexp = "must be of length 2",
-    fixed = TRUE
+    en = "`wavenumber_range` must be of length 2",
+    fr = "`wavenumber_range` doit être d'une longueur de 2"
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(biodiesel, wavenumber_range = c("one", "two")),
-    regexp = "`wavenumber_range` must be `numeric` or `NA`.",
-    fixed = TRUE
+    en = "`wavenumber_range` must be `numeric` or `NA`.",
+    fr = "`wavenumber_range` doit être `numeric` ou `NA`."
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(biodiesel, wavenumber_range = c(1, NA)),
-    regexp = "`wavenumber_range` must be `numeric` or `NA`",
-    fixed = TRUE
+    en = "`wavenumber_range` must be `numeric` or `NA`.",
+    fr = "`wavenumber_range` doit être `numeric` ou `NA`."
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(biodiesel, wavenumber_range = 1500),
-    regexp = "must be of length 2",
-    fixed = TRUE
+    en = "`wavenumber_range` must be of length 2",
+    fr = "`wavenumber_range` doit être d'une longueur de 2"
   )
-  expect_error(
+  expect_error_bilingual(
     normalize_spectra(absorbance_to_transmittance(biodiesel)),
-    regexp = "Normalization of transmittance spectra not supported",
-    fixed = TRUE
+    en = "Normalization of transmittance spectra not supported.",
+    fr = "La normalisation des spectres de transmittance n'est pas prise en charge."
   )
 
   spectra <- data.frame(
@@ -1526,15 +1534,15 @@ test_that("conversion between units works", {
     "normalized absorbance"
   )
 
-  expect_error(
+  expect_error_bilingual(
     transmittance_to_absorbance(biodiesel),
-    "`ftir` must be transmittance data or contain a `transmittance` column.",
-    fixed = TRUE
+    en = "must be transmittance data or contain a `transmittance` column",
+    fr = "doit être des données de transmittance ou contenir une colonne `transmittance`"
   )
-  expect_error(
+  expect_error_bilingual(
     absorbance_to_transmittance(absorbance_to_transmittance(biodiesel)),
-    "`ftir` must be absorbance data or contain a `absorbance` column.",
-    fixed = TRUE
+    en = "must be absorbance data or contain a `absorbance` column",
+    fr = "doit être des données d'absorbance ou contenir une colonne `absorbance`"
   )
 
   example_data <- data.frame(
@@ -1565,15 +1573,15 @@ test_that("conversion between units works", {
     "sample_id" = "test",
     "transmittance" = c(100, 50, 10, 5, 1)
   )
-  expect_error(
+  expect_error_bilingual(
     absorbance_to_transmittance(example_data3),
-    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fixed = TRUE
+    en = "cannot contain more than one of `absorbance`, `transmittance`, or `intensity` columns",
+    fr = "ne peut pas contenir plus d'une des colonnes `absorbance`, `transmittance`, ou `intensity`"
   )
-  expect_error(
+  expect_error_bilingual(
     transmittance_to_absorbance(example_data3),
-    "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fixed = TRUE
+    en = "cannot contain more than one of `absorbance`, `transmittance`, or `intensity` columns",
+    fr = "ne peut pas contenir plus d'une des colonnes `absorbance`, `transmittance`, ou `intensity`"
   )
 })
 
@@ -1621,127 +1629,129 @@ test_that("Normalization carries thorugh other functions", {
   )
 })
 
-describe("normalize_raman", {
+
   test_that("vector normalization produces unit norm for each sample", {
     temp_file <- withr::local_tempfile(fileext = ".csv")
     tmppath <- dirname(temp_file)
     tmpfile <- basename(temp_file)
-    
+
     wn <- seq(100, 2000, by = 10)
     intensity <- c(100, rep(50, length(wn) - 2), 100)
-    
+
     raman_content <- c(
       "##FILETYPE=Raman",
       paste(wn, ",", intensity, sep = "")
     )
-    
+
     writeLines(raman_content, temp_file)
-    
+
     result <- read_raman(path = tmppath, file = tmpfile)
-    
+
     normalized <- normalize_raman(result, method = "vector")
-    
-    sample_data <- normalized[normalized$sample_id == tools::file_path_sans_ext(tmpfile), ]
+
+    sample_data <- normalized[
+      normalized$sample_id == tools::file_path_sans_ext(tmpfile),
+    ]
     norm_val <- sqrt(sum(sample_data$intensity^2))
-    
+
     expect_equal(round(norm_val, 6), 1)
     expect_equal(attr(normalized, "intensity"), "normalized raman")
   })
-  
+
   test_that("max normalization sets max intensity to 1 for each sample", {
     temp_file <- withr::local_tempfile(fileext = ".csv")
     tmppath <- dirname(temp_file)
     tmpfile <- basename(temp_file)
-    
+
     wn <- seq(100, 2000, by = 10)
     intensity <- c(50, rep(100, length(wn) - 2), 60)
-    
+
     raman_content <- c(
       "##FILETYPE=Raman",
       paste(wn, ",", intensity, sep = "")
     )
-    
+
     writeLines(raman_content, temp_file)
-    
+
     result <- read_raman(path = tmppath, file = tmpfile)
-    
+
     normalized <- normalize_raman(result, method = "max")
-    
+
     max_intensity <- max(normalized$intensity)
-    
+
     expect_equal(max_intensity, 1)
     expect_equal(attr(normalized, "intensity"), "normalized raman")
   })
-  
+
   test_that("normalization updates attribute to 'normalized raman'", {
     temp_file <- withr::local_tempfile(fileext = ".csv")
     tmppath <- dirname(temp_file)
     tmpfile <- basename(temp_file)
-    
+
     wn <- seq(100, 2000, by = 10)
     intensity <- rep(100, length(wn))
-    
+
     raman_content <- c(
       "##FILETYPE=Raman",
       paste(wn, ",", intensity, sep = "")
     )
-    
+
     writeLines(raman_content, temp_file)
-    
+
     result <- read_raman(path = tmppath, file = tmpfile)
-    
+
     expect_equal(attr(result, "intensity"), "raman")
-    
+
     normalized <- normalize_raman(result)
-    
+
     expect_equal(attr(normalized, "intensity"), "normalized raman")
   })
-  
+
   test_that("normalize_raman validates method parameter", {
     temp_file <- withr::local_tempfile(fileext = ".csv")
     tmppath <- dirname(temp_file)
     tmpfile <- basename(temp_file)
-    
+
     wn <- seq(100, 2000, by = 10)
     intensity <- rep(100, length(wn))
-    
+
     raman_content <- c(
       "##FILETYPE=Raman",
       paste(wn, ",", intensity, sep = "")
     )
-    
+
     writeLines(raman_content, temp_file)
-    
+
     result <- read_raman(path = tmppath, file = tmpfile)
-    
-    expect_error(
+
+    expect_error_bilingual(
       normalize_raman(result, method = "invalid"),
-      regexp = "must be one of",
-      fixed = TRUE
+      en = "`method` must be a string.",
+      fr = "`method` doit être une chaîne de caractères."
     )
   })
-  
+
   test_that("normalize_raman validates sample_ids parameter", {
     temp_file <- withr::local_tempfile(fileext = ".csv")
     tmppath <- dirname(temp_file)
     tmpfile <- basename(temp_file)
-    
+
     wn <- seq(100, 2000, by = 10)
     intensity <- rep(100, length(wn))
-    
+
     raman_content <- c(
       "##FILETYPE=Raman",
       paste(wn, ",", intensity, sep = "")
     )
-    
+
     writeLines(raman_content, temp_file)
-    
+
     result <- read_raman(path = tmppath, file = tmpfile)
-    
-    expect_error(
+
+    expect_error_bilingual(
       normalize_raman(result, sample_ids = "nonexistent"),
-      regexp = "must be in",
-      fixed = TRUE
+      en = "All provided `sample_ids` must be in `ftir` data.",
+      fr = "Tous les `sample_ids` fournis doivent être dans les données `ftir`."
     )
   })
-})
+

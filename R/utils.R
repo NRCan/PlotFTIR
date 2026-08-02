@@ -152,24 +152,59 @@ check_ftir_data <- function(ftir) {
       call = rlang::caller_env(),
     )
   }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+  if (
+    !any(
+      colnames(ftir) == "absorbance",
+      colnames(ftir) == "transmittance",
+      colnames(ftir) == "intensity"
+    )
+  ) {
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit contenir une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
+        )
+      )
     )
   }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+  if (
+    sum(colnames(ftir) %in% c("absorbance", "transmittance", "intensity")) > 1
+  ) {
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} cannot contain more than one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir plus d'une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
+        )
+      )
     )
   }
   if (
     any(
       !(colnames(ftir) %in%
-        c("sample_id", "wavenumber", "absorbance", "transmittance", "intensity"))
+        c(
+          "sample_id",
+          "wavenumber",
+          "absorbance",
+          "transmittance",
+          "intensity"
+        ))
     )
   ) {
-    cli::cli_abort(
-      "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance}, {.var transmittance}, or {.var intensity}."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
+        )
+      )
     )
   }
   if (
@@ -234,20 +269,53 @@ print.PlotFTIR_data <- function(x, ...) {
   # Calculate all values first to avoid repetition
   wn <- sort(unique(x$wavenumber))
   res <- diff(wn)
-  if (length(res) == 0) {
-    cat("  Resolution: none\n")
-  } else if (length(unique(res)) == 1) {
-    cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
-  } else {
-    cat("  Resolution: variable\n")
-  }
-  cat("  Intensity type:", attr(x, "intensity"), "\n")
   samples <- unique(x$sample_id)
-  cat("  Number of samples:", length(samples), "\n")
-  if (length(samples) <= 5) {
-    cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
+
+  lang <- .get_language()
+
+  if (lang == "fr") {
+    cat("Donn\u00e9es PlotFTIR:\n")
+    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    if (length(res) == 0) {
+      cat("  R\u00e9solution: aucune\n")
+    } else if (length(unique(res)) == 1) {
+      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9\\n")
+    } else {
+      cat("  R\u00e9solution: variable\n")
+    }
+    cat("  Type d'intensit\u00e9:", attr(x, "intensity"), "\n")
+    cat("  Nombre d'\u00e9chantillons:", length(samples), "\n")
+    if (length(samples) <= 5) {
+      cat("  ID des \u00e9chantillons:", paste(samples, collapse = ", "), "\n")
+    } else {
+      cat(
+        "  ID des \u00e9chantillons:",
+        paste(utils::head(samples, 5), collapse = ", "),
+        "...\n"
+      )
+    }
   } else {
-    cat("  Sample IDs:", paste(utils::head(samples, 5), collapse = ", "), "...\n")
+    # English by default
+    cat("PlotFTIR data:\n")
+    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    if (length(res) == 0) {
+      cat("  Resolution: none\n")
+    } else if (length(unique(res)) == 1) {
+      cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
+    } else {
+      cat("  Resolution: variable\n")
+    }
+    cat("  Intensity type:", attr(x, "intensity"), "\n")
+    cat("  Number of samples:", length(samples), "\n")
+    if (length(samples) <= 5) {
+      cat("  Sample IDs:", paste(samples, collapse = ", "), "\n")
+    } else {
+      cat(
+        "  Sample IDs:",
+        paste(utils::head(samples, 5), collapse = ", "),
+        "...\n"
+      )
+    }
   }
   invisible(x)
 }
@@ -271,11 +339,15 @@ intensity_type <- function(ftir) {
     return("transmittance")
   } else if ("intensity" %in% colnames(ftir)) {
     intensity_attr <- attr(ftir, "intensity")
-    if (is.null(intensity_attr) || intensity_attr == "") {
-      ftir <- check_ftir_data(ftir)
-      return(attr(ftir, "intensity"))
+    if (!is.null(intensity_attr) && intensity_attr != "") {
+      return(intensity_attr)
     }
-    return(intensity_attr)
+    ftir_vals <- ftir[, !colnames(ftir) %in% c("wavenumber", "sample_id")]
+    return(ifelse(
+      max(ftir_vals, na.rm = TRUE) > 10,
+      "transmittance",
+      "absorbance"
+    ))
   }
 
   # implied else
