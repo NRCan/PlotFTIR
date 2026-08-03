@@ -1287,11 +1287,15 @@ normalize_raman <- function(
       list(
         en = c(
           "Error in {.fn PlotFTIR::normalize_raman}. {.arg method} must be a string.",
-          i = cli::format_inline("{.arg method} must be one of {.val {permitted_methods}}.")
+          i = cli::format_inline(
+            "{.arg method} must be one of {.val {permitted_methods}}."
+          )
         ),
         fr = c(
           "Erreur dans {.fn PlotFTIR::normalize_raman}. {.arg method} doit \u00eatre une cha\u00eene de caract\u00e8res.",
-          i = cli::format_inline("{.arg method} doit \u00eatre l'un des {.val {permitted_methods}}.")
+          i = cli::format_inline(
+            "{.arg method} doit \u00eatre l'un des {.val {permitted_methods}}."
+          )
         )
       ),
       call = rlang::caller_env()

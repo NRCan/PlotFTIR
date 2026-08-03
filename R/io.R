@@ -360,6 +360,7 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
       ] <- "wavenumber"
     } else {
       # One of the input values should have a correlation to a integer sequence near one, the other shouldn't.
+      message('testing correlation')
       if (
         stats::cor(input_file[, 1], seq_along(input_file[, 1])) == 1 &&
           stats::cor(input_file[, 2], seq_along(input_file[, 2])) < 0.95
@@ -533,7 +534,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
   jdx <- readJDX::readJDX(file = file.path(path, file))
 
-  # Check that data is IR and not NMR/GC/etc.
+  # Check that data is IR or Raman and not NMR/GC/etc.
   metadata <- jdx$metadata
   if (!any(grepl("DATATYPE|DATA TYPE", metadata))) {
     .pkg_abort(
@@ -543,17 +544,20 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
       )
     )
   }
+  datatype_line <- toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)])
+  is_raman <- any(grepl("RAMAN", datatype_line))
   if (
-    !grepl("INFRARED", toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)]))
+    !is_raman &&
+      !any(grepl("INFRARED", datatype_line))
   ) {
     .pkg_abort(
       list(
         en = c(
-          "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not confirm `infrared` data file.",
+          "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not confirm `infrared` or `raman` data file.",
           i = "If you believe this is an error, submit a bug to {.href https://github.com/NRCan/PlotFTIR} with the .jdx file."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de confirmer le fichier de donn\u00e9es `infrared`.",
+          "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de confirmer le fichier de donn\u00e9es `infrared` ou `raman`.",
           i = "Si vous pensez qu'il s'agit d'une erreur, soumettez un bogue \u00e0 {.href https://github.com/NRCan/PlotFTIR} avec le fichier .jdx."
         )
       ),
@@ -562,7 +566,9 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   }
 
   intensity <- NA_character_
-  if (any(grepl("absorbance", tolower(metadata)))) {
+  if (is_raman) {
+    intensity <- "raman"
+  } else if (any(grepl("absorbance", tolower(metadata)))) {
     intensity <- "absorbance"
   } else if (any(grepl("transmittance", tolower(metadata)))) {
     intensity <- "transmittance"
@@ -600,7 +606,15 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   )
 
   if (!is.na(intensity)) {
-    if (intensity_type(ftir_data) != intensity) {
+    if (intensity == 'raman') {
+      .pkg_inform(
+        list(
+          en = "{.fn PlotFTIR:::read_ftir_jdx} has deduced that input data is Raman spectra.",
+          fr = "{.fn PlotFTIR:::read_ftir_jdx} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont des spectres Raman."
+        ),
+        call = rlang::caller_env()
+      )
+    } else if (intensity_type(ftir_data) != intensity) {
       if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
@@ -627,17 +641,21 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     intensity <- intensity_type(ftir_data)
   }
 
-  if (intensity == 'absorbance') {
+  if (intensity == 'raman') {
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
+    attr(ftir_data, "intensity") <- "raman"
+  } else if (intensity == 'absorbance') {
     ftir_data$absorbance <- ftir_data$intensity
+    ftir_data$intensity <- NULL
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
   } else {
     ftir_data$transmittance <- ftir_data$intensity
+    ftir_data$intensity <- NULL
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
   }
-  ftir_data$intensity <- NULL
-
-  ftir_data$sample_id <- sample_name
-
-  # verify the ftir looks ok
-  ftir_data <- check_ftir_data(ftir_data)
 
   return(ftir_data)
 }
@@ -1236,9 +1254,10 @@ plotftir_to_chemospec <- function(
 read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
   lines <- readLines(con = file.path(path, file))
 
+  header_search <- lines[1:min(30, length(lines))]
   raman_header_found <- any(grepl(
-    "^##filetype=raman",
-    tolower(lines),
+    "^#{1,}\\s*(file)?type\\s*=\\s*raman",
+    tolower(header_search),
     perl = TRUE
   ))
   if (!raman_header_found) {
@@ -1246,11 +1265,11 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
       list(
         en = c(
           "Error in {.fn PlotFTIR:::read_raman_csv}. File does not appear to be Raman data.",
-          i = "Expected first 30 lines to contain a line starting with '##FILETYPE=Raman' (case-insensitive)."
+          i = "Expected first 30 lines to contain a line matching '#[file]type=raman' (case-insensitive, whitespace-tolerant)."
         ),
         fr = c(
           "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Le fichier ne semble pas \u00eatre des donn\u00e9es Raman.",
-          i = "Les 30 premi\u00e8res lignes doivent contenir une ligne commen\u00e7ant par '##FILETYPE=Raman' (insensible \u00e0 la casse)."
+          i = "Les 30 premi\u00e8res lignes doivent contenir une ligne correspondant '\u00e0 #[file]type=raman' (insensible \u00e0 la casse, tol\u00e9rant les espaces)."
         )
       ),
       call = rlang::caller_env()
@@ -1292,16 +1311,17 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
   intensity <- numeric(length(data_rows))
 
   for (i in seq_along(data_rows)) {
-    parsed <- suppressWarnings(as.numeric(data_rows[[i]]))
+    parsed <- suppressWarnings(gsub('"', '', data_rows[[i]]))
+    parsed <- suppressWarnings(as.numeric(parsed))
     if (!all(is.finite(parsed))) {
       .pkg_abort(
         list(
           en = c(
-            "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}.",
+            cli::format_inline("Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}."),
             x = "All wavenumber and intensity values must be numeric."
           ),
           fr = c(
-            "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}.",
+            cli::format_inline("Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}."),
             x = "Toutes les valeurs de nombre d'ondes et d'intensit\u00e9 doivent \u00eatre num\u00e9riques."
           )
         ),
