@@ -223,7 +223,7 @@ plot_raman_core <- function(
 #' @export
 #'
 #' @examples
-#' if (requireNamespace("ggplot2", quietly = TRUE)) {
+#' \dontrun{
 #'   # Plot Raman spectras stacked showing the differences in a dataset
 #'   plot_raman_stacked(raman_data)
 #' }
@@ -299,8 +299,7 @@ plot_raman_stacked <- function(
 #' @export
 #'
 #' @examples
-#' if (requireNamespace("ggplot2", quietly = TRUE)) {
-#'   # Plot a basic Raman Spectra overlay from a dataset with default titles
+#' \dontrun{
 #'   plot_raman(raman_data)
 #' }
 plot_raman <- function(

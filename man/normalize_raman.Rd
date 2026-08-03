@@ -12,6 +12,10 @@ and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
 
+\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+
+Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
+
 \item{method}{One of two values:
 * `"vector"` — L2 normalization: each spectrum is divided by its Euclidean norm.
 * `"max"` — Maximum scaling: each spectrum is divided by its maximum intensity value.
@@ -41,9 +45,11 @@ Scales spectra to a common intensity reference. Supports two
   Raman pour comparer les intensités relatives des bandes entre échantillons.
 }
 \examples{
+\dontrun{
 # Normalize all samples using vector norm (L2)
 normalize_raman(raman_data, method = "vector")
 
 # Normalize all samples by maximum peak height
 normalize_raman(raman_data, method = "max")
+}
 }

@@ -18,6 +18,10 @@ and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
 
+\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+
+Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
+
 \item{height}{A numeric threshold. Peaks below this intensity are not reported.
   If `NULL`, defaults to `0.05 * max(intensity across all selected samples)`.
 
@@ -63,13 +67,18 @@ Identifies local maxima above a specified height threshold. For
 }
 \examples{
 # Generate synthetic Raman data with known peaks
-wn <- seq(100, 2000, by = 2)
-signal <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+wn <- seq(100, 2000, by = 5)
+peak1 <- 100 * exp(-(wn - 500)^2 / 5000)
+peak2 <- 50 * exp(-(wn - 1000)^2 / 8000)
+baseline <- 5
+noise <- rnorm(length(wn), 0, 2)
+intensity <- peak1 + peak2 + baseline + noise
 raman_data <- data.frame(
   wavenumber = wn,
-  intensity = signal,
+  intensity = intensity,
   sample_id = "sample"
 )
+attr(raman_data, "intensity") <- "raman"
 
 # Find peaks with default parameters
 peaks <- find_peak_maxima(raman_data)

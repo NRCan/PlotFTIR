@@ -12,6 +12,10 @@ and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
 
+\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+
+Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
+
 \item{window_length}{The length of the smoothing window (must be odd).
   Default is 7. Must be at least `polyorder + 1`.
 

@@ -47,13 +47,18 @@
 #'
 #' @examples
 #' # Generate synthetic Raman data with known peaks
-#' wn <- seq(100, 2000, by = 2)
-#' signal <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+#' wn <- seq(100, 2000, by = 5)
+#' peak1 <- 100 * exp(-(wn - 500)^2 / 5000)
+#' peak2 <- 50 * exp(-(wn - 1000)^2 / 8000)
+#' baseline <- 5
+#' noise <- rnorm(length(wn), 0, 2)
+#' intensity <- peak1 + peak2 + baseline + noise
 #' raman_data <- data.frame(
 #'   wavenumber = wn,
-#'   intensity = signal,
+#'   intensity = intensity,
 #'   sample_id = "sample"
 #' )
+#' attr(raman_data, "intensity") <- "raman"
 #'
 #' # Find peaks with default parameters
 #' peaks <- find_peak_maxima(raman_data)
@@ -147,7 +152,7 @@ find_peak_maxima <- function(
 
   all_wavenumbers <- unique(ftir$wavenumber)
   sorted_wn <- sort(all_wavenumbers)
-  median_spacing <- median(diff(sorted_wn))
+  median_spacing <- stats::median(diff(sorted_wn))
 
   if (is.null(height)) {
     max_intensity <- max(

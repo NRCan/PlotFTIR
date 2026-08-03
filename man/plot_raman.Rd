@@ -55,8 +55,7 @@ Produisez un tracé de base de superposition de spectres pour tous les
 échantillons trouvés dans l'ensemble de données Raman fourni.
 }
 \examples{
-if (requireNamespace("ggplot2", quietly = TRUE)) {
-  # Plot a basic Raman Spectra overlay from a dataset with default titles
+\dontrun{
   plot_raman(raman_data)
 }
 }

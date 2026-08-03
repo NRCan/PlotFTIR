@@ -1188,13 +1188,9 @@ smooth_spectra <- function(
 #'   sont favorisés par rapport aux négatifs. Doit être dans (0, 0.5]. Par défaut,
 #'   0.001.
 #'
-#' @return a data.frame containing the baseline-corrected Raman spectra with an
-#'   additional `baseline_fitted` column showing the fitted baseline for
-#'   transparency and reproducibility.
+#' @return a data.frame containing the baseline-corrected Raman spectra.
 #'
-#'   un data.frame contenant les spectres Raman corrigés de la ligne de base avec
-#'   une colonne supplémentaire `baseline_fitted` montrant la ligne de base
-#'   ajustée pour la transparence et la reproductibilité.
+#'   un data.frame contenant les spectres Raman corrigés de la ligne de base.
 #'
 #' @export
 #'
@@ -1213,12 +1209,12 @@ smooth_spectra <- function(
 #'   )
 #'
 #'   # Correct the baseline
-#'   raman_corrected <- baseline_correct(raman_data, lambda = 1e6, p = 0.001)
+#'   raman_corrected <- baseline_correct(raman_data, lambda = 10, p = 0.01)
 #' }
 baseline_correct <- function(
   ftir,
   sample_ids = NA,
-  lambda = 1e6,
+  lambda = 10,
   p = 0.001
 ) {
   if (!requireNamespace("baseline", quietly = TRUE)) {
@@ -1302,10 +1298,9 @@ baseline_correct <- function(
     idx <- ftir$sample_id == sid
     intensity_vec <- ftir[idx, "intensity"]
 
-    baseline_fit <- baseline::als(y = intensity_vec, lambda = lambda, p = p)
+    baseline_fit <- baseline::baseline(matrix(intensity_vec, nrow = 1), method = 'als', lambda = lambda, p = p)
 
-    ftir[idx, "baseline_fitted"] <- baseline_fit$fit
-    ftir[idx, "intensity"] <- intensity_vec - baseline_fit$fit
+    ftir[idx, "intensity"] <- as.vector(baseline::getCorrected(baseline_fit))
   }
 
   return(ftir)

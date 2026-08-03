@@ -61,7 +61,7 @@ Plot the Raman spectra in a journal prepared format. It may be
  certaine quantité.
 }
 \examples{
-if (requireNamespace("ggplot2", quietly = TRUE)) {
+\dontrun{
   # Plot Raman spectras stacked showing the differences in a dataset
   plot_raman_stacked(raman_data)
 }

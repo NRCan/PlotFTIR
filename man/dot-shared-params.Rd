@@ -38,6 +38,10 @@ le deuxième élément comme sous-titre.}
 
 \item{legend_title}{Title for legend. Defaults to "Sample ID".
 Titre de la légende. Par défaut "Sample ID".}
+
+\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+
+Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
 }
 \description{
 These parameters are used in multiple functions. They are defined here to

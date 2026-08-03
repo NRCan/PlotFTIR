@@ -4,13 +4,17 @@
 \alias{baseline_correct}
 \title{Correct Spectrum Baseline}
 \usage{
-baseline_correct(ftir, sample_ids = NA, lambda = 1e+06, p = 0.001)
+baseline_correct(ftir, sample_ids = NA, lambda = 10, p = 0.001)
 }
 \arguments{
 \item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
 and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
+
+\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+
+Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
 
 \item{lambda}{The smoothness parameter. Larger values give smoother baselines.
   Default is 1e6. Typical range: 1e3 to 1e9.
@@ -26,13 +30,9 @@ et `absorbance`/`transmittance`.}
   0.001.}
 }
 \value{
-a data.frame containing the baseline-corrected Raman spectra with an
-  additional `baseline_fitted` column showing the fitted baseline for
-  transparency and reproducibility.
+a data.frame containing the baseline-corrected Raman spectra.
 
-  un data.frame contenant les spectres Raman corrigés de la ligne de base avec
-  une colonne supplémentaire `baseline_fitted` montrant la ligne de base
-  ajustée pour la transparence et la reproductibilité.
+  un data.frame contenant les spectres Raman corrigés de la ligne de base.
 }
 \description{
 Fits and subtracts a baseline from spectra using Asymmetric
@@ -60,6 +60,6 @@ if (requireNamespace("baseline", quietly = TRUE)) {
   )
 
   # Correct the baseline
-  raman_corrected <- baseline_correct(raman_data, lambda = 1e6, p = 0.001)
+  raman_corrected <- baseline_correct(raman_data, lambda = 10, p = 0.01)
 }
 }

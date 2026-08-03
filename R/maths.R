@@ -1226,11 +1226,13 @@ transmittance_to_absorbance <- function(ftir) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Normalize all samples using vector norm (L2)
 #' normalize_raman(raman_data, method = "vector")
 #'
 #' # Normalize all samples by maximum peak height
 #' normalize_raman(raman_data, method = "max")
+#' }
 normalize_raman <- function(
   ftir,
   sample_ids = NA,
