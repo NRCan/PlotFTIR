@@ -213,6 +213,7 @@ check_ftir_data <- function(ftir) {
         c(
           "absorbance",
           "transmittance",
+          "intensity",
           "raman",
           "normalized absorbance",
           "normalized transmittance",

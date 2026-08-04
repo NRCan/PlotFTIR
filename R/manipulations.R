@@ -1081,11 +1081,11 @@ smooth_spectra <- function(
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          x = cli::format_inline("The following {.arg sample_id{?s}} are not present: {.val {mismatch}}.")
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
-          x = "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          x = cli::format_inline("Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}.")
         )
       ),
       call = rlang::caller_env()
@@ -1117,10 +1117,10 @@ smooth_spectra <- function(
   }
 
   if (window_length %% 2 == 0) {
-    .pkg_inform(
+    .pkg_warn(
       list(
-        en = "{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd).",
-        fr = "{.fn PlotFTIR::smooth_spectra} a automatiquement corrig\u00e9 {.arg window_length} de {as.integer(window_length)} \u00e0 {as.integer(window_length + 1)} (doit \u00eatre impair)."
+        en = cli::format_inline("{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd)."),
+        fr = cli::format_inline("{.fn PlotFTIR::smooth_spectra} a automatiquement corrig\u00e9 {.arg window_length} de {as.integer(window_length)} \u00e0 {as.integer(window_length + 1)} (doit \u00eatre impair).")
       ),
       call = rlang::caller_env()
     )
@@ -1151,9 +1151,7 @@ smooth_spectra <- function(
     idx <- ftir$sample_id == sid
     intensity_vec <- ftir[idx, "intensity"]
 
-    n <- floor(window_length / 2)
-
-    smoothed <- signal::sgolayfilt(x = intensity_vec, m = polyorder, n = n)
+    smoothed <- signal::sgolayfilt(x = intensity_vec, m = polyorder)
 
     ftir[idx, "intensity"] <- smoothed
   }
@@ -1263,11 +1261,11 @@ baseline_correct <- function(
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          x = cli::format_inline("The following {.arg sample_id{?s}} are not present: {.val {mismatch}}.")
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
-          x = "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          x = cli::format_inline("Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}.")
         )
       ),
       call = rlang::caller_env()
@@ -1298,7 +1296,12 @@ baseline_correct <- function(
     idx <- ftir$sample_id == sid
     intensity_vec <- ftir[idx, "intensity"]
 
-    baseline_fit <- baseline::baseline(matrix(intensity_vec, nrow = 1), method = 'als', lambda = lambda, p = p)
+    baseline_fit <- baseline::baseline(
+      matrix(intensity_vec, nrow = 1),
+      method = 'als',
+      lambda = lambda,
+      p = p
+    )
 
     ftir[idx, "intensity"] <- as.vector(baseline::getCorrected(baseline_fit))
   }
@@ -1377,10 +1380,10 @@ add_band <- function(
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+          "Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit \u00eatre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+          "Erreur dans {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} doit \u00eatre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
         )
       ),
       call = rlang::caller_env()

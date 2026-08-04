@@ -907,3 +907,269 @@ test_that("WiRE-format CSV reads correctly from temp file", {
   expect_equal(round(result$wavenumber, 2), c(1800.92, 1799.96, 1798.99))
   expect_equal(round(result$intensity, 2), c(0, 2008.25, 6014.03))
 })
+
+test_that("read_ftir_jdx DATATYPE missing error path", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing")
+  }
+
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # JCAMP-DX file without DATATYPE metadata (proper XYY format)
+  jdx_content <- c(
+    "##TITLE=Test Spectrum",
+    "##JCAMP-DX=5.01",
+    "##XUNITS=1/CM",
+    "##YUNITS=TRANSMITTANCE",
+    "##NPOINTS=10",
+    "##FIRSTX=900",
+    "##LASTX=4000",
+    "##FIRSTY=0.5",
+    "##LASTY=1.0",
+    "##XFACTOR=1.000000",
+    "##YFACTOR=1.000000",
+    "##XYDATA=(X++(Y..Y))",
+    "900 80 70 60",
+    "1000 75 65 55",
+    "1100 70 60 50",
+    "1200 45",
+    "##END="   
+  )
+
+  writeLines(jdx_content, file.path(tmppath, tmpfile))
+
+  expect_error_bilingual(
+    read_ftir(path = tmppath, file = tmpfile),
+    en = "Could not find `datatype` in file metadata",
+    fr = "Impossible de trouver `datatype` dans les m\u00e9tadonn\u00e9es"
+  )
+})
+
+test_that("read_ftir_jdx Raman branch is covered", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing")
+  }
+
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # Synthetic JCAMP-DX Raman spectrum (proper XYY format)
+  jdx_content <- c(
+    "##TITLE=Raman Test",
+    "##JCAMP-DX=5.01",
+    "##DATATYPE=RAMAN SPECTRUM",
+    "##XUNITS=1/CM",
+    "##YUNITS=INTENSITY",
+    "##FIRSTX=100",
+    "##LASTX=400",
+    "##XFACTOR=1.000",
+    "##YFACTOR=1.000",
+    "##FIRSTY=0",
+    "##LASTY=1000",
+    "##NPOINTS=10",
+    "##XYDATA=(X++(Y..Y))",
+    "100 50 48 52",
+    "200 800 790 810",
+    "300 600 590 610",
+    "400 500",
+    "##END="
+  )
+
+  writeLines(jdx_content, file.path(tmppath, tmpfile))
+
+  expect_message_bilingual(
+    read_ftir(path = tmppath, file = tmpfile),
+    en = "has deduced that input data is Raman spectra",
+    fr = "a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont des spectres Raman"
+  )
+
+  result <- suppressMessages(read_ftir(path = tmppath, file = tmpfile))
+
+  expect_equal(colnames(result), c("wavenumber", "intensity", "sample_id"))
+  expect_equal(attr(result, "intensity"), "raman")
+  expect_equal(nrow(result), 10L)
+})
+
+test_that("read_ftir_jdx intensity mismatch warning path", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing")
+  }
+
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # JCAMP-DX with TRANSMITTANCE in YUNITS but absorbance-like y values (max > 1.2)
+  jdx_content <- c(
+    "##TITLE=Mismatch Test",
+    "##JCAMP-DX=5.01",
+    "##DATATYPE=INFRARED SPECTRUM",
+    "##YUNITS=TRANSMITTANCE",
+    "##XUNITS=1/CM",
+    "##FIRSTX=900",
+    "##LASTX=1200",
+    "##FIRSTY=0.8",
+    "##LASTY=2.10",
+    "##NPOINTS=10",
+    "##XFACTOR=1.000",
+    "##YFACTOR=1.000",
+    "##XYDATA=(X++(Y..Y))",
+    "900 0.8 0.7 0.6",
+    "1000 1.50 1.40 1.30",
+    "1100 1.80 1.70 1.60",
+    "1200 2.10",
+    "##END="
+  )
+
+  writeLines(jdx_content, file.path(tmppath, tmpfile))
+
+  expect_warning_bilingual(
+    read_ftir(path = tmppath, file = tmpfile),
+    en = "does not match detected intensity",
+    fr = "ne correspond pas \u00e0 l'intensit\u00e9 d\u00e9tect\u00e9e"
+  )
+
+  result <- suppressWarnings(read_ftir(path = tmppath, file = tmpfile))
+
+  expect_true("absorbance" %in% colnames(result))
+})
+
+test_that("read_raman unsupported extension error", {
+  temp_file <- withr::local_tempfile(fileext = ".spc")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+  file.create(file.path(tmppath, tmpfile), overwrite = TRUE)
+
+  expect_error_bilingual(
+    read_raman(path = tmppath, file = tmpfile),
+    en = "Input file of type spc could not be processed",
+    fr = "Le fichier d'entr\u00e9e de type spc n'a pas pu \u00eatre trait\u00e9"
+  )
+})
+
+test_that("read_raman_csv no valid data rows error", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # Raman header but only comment lines, no actual data
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    "##RAMAN WAVELENGTH=532.0",
+    "# This is a comment",
+    "# Another comment"
+  )
+
+  writeLines(raman_content, file.path(tmppath, tmpfile))
+
+  expect_error_bilingual(
+    read_raman(path = tmppath, file = tmpfile),
+    en = "No valid data rows found",
+    fr = "Aucune ligne de donn\u00e9es valide trouv\u00e9e"
+  )
+})
+
+test_that("read_raman_csv invalid numeric data error", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # Raman CSV with non-numeric values in data rows
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    "abc, def",
+    "ghi, jkl"
+  )
+
+  writeLines(raman_content, file.path(tmppath, tmpfile))
+
+  expect_error_bilingual(
+    read_raman(path = tmppath, file = tmpfile),
+    en = "Invalid numeric data found at row 1",
+    fr = "Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne 1"
+  )
+})
+
+test_that("read_raman path auto-extraction when file is NA and extension matches txt", {
+  temp_file <- withr::local_tempfile(fileext = ".txt")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    "100, 500"
+  )
+
+  writeLines(raman_content, file.path(tmppath, tmpfile))
+
+  result <- read_raman(path = temp_file, file = NA)
+
+  expect_equal(nrow(result), 1L)
+  expect_equal(attr(result, "intensity"), "raman")
+})
+
+test_that("read_raman sample_name must be string or NA validation", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    "100, 500"
+  )
+
+  writeLines(raman_content, file.path(tmppath, tmpfile))
+
+  expect_error_bilingual(
+    read_raman(path = tmppath, file = tmpfile, sample_name = 123),
+    en = "`sample_name` must be a string value or",
+    fr = "`sample_name` doit \u00eatre une valeur de cha\u00eene ou"
+  )
+
+  expect_error_bilingual(
+    read_raman(path = tmppath, file = tmpfile, sample_name = c("a", "b")),
+    en = "`sample_name` must be a single string value or single ",
+    fr = "`sample_name` doit \u00eatre une valeur de cha\u00eene unique ou un seul "
+  )
+})
+
+test_that("read_ftir_jdx else branch for is.na(intensity) falls back to intensity_type", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing")
+  }
+
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  # JCAMP-DX without absorbance or transmittance in metadata, so intensity stays NA
+  jdx_content <- c(
+    "##TITLE=No Intensity Type",
+    "##JCAMP-DX=5.01",
+    "##DATATYPE=INFRARED SPECTRUM",
+    "##XUNITS=1/CM",
+    "##YUNITS=COUNTS",
+    "##FIRSTX=400",
+    "##LASTX=4000",
+    "##FIRSTY=0.8",
+    "##LASTY=2.1",
+    "##XFACTOR=1.000",
+    "##YFACTOR=1.000",
+    "##NPOINTS=10",
+    "##XYDATA=(X++(Y..Y))",
+    "900 0.80 0.75 0.70",
+    "1000 1.50 1.40 1.30",
+    "1100 1.80 1.70 1.60",
+    "1200 2.10",
+    "##END="
+  )
+
+  writeLines(jdx_content, file.path(tmppath, tmpfile))
+
+  result <- read_ftir(path = tmppath, file = tmpfile)
+
+  expect_true("absorbance" %in% colnames(result))
+})

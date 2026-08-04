@@ -360,7 +360,6 @@ read_ftir_csv <- function(path, file, sample_name = NA_character_, ...) {
       ] <- "wavenumber"
     } else {
       # One of the input values should have a correlation to a integer sequence near one, the other shouldn't.
-      message('testing correlation')
       if (
         stats::cor(input_file[, 1], seq_along(input_file[, 1])) == 1 &&
           stats::cor(input_file[, 2], seq_along(input_file[, 2])) < 0.95
@@ -615,7 +614,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
         call = rlang::caller_env()
       )
     } else if (intensity_type(ftir_data) != intensity) {
-      if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
+      if (intensity == 'transmittance' && max(ftir_data$intensity) < 1.2) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
         ftir_data$intensity <- ftir_data$intensity * 100
@@ -624,12 +623,12 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
         .pkg_warn(
           list(
             en = c(
-              "Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units.",
-              x = "Continuing with data in {i_new} units."
+              cli::format_inline("Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units."),
+              x = cli::format_inline("Continuing with data in {i_new} units.")
             ),
             fr = c(
-              "Avertissement dans {.fn PlotFTIR:::read_ftir_jdx}: Le fichier sugg\u00e8re une intensit\u00e9 de {intensity} unit\u00e9s qui ne correspond pas \u00e0 l'intensit\u00e9 d\u00e9tect\u00e9e de {i_new} unit\u00e9s.",
-              x = "Continuation avec les donn\u00e9es en unit\u00e9s {i_new}."
+              cli::format_inline("Avertissement dans {.fn PlotFTIR:::read_ftir_jdx}: Le fichier sugg\u00e8re une intensit\u00e9 de {intensity} unit\u00e9s qui ne correspond pas \u00e0 l'intensit\u00e9 d\u00e9tect\u00e9e de {i_new} unit\u00e9s."),
+              x = cli::format_inline("Continuation avec les donn\u00e9es en unit\u00e9s {i_new}.")
             )
           ),
           call = rlang::caller_env()
@@ -1317,11 +1316,15 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
       .pkg_abort(
         list(
           en = c(
-            cli::format_inline("Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}."),
+            cli::format_inline(
+              "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}."
+            ),
             x = "All wavenumber and intensity values must be numeric."
           ),
           fr = c(
-            cli::format_inline("Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}."),
+            cli::format_inline(
+              "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}."
+            ),
             x = "Toutes les valeurs de nombre d'ondes et d'intensit\u00e9 doivent \u00eatre num\u00e9riques."
           )
         ),
@@ -1468,15 +1471,11 @@ read_raman <- function(
     .pkg_abort(
       list(
         en = c(
-          cli::format_inline(
-            "Error in {.fn PlotFTIR::read_raman}. Input file of type {{filetype}} could not be processed."
-          ),
+          cli::format_inline("Error in {.fn PlotFTIR::read_raman}. Input file of type {filetype} could not be processed."),
           i = "PlotFTIR currently supports .csv/.txt files for Raman data."
         ),
         fr = c(
-          cli::format_inline(
-            "Erreur dans {.fn PlotFTIR::read_raman}. Le fichier d'entr\u00e9e de type {{filetype}} n'a pas pu \u00eatre trait\u00e9."
-          ),
+          cli::format_inline("Erreur dans {.fn PlotFTIR::read_raman}. Le fichier d'entr\u00e9e de type {filetype} n'a pas pu \u00eatre trait\u00e9."),
           i = "PlotFTIR prend actuellement en charge les fichiers .csv/.txt pour les donn\u00e9es Raman."
         )
       ),

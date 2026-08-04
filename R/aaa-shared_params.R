@@ -41,7 +41,7 @@
 #' @param sample_ids A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
 #'
 #' Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.
-#' 
+#'
 #' @name .shared-params
 #' @keywords internal
 NULL

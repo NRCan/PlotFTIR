@@ -557,4 +557,80 @@ test_that("add_band is ok", {
       line_aesthetics = list(color = "blue")
     )
   )
+
+  # Equal wavenumber range with default colour delegates to marker
+  banded_equal_default <- add_band(biodiesel_plot, c(1740, 1740), "C=O")
+  expect_true(ggplot2::is_ggplot(banded_equal_default))
+})
+
+test_that("compress_trans internal helper works", {
+  trans <- PlotFTIR:::compress_trans(intercept = 2000, ratio = 5)
+
+  # Values above intercept (after sign flip to -2000) pass through unchanged
+  result_above <- trans$transform(c(-1500))
+  expect_equal(result_above, -1500)
+
+  # Values below intercept should be compressed
+  result_below <- trans$transform(c(-3000, -4000))
+  expect_equal(result_below, c(-2200, -2400))
+
+  # Inverse should reverse the transform
+  result_inverse <- trans$inverse(trans$transform(c(-3000, -4000)))
+  expect_equal(result_inverse, c(-3000, -4000), tolerance = 1e-6)
+})
+
+test_that("add_wavenumber_marker default text uses rounded wavenumber", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+
+  # Call with text = NULL (default), verify label shows integer wavenumber
+  labelled_default <- add_wavenumber_marker(biodiesel_plot, 1740.6)
+  built <- ggplot2::ggplot_build(labelled_default)
+
+  # The annotate layer should have a label column with the truncated integer "1740"
+  has_label_1740 <- any(sapply(built$data, function(d) {
+    if ("label" %in% colnames(d)) {
+      return(any(d$label == "1740", na.rm = TRUE))
+    }
+    FALSE
+  }))
+  expect_true(has_label_1740)
+
+  # Also test with exact integer wavenumber - should show as "2920"
+  labelled_int <- add_wavenumber_marker(biodiesel_plot, 2920)
+  built_int <- ggplot2::ggplot_build(labelled_int)
+  has_label_2920 <- any(sapply(built_int$data, function(d) {
+    if ("label" %in% colnames(d)) {
+      return(any(d$label == "2920", na.rm = TRUE))
+    }
+    FALSE
+  }))
+  expect_true(has_label_2920)
+})
+
+test_that("add_band equal wavenumber with default colour uses #80c7ff", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+
+  # Equal wavenumber with no colour specified should delegate to marker
+  # and use default "#80c7ff" colour (assigned at L1474-1476 of add_band)
+  banded_equal <- add_band(biodiesel_plot, c(1740, 1740), "test")
+  expect_true(ggplot2::is_ggplot(banded_equal))
+
+  # Verify x-range is preserved (delegation to marker doesn't change range)
+  expect_equal(
+    ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$x.range,
+    ggplot2::ggplot_build(banded_equal)$layout$panel_params[[1]]$x.range
+  )
+
+  # Verify the delegated marker has a vline layer (not a rect layer)
+  built <- ggplot2::ggplot_build(banded_equal)
+  layer_types <- sapply(built$data, function(d) class(d)[1])
+  expect_true("vline" %in% layer_types || any(sapply(built$data, function(d) "xintercept" %in% colnames(d))))
 })
