@@ -8,6 +8,7 @@ NULL
 #' Get current language setting
 #'
 #' @return character string with the current language code
+#' @keywords internal
 .get_language <- function() {
   lang <- tolower(getOption("PlotFTIR.lang", default = "en"))
   if (lang %in% c("fr", "fra", "french", "francais", "fran\u00e7ais")) {
