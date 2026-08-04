@@ -1,7 +1,8 @@
 # PlotFTIR (development version)
 
 * Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. ([#33](https://github.com/NRCan/PlotFTIR/issues/33))
-* Updated package data to properly print properly after v1.3.0.
+* Updated package data to properly print after v1.3.0.
+* Added bilingual error codes and bilingual pretty printing (#40)
 
 # PlotFTIR 1.3.0
 

@@ -21,3 +21,4 @@ cobertura\.xml$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.kilo$
