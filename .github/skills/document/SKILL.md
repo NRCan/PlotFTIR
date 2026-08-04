@@ -8,14 +8,17 @@ description: Document package functions. Use when asked to document functions.
 
 *All* R functions in `R/` should be documented in roxygen2 `#'` style, including internal/unexported functions.
 
-- Run `air format .` then `devtools::document()` after changing any roxygen2 docs.
 - Use sentence case for all headings.
 - Wrap roxygen comments at 80 characters.
 - Files matching `R/import-standalone-*.R` are imported from other packages and have their own conventions. Do not modify their documentation.
-- After documenting functions, run `devtools::document(roclets = c('rd', 'collate', 'namespace'))`.
-- If `_pkgdown.yml` exists and contains a `reference` section:
-  - Whenever you add a new (non-internal) documentation topic, also add the topic to `_pkgdown.yml`.
-  - Use `pkgdown::check_pkgdown()` to check that all topics are included in the reference index.
+
+After changing roxygen2 docs, always run:
+1. `air format .`
+2. `devtools::document(roclets = c('rd', 'collate', 'namespace'))`
+
+If `_pkgdown.yml` exists, contains a `reference` section, and you added a new non-internal topic:
+1. Add the topic to `_pkgdown.yml`.
+2. Run `pkgdown::check_pkgdown()` to confirm the reference index is complete.
 
 ## Shared parameters
 
@@ -23,7 +26,7 @@ description: Document package functions. Use when asked to document functions.
 
 Shared params blocks: alphabetize parameters, use `@name .shared-params` (with leading dot), include `@keywords internal`, end with `NULL`.
 
-Multiple shared-params groups (e.g. `.shared-params-io`, `.shared-params-parsing`) are appropriate when parameters are only shared within a file and closely related files.
+Multiple shared-params groups (e.g. `.shared-params-io`, `.shared-params-parsing`) are appropriate when parameters are shared only within one file or files in the same feature area.
 
 ## Parameter documentation format
 
@@ -33,7 +36,7 @@ Multiple shared-params groups (e.g. `.shared-params-io`, `.shared-params-parsing
 #'   needed.
 ```
 
-Function-specific `@param` definitions always appear *before* any `@inheritParams` lines. If all parameters are defined locally, omit `@inheritParams` entirely.
+Function-specific `@param` definitions always appear *before* any `@inheritParams` lines. If all parameters are defined locally, omit `@inheritParams` entirely. If a function has no parameters, omit both `@param` and `@inheritParams`.
 
 ### Type notation
 
@@ -108,7 +111,7 @@ Use `@returns` (not `@return`). Include a type when it's informative:
 
 ## Internal (unexported) functions
 
-Internal helpers (identified by a dot prefix, e.g. `.parse_response()`) use abbreviated documentation. Mark them with `@keywords internal` and omit `@export`:
+Internal (unexported) helpers use abbreviated documentation. A dot prefix is a common convention, but unexported status is determined by tags (no `@export`, include `@keywords internal`):
 
 ```r
 #' Title in sentence case
@@ -119,13 +122,15 @@ Internal helpers (identified by a dot prefix, e.g. `.parse_response()`) use abbr
 #' @keywords internal
 ```
 
-Description paragraph is optional (only include when usage isn't obvious), fewer blank `#'` lines, and no `@examples`.
+Description paragraph is optional. Include it when the function name and parameter names do not clearly communicate behavior (for example, non-trivial side effects or complex transformations). Keep fewer blank `#'` lines, and do not add `@examples`.
 
 ## S3 methods and `@rdname` grouping
 
 Use `@rdname` to group related functions under one help page. This applies to:
 - **S3 methods we own** (generic defined in this package): generic gets full docs, methods get `@rdname` + `@export`.
 - **Related exported functions** (e.g. multiple variants of the same operation): primary function gets full docs, variants get `@rdname` + `@export`.
+
+If an S3 method introduces parameters not present in the generic, document those additional parameters with `@param` on the method before the `@rdname` line.
 
 ```r
 #' Format a summary object
@@ -167,6 +172,6 @@ method.class <- function(x, ...) { ... }
 # helpers ----------------------------------------------------------------------
 ```
 
-Only use such headers in complex files. The need for section comment headers might indicate that the file should be split into multiple files.
+Only use such headers in files with more than 5 functions or multiple distinct functional groups. If a file needs more than 3 section headers, consider splitting it.
 
 **Examples:** Exported functions include `@examples`. Use `@examplesIf interactive()` for network-dependent or slow functions. Use section-style comments (`# Section ---`) to organize longer example blocks. Internal functions do not get examples.

@@ -6,6 +6,8 @@
 \alias{PlotFTIR-package}
 \title{PlotFTIR: Plot FTIR Spectra}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 The goal of 'PlotFTIR' is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) spectral plots in R using 'ggplot2'. The produced plots can be published directly or further modified by 'ggplot2' functions. L'objectif de 'PlotFTIR' est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) de qualité journal dans R à l'aide de 'ggplot2'. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions 'ggplot2'.
 }
 \seealso{

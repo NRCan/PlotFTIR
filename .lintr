@@ -1,0 +1,10 @@
+linters: linters_with_defaults(
+    any_duplicated_linter(),
+    any_is_na_linter(),
+    backport_linter("oldrel-4"),
+    line_length_linter(120L),
+    missing_argument_linter(),
+    unnecessary_concatenation_linter(allow_single_expression = FALSE),
+    yoda_test_linter(), 
+    return_linter = NULL
+  )
