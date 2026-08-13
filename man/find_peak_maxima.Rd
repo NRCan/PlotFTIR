@@ -18,9 +18,9 @@ and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
 
-\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+\item{sample_ids}{A vector of one or more `sample_id`s to select.
 
-Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
+Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.}
 
 \item{height}{A numeric threshold. Peaks below this intensity are not reported.
   If `NULL`, defaults to `0.05 * max(intensity across all selected samples)`.

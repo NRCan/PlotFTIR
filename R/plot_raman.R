@@ -59,7 +59,7 @@ plot_raman_core <- function(
 
   ftir <- check_ftir_data(ftir)
 
-  if (attr(ftir, "intensity") == "intensity") {
+  if (!attr(ftir, "intensity") %in% c("raman", "normalized raman")) {
     .pkg_abort(
       list(
         en = c(
@@ -98,11 +98,15 @@ plot_raman_core <- function(
       list(
         en = c(
           "Warning in {.fn PlotFTIR:::plot_raman_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
-          i = "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+          i = cli::format_inline(
+            "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+          )
         ),
         fr = c(
           "Avertissement dans {.fn PlotFTIR:::plot_raman_core}. La palette de couleurs utilis\u00e9e fonctionne mieux avec 12 \u00e9chantillons uniques ou moins dans {.arg ftir}.",
-          i = "Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'\u00e9chantillon uniques."
+          i = cli::format_inline(
+            "Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'\u00e9chantillon uniques."
+          )
         )
       ),
       call = rlang::caller_env()
@@ -152,7 +156,11 @@ plot_raman_core <- function(
       "Intensit\u00e9"
     }
   } else {
-    ytitle <- if (grepl("normalized", mode)) "Normalized Intensity" else "Intensity"
+    ytitle <- if (grepl("normalized", mode)) {
+      "Normalized Intensity"
+    } else {
+      "Intensity"
+    }
   }
 
   ftir <- ftir[stats::complete.cases(ftir), ]

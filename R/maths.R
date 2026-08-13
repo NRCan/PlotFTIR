@@ -1240,7 +1240,7 @@ normalize_raman <- function(
 ) {
   ftir <- check_ftir_data(ftir)
 
-  if (attr(ftir, "intensity") == "intensity") {
+  if (!attr(ftir, "intensity") %in% c("raman", "normalized raman")) {
     .pkg_abort(
       list(
         en = c(

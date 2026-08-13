@@ -12,3 +12,4 @@ character string with the current language code
 \description{
 Get current language setting
 }
+\keyword{internal}

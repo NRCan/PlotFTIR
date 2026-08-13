@@ -38,9 +38,9 @@
 #' @param legend_title Title for legend. Defaults to "Sample ID".
 #'   Titre de la légende. Par défaut "Sample ID".
 #'
-#' @param sample_ids A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+#' @param sample_ids A vector of one or more `sample_id`s to select.
 #'
-#' Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.
+#' Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.
 #'
 #' @name .shared-params
 #' @keywords internal

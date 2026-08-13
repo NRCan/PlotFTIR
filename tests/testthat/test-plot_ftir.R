@@ -86,7 +86,7 @@ test_that("data is checked correctly", {
   )
   expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    en = "`ftir` must have one of `absorbance`, `transmittance`, or `intensity` columns.",
+    en = "`ftir` must have one of `absorbance`, `transmittance`, or `intensity` columns",
     fr = "`ftir` doit contenir une des colonnes `absorbance`, `transmittance`, ou `intensity`"
   )
   expect_error_bilingual(

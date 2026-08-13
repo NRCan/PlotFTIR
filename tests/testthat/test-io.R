@@ -931,7 +931,7 @@ test_that("read_ftir_jdx DATATYPE missing error path", {
     "1000 75 65 55",
     "1100 70 60 50",
     "1200 45",
-    "##END="   
+    "##END="
   )
 
   writeLines(jdx_content, file.path(tmppath, tmpfile))
@@ -1037,7 +1037,7 @@ test_that("read_raman unsupported extension error", {
   temp_file <- withr::local_tempfile(fileext = ".spc")
   tmppath <- dirname(temp_file)
   tmpfile <- basename(temp_file)
-  file.create(file.path(tmppath, tmpfile), overwrite = TRUE)
+  file.create(file.path(tmppath, tmpfile))
 
   expect_error_bilingual(
     read_raman(path = tmppath, file = tmpfile),

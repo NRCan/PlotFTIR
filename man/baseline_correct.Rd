@@ -12,9 +12,9 @@ and `absorbance`/`transmittance`.
 Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
 et `absorbance`/`transmittance`.}
 
-\item{sample_ids}{A vector of one or more `sample_id`s from the `ftir_spectra_plot` to highlight.
+\item{sample_ids}{A vector of one or more `sample_id`s to select.
 
-Un vecteur d'un ou plusieurs `sample_id`s du `ftir_spectra_plot` à souligner.}
+Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.}
 
 \item{lambda}{The smoothness parameter. Larger values give smoother baselines.
   Default is 1e6. Typical range: 1e3 to 1e9.
