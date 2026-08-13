@@ -145,11 +145,15 @@ plot_raman_core <- function(
     xtitle <- bquote("Raman shift" ~ (cm^-1))
   }
 
-  ytitle <- ifelse(
-    grepl("normalized", mode),
-    "Normalized Intensity",
-    "Intensity"
-  )
+  if (l == "fr") {
+    ytitle <- if (grepl("normalized", mode)) {
+      "Intensit\u00e9 normalis\u00e9e"
+    } else {
+      "Intensit\u00e9"
+    }
+  } else {
+    ytitle <- if (grepl("normalized", mode)) "Normalized Intensity" else "Intensity"
+  }
 
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)

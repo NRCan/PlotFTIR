@@ -1149,11 +1149,12 @@ smooth_spectra <- function(
 
   for (sid in sample_ids) {
     idx <- ftir$sample_id == sid
-    intensity_vec <- ftir[idx, "intensity"]
-
-    smoothed <- signal::sgolayfilt(x = intensity_vec, m = polyorder)
-
-    ftir[idx, "intensity"] <- smoothed
+    smoothed <- signal::sgolayfilt(
+      x = intensity_vec,
+      p = polyorder,
+      n = window_length,
+      m = 0
+    )
   }
 
   return(ftir)

@@ -28,9 +28,7 @@ test_that("plot_raman uses non-reversed x-axis", {
 
   expect_true("ggplot" %in% class(p))
 
-  x_scales <- p$scales$scales
-  x_scale <- x_scales[[1]]
-
+  x_scale <- p$scales$get_scales("x")
   expect_false(inherits(x_scale$trans, "reverse"))
 })
 

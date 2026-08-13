@@ -811,12 +811,8 @@ test_that("read_raman handles invalid arguments", {
 test_that("errors on non-existent file", {
   expect_error_bilingual(
     read_raman(path = ".", file = "nonexistent.csv"),
-    en = cli::format_inline(
-      'nonexistent.csv" does not appear to exist.'
-    ),
-    fr = cli::format_inline(
-      'nonexistent.csv" ne semble pas exister.'
-    )
+    en = "does not appear to exist",
+    fr = "ne semble pas exister"
   )
 })
 

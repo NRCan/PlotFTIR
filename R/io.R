@@ -1410,17 +1410,16 @@ read_raman <- function(
   }
   if (
     any(is.na(file), is.null(file)) &&
-      (tolower(tools::file_ext(path)) %in%
-        c("txt", "csv"))
+      (tolower(tools::file_ext(path)) %in% c("txt", "csv"))
   ) {
     file <- basename(path)
     path <- dirname(path)
   }
-  if (length(file) != 1 || !is.character(file)) {
+  if (is.null(file) || is.na(file) || length(file) != 1 || !is.character(file)) {
     .pkg_abort(
       list(
         en = "Error in {.fn PlotFTIR::read_raman}. {.arg file} must be a single string value.",
-        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg file} doit \u00eatre une valeur de cha\u00eene unique."
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg file} doit être une valeur de chaîne unique."
       ),
       call = rlang::caller_env()
     )
