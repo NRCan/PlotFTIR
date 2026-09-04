@@ -1081,11 +1081,15 @@ smooth_spectra <- function(
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = cli::format_inline("The following {.arg sample_id{?s}} are not present: {.val {mismatch}}.")
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
-          x = cli::format_inline("Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}.")
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
         )
       ),
       call = rlang::caller_env()
@@ -1119,8 +1123,12 @@ smooth_spectra <- function(
   if (window_length %% 2 == 0) {
     .pkg_warn(
       list(
-        en = cli::format_inline("{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd)."),
-        fr = cli::format_inline("{.fn PlotFTIR::smooth_spectra} a automatiquement corrig\u00e9 {.arg window_length} de {as.integer(window_length)} \u00e0 {as.integer(window_length + 1)} (doit \u00eatre impair).")
+        en = cli::format_inline(
+          "{.fn PlotFTIR::smooth_spectra} auto-corrected {.arg window_length} from {as.integer(window_length)} to {as.integer(window_length + 1)} (must be odd)."
+        ),
+        fr = cli::format_inline(
+          "{.fn PlotFTIR::smooth_spectra} a automatiquement corrig\u00e9 {.arg window_length} de {as.integer(window_length)} \u00e0 {as.integer(window_length + 1)} (doit \u00eatre impair)."
+        )
       ),
       call = rlang::caller_env()
     )
@@ -1149,12 +1157,14 @@ smooth_spectra <- function(
 
   for (sid in sample_ids) {
     idx <- ftir$sample_id == sid
+    intensity_vec <- ftir[idx, "intensity"]
     smoothed <- signal::sgolayfilt(
       x = intensity_vec,
       p = polyorder,
       n = window_length,
       m = 0
     )
+    ftir[idx, "intensity"] <- smoothed
   }
 
   return(ftir)
@@ -1262,11 +1272,15 @@ baseline_correct <- function(
       list(
         en = c(
           "All provided {.arg sample_ids} must be in {.arg ftir} data.",
-          x = cli::format_inline("The following {.arg sample_id{?s}} are not present: {.val {mismatch}}.")
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
         ),
         fr = c(
           "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
-          x = cli::format_inline("Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}.")
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
         )
       ),
       call = rlang::caller_env()

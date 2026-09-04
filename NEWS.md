@@ -1,5 +1,6 @@
 # PlotFTIR (development version)
 
+* `plot_raman_stacked()` preserves the intensity attribute when stacking multiple samples (@pbulsink, #42).
 * Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).
 * Updated package data to properly print after v1.3.0.
 * Added bilingual error codes and bilingual pretty printing (#40)

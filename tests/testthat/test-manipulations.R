@@ -632,5 +632,9 @@ test_that("add_band equal wavenumber with default colour uses #80c7ff", {
   # Verify the delegated marker has a vline layer (not a rect layer)
   built <- ggplot2::ggplot_build(banded_equal)
   layer_types <- sapply(built$data, function(d) class(d)[1])
-  expect_true("vline" %in% layer_types || any(sapply(built$data, function(d) "xintercept" %in% colnames(d))))
+  expect_true(
+    "vline" %in%
+      layer_types ||
+      any(sapply(built$data, function(d) "xintercept" %in% colnames(d)))
+  )
 })

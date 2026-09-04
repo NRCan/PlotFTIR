@@ -278,9 +278,13 @@ plot_raman_stacked <- function(
       "offset" = seq(from = 0, by = stack_offset, length.out = nsamples)
     )
 
+    # merge() drops data frame attributes; the "intensity" attribute ("raman")
+    # cannot be re-inferred from a generic "intensity" column
+    intensity_attr <- attr(ftir, "intensity")
     ftir <- merge(x = ftir, y = offset, by = "sample_id")
     ftir$intensity <- ftir$intensity + ftir$offset
     ftir$offset <- NULL
+    attr(ftir, "intensity") <- intensity_attr
   }
 
   p <- plot_raman_core(
