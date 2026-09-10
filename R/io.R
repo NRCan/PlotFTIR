@@ -533,7 +533,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
   jdx <- readJDX::readJDX(file = file.path(path, file))
 
-  # Check that data is IR and not NMR/GC/etc.
+  # Check that data is IR or Raman and not NMR/GC/etc.
   metadata <- jdx$metadata
   if (!any(grepl("DATATYPE|DATA TYPE", metadata))) {
     .pkg_abort(
@@ -543,17 +543,20 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
       )
     )
   }
+  datatype_line <- toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)])
+  is_raman <- any(grepl("RAMAN", datatype_line))
   if (
-    !grepl("INFRARED", toupper(metadata[grepl("DATATYPE|DATA TYPE", metadata)]))
+    !is_raman &&
+      !any(grepl("INFRARED", datatype_line))
   ) {
     .pkg_abort(
       list(
         en = c(
-          "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not confirm `infrared` data file.",
+          "Error in {.fn PlotFTIR:::read_ftir_jdx}: Could not confirm `infrared` or `raman` data file.",
           i = "If you believe this is an error, submit a bug to {.href https://github.com/NRCan/PlotFTIR} with the .jdx file."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de confirmer le fichier de donn\u00e9es `infrared`.",
+          "Erreur dans {.fn PlotFTIR:::read_ftir_jdx}: Impossible de confirmer le fichier de donn\u00e9es `infrared` ou `raman`.",
           i = "Si vous pensez qu'il s'agit d'une erreur, soumettez un bogue \u00e0 {.href https://github.com/NRCan/PlotFTIR} avec le fichier .jdx."
         )
       ),
@@ -562,7 +565,9 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   }
 
   intensity <- NA_character_
-  if (any(grepl("absorbance", tolower(metadata)))) {
+  if (is_raman) {
+    intensity <- "raman"
+  } else if (any(grepl("absorbance", tolower(metadata)))) {
     intensity <- "absorbance"
   } else if (any(grepl("transmittance", tolower(metadata)))) {
     intensity <- "transmittance"
@@ -600,26 +605,40 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
   )
 
   if (!is.na(intensity)) {
-    if (intensity_type(ftir_data) != intensity) {
-      if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
+    if (intensity == 'raman') {
+      .pkg_inform(
+        list(
+          en = "{.fn PlotFTIR:::read_ftir_jdx} has deduced that input data is Raman spectra.",
+          fr = "{.fn PlotFTIR:::read_ftir_jdx} a d\u00e9duit que les donn\u00e9es d'entr\u00e9e sont des spectres Raman."
+        ),
+        call = rlang::caller_env()
+      )
+    } else if (intensity_type(ftir_data) != intensity) {
+      if (intensity == 'transmittance' && max(ftir_data$intensity) < 1.2) {
         # It's possible to do transmittance in 0..1 scale instead of percent.
         # PlotFTIR works better with %Transmittance
         ftir_data$intensity <- ftir_data$intensity * 100
       } else {
         i_new <- intensity_type(ftir_data)
-        .pkg_warn(c(
+        .pkg_warn(
           list(
             en = c(
-              "Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units.",
-              x = "Continuing with data in {i_new} units."
+              cli::format_inline(
+                "Warning in {.fn PlotFTIR:::read_ftir_jdx}: File suggested intensity of {intensity} units does not match detected intensity of {i_new} units."
+              ),
+              x = cli::format_inline("Continuing with data in {i_new} units.")
             ),
             fr = c(
-              "Avertissement dans {.fn PlotFTIR:::read_ftir_jdx}: Le fichier sugg\u00e8re une intensit\u00e9 de {intensity} unit\u00e9s qui ne correspond pas \u00e0 l'intensit\u00e9 d\u00e9tect\u00e9e de {i_new} unit\u00e9s.",
-              x = "Continuation avec les donn\u00e9es en unit\u00e9s {i_new}."
+              cli::format_inline(
+                "Avertissement dans {.fn PlotFTIR:::read_ftir_jdx}: Le fichier sugg\u00e8re une intensit\u00e9 de {intensity} unit\u00e9s qui ne correspond pas \u00e0 l'intensit\u00e9 d\u00e9tect\u00e9e de {i_new} unit\u00e9s."
+              ),
+              x = cli::format_inline(
+                "Continuation avec les donn\u00e9es en unit\u00e9s {i_new}."
+              )
             )
           ),
           call = rlang::caller_env()
-        ))
+        )
         intensity <- i_new
       }
     }
@@ -627,17 +646,21 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     intensity <- intensity_type(ftir_data)
   }
 
-  if (intensity == 'absorbance') {
+  if (intensity == 'raman') {
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
+    attr(ftir_data, "intensity") <- "raman"
+  } else if (intensity == 'absorbance') {
     ftir_data$absorbance <- ftir_data$intensity
+    ftir_data$intensity <- NULL
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
   } else {
     ftir_data$transmittance <- ftir_data$intensity
+    ftir_data$intensity <- NULL
+    ftir_data$sample_id <- sample_name
+    ftir_data <- check_ftir_data(ftir_data)
   }
-  ftir_data$intensity <- NULL
-
-  ftir_data$sample_id <- sample_name
-
-  # verify the ftir looks ok
-  ftir_data <- check_ftir_data(ftir_data)
 
   return(ftir_data)
 }
@@ -1233,6 +1256,245 @@ plotftir_to_chemospec <- function(
 }
 
 
+read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
+  lines <- readLines(con = file.path(path, file))
+
+  header_search <- lines[1:min(30, length(lines))]
+  raman_header_found <- any(grepl(
+    "^#{1,}\\s*(file)?type\\s*=\\s*raman",
+    tolower(header_search),
+    perl = TRUE
+  ))
+  if (!raman_header_found) {
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR:::read_raman_csv}. File does not appear to be Raman data.",
+          i = "Expected first 30 lines to contain a line matching '#[file]type=raman' (case-insensitive, whitespace-tolerant)."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Le fichier ne semble pas \u00eatre des donn\u00e9es Raman.",
+          i = "Les 30 premi\u00e8res lignes doivent contenir une ligne correspondant '\u00e0 #[file]type=raman' (insensible \u00e0 la casse, tol\u00e9rant les espaces)."
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  header_lines <- grep("^##", lines, value = TRUE, perl = TRUE)
+  raman_metadata <- list()
+  for (line in header_lines) {
+    if (grepl("=", line)) {
+      eq_pos <- regexpr("=", line)[1]
+      key <- trimws(substr(line, 3, eq_pos - 1))
+      value <- trimws(substr(line, eq_pos + 1, nchar(line)))
+      raman_metadata[[key]] <- value
+    }
+  }
+
+  data_lines <- lines[!grepl("^#", lines)]
+  data_rows <- strsplit(data_lines, ",")
+  data_rows <- data_rows[sapply(data_rows, length) == 2]
+
+  if (length(data_rows) == 0) {
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR:::read_raman_csv}. No valid data rows found.",
+          i = "Data rows must contain exactly two comma-separated numeric values."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Aucune ligne de donn\u00e9es valide trouv\u00e9e.",
+          i = "Les lignes de donn\u00e9es doivent contenir exactement deux valeurs num\u00e9riques s\u00e9par\u00e9es par des virgules."
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  wavenumber <- numeric(length(data_rows))
+  intensity <- numeric(length(data_rows))
+
+  for (i in seq_along(data_rows)) {
+    parsed <- suppressWarnings(gsub('"', '', data_rows[[i]]))
+    parsed <- suppressWarnings(as.numeric(parsed))
+    if (!all(is.finite(parsed))) {
+      .pkg_abort(
+        list(
+          en = c(
+            cli::format_inline(
+              "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}."
+            ),
+            x = "All wavenumber and intensity values must be numeric."
+          ),
+          fr = c(
+            cli::format_inline(
+              "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}."
+            ),
+            x = "Toutes les valeurs de nombre d'ondes et d'intensit\u00e9 doivent \u00eatre num\u00e9riques."
+          )
+        ),
+        call = rlang::caller_env()
+      )
+    }
+    wavenumber[i] <- parsed[1]
+    intensity[i] <- parsed[2]
+  }
+
+  if (is.na(sample_name)) {
+    sample_name <- tools::file_path_sans_ext(file)
+  }
+
+  ftir_data <- data.frame(
+    "wavenumber" = wavenumber,
+    "intensity" = intensity,
+    "sample_id" = sample_name
+  )
+
+  attr(ftir_data, "raman_metadata") <- raman_metadata
+
+  ftir_data <- check_ftir_data(ftir_data)
+  attr(ftir_data, "intensity") <- "raman"
+
+  return(ftir_data)
+}
+
+#' Read Raman file
+#'
+#' @description
+#' Reads a Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
+#'
+#' Lit un fichier de spectres Raman et renvoie un data.frame dans le format approprié pour les fonctions PlotFTIR.
+#'
+#' @param path
+#' Path to the file. Default is the current working directory, as `"."`. Can include the filename, in which case provide `NA` as the filename.
+#'
+#' Chemin d'accès au fichier. Par défaut, il s'agit du répertoire de travail actuel, sous la forme `"."`. Peut inclure le nom du fichier, auquel cas il faut fournir `NA` comme nom de fichier.
+#'
+#' @param file
+#' File name, required. If the file and path are provided together as `path`, then `NA` is accepted.
+#'
+#' Nom du fichier, obligatoire. Si le fichier et le chemin sont fournis ensemble en tant que `chemin`, alors `NA` est accepté.
+#'
+#' @param sample_name
+#' Name for sample_id column in the returned data.frame. If not provided, the file name is used without the extension.
+#'
+#' Nom de la colonne sample_id dans le data.frame renvoyé. S'il n'est pas fourni, le nom du fichier est utilisé sans l'extension.
+#'
+#' @param ...
+#' Additional parameters to pass to the file reading function.
+#'
+#' Paramètres supplémentaires à transmettre à la fonction de lecture de fichier.
+#'
+#' @return
+#' a data.frame containing the Raman spectral data from the file, with attributes:
+#' `intensity` set to `"raman"` or `"normalized raman"`, and `raman_metadata` containing all `##KEY=VALUE` header lines parsed as a named list.
+#'
+#' un data.frame contenant les données spectrales Raman du fichier, avec les attributs :
+#' `intensity` défini sur `"raman"` ou `"normalized raman"`, et `raman_metadata` contenant toutes les lignes d'en-tête `##KEY=VALUE` analysées sous forme de liste nommée.
+#'
+#' @export
+#'
+#' @examples
+#' # Reading a Raman file:
+#' # raman_data <- read_raman("./data/Graphite_Raman.txt")
+#' @md
+read_raman <- function(
+  path = ".",
+  file = NA_character_,
+  sample_name = NA_character_,
+  ...
+) {
+  if (length(path) != 1 || !is.character(path)) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg path} must be a single string value.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg path} doit \u00eatre une valeur de cha\u00eene unique."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  if (
+    any(is.na(file), is.null(file)) &&
+      (tolower(tools::file_ext(path)) %in% c("txt", "csv"))
+  ) {
+    file <- basename(path)
+    path <- dirname(path)
+  }
+  if (
+    is.null(file) || is.na(file) || length(file) != 1 || !is.character(file)
+  ) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg file} must be a single string value.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg file} doit \u00eatre une valeur de cha\u00eene unique."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  if (length(sample_name) != 1) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a single string value or single {.val NA}.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg sample_name} doit \u00eatre une valeur de cha\u00eene unique ou un seul {.val NA}."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  if (!is.na(sample_name) && !is.character(sample_name)) {
+    .pkg_abort(
+      list(
+        en = "Error in {.fn PlotFTIR::read_raman}. {.arg sample_name} must be a string value or {.val NA}.",
+        fr = "Erreur dans {.fn PlotFTIR::read_raman}. {.arg sample_name} doit \u00eatre une valeur de cha\u00eene ou {.val NA}."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  if (!file.exists(file.path(path, file))) {
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "Error in {.fn PlotFTIR::read_raman}. File {.val {file.path(path, file)}} does not appear to exist."
+        ),
+        fr = cli::format_inline(
+          "Erreur dans {.fn PlotFTIR::read_raman}. Le fichier {.val {file.path(path, file)}} ne semble pas exister."
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  filetype <- tolower(tools::file_ext(file))
+
+  if (filetype %in% c("csv", "txt")) {
+    return(read_raman_csv(
+      path = path,
+      file = file,
+      sample_name = sample_name,
+      ...
+    ))
+  } else {
+    .pkg_abort(
+      list(
+        en = c(
+          cli::format_inline(
+            "Error in {.fn PlotFTIR::read_raman}. Input file of type {filetype} could not be processed."
+          ),
+          i = "PlotFTIR currently supports .csv/.txt files for Raman data."
+        ),
+        fr = c(
+          cli::format_inline(
+            "Erreur dans {.fn PlotFTIR::read_raman}. Le fichier d'entr\u00e9e de type {filetype} n'a pas pu \u00eatre trait\u00e9."
+          ),
+          i = "PlotFTIR prend actuellement en charge les fichiers .csv/.txt pour les donn\u00e9es Raman."
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+}
+
 #' `ChemoSec` to `PlotFTIR` conversions
 #'
 #' @description
@@ -1242,7 +1504,7 @@ plotftir_to_chemospec <- function(
 #'
 #' @param csdata
 #' `ChemoSpec` data to convert to `PlotFTIR.`
-#' Données `ChemoSpec` a convertir à `PlotFTIR`.
+#' Données `ChemoSpec` a convertir à `PlotFTIR.`
 #'
 #' @return
 #' a data.frame compatible with `PlotFTIR` functions

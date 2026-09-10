@@ -152,26 +152,34 @@ check_ftir_data <- function(ftir) {
       call = rlang::caller_env(),
     )
   }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+  if (
+    !any(
+      colnames(ftir) == "absorbance",
+      colnames(ftir) == "transmittance",
+      colnames(ftir) == "intensity"
+    )
+  ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} doit avoir une des colonnes {.var absorbance} ou {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit contenir une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
   }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
+  if (
+    sum(colnames(ftir) %in% c("absorbance", "transmittance", "intensity")) > 1
+  ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+          "Error in {.fn {fn}}. {.arg ftir} cannot contain more than one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir les deux colonnes {.var absorbance} et {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir plus d'une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
@@ -179,16 +187,22 @@ check_ftir_data <- function(ftir) {
   if (
     any(
       !(colnames(ftir) %in%
-        c("sample_id", "wavenumber", "absorbance", "transmittance"))
+        c(
+          "sample_id",
+          "wavenumber",
+          "absorbance",
+          "transmittance",
+          "intensity"
+        ))
     )
   ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance}, {.var transmittance}, or {.var intensity}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance} ou {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
@@ -199,8 +213,11 @@ check_ftir_data <- function(ftir) {
         c(
           "absorbance",
           "transmittance",
+          "intensity",
+          "raman",
           "normalized absorbance",
-          "normalized transmittance"
+          "normalized transmittance",
+          "normalized raman"
         ))
   ) {
     .pkg_abort(
@@ -321,9 +338,50 @@ intensity_type <- function(ftir) {
     return("absorbance")
   } else if ("transmittance" %in% colnames(ftir)) {
     return("transmittance")
+  } else if ("intensity" %in% colnames(ftir)) {
+    intensity_attr <- attr(ftir, "intensity")
+    if (!is.null(intensity_attr) && intensity_attr != "") {
+      return(intensity_attr)
+    }
+    ftir_cols <- colnames(ftir)[
+      !colnames(ftir) %in% c("wavenumber", "sample_id")
+    ]
+    if (length(ftir_cols) != 1L) {
+      .pkg_abort(
+        "Les donn{\\'e}es FTIR doivent contenir exactement trois colonnes: \\\"wavenumber\\\", \\\"sample_id\\\", et une colonne d'intensit{\\'e}. {N} autres colonnes d{\\'e}tect{\\'e}es.",
+        "FTIR data must contain exactly three columns: \\\"wavenumber\\\", \\\"sample_id\\\", and one intensity column. {N} extra columns detected.",
+        N = length(ftir_cols)
+      )
+    }
+    ftir_vals <- ftir[[ftir_cols]]
+    return(ifelse(
+      max(ftir_vals, na.rm = TRUE) > 10,
+      "transmittance",
+      "absorbance"
+    ))
   }
 
   # implied else
-  ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
-  return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
+  ftir_cols <- colnames(ftir)[!colnames(ftir) %in% c("wavenumber", "sample_id")]
+  if (length(ftir_cols) != 1L) {
+    .pkg_abort(
+      list(
+        en = c(
+          "data must contain exactly three columns: {.arg wavenumber}, {.arg sample_id}, and one intensity column.",
+          x = cli::format_inline(
+            "{{length(ftir_cols)-1}} extra columns detected."
+          )
+        ),
+        fr = c(
+          "Les donn\u00e9es FTIR doivent contenir exactement trois colonnes: {.arg wavenumber}, {.arg sample_id}, et une colonne d'intensit\u00e9.",
+          x = "{{length(ftir_cols)-1}} colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+        )
+      )
+    )
+  }
+  return(ifelse(
+    max(ftir[[ftir_cols]], na.rm = TRUE) > 10,
+    "transmittance",
+    "absorbance"
+  ))
 }

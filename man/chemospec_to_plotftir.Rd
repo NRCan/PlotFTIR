@@ -8,7 +8,7 @@ chemospec_to_plotftir(csdata)
 }
 \arguments{
 \item{csdata}{`ChemoSpec` data to convert to `PlotFTIR.`
-Données `ChemoSpec` a convertir à `PlotFTIR`.}
+Données `ChemoSpec` a convertir à `PlotFTIR.`}
 }
 \value{
 a data.frame compatible with `PlotFTIR` functions

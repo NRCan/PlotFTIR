@@ -25,12 +25,16 @@ reference:
   - matches("transmittance")
   - normalize_spectra
   - recalculate_baseline
+  - normalize_raman
+  - smooth_spectra
 - title: "Plotting and Graphical Changes"
   desc: > 
     Functions for plotting specta and annotating or manipulating plots
   contents:
   - plot_ftir
   - plot_ftir_stacked
+  - plot_raman
+  - plot_raman_stacked
   - add_band
   - add_wavenumber_marker
   - compress_low_energy

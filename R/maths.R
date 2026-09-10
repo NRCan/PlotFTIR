@@ -607,10 +607,19 @@ recalculate_baseline <- function(
 
   if (method == "point") {
     if (length(wavenumber_range) != 1 || is.na(wavenumber_range)) {
-      cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
-        i = "The value at the provided wavenumber will be used to baseline adjust data."
-      ))
+      .pkg_abort(
+        list(
+          en = c(
+            "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
+            i = "The value at the provided wavenumber will be used to baseline adjust data."
+          ),
+          fr = c(
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00eatre une seule valeur num\u00e9rique.",
+            i = "La valeur \u00e0 la fr\u00e9quence fournie sera utilis\u00e9e pour ajuster la ligne de base des donn\u00e9es."
+          )
+        ),
+        call = rlang::caller_env()
+      )
     }
     if (individually) {
       for (i in seq_along(sample_ids)) {
@@ -1180,6 +1189,153 @@ transmittance_to_absorbance <- function(ftir) {
   } else {
     attr(ftir, "intensity") <- "absorbance"
   }
+
+  return(ftir)
+}
+
+#' Normalize Raman Intensity Spectra
+#'
+#' @description Scales spectra to a common intensity reference. Supports two
+#'   methods: (1) vector norm (L2 normalization — each spectrum has unit length),
+#'   or (2) maximum peak scaling (each spectrum's highest point is set to 1).
+#'   Both are standard practices in Raman spectroscopy for comparing relative
+#'   band intensities across samples.
+#'
+#'   Met à l'échelle les spectres selon une référence d'intensité commune.
+#'   Supporte deux méthodes : (1) norme vectorielle (normalisation L2), ou
+#'   (2) mise à l'échelle par le pic maximum (le point le plus élevé de chaque
+#'   spectre est fixé à 1). Les deux sont des pratiques standard en spectroscopie
+#'   Raman pour comparer les intensités relatives des bandes entre échantillons.
+#'
+#' @inheritParams .shared-params
+#'
+#' @param method One of two values:
+#' * `"vector"` — L2 normalization: each spectrum is divided by its Euclidean norm.
+#' * `"max"` — Maximum scaling: each spectrum is divided by its maximum intensity value.
+#'
+#'   Une des deux valeurs :
+#' * `"vector"` — Normalisation L2 : chaque spectre est divisé par sa norme euclidienne.
+#' * `"max"` — Mise à l'échelle maximale : chaque spectre est divisé par sa valeur d'intensité maximale.
+#'
+#' @return A data.frame containing the normalized Raman spectra with
+#'   `attr(ftir, "intensity")` set to `"normalized raman"`.
+#'
+#'   Un data.frame contenant les spectres Raman normalisés avec
+#'   `attr(ftir, "intensity")` défini sur `"normalized raman"`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Normalize all samples using vector norm (L2)
+#' normalize_raman(raman_data, method = "vector")
+#'
+#' # Normalize all samples by maximum peak height
+#' normalize_raman(raman_data, method = "max")
+#' }
+normalize_raman <- function(
+  ftir,
+  sample_ids = NA,
+  method = "vector"
+) {
+  ftir <- check_ftir_data(ftir)
+
+  if (!attr(ftir, "intensity") %in% c("raman", "normalized raman")) {
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::normalize_raman}. {.arg ftir} intensity attribute not set.",
+          i = "Expected 'raman' or 'normalized raman'."
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::normalize_raman}. L'attribut {.arg ftir} d'intensit\u00e9 n'est pas d\u00e9fini.",
+          i = "Attendu 'raman' ou 'normalized raman'."
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  if (length(sample_ids) <= 1) {
+    if (is.na(sample_ids) || is.null(sample_ids) || length(sample_ids) == 0) {
+      sample_ids <- unique(ftir$sample_id)
+    }
+  }
+
+  if (any(!(sample_ids %in% unique(ftir$sample_id)))) {
+    mismatch <- sample_ids[!(sample_ids %in% unique(ftir$sample_id))]
+    .pkg_abort(
+      list(
+        en = c(
+          "All provided {.arg sample_ids} must be in {.arg ftir} data.",
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg ftir}.",
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  permitted_methods <- c("vector", "max")
+  if (length(method) != 1 || !(method %in% permitted_methods)) {
+    .pkg_abort(
+      list(
+        en = c(
+          "Error in {.fn PlotFTIR::normalize_raman}. {.arg method} must be a string.",
+          i = cli::format_inline(
+            "{.arg method} must be one of {.val {permitted_methods}}."
+          )
+        ),
+        fr = c(
+          "Erreur dans {.fn PlotFTIR::normalize_raman}. {.arg method} doit \u00eatre une cha\u00eene de caract\u00e8res.",
+          i = cli::format_inline(
+            "{.arg method} doit \u00eatre l'un des {.val {permitted_methods}}."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  for (sid in sample_ids) {
+    idx <- ftir$sample_id == sid
+    intensity_vec <- ftir[idx, "intensity"]
+
+    if (method == "vector") {
+      norm_val <- sqrt(sum(intensity_vec^2))
+      if (norm_val == 0) {
+        .pkg_abort(
+          list(
+            en = "Error in {.fn PlotFTIR::normalize_raman}. Cannot normalize spectrum with zero magnitude.",
+            fr = "Erreur dans {.fn PlotFTIR::normalize_raman}. Impossible de normaliser un spectre avec une amplitude nulle."
+          ),
+          call = rlang::caller_env()
+        )
+      }
+      ftir[idx, "intensity"] <- intensity_vec / norm_val
+    } else if (method == "max") {
+      max_val <- max(intensity_vec)
+      if (max_val == 0) {
+        .pkg_abort(
+          list(
+            en = "Error in {.fn PlotFTIR::normalize_raman}. Cannot normalize spectrum with zero maximum.",
+            fr = "Erreur dans {.fn PlotFTIR::normalize_raman}. Impossible de normaliser un spectre avec un maximum nul."
+          ),
+          call = rlang::caller_env()
+        )
+      }
+      ftir[idx, "intensity"] <- intensity_vec / max_val
+    }
+  }
+
+  attr(ftir, "intensity") <- "normalized raman"
 
   return(ftir)
 }

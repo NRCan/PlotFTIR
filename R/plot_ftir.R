@@ -61,8 +61,9 @@ plot_ftir_core <- function(
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     .pkg_abort(
       list(
-        en = c("{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
-        i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg ggplot2} package installation.",
+          i = "Install {.pkg ggplot2} with {.run install.packages('ggplot2')}"
         ),
         fr = c(
           "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg ggplot2}.",
