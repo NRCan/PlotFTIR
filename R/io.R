@@ -614,9 +614,9 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
             "{.val wavenumber} units."
           ),
           fr = paste(
-            "{.fn PlotFTIR:::read_ftir_jdx} a détecté des unités",
-            "de longueur d'onde ({.val micromètres}) et les",
-            "convertit en unités de {.val nombre d'ondes}."
+            "{.fn PlotFTIR:::read_ftir_jdx} a d\u00e9tect\u00e9 des unit\u00e9s",
+            "de longueur d'onde ({.val microm\u00e8tres}) et les",
+            "convertit en unit\u00e9s de {.val nombre d'ondes}."
           )
         ),
         call = rlang::caller_env()
