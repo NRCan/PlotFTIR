@@ -599,6 +599,34 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     "intensity" = ir$y
   )
 
+  # Check JCAMP X units and convert wavelength data to wavenumbers if needed
+  xunits_line <- toupper(metadata[grepl("^##XUNITS", toupper(metadata))])
+
+  if (length(xunits_line) > 0) {
+    # Can't just regex against 'um' because that matches 'wavenUMber' 
+    if (grepl("MICROM|MICRON", xunits_line) || xunits_line == "##XUNITS=UM") {
+
+      .pkg_inform(
+        list(
+          en = paste(
+            "{.fn PlotFTIR:::read_ftir_jdx} detected wavelength units",
+            "({.val micrometers}) and is converting to",
+            "{.val wavenumber} units."
+          ),
+          fr = paste(
+            "{.fn PlotFTIR:::read_ftir_jdx} a détecté des unités",
+            "de longueur d'onde ({.val micromètres}) et les",
+            "convertit en unités de {.val nombre d'ondes}."
+          )
+        ),
+        call = rlang::caller_env()
+      )
+
+      # Convert wavelength (µm) to wavenumber (cm^-1)
+      ftir_data$wavenumber <- 10000 / ftir_data$wavenumber
+    }
+  }
+  
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
       if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
