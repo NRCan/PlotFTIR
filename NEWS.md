@@ -1,7 +1,8 @@
 # PlotFTIR (development version)
 
-* Updated package data to properly print after v1.3.0.
+* Updated package data sets to properly print after v1.3.0.
 * Added bilingual error codes and bilingual pretty printing (#40)
+* `read_ftir_jdx()` now auto-converts .jdx files with wavelength (micrometer) x-axis units to wavenumber (#43)
 
 # PlotFTIR 1.3.0
 

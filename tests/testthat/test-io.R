@@ -327,6 +327,155 @@ test_that("reading .jdx works", {
   )
 })
 
+test_that(".jdx files with micrometer (wavelength) XUNITS are converted to wavenumber (#43)", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing interface")
+  }
+
+  # Build a minimal, valid JCAMP-DX block modeled on the NIST example in #43:
+  # ascending wavelength (um) data that must be converted to wavenumber (cm-1)
+  # via wavenumber = 10000 / wavelength, and reported as %Transmittance.
+  # readJDX reconstructs x from FIRSTX/LASTX/NPOINTS as an evenly spaced
+  # sequence (ignoring the literal x values in XYDATA), so x here must already
+  # be evenly spaced to match what readJDX will actually return.
+  make_jdx <- function(xunits, sample_name = "Test Sample") {
+    x <- c(2.5, 5, 7.5)
+    y <- c(0.90, 0.80, 0.95)
+    c(
+      "##TITLE=" |> paste0(sample_name),
+      "##JCAMP-DX=4.24",
+      "##DATA TYPE=INFRARED SPECTRUM",
+      "##ORIGIN=PlotFTIR test suite",
+      "##OWNER=PlotFTIR",
+      paste0("##XUNITS=", xunits),
+      "##YUNITS=TRANSMITTANCE",
+      "##XFACTOR=1.000000",
+      "##YFACTOR=1",
+      paste0("##FIRSTX=", x[1]),
+      paste0("##LASTX=", x[length(x)]),
+      paste0("##FIRSTY=", y[1]),
+      paste0("##MAXX=", max(x)),
+      paste0("##MINX=", min(x)),
+      paste0("##MAXY=", max(y)),
+      paste0("##MINY=", min(y)),
+      paste0("##NPOINTS=", length(x)),
+      "##XYDATA=(X++(Y..Y))",
+      paste(x, y),
+      "##END="
+    )
+  }
+
+  expected_wavenumber <- 10000 / c(2.5, 5, 7.5)
+
+  for (unit_label in c(
+    "MICROMETERS",
+    "MICROMETER",
+    "MICRONS",
+    "MICRON",
+    "UM"
+  )) {
+    temp_file <- withr::local_tempfile(fileext = ".jdx")
+    writeLines(make_jdx(unit_label), temp_file)
+
+    expect_message_bilingual(
+      read_ftir(path = dirname(temp_file), file = basename(temp_file)),
+      en = "detected wavelength units",
+      fr = "d\u00e9tect\u00e9 des unit\u00e9s",
+      fixed = FALSE
+    )
+
+    suppressMessages(
+      result <- read_ftir(path = dirname(temp_file), file = basename(temp_file))
+    )
+
+    expect_true("transmittance" %in% colnames(result))
+    # Wavenumber should be sorted ascending after conversion, regardless of
+    # the (ascending) order of the source wavelength data.
+    expect_equal(result$wavenumber, sort(expected_wavenumber))
+    expect_false(is.unsorted(result$wavenumber))
+  }
+
+  # Negative control: a file already in wavenumber (cm-1) units should not
+  # trigger the conversion message or alter the wavenumber values.
+  temp_file_cm <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(make_jdx("1/CM"), temp_file_cm)
+
+  expect_no_message_bilingual <- function(object) {
+    testthat::expect_no_message(object, message = "detected wavelength units")
+  }
+  expect_no_message_bilingual(
+    result_cm <- read_ftir(
+      path = dirname(temp_file_cm),
+      file = basename(temp_file_cm)
+    )
+  )
+  expect_equal(result_cm$wavenumber, c(2.5, 5, 7.5))
+
+  # Case-insensitivity / lowercase xunits should still be detected.
+  temp_file_lc <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(make_jdx("micrometers"), temp_file_lc)
+  expect_message_bilingual(
+    read_ftir(path = dirname(temp_file_lc), file = basename(temp_file_lc)),
+    en = "detected wavelength units",
+    fr = "d\u00e9tect\u00e9 des unit\u00e9s",
+    fixed = FALSE
+  )
+
+  # Whitespace around `=` in ##XUNITS should still be detected.
+  temp_file_ws <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(make_jdx("UM "), temp_file_ws)
+  expect_message_bilingual(
+    read_ftir(path = dirname(temp_file_ws), file = basename(temp_file_ws)),
+    en = "detected wavelength units",
+    fr = "d\u00e9tect\u00e9 des unit\u00e9s",
+    fixed = FALSE
+  )
+})
+
+test_that("duplicate/malformed ##XUNITS metadata lines do not error (#43)", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing interface")
+  }
+
+  # A file with two ##XUNITS lines used to produce a vector of length > 1
+  # passed into `if()`, which errors under R >= 4.3 ("condition has length
+  # > 1"). Only the first match should be used.
+  x <- c(2.5, 5, 7.5)
+  y <- c(0.90, 0.80, 0.95)
+  lines <- c(
+    "##TITLE=Duplicate XUNITS Sample",
+    "##JCAMP-DX=4.24",
+    "##DATA TYPE=INFRARED SPECTRUM",
+    "##ORIGIN=PlotFTIR test suite",
+    "##OWNER=PlotFTIR",
+    "##XUNITS=MICROMETERS",
+    "##XUNITS=1/CM",
+    "##YUNITS=TRANSMITTANCE",
+    "##XFACTOR=1.000000",
+    "##YFACTOR=1",
+    paste0("##FIRSTX=", x[1]),
+    paste0("##LASTX=", x[length(x)]),
+    paste0("##FIRSTY=", y[1]),
+    paste0("##MAXX=", max(x)),
+    paste0("##MINX=", min(x)),
+    paste0("##MAXY=", max(y)),
+    paste0("##MINY=", min(y)),
+    paste0("##NPOINTS=", length(x)),
+    "##XYDATA=(X++(Y..Y))",
+    paste(x, y),
+    "##END="
+  )
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(lines, temp_file)
+
+  expect_no_error(
+    suppressMessages(
+      result <- read_ftir(path = dirname(temp_file), file = basename(temp_file))
+    )
+  )
+  expect_equal(result$wavenumber, sort(10000 / x))
+})
+
 # Check reading multiple files
 test_that("Reading multiple files works", {
   # Prep some files

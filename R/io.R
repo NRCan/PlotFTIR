@@ -599,6 +599,44 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     "intensity" = ir$y
   )
 
+  # Check JCAMP X units and convert wavelength data to wavenumbers if needed.
+  # Use only the first match & drop NA (duplicate/malformed ##XUNITS lines
+  # should not crash the `if()` below with a "length > 1" condition error).
+  xunits_line <- toupper(metadata[grepl("^##XUNITS", toupper(metadata))])[1]
+
+  if (!is.na(xunits_line)) {
+    # Can't just regex against 'um' because that matches 'wavenUMber'
+    if (
+      grepl("MICROM|MICRON", xunits_line) ||
+        grepl("^##XUNITS\\s*=\\s*UM\\s*$", xunits_line)
+    ) {
+      .pkg_inform(
+        list(
+          en = paste(
+            "{.fn PlotFTIR:::read_ftir_jdx} detected wavelength units",
+            "({.val micrometers}) and is converting to",
+            "{.val wavenumber} units."
+          ),
+          fr = paste(
+            "{.fn PlotFTIR:::read_ftir_jdx} a d\u00e9tect\u00e9 des unit\u00e9s",
+            "de longueur d'onde ({.val microm\u00e8tres}) et les",
+            "convertit en unit\u00e9s de {.val nombre d'ondes}."
+          )
+        ),
+        call = rlang::caller_env()
+      )
+
+      # Convert wavelength (µm) to wavenumber (cm^-1)
+      ftir_data$wavenumber <- 10000 / ftir_data$wavenumber
+
+      # Wavelength data is typically ascending, so after conversion
+      # wavenumber ends up descending. Re-sort ascending to match PlotFTIR's
+      # usual convention and avoid issues with downstream plotting/math.
+      ftir_data <- ftir_data[order(ftir_data$wavenumber), ]
+      rownames(ftir_data) <- NULL
+    }
+  }
+
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
       if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {
