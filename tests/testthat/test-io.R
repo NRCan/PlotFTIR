@@ -335,8 +335,11 @@ test_that(".jdx files with micrometer (wavelength) XUNITS are converted to waven
   # Build a minimal, valid JCAMP-DX block modeled on the NIST example in #43:
   # ascending wavelength (um) data that must be converted to wavenumber (cm-1)
   # via wavenumber = 10000 / wavelength, and reported as %Transmittance.
+  # readJDX reconstructs x from FIRSTX/LASTX/NPOINTS as an evenly spaced
+  # sequence (ignoring the literal x values in XYDATA), so x here must already
+  # be evenly spaced to match what readJDX will actually return.
   make_jdx <- function(xunits, sample_name = "Test Sample") {
-    x <- c(2.5, 5, 10)
+    x <- c(2.5, 5, 7.5)
     y <- c(0.90, 0.80, 0.95)
     c(
       "##TITLE=" |> paste0(sample_name),
@@ -362,7 +365,7 @@ test_that(".jdx files with micrometer (wavelength) XUNITS are converted to waven
     )
   }
 
-  expected_wavenumber <- 10000 / c(2.5, 5, 10)
+  expected_wavenumber <- 10000 / c(2.5, 5, 7.5)
 
   for (unit_label in c("MICROMETERS", "MICROMETER", "MICRONS", "MICRON", "UM")) {
     temp_file <- withr::local_tempfile(fileext = ".jdx")
@@ -400,7 +403,7 @@ test_that(".jdx files with micrometer (wavelength) XUNITS are converted to waven
       file = basename(temp_file_cm)
     )
   )
-  expect_equal(result_cm$wavenumber, c(2.5, 5, 10))
+  expect_equal(result_cm$wavenumber, c(2.5, 5, 7.5))
 
   # Case-insensitivity / lowercase xunits should still be detected.
   temp_file_lc <- withr::local_tempfile(fileext = ".jdx")

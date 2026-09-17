@@ -2,4 +2,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* This release updates error strings and the printing s3 class to be bilingual
+* This release updates error strings and the printing s3 class to be bilingual, and addresses bugs.
