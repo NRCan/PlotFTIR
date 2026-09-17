@@ -624,6 +624,12 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
       # Convert wavelength (µm) to wavenumber (cm^-1)
       ftir_data$wavenumber <- 10000 / ftir_data$wavenumber
+
+      # Wavelength data is typically ascending, so after conversion
+      # wavenumber ends up descending. Re-sort ascending to match PlotFTIR's
+      # usual convention and avoid issues with downstream plotting/math.
+      ftir_data <- ftir_data[order(ftir_data$wavenumber), ]
+      rownames(ftir_data) <- NULL
     }
   }
   
