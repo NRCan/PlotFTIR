@@ -1233,8 +1233,8 @@ test_that("read_raman_csv invalid numeric data error", {
 
   expect_error_bilingual(
     read_raman(path = tmppath, file = tmpfile),
-    en = "Invalid numeric data found at row 1",
-    fr = "Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne 1"
+    en = "Invalid numeric data found at line 2",
+    fr = "Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne 2"
   )
 })
 
@@ -1317,4 +1317,74 @@ test_that("read_ftir_jdx else branch for is.na(intensity) falls back to intensit
   result <- read_ftir(path = tmppath, file = tmpfile)
 
   expect_true("absorbance" %in% colnames(result))
+})
+
+test_that("read_raman_csv reports the true file line for invalid numeric data (#34)", {
+  tmp <- withr::local_tempdir()
+  writeLines(
+    c(
+      "##FILETYPE=Raman",
+      "##OWNER=test",
+      "100,5",
+      "110,6",
+      "120,not_a_number",
+      "130,8"
+    ),
+    file.path(tmp, "bad.txt")
+  )
+
+  # The bad value is on file line 5, not row 3 of the filtered data
+  expect_error_bilingual(
+    read_raman(path = tmp, file = "bad.txt"),
+    en = "line 5",
+    fr = "ligne 5"
+  )
+})
+
+test_that("read_raman_csv warns about malformed rows rather than silently dropping (#34)", {
+  tmp <- withr::local_tempdir()
+  writeLines(
+    c(
+      "##FILETYPE=Raman",
+      "100,5",
+      "110,6,extra",
+      "120,7"
+    ),
+    file.path(tmp, "malformed.txt")
+  )
+
+  expect_warning(raman <- read_raman(path = tmp, file = "malformed.txt"))
+  expect_equal(nrow(raman), 2L)
+})
+
+test_that("read_raman_csv captures single-# WiRE headers as metadata (#34)", {
+  tmp <- withr::local_tempdir()
+  writeLines(
+    c(
+      "#FileType=Raman",
+      "#Laser=532",
+      "100,5",
+      "110,6"
+    ),
+    file.path(tmp, "wire.txt")
+  )
+
+  raman <- read_raman(path = tmp, file = "wire.txt")
+  metadata <- attr(raman, "raman_metadata")
+
+  expect_type(metadata, "list")
+  expect_equal(metadata[["Laser"]], "532")
+  expect_equal(metadata[["FileType"]], "Raman")
+})
+
+test_that("read_raman sets the raman intensity attribute, not a guessed type (#34)", {
+  tmp <- withr::local_tempdir()
+  # Large counts would otherwise be guessed as "transmittance" by intensity_type()
+  writeLines(
+    c("##FILETYPE=Raman", "100,5000", "110,6200", "120,4800"),
+    file.path(tmp, "counts.txt")
+  )
+
+  raman <- read_raman(path = tmp, file = "counts.txt")
+  expect_equal(attr(raman, "intensity"), "raman")
 })

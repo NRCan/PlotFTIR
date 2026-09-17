@@ -128,10 +128,26 @@ test_that("plot_raman_stacked() offsets samples without y-axis labels", {
   expect_true("ggplot" %in% class(p))
 })
 
-# Note: plot_raman.R L62-76 (intensity attribute == "intensity" check) is dead code.
-# check_ftir_data() at utils.R L210-231 validates intensity against a whitelist that
-# does not include "intensity", so this path in plot_raman_core() is unreachable.
-# The test below would need source code changes to be reachable.
+# plot_raman_core() rejects any intensity attribute outside the Raman whitelist.
+# check_ftir_data() accepts "absorbance", "transmittance", and "intensity", so
+# passing FTIR data reaches this guard - covered by the test below.
+
+test_that("plot_raman_core() rejects non-Raman intensity attributes (#34)", {
+  skip_if_not_installed("ggplot2")
+
+  ftir_data <- data.frame(
+    wavenumber = c(100, 110, 120),
+    intensity = c(1, 2, 3),
+    sample_id = "ftir"
+  )
+  attr(ftir_data, "intensity") <- "absorbance"
+
+  expect_error_bilingual(
+    plot_raman(ftir_data),
+    en = "Expected 'raman'",
+    fr = "Attendu 'raman'"
+  )
+})
 
 test_that("plot_raman_core() validates plot_title length", {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -323,4 +339,24 @@ test_that("plot_raman_stacked() validates stack_offset", {
     en = "must be a single numeric value",
     fr = "doit être une valeur numérique unique"
   )
+})
+
+test_that("plot_raman_stacked y-axis label is bilingual (#34)", {
+  wn <- seq(100, 400, by = 10)
+  raman_data <- rbind(
+    data.frame(wavenumber = wn, intensity = wn / 10, sample_id = "a"),
+    data.frame(wavenumber = wn, intensity = wn / 20, sample_id = "b")
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  withr::with_options(list(PlotFTIR.lang = "en"), {
+    expect_equal(plot_raman_stacked(raman_data)$labels$y, "Intensity (a.u.)")
+  })
+
+  withr::with_options(list(PlotFTIR.lang = "fr"), {
+    expect_equal(
+      plot_raman_stacked(raman_data)$labels$y,
+      "Intensit\u00e9 (u.a.)"
+    )
+  })
 })

@@ -5,14 +5,14 @@
 \title{Plot Raman core plot generator}
 \usage{
 plot_raman_core(
-  ftir,
+  raman,
   plot_title = "Raman Spectra",
   legend_title = "Sample ID",
   lang = NA
 )
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`,
+\item{raman}{A data.frame in long format with columns `sample_id`,
   `wavenumber`, and `intensity`. The `intensity` column contains raw Raman
   counts. The code determines the correct y axis units and labels the plot
   appropriately based on whether normalization has been applied.

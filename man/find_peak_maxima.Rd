@@ -5,7 +5,7 @@
 \title{Find Peak Maxima in Raman Spectra}
 \usage{
 find_peak_maxima(
-  ftir,
+  raman,
   sample_ids = NA,
   height = NULL,
   distance = NULL,
@@ -13,10 +13,15 @@ find_peak_maxima(
 )
 }
 \arguments{
-\item{ftir}{A data.frame in long format with columns `sample_id`, `wavenumber`,
-and `absorbance`/`transmittance`.
-Un data.frame au format long avec les colonnes `sample_id`, `wavenumber`,
-et `absorbance`/`transmittance`.}
+\item{raman}{A data.frame of Raman spectra in long format with columns
+  `sample_id`, `wavenumber`, and `intensity`, carrying an `intensity`
+  attribute of `"raman"` or `"normalized raman"` (as produced by
+  [read_raman()]). FTIR absorbance/transmittance data is not accepted.
+
+  Un data.frame de spectres Raman au format long avec les colonnes
+  `sample_id`, `wavenumber` et `intensity`, portant un attribut `intensity`
+  de `"raman"` ou `"normalized raman"` (tel que produit par [read_raman()]).
+  Les données FTIR d'absorbance/transmittance ne sont pas acceptées.}
 
 \item{sample_ids}{A vector of one or more `sample_id`s to select.
 
@@ -39,21 +44,48 @@ Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.}
 \item{compute_fwhm}{If `TRUE`, also computes the full width at half maximum
   (FWHM) for each detected peak. Default is `FALSE`.
 
+  The FWHM follows the definition implemented by SciPy's
+  `scipy.signal.peak_widths` with `rel_height = 0.5`: on each flank, the
+  search area extends from the peak to the first strictly higher sample (or
+  the spectral edge if none is found), and the base of that flank is its
+  minimum value within this area. The width is measured where both flanks
+  cross the level `h_peak - 0.5 * (h_peak - max(bases))`, i.e. half the
+  prominence above the dominant base, with linear interpolation between
+  samples. For overlapping peaks this reports a contour width of the
+  composite signal rather than an intrinsic component width; consider
+  model-based deconvolution for closely spaced bands.
+
   Si `TRUE`, calcule également la largeur à mi-hauteur (FWHM) pour chaque pic détecté.
-  La valeur par défaut est `FALSE`.}
+  La valeur par défaut est `FALSE`.
+
+  La FWHM suit la définition implémentée par `scipy.signal.peak_widths` de
+  SciPy avec `rel_height = 0.5` : sur chaque flanc, le domaine de recherche
+  s'étend du pic jusqu'au premier échantillon strictement plus élevé (ou à
+  la borne spectrale si aucun n'est trouvé), et la base de ce flanc est sa
+  valeur minimale dans ce domaine. La largeur est mesurée là où les deux
+  flancs croisent le niveau `h_peak - 0.5 * (h_peak - max(bases))`, c'est-à-dire
+  à mi-prominence au-dessus de la base dominante, avec interpolation linéaire
+  entre les échantillons. Pour des pics superposés, la valeur rapportée est
+  une largeur de contour du signal composite plutôt que la largeur intrinsèque
+  d'un composant ; envisagez une déconvolution par modèle pour les bandes
+  proches.}
 }
 \value{
 A data.frame with columns:
 * `sample_id`: the sample from which the peak was detected
 * `wavenumber`: wavenumber position of the peak in cm^-1^
 * `intensity`: intensity value at the peak maximum
-* If `compute_fwhm = TRUE`, an additional column `fwhm` with width in cm^-1^
+* If `compute_fwhm = TRUE`, an additional column `fwhm` with width in cm^-1^.
+  Values are `NA` when a flank crossing cannot be determined (e.g.,
+  degenerate flat signals).
 
   Un data.frame avec les colonnes :
 * `sample_id` : l'échantillon à partir duquel le pic a été détecté
 * `wavenumber` : position en nombre d'ondes du pic en cm^-1^
 * `intensity` : valeur d'intensité au maximum du pic
-* Si `compute_fwhm = TRUE`, une colonne supplémentaire `fwhm` avec la largeur en cm^-1^
+* Si `compute_fwhm = TRUE`, une colonne supplémentaire `fwhm` avec la largeur en cm^-1^.
+  Les valeurs sont `NA` lorsqu'une intersection de flanc ne peut pas être
+  déterminée (p. ex., signaux plats dégénérés).
 }
 \description{
 Identifies local maxima above a specified height threshold. For

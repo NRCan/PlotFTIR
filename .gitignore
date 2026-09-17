@@ -57,4 +57,4 @@ docs
 tests/testthat/testthat-problems.rds
 tests/testthat/_problems/*
 .kilo/*
-*.xml
+cobertura.xml

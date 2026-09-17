@@ -12,7 +12,7 @@
 #'
 #' @inheritParams .shared-params
 #'
-#' @param ftir A data.frame in long format with columns `sample_id`,
+#' @param raman A data.frame in long format with columns `sample_id`,
 #'   `wavenumber`, and `intensity`. The `intensity` column contains raw Raman
 #'   counts. The code determines the correct y axis units and labels the plot
 #'   appropriately based on whether normalization has been applied.
@@ -36,7 +36,7 @@
 #'   à l'objet retourné.
 #'
 plot_raman_core <- function(
-  ftir,
+  raman,
   plot_title = "Raman Spectra",
   legend_title = "Sample ID",
   lang = NA
@@ -57,17 +57,17 @@ plot_raman_core <- function(
     )
   }
 
-  ftir <- check_ftir_data(ftir)
+  raman <- check_ftir_data(raman)
 
-  if (!attr(ftir, "intensity") %in% c("raman", "normalized raman")) {
+  if (!attr(raman, "intensity") %in% c("raman", "normalized raman")) {
     .pkg_abort(
       list(
         en = c(
-          "Error in {.fn PlotFTIR:::plot_raman_core}. {.arg ftir} intensity attribute not set.",
+          "Error in {.fn PlotFTIR:::plot_raman_core}. {.arg raman} intensity attribute not set.",
           i = "Expected 'raman' or 'normalized raman'."
         ),
         fr = c(
-          "Erreur dans {.fn PlotFTIR:::plot_raman_core}. L'attribut {.arg ftir} d'intensit\u00e9 n'est pas d\u00e9fini.",
+          "Erreur dans {.fn PlotFTIR:::plot_raman_core}. L'attribut {.arg raman} d'intensit\u00e9 n'est pas d\u00e9fini.",
           i = "Attendu 'raman' ou 'normalized raman'."
         )
       ),
@@ -93,19 +93,19 @@ plot_raman_core <- function(
       call = rlang::caller_env()
     )
   }
-  if (length(unique(ftir$sample_id)) > 12) {
+  if (length(unique(raman$sample_id)) > 12) {
     .pkg_warn(
       list(
         en = c(
-          "Warning in {.fn PlotFTIR:::plot_raman_core}. The color palette in use works best with 12 or fewer unique samples in {.arg ftir}.",
+          "Warning in {.fn PlotFTIR:::plot_raman_core}. The color palette in use works best with 12 or fewer unique samples in {.arg raman}.",
           i = cli::format_inline(
-            "You have a total of {length(unique(ftir$sample_id))} unique sample IDs."
+            "You have a total of {length(unique(raman$sample_id))} unique sample IDs."
           )
         ),
         fr = c(
-          "Avertissement dans {.fn PlotFTIR:::plot_raman_core}. La palette de couleurs utilis\u00e9e fonctionne mieux avec 12 \u00e9chantillons uniques ou moins dans {.arg ftir}.",
+          "Avertissement dans {.fn PlotFTIR:::plot_raman_core}. La palette de couleurs utilis\u00e9e fonctionne mieux avec 12 \u00e9chantillons uniques ou moins dans {.arg raman}.",
           i = cli::format_inline(
-            "Vous avez un total de {length(unique(ftir$sample_id))} identifiants d'\u00e9chantillon uniques."
+            "Vous avez un total de {length(unique(raman$sample_id))} identifiants d'\u00e9chantillon uniques."
           )
         )
       ),
@@ -141,7 +141,7 @@ plot_raman_core <- function(
     }
   }
 
-  mode <- attr(ftir, "intensity")
+  mode <- attr(raman, "intensity")
 
   if (l == "fr") {
     xtitle <- bquote("D\u00e9calage Raman" ~ (cm^-1))
@@ -163,11 +163,11 @@ plot_raman_core <- function(
     }
   }
 
-  ftir <- ftir[stats::complete.cases(ftir), ]
-  ftir$wavenumber <- as.numeric(ftir$wavenumber)
-  ftir$intensity <- as.numeric(ftir$intensity)
+  raman <- raman[stats::complete.cases(raman), ]
+  raman$wavenumber <- as.numeric(raman$wavenumber)
+  raman$intensity <- as.numeric(raman$intensity)
 
-  p <- ggplot2::ggplot(ftir) +
+  p <- ggplot2::ggplot(raman) +
     ggplot2::geom_line(ggplot2::aes(
       x = .data$wavenumber,
       y = .data$intensity,
@@ -194,7 +194,7 @@ plot_raman_core <- function(
 
   if (
     !requireNamespace("ggthemes", quietly = TRUE) ||
-      length(unique(ftir$sample_id)) > 15
+      length(unique(raman$sample_id)) > 15
   ) {
     p <- p +
       ggplot2::scale_color_viridis_d()
@@ -210,7 +210,7 @@ plot_raman_core <- function(
       )
   }
 
-  attr(p, "intensity") <- attr(ftir, "intensity")
+  attr(p, "intensity") <- attr(raman, "intensity")
 
   return(p)
 }
@@ -240,13 +240,13 @@ plot_raman_core <- function(
 #'   plot_raman_stacked(raman_data)
 #' }
 plot_raman_stacked <- function(
-  ftir,
+  raman,
   plot_title = "Raman Spectra",
   legend_title = "Sample ID",
   stack_offset = 10,
   lang = NA
 ) {
-  ftir <- check_ftir_data(ftir)
+  raman <- check_ftir_data(raman)
 
   if (!is.numeric(stack_offset) || length(stack_offset) > 1) {
     .pkg_abort(
@@ -267,9 +267,9 @@ plot_raman_stacked <- function(
     )
   }
 
-  mode <- attr(ftir, "intensity")
+  mode <- attr(raman, "intensity")
 
-  stack_samples <- unique(ftir$sample_id)
+  stack_samples <- unique(raman$sample_id)
   nsamples <- length(unique(stack_samples))
 
   if (nsamples > 1) {
@@ -280,22 +280,30 @@ plot_raman_stacked <- function(
 
     # merge() drops data frame attributes; the "intensity" attribute ("raman")
     # cannot be re-inferred from a generic "intensity" column
-    intensity_attr <- attr(ftir, "intensity")
-    ftir <- merge(x = ftir, y = offset, by = "sample_id")
-    ftir$intensity <- ftir$intensity + ftir$offset
-    ftir$offset <- NULL
-    attr(ftir, "intensity") <- intensity_attr
+    intensity_attr <- attr(raman, "intensity")
+    raman <- merge(x = raman, y = offset, by = "sample_id")
+    raman$intensity <- raman$intensity + raman$offset
+    raman$offset <- NULL
+    attr(raman, "intensity") <- intensity_attr
   }
 
   p <- plot_raman_core(
-    ftir = ftir,
+    raman = raman,
     plot_title = plot_title,
     legend_title = legend_title,
     lang = lang
   )
 
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_blank())
-  suppressMessages(p <- p + ggplot2::ylab("Intensity (a.u.)"))
+
+  # Stacked plots carry an arbitrary vertical offset, so the axis is relabelled
+  # in arbitrary units rather than reusing the core plot's intensity label.
+  stacked_ylab <- if (.get_language() == "fr") {
+    "Intensit\u00e9 (u.a.)"
+  } else {
+    "Intensity (a.u.)"
+  }
+  suppressMessages(p <- p + ggplot2::ylab(stacked_ylab))
 
   attr(p, "spectra_style") <- "stacked"
 
@@ -319,14 +327,14 @@ plot_raman_stacked <- function(
 #'   plot_raman(raman_data)
 #' }
 plot_raman <- function(
-  ftir,
+  raman,
   plot_title = "Raman Spectra",
   legend_title = "Sample ID",
   lang = NA
 ) {
-  ftir <- check_ftir_data(ftir)
+  raman <- check_ftir_data(raman)
   p <- plot_raman_core(
-    ftir = ftir,
+    raman = raman,
     plot_title = plot_title,
     legend_title = legend_title,
     lang = lang

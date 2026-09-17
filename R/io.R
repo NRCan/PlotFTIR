@@ -686,8 +686,10 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
 
   if (intensity == 'raman') {
     ftir_data$sample_id <- sample_name
-    ftir_data <- check_ftir_data(ftir_data)
+    # Set before check_ftir_data() so intensity_type()'s magnitude heuristic is
+    # never consulted for Raman counts.
     attr(ftir_data, "intensity") <- "raman"
+    ftir_data <- check_ftir_data(ftir_data)
   } else if (intensity == 'absorbance') {
     ftir_data$absorbance <- ftir_data$intensity
     ftir_data$intensity <- NULL
@@ -1319,20 +1321,53 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
     )
   }
 
-  header_lines <- grep("^##", lines, value = TRUE, perl = TRUE)
+  # WiRE exports use single-# headers while RRUFF uses ##; accept both so that
+  # raman_metadata is populated for every format read_raman() advertises.
+  header_idx <- grep("^#", lines, perl = TRUE)
   raman_metadata <- list()
-  for (line in header_lines) {
+  for (line in lines[header_idx]) {
     if (grepl("=", line)) {
       eq_pos <- regexpr("=", line)[1]
-      key <- trimws(substr(line, 3, eq_pos - 1))
+      key <- trimws(sub("^#+", "", substr(line, 1, eq_pos - 1)))
       value <- trimws(substr(line, eq_pos + 1, nchar(line)))
-      raman_metadata[[key]] <- value
+      if (nzchar(key)) {
+        raman_metadata[[key]] <- value
+      }
     }
   }
 
-  data_lines <- lines[!grepl("^#", lines)]
-  data_rows <- strsplit(data_lines, ",")
-  data_rows <- data_rows[sapply(data_rows, length) == 2]
+  # Track the original file line numbers so parse errors below can point at the
+  # real line rather than an index into the filtered subset.
+  data_idx <- which(!grepl("^#", lines))
+  data_rows <- strsplit(lines[data_idx], ",")
+  keep <- lengths(data_rows) == 2
+  dropped_idx <- data_idx[!keep & nzchar(trimws(lines[data_idx]))]
+  data_rows <- data_rows[keep]
+  data_idx <- data_idx[keep]
+
+  if (length(dropped_idx) > 0) {
+    .pkg_warn(
+      list(
+        en = c(
+          cli::format_inline(
+            "{.fn PlotFTIR:::read_raman_csv} skipped {length(dropped_idx)} malformed data {cli::qty(length(dropped_idx))}line{?s}."
+          ),
+          i = cli::format_inline(
+            "Line{?s} {.val {utils::head(dropped_idx, 5)}} did not contain exactly two comma-separated values."
+          )
+        ),
+        fr = c(
+          cli::format_inline(
+            "{.fn PlotFTIR:::read_raman_csv} a ignor\u00e9 {length(dropped_idx)} ligne{?s} de donn\u00e9es mal form\u00e9e{?s}."
+          ),
+          i = cli::format_inline(
+            "{.val {utils::head(dropped_idx, 5)}} ne contenaient pas exactement deux valeurs s\u00e9par\u00e9es par des virgules."
+          )
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
 
   if (length(data_rows) == 0) {
     .pkg_abort(
@@ -1354,20 +1389,20 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
   intensity <- numeric(length(data_rows))
 
   for (i in seq_along(data_rows)) {
-    parsed <- suppressWarnings(gsub('"', '', data_rows[[i]]))
-    parsed <- suppressWarnings(as.numeric(parsed))
+    parsed <- suppressWarnings(as.numeric(gsub('"', '', data_rows[[i]])))
     if (!all(is.finite(parsed))) {
+      file_line <- data_idx[i]
       .pkg_abort(
         list(
           en = c(
             cli::format_inline(
-              "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at row {i}."
+              "Error in {.fn PlotFTIR:::read_raman_csv}. Invalid numeric data found at line {file_line}."
             ),
             x = "All wavenumber and intensity values must be numeric."
           ),
           fr = c(
             cli::format_inline(
-              "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {i}."
+              "Erreur dans {.fn PlotFTIR:::read_raman_csv}. Donn\u00e9es num\u00e9riques invalides trouv\u00e9es \u00e0 la ligne {file_line}."
             ),
             x = "Toutes les valeurs de nombre d'ondes et d'intensit\u00e9 doivent \u00eatre num\u00e9riques."
           )
@@ -1389,10 +1424,13 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
     "sample_id" = sample_name
   )
 
+  # Set the intensity attribute before check_ftir_data() so it is never left to
+  # intensity_type()'s magnitude heuristic, which would read raw Raman counts
+  # as transmittance.
   attr(ftir_data, "raman_metadata") <- raman_metadata
+  attr(ftir_data, "intensity") <- "raman"
 
   ftir_data <- check_ftir_data(ftir_data)
-  attr(ftir_data, "intensity") <- "raman"
 
   return(ftir_data)
 }
@@ -1426,10 +1464,10 @@ read_raman_csv <- function(path, file, sample_name = NA_character_, ...) {
 #'
 #' @return
 #' a data.frame containing the Raman spectral data from the file, with attributes:
-#' `intensity` set to `"raman"` or `"normalized raman"`, and `raman_metadata` containing all `##KEY=VALUE` header lines parsed as a named list.
+#' `intensity` set to `"raman"`, and `raman_metadata` containing the `KEY=VALUE` header lines (introduced by one or more `#`) parsed as a named list.
 #'
 #' un data.frame contenant les données spectrales Raman du fichier, avec les attributs :
-#' `intensity` défini sur `"raman"` ou `"normalized raman"`, et `raman_metadata` contenant toutes les lignes d'en-tête `##KEY=VALUE` analysées sous forme de liste nommée.
+#' `intensity` défini sur `"raman"`, et `raman_metadata` contenant les lignes d'en-tête `KEY=VALUE` (introduites par un ou plusieurs `#`) analysées sous forme de liste nommée.
 #'
 #' @export
 #'

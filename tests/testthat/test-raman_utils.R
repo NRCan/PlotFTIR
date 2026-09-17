@@ -968,3 +968,443 @@ test_that("baseline_correct errors when invalid sample_ids are provided", {
     skip("baseline package is available")
   }
 })
+
+test_that("sample_ids = NULL selects all samples across Raman functions", {
+  wn <- seq(100, 400, by = 5)
+  raman_data <- rbind(
+    data.frame(
+      wavenumber = wn,
+      intensity = 100 * exp(-(wn - 200)^2 / 500) + 5,
+      sample_id = "a"
+    ),
+    data.frame(
+      wavenumber = wn,
+      intensity = 80 * exp(-(wn - 300)^2 / 500) + 5,
+      sample_id = "b"
+    )
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  # is.na(NULL) is logical(0), which previously errored as an `if` condition
+  peaks <- find_peak_maxima(raman_data, sample_ids = NULL)
+  expect_setequal(unique(peaks$sample_id), c("a", "b"))
+
+  normalized <- normalize_raman(raman_data, sample_ids = NULL)
+  expect_setequal(unique(normalized$sample_id), c("a", "b"))
+  expect_equal(attr(normalized, "intensity"), "normalized raman")
+
+  skip_if_not_installed("signal")
+  smoothed <- smooth_spectra(raman_data, sample_ids = NULL)
+  expect_setequal(unique(smoothed$sample_id), c("a", "b"))
+})
+
+test_that("sample_ids = character(0) selects all samples", {
+  wn <- seq(100, 400, by = 5)
+  raman_data <- data.frame(
+    wavenumber = wn,
+    intensity = 100 * exp(-(wn - 200)^2 / 500) + 5,
+    sample_id = "a"
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  expect_equal(
+    unique(find_peak_maxima(raman_data, sample_ids = character(0))$sample_id),
+    "a"
+  )
+})
+
+test_that("smooth_spectra and baseline_correct reject FTIR absorbance data", {
+  ftir_data <- data.frame(
+    wavenumber = seq(1000, 1100, by = 5),
+    absorbance = seq(0.1, 0.2, length.out = 21),
+    sample_id = "ftir"
+  )
+
+  skip_if_not_installed("signal")
+  expect_error_bilingual(
+    smooth_spectra(ftir_data),
+    en = "Expected 'raman'",
+    fr = "Attendu 'raman'"
+  )
+})
+
+test_that("smooth_spectra actually reduces noise while preserving peak position", {
+  skip_if_not_installed("signal")
+  set.seed(8317)
+
+  wn <- seq(100, 2000, by = 2)
+  clean <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+  noisy <- clean + stats::rnorm(length(wn), sd = 10)
+
+  raman_data <- data.frame(
+    wavenumber = wn,
+    intensity = noisy,
+    sample_id = "noisy"
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  smoothed <- smooth_spectra(raman_data, window_length = 11, polyorder = 2)
+
+  # Smoothing must move the trace closer to the underlying noise-free signal
+  expect_lt(
+    sum((smoothed$intensity - clean)^2),
+    sum((noisy - clean)^2)
+  )
+
+  # and reduce point-to-point roughness
+  expect_lt(
+    stats::sd(diff(smoothed$intensity)),
+    stats::sd(diff(noisy))
+  )
+
+  # without displacing the main peak or changing the data shape
+  expect_equal(
+    smoothed$wavenumber[which.max(smoothed$intensity)],
+    500,
+    tolerance = 10
+  )
+  expect_equal(dim(smoothed), dim(raman_data))
+  expect_equal(smoothed$wavenumber, raman_data$wavenumber)
+})
+
+test_that("normalize_raman errors on zero-magnitude and non-positive maximum spectra", {
+  zero_data <- data.frame(
+    wavenumber = seq(100, 200, by = 10),
+    intensity = 0,
+    sample_id = "flat"
+  )
+  attr(zero_data, "intensity") <- "raman"
+
+  expect_error_bilingual(
+    normalize_raman(zero_data, method = "vector"),
+    en = "zero magnitude",
+    fr = "amplitude nulle"
+  )
+  expect_error_bilingual(
+    normalize_raman(zero_data, method = "max"),
+    en = "non-positive maximum",
+    fr = "maximum non positif"
+  )
+
+  # A negative maximum (possible after baseline_correct) must not silently
+  # invert the spectrum
+  negative_data <- zero_data
+  negative_data$intensity <- c(-5, -3, -8, -2, -9, -4, -7, -6, -1, -10, -11)
+  attr(negative_data, "intensity") <- "raman"
+
+  expect_error_bilingual(
+    normalize_raman(negative_data, method = "max"),
+    en = "non-positive maximum",
+    fr = "maximum non positif"
+  )
+})
+
+test_that("normalize_raman handles NA intensities without poisoning the spectrum", {
+  na_data <- data.frame(
+    wavenumber = seq(100, 200, by = 10),
+    intensity = c(1, 2, NA, 4, 5, 10, 3, 2, 1, 0, 1),
+    sample_id = "with_na"
+  )
+  attr(na_data, "intensity") <- "raman"
+
+  expect_warning(normalized <- normalize_raman(na_data, method = "max"))
+
+  # The non-NA values are still normalized rather than all becoming NA
+  expect_equal(sum(is.na(normalized$intensity)), 1L)
+  expect_equal(max(normalized$intensity, na.rm = TRUE), 1)
+})
+
+test_that("normalize_raman errors on empty or all-NA spectra", {
+  all_na <- data.frame(
+    wavenumber = seq(100, 130, by = 10),
+    intensity = NA_real_,
+    sample_id = "empty"
+  )
+  attr(all_na, "intensity") <- "raman"
+
+  expect_error_bilingual(
+    normalize_raman(all_na),
+    en = "no finite intensity values",
+    fr = "sans valeurs d'intensit"
+  )
+})
+
+test_that("Raman functions handle single-point spectra without erroring unexpectedly", {
+  single_point <- data.frame(
+    wavenumber = 100,
+    intensity = 5,
+    sample_id = "one"
+  )
+  attr(single_point, "intensity") <- "raman"
+
+  # A single point cannot contain an interior maximum
+  peaks <- find_peak_maxima(single_point)
+  expect_s3_class(peaks, "data.frame")
+  expect_equal(nrow(peaks), 0L)
+
+  normalized <- normalize_raman(single_point, method = "max")
+  expect_equal(normalized$intensity, 1)
+})
+
+test_that("baseline correction is ok (#34)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  wn <- seq(1000, 1190, by = 10)
+  s1 <- c(
+    20,
+    22,
+    24,
+    27,
+    31,
+    36,
+    32,
+    28,
+    24,
+    21,
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10
+  )
+  s2 <- c(8, 9, 10, 12, 14, 16, 15, 13, 11, 10, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4)
+  raman_data <- data.frame(
+    wavenumber = rep(wn, 2),
+    intensity = c(s1, s2),
+    sample_id = c(rep("s1", length(wn)), rep("s2", length(wn)))
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  corrected <- baseline_correct(raman_data)
+
+  expect_s3_class(corrected, "data.frame")
+  expect_identical(attr(corrected, "intensity"), "raman")
+  expect_equal(corrected$wavenumber, raman_data$wavenumber)
+  expect_equal(corrected$sample_id, raman_data$sample_id)
+  expect_false(isTRUE(all.equal(corrected$intensity, raman_data$intensity)))
+  expect_true(all(is.finite(corrected$intensity)))
+})
+
+test_that("baseline correction validates inputs (#34)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  ftir_data <- data.frame(
+    wavenumber = c(1000, 1010, 1020),
+    intensity = c(0.1, 0.2, 0.3),
+    sample_id = "s1"
+  )
+  attr(ftir_data, "intensity") <- "intensity"
+
+  expect_error_bilingual(
+    baseline_correct(ftir_data),
+    en = "intensity attribute not set",
+    fr = "d'intensité n'est pas défini"
+  )
+
+  wn <- seq(1000, 1190, by = 10)
+  raman_data <- data.frame(
+    wavenumber = wn,
+    intensity = seq_along(wn) + 9,
+    sample_id = "s1"
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  expect_error_bilingual(
+    baseline_correct(raman_data, sample_ids = "missing"),
+    en = "All provided",
+    fr = "Tous les"
+  )
+  expect_error_bilingual(
+    baseline_correct(raman_data, lambda = 0),
+    en = "positive numeric value",
+    fr = "valeur numérique positive"
+  )
+  expect_error_bilingual(
+    baseline_correct(raman_data, p = 0.75),
+    en = "numeric value in (0, 0.5]",
+    fr = "valeur numérique dans (0, 0,5]"
+  )
+})
+
+test_that("baseline correction can target one sample without changing others (#34)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  wn <- seq(1000, 1190, by = 10)
+  raman_data <- data.frame(
+    wavenumber = rep(wn, 2),
+    intensity = c(
+      c(
+        20,
+        22,
+        24,
+        27,
+        31,
+        36,
+        32,
+        28,
+        24,
+        21,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10
+      ),
+      c(8, 9, 10, 12, 14, 16, 15, 13, 11, 10, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4)
+    ),
+    sample_id = c(rep("s1", length(wn)), rep("s2", length(wn)))
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  corrected <- baseline_correct(raman_data, sample_ids = "s1")
+
+  expect_false(isTRUE(all.equal(
+    corrected$intensity[corrected$sample_id == "s1"],
+    raman_data$intensity[raman_data$sample_id == "s1"]
+  )))
+  expect_equal(
+    corrected$intensity[corrected$sample_id == "s2"],
+    raman_data$intensity[raman_data$sample_id == "s2"]
+  )
+})
+
+test_that("vector normalization produces unit norm for each sample", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  wn <- seq(100, 2000, by = 10)
+  intensity <- c(100, rep(50, length(wn) - 2), 100)
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    paste(wn, ",", intensity, sep = "")
+  )
+
+  writeLines(raman_content, temp_file)
+
+  result <- read_raman(path = tmppath, file = tmpfile)
+
+  normalized <- normalize_raman(result, method = "vector")
+
+  sample_data <- normalized[
+    normalized$sample_id == tools::file_path_sans_ext(tmpfile),
+  ]
+  norm_val <- sqrt(sum(sample_data$intensity^2))
+
+  expect_equal(round(norm_val, 6), 1)
+  expect_equal(attr(normalized, "intensity"), "normalized raman")
+})
+
+test_that("max normalization sets max intensity to 1 for each sample", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  wn <- seq(100, 2000, by = 10)
+  intensity <- c(50, rep(100, length(wn) - 2), 60)
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    paste(wn, ",", intensity, sep = "")
+  )
+
+  writeLines(raman_content, temp_file)
+
+  result <- read_raman(path = tmppath, file = tmpfile)
+
+  normalized <- normalize_raman(result, method = "max")
+
+  max_intensity <- max(normalized$intensity)
+
+  expect_equal(max_intensity, 1)
+  expect_equal(attr(normalized, "intensity"), "normalized raman")
+})
+
+test_that("normalization updates attribute to 'normalized raman'", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  wn <- seq(100, 2000, by = 10)
+  intensity <- rep(100, length(wn))
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    paste(wn, ",", intensity, sep = "")
+  )
+
+  writeLines(raman_content, temp_file)
+
+  result <- read_raman(path = tmppath, file = tmpfile)
+
+  expect_equal(attr(result, "intensity"), "raman")
+
+  normalized <- normalize_raman(result)
+
+  expect_equal(attr(normalized, "intensity"), "normalized raman")
+})
+
+test_that("normalize_raman validates method parameter", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  wn <- seq(100, 2000, by = 10)
+  intensity <- rep(100, length(wn))
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    paste(wn, ",", intensity, sep = "")
+  )
+
+  writeLines(raman_content, temp_file)
+
+  result <- read_raman(path = tmppath, file = tmpfile)
+
+  expect_error_bilingual(
+    normalize_raman(result, method = "invalid"),
+    en = "`method` must be a string.",
+    fr = "`method` doit être une chaîne de caractères."
+  )
+})
+
+test_that("normalize_raman validates sample_ids parameter", {
+  temp_file <- withr::local_tempfile(fileext = ".csv")
+  tmppath <- dirname(temp_file)
+  tmpfile <- basename(temp_file)
+
+  wn <- seq(100, 2000, by = 10)
+  intensity <- rep(100, length(wn))
+
+  raman_content <- c(
+    "##FILETYPE=Raman",
+    paste(wn, ",", intensity, sep = "")
+  )
+
+  writeLines(raman_content, temp_file)
+
+  result <- read_raman(path = tmppath, file = tmpfile)
+
+  expect_error_bilingual(
+    normalize_raman(result, sample_ids = "nonexistent"),
+    en = "All provided `sample_ids` must be in `raman` data.",
+    fr = "Tous les `sample_ids` fournis doivent être dans les données `raman`."
+  )
+})

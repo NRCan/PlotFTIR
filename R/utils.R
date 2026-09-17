@@ -333,6 +333,9 @@ print.PlotFTIR_data <- function(x, ...) {
 #' @keywords internal
 intensity_type <- function(ftir) {
   # Don't check_ftir_data to avoid a loop if called by check_ftir_data()
+  # NOTE: the magnitude heuristic below cannot distinguish raw Raman counts from
+  # transmittance. Callers reading Raman data must set the "intensity" attribute
+  # *before* calling check_ftir_data() so this guess is never reached.
 
   if ("absorbance" %in% colnames(ftir)) {
     return("absorbance")
@@ -396,4 +399,83 @@ intensity_type <- function(ftir) {
     "transmittance",
     "absorbance"
   ))
+}
+
+#' Resolve and Validate Requested Sample IDs
+#'
+#' @description Internal helper resolving the `sample_ids` argument shared by the
+#'   Raman processing functions. `NA`, `NULL`, and zero-length inputs all select
+#'   every sample present in `ftir`; anything else is validated against the
+#'   sample IDs actually present.
+#'
+#'   Fonction interne qui résout l'argument `sample_ids` partagé par les
+#'   fonctions de traitement Raman. `NA`, `NULL` et les entrées de longueur nulle
+#'   sélectionnent tous les échantillons présents dans `ftir`; toute autre valeur
+#'   est validée par rapport aux identifiants réellement présents.
+#'
+#' @param spectra A data.frame of FTIR or Raman spectra containing a
+#'   `sample_id` column.
+#'
+#'   Un data.frame de spectres IRTF ou Raman contenant une colonne `sample_id`.
+#'
+#' @param arg The name of the calling function's data argument, used in error
+#'   messages.
+#'
+#'   Le nom de l'argument de données de la fonction appelante, utilisé dans les
+#'   messages d'erreur.
+#'
+#' @param call The calling environment, used for error reporting.
+#'
+#'   L'environnement appelant, utilisé pour le signalement des erreurs.
+#'
+#' @return a character vector of validated sample IDs.
+#'
+#'   un vecteur de caractères d'identifiants d'échantillons validés.
+#'
+#' @keywords internal
+#' @noRd
+.resolve_sample_ids <- function(
+  spectra,
+  sample_ids,
+  arg = "raman",
+  call = rlang::caller_env()
+) {
+  available <- unique(spectra$sample_id)
+
+  # is.null() must be tested before is.na(): is.na(NULL) is logical(0), which
+  # errors when used as an `if` condition.
+  if (
+    is.null(sample_ids) ||
+      length(sample_ids) == 0 ||
+      (length(sample_ids) == 1 && is.na(sample_ids))
+  ) {
+    return(available)
+  }
+
+  if (any(!(sample_ids %in% available))) {
+    mismatch <- sample_ids[!(sample_ids %in% available)]
+    .pkg_abort(
+      list(
+        en = c(
+          cli::format_inline(
+            "All provided {.arg sample_ids} must be in {.arg {arg}} data."
+          ),
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          cli::format_inline(
+            "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg {arg}}."
+          ),
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = call
+    )
+  }
+
+  sample_ids
 }

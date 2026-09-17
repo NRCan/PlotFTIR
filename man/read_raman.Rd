@@ -25,10 +25,10 @@ Paramètres supplémentaires à transmettre à la fonction de lecture de fichier
 }
 \value{
 a data.frame containing the Raman spectral data from the file, with attributes:
-\code{intensity} set to \code{"raman"} or \code{"normalized raman"}, and \code{raman_metadata} containing all \verb{##KEY=VALUE} header lines parsed as a named list.
+\code{intensity} set to \code{"raman"}, and \code{raman_metadata} containing the \code{KEY=VALUE} header lines (introduced by one or more \verb{#}) parsed as a named list.
 
 un data.frame contenant les données spectrales Raman du fichier, avec les attributs :
-\code{intensity} défini sur \code{"raman"} ou \code{"normalized raman"}, et \code{raman_metadata} contenant toutes les lignes d'en-tête \verb{##KEY=VALUE} analysées sous forme de liste nommée.
+\code{intensity} défini sur \code{"raman"}, et \code{raman_metadata} contenant les lignes d'en-tête \code{KEY=VALUE} (introduites par un ou plusieurs \verb{#}) analysées sous forme de liste nommée.
 }
 \description{
 Reads a Raman spectra file and returns a data.frame in the proper format for PlotFTIR functions.
