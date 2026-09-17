@@ -259,11 +259,11 @@ print.PlotFTIR_data <- function(x, ...) {
 
   if (lang == "fr") {
     cat("Donn\u00e9es PlotFTIR:\n")
-    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9", "\n")
     if (length(res) == 0) {
       cat("  R\u00e9solution: aucune\n")
     } else if (length(unique(res)) == 1) {
-      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9\\n")
+      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9", "\n")
     } else {
       cat("  R\u00e9solution: variable\n")
     }
@@ -281,11 +281,11 @@ print.PlotFTIR_data <- function(x, ...) {
   } else {
     # English by default
     cat("PlotFTIR data:\n")
-    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9", "\n")
     if (length(res) == 0) {
       cat("  Resolution: none\n")
     } else if (length(unique(res)) == 1) {
-      cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
+      cat("  Resolution:", unique(res), "cm\u207b\u00b9", "\n")
     } else {
       cat("  Resolution: variable\n")
     }
