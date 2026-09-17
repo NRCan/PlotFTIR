@@ -599,13 +599,17 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
     "intensity" = ir$y
   )
 
-  # Check JCAMP X units and convert wavelength data to wavenumbers if needed
-  xunits_line <- toupper(metadata[grepl("^##XUNITS", toupper(metadata))])
+  # Check JCAMP X units and convert wavelength data to wavenumbers if needed.
+  # Use only the first match & drop NA (duplicate/malformed ##XUNITS lines
+  # should not crash the `if()` below with a "length > 1" condition error).
+  xunits_line <- toupper(metadata[grepl("^##XUNITS", toupper(metadata))])[1]
 
-  if (length(xunits_line) > 0) {
-    # Can't just regex against 'um' because that matches 'wavenUMber' 
-    if (grepl("MICROM|MICRON", xunits_line) || xunits_line == "##XUNITS=UM") {
-
+  if (!is.na(xunits_line)) {
+    # Can't just regex against 'um' because that matches 'wavenUMber'
+    if (
+      grepl("MICROM|MICRON", xunits_line) ||
+        grepl("^##XUNITS\\s*=\\s*UM\\s*$", xunits_line)
+    ) {
       .pkg_inform(
         list(
           en = paste(
@@ -632,7 +636,7 @@ read_ftir_jdx <- function(path, file, sample_name = NA_character_, ...) {
       rownames(ftir_data) <- NULL
     }
   }
-  
+
   if (!is.na(intensity)) {
     if (intensity_type(ftir_data) != intensity) {
       if (intensity == 'transmittance' && max(ftir_data$intensity < 1.2)) {

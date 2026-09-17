@@ -367,7 +367,13 @@ test_that(".jdx files with micrometer (wavelength) XUNITS are converted to waven
 
   expected_wavenumber <- 10000 / c(2.5, 5, 7.5)
 
-  for (unit_label in c("MICROMETERS", "MICROMETER", "MICRONS", "MICRON", "UM")) {
+  for (unit_label in c(
+    "MICROMETERS",
+    "MICROMETER",
+    "MICRONS",
+    "MICRON",
+    "UM"
+  )) {
     temp_file <- withr::local_tempfile(fileext = ".jdx")
     writeLines(make_jdx(unit_label), temp_file)
 
@@ -414,6 +420,60 @@ test_that(".jdx files with micrometer (wavelength) XUNITS are converted to waven
     fr = "d\u00e9tect\u00e9 des unit\u00e9s",
     fixed = FALSE
   )
+
+  # Whitespace around `=` in ##XUNITS should still be detected.
+  temp_file_ws <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(make_jdx("UM "), temp_file_ws)
+  expect_message_bilingual(
+    read_ftir(path = dirname(temp_file_ws), file = basename(temp_file_ws)),
+    en = "detected wavelength units",
+    fr = "d\u00e9tect\u00e9 des unit\u00e9s",
+    fixed = FALSE
+  )
+})
+
+test_that("duplicate/malformed ##XUNITS metadata lines do not error (#43)", {
+  if (!requireNamespace("readJDX", quietly = TRUE)) {
+    testthat::skip("readJDX not available for testing interface")
+  }
+
+  # A file with two ##XUNITS lines used to produce a vector of length > 1
+  # passed into `if()`, which errors under R >= 4.3 ("condition has length
+  # > 1"). Only the first match should be used.
+  x <- c(2.5, 5, 7.5)
+  y <- c(0.90, 0.80, 0.95)
+  lines <- c(
+    "##TITLE=Duplicate XUNITS Sample",
+    "##JCAMP-DX=4.24",
+    "##DATA TYPE=INFRARED SPECTRUM",
+    "##ORIGIN=PlotFTIR test suite",
+    "##OWNER=PlotFTIR",
+    "##XUNITS=MICROMETERS",
+    "##XUNITS=1/CM",
+    "##YUNITS=TRANSMITTANCE",
+    "##XFACTOR=1.000000",
+    "##YFACTOR=1",
+    paste0("##FIRSTX=", x[1]),
+    paste0("##LASTX=", x[length(x)]),
+    paste0("##FIRSTY=", y[1]),
+    paste0("##MAXX=", max(x)),
+    paste0("##MINX=", min(x)),
+    paste0("##MAXY=", max(y)),
+    paste0("##MINY=", min(y)),
+    paste0("##NPOINTS=", length(x)),
+    "##XYDATA=(X++(Y..Y))",
+    paste(x, y),
+    "##END="
+  )
+  temp_file <- withr::local_tempfile(fileext = ".jdx")
+  writeLines(lines, temp_file)
+
+  expect_no_error(
+    suppressMessages(
+      result <- read_ftir(path = dirname(temp_file), file = basename(temp_file))
+    )
+  )
+  expect_equal(result$wavenumber, sort(10000 / x))
 })
 
 # Check reading multiple files
