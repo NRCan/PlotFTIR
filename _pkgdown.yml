@@ -27,6 +27,8 @@ reference:
   - recalculate_baseline
   - normalize_raman
   - smooth_spectra
+  - baseline_correct
+  - find_peak_maxima
 - title: "Plotting and Graphical Changes"
   desc: > 
     Functions for plotting specta and annotating or manipulating plots

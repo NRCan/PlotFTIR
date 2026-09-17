@@ -272,9 +272,98 @@ test_that("-.ggplot is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   expect_error_bilingual(
-    biodiesel_plot - NULL,
+    biodiesel_plot - NULL, # ry: ignore[RY040]
     en = "Cannot use `-.gg()` with a single argument, ",
     fr = "Impossible d'utiliser `-.gg()` avec un seul argument, "
+  )
+})
+
+test_that("baseline correction is ok (#noissue)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  wn <- seq(1000, 1190, by = 10)
+  s1 <- c(
+    20,
+    22,
+    24,
+    27,
+    31,
+    36,
+    32,
+    28,
+    24,
+    21,
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10
+  )
+  s2 <- c(8, 9, 10, 12, 14, 16, 15, 13, 11, 10, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4)
+  raman_data <- data.frame(
+    wavenumber = rep(wn, 2),
+    intensity = c(s1, s2),
+    sample_id = c(rep("s1", length(wn)), rep("s2", length(wn)))
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  corrected <- baseline_correct(raman_data)
+
+  expect_s3_class(corrected, "data.frame")
+  expect_identical(attr(corrected, "intensity"), "raman")
+  expect_equal(corrected$wavenumber, raman_data$wavenumber)
+  expect_equal(corrected$sample_id, raman_data$sample_id)
+  expect_false(isTRUE(all.equal(corrected$intensity, raman_data$intensity)))
+  expect_true(all(is.finite(corrected$intensity)))
+})
+
+test_that("baseline correction validates inputs (#noissue)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  ftir_data <- data.frame(
+    wavenumber = c(1000, 1010, 1020),
+    intensity = c(0.1, 0.2, 0.3),
+    sample_id = "s1"
+  )
+  attr(ftir_data, "intensity") <- "intensity"
+
+  expect_error_bilingual(
+    baseline_correct(ftir_data),
+    en = "intensity attribute not set",
+    fr = "d'intensité n'est pas défini"
+  )
+
+  wn <- seq(1000, 1190, by = 10)
+  raman_data <- data.frame(
+    wavenumber = wn,
+    intensity = seq_along(wn) + 9,
+    sample_id = "s1"
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  expect_error_bilingual(
+    baseline_correct(raman_data, sample_ids = "missing"),
+    en = "All provided",
+    fr = "Tous les"
+  )
+  expect_error_bilingual(
+    baseline_correct(raman_data, lambda = 0),
+    en = "positive numeric value",
+    fr = "valeur numérique positive"
+  )
+  expect_error_bilingual(
+    baseline_correct(raman_data, p = 0.75),
+    en = "numeric value in (0, 0.5]",
+    fr = "valeur numérique dans (0, 0,5]"
   )
 })
 
@@ -637,4 +726,67 @@ test_that("add_band equal wavenumber with default colour uses #80c7ff", {
       layer_types ||
       any(sapply(built$data, function(d) "xintercept" %in% colnames(d)))
   )
+})
+
+test_that("baseline correction can target one sample without changing others (#noissue)", {
+  if (!requireNamespace("baseline", quietly = TRUE)) {
+    testthat::skip("baseline not available for testing baseline correction")
+  }
+
+  wn <- seq(1000, 1190, by = 10)
+  raman_data <- data.frame(
+    wavenumber = rep(wn, 2),
+    intensity = c(
+      c(
+        20,
+        22,
+        24,
+        27,
+        31,
+        36,
+        32,
+        28,
+        24,
+        21,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10
+      ),
+      c(8, 9, 10, 12, 14, 16, 15, 13, 11, 10, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4)
+    ),
+    sample_id = c(rep("s1", length(wn)), rep("s2", length(wn)))
+  )
+  attr(raman_data, "intensity") <- "raman"
+
+  corrected <- baseline_correct(raman_data, sample_ids = "s1")
+
+  expect_false(isTRUE(all.equal(
+    corrected$intensity[corrected$sample_id == "s1"],
+    raman_data$intensity[raman_data$sample_id == "s1"]
+  )))
+  expect_equal(
+    corrected$intensity[corrected$sample_id == "s2"],
+    raman_data$intensity[raman_data$sample_id == "s2"]
+  )
+})
+
+test_that("add_band with NULL text adds only the shaded region (#noissue)", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+  banded_plot <- add_band(biodiesel_plot, c(1500, 1700), text = NULL)
+  built <- ggplot2::ggplot_build(banded_plot)
+
+  expect_true(ggplot2::is_ggplot(banded_plot))
+  expect_true(any(sapply(built$data, function(d) "xmin" %in% colnames(d))))
+  expect_false(any(sapply(built$data, function(d) "label" %in% colnames(d))))
 })
