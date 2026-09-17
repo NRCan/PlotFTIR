@@ -196,11 +196,6 @@ test_that("plot_raman_core() validates legend_title type and length", {
 })
 
 test_that("plot_raman_core() warns when >12 unique samples", {
-  # Blocked by pre-existing cli bug in plot_raman.R L96-110:
-  # `{length(unique(ftir$sample_id))}` fails because `ftir` is not in scope
-  # within the cli formatting environment used by `.pkg_warn()`.
-  skip("Blocked by pre-existing cli variable scoping bug in .pkg_warn()")
-
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing")
   }

@@ -24,15 +24,68 @@ test_that("Plot SampleID extraction is ok", {
   )
 })
 
-test_that("Intensity Typing works", {
+test_that("Intensity Typing works for explicit and inferred types (#42)", {
   expect_equal(intensity_type(biodiesel), "absorbance")
   expect_equal(
     intensity_type(absorbance_to_transmittance(biodiesel)),
     "transmittance"
   )
+
   b2 <- biodiesel
-  colnames(biodiesel)[colnames(biodiesel) == "absorbance"] <- "intensity"
+  colnames(b2)[colnames(b2) == "absorbance"] <- "intensity"
   expect_equal(intensity_type(b2), "absorbance")
+
+  attr(b2, "intensity") <- "transmittance"
+  expect_equal(intensity_type(b2), "transmittance")
+})
+
+test_that("Intensity Typing errors when intensity columns are ambiguous (#42)", {
+  bad_intensity <- biodiesel
+  colnames(bad_intensity)[
+    colnames(bad_intensity) == "absorbance"
+  ] <- "intensity"
+  attr(bad_intensity, "intensity") <- NULL
+  bad_intensity$extra <- 1
+
+  expect_error_bilingual(
+    intensity_type(bad_intensity),
+    en = "FTIR data must contain exactly three columns",
+    fr = "Les données FTIR doivent contenir exactement trois colonnes"
+  )
+
+  missing_intensity <- biodiesel[c("wavenumber", "sample_id")]
+
+  expect_error_bilingual(
+    intensity_type(missing_intensity),
+    en = "data must contain exactly three columns",
+    fr = "Les données FTIR doivent contenir exactement trois colonnes"
+  )
+})
+
+test_that("Intensity Typing infers transmittance from unnamed intensity values (#42)", {
+  trans_intensity <- biodiesel
+  colnames(trans_intensity)[
+    colnames(trans_intensity) == "absorbance"
+  ] <- "intensity"
+  attr(trans_intensity, "intensity") <- NULL
+  trans_intensity$intensity <- trans_intensity$intensity * 100
+
+  expect_equal(intensity_type(trans_intensity), "transmittance")
+})
+
+test_that("Intensity Typing infers fallback intensity columns (#42)", {
+  fallback_absorbance <- biodiesel
+  colnames(fallback_absorbance)[
+    colnames(fallback_absorbance) == "absorbance"
+  ] <- "signal"
+  attr(fallback_absorbance, "intensity") <- NULL
+
+  expect_equal(intensity_type(fallback_absorbance), "absorbance")
+
+  fallback_transmittance <- fallback_absorbance
+  fallback_transmittance$signal <- fallback_transmittance$signal * 100
+
+  expect_equal(intensity_type(fallback_transmittance), "transmittance")
 })
 
 test_that("Checking FTIR data works", {

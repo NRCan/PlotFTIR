@@ -136,7 +136,7 @@ check_ftir_data <- function(ftir) {
           "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var sample_id}."
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
   if (!("wavenumber" %in% colnames(ftir))) {
@@ -149,7 +149,7 @@ check_ftir_data <- function(ftir) {
           "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var wavenumber}."
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
   if (
@@ -348,8 +348,19 @@ intensity_type <- function(ftir) {
     ]
     if (length(ftir_cols) != 1L) {
       .pkg_abort(
-        "Les donn{\\'e}es FTIR doivent contenir exactement trois colonnes: \\\"wavenumber\\\", \\\"sample_id\\\", et une colonne d'intensit{\\'e}. {N} autres colonnes d{\\'e}tect{\\'e}es.",
-        "FTIR data must contain exactly three columns: \\\"wavenumber\\\", \\\"sample_id\\\", and one intensity column. {N} extra columns detected.",
+        list(
+          en = c(
+            "FTIR data must contain exactly three columns: {.arg wavenumber}, {.arg sample_id}, and one intensity column.",
+            x = paste0(length(ftir_cols) - 1, " extra columns detected.")
+          ),
+          fr = c(
+            "Les donn\u00e9es FTIR doivent contenir exactement trois colonnes: {.arg wavenumber}, {.arg sample_id}, et une colonne d'intensit\u00e9.",
+            x = paste0(
+              length(ftir_cols) - 1,
+              " colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+            )
+          )
+        ),
         N = length(ftir_cols)
       )
     }
@@ -368,13 +379,14 @@ intensity_type <- function(ftir) {
       list(
         en = c(
           "data must contain exactly three columns: {.arg wavenumber}, {.arg sample_id}, and one intensity column.",
-          x = cli::format_inline(
-            "{{length(ftir_cols)-1}} extra columns detected."
-          )
+          x = paste0(length(ftir_cols) - 1, " extra columns detected.")
         ),
         fr = c(
           "Les donn\u00e9es FTIR doivent contenir exactement trois colonnes: {.arg wavenumber}, {.arg sample_id}, et une colonne d'intensit\u00e9.",
-          x = "{{length(ftir_cols)-1}} colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+          x = paste0(
+            length(ftir_cols) - 1,
+            " colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+          )
         )
       )
     )

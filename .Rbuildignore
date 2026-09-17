@@ -12,7 +12,7 @@
 ^LICENSE$
 ^paper$
 ^revdep$
-cobertura.xml
+^.*\.xml$
 ^AGENTS\.md$
 ^_pkgdown\.yml$
 ^docs$
