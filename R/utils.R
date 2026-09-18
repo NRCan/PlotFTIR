@@ -508,6 +508,7 @@ intensity_type <- function(ftir) {
 #' @md
 .process_language <- function(lang, call = rlang::caller_env()) {
   if (!is.null(lang) && !is.na(lang) && length(lang) > 0) {
+    invalid_lang <- lang
     l <- tryCatch(
       match.arg(
         lang,
@@ -525,8 +526,12 @@ intensity_type <- function(ftir) {
       error = function(x) {
         .pkg_warn(
           list(
-            en = "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'. Use default.",
-            fr = "{.arg lang} : la langue doit \u00eatre l'une des suivantes : 'en', 'english', 'anglais', 'fr', 'french', 'francais' ou 'fran\u00e7ais', et non '{lang}'. La valeur par d\u00e9faut sera utilis\u00e9e."
+            en = cli::format_inline(
+              "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{invalid_lang}'. Use default."
+            ),
+            fr = cli::format_inline(
+              "{.arg lang} : la langue doit \u00eatre l'une des suivantes : 'en', 'english', 'anglais', 'fr', 'french', 'francais' ou 'fran\u00e7ais', et non '{invalid_lang}'. La valeur par d\u00e9faut sera utilis\u00e9e."
+            )
           ),
           call = call
         )
