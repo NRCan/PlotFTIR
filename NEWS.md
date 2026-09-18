@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* `add_wavenumber_marker()` and `add_band()` now respect `label_aesthetics = list(vjust = ...)` so peak labels can be vertically offset to reduce overlap (@pbulsink, #38).
+
 * `fit_peaks()` now documents explicit fitting controls and clarifies that automatic peak discovery is a heuristic starting point for fitting, not a validated deconvolution standard (#33).
 * Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. ([#33](https://github.com/NRCan/PlotFTIR/issues/33))
 * Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).

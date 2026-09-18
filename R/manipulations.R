@@ -433,6 +433,12 @@ compress_low_energy <- function(
 #'     text = "C-H Stretch",
 #'     line_aesthetics = list("linetype" = "dashed")
 #'   )
+#'
+#'   # Nudge a label down to avoid overlap with another label
+#'   add_wavenumber_marker(p, 2850,
+#'     text = "C-H Stretch",
+#'     label_aesthetics = list(vjust = 3)
+#'   )
 #' }
 #' @md
 #'
@@ -578,6 +584,10 @@ add_wavenumber_marker <- function(
     )
   }
 
+  if (is.null(label_aesthetics$vjust)) {
+    label_aesthetics$vjust <- 1
+  }
+
   p <- ftir_spectra_plot -
     rlang::inject(ggplot2::geom_vline(
       xintercept = wavenumber,
@@ -588,7 +598,6 @@ add_wavenumber_marker <- function(
       label = text,
       x = wavenumber,
       y = Inf,
-      vjust = 1,
       !!!label_aesthetics
     ))
 
@@ -1163,6 +1172,14 @@ add_band <- function(
     colour <- "#80c7ff"
   }
 
+  if (is.null(label_aesthetics)) {
+    label_aesthetics <- list()
+  }
+
+  if (is.null(label_aesthetics$vjust)) {
+    label_aesthetics$vjust <- 1
+  }
+
   p <- ftir_spectra_plot -
     ggplot2::annotate(
       "rect",
@@ -1180,7 +1197,6 @@ add_band <- function(
         label = text,
         x = mean(wavenumber_range),
         y = Inf,
-        vjust = 1,
         !!!label_aesthetics
       ))
   }
