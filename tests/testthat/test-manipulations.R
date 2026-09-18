@@ -283,6 +283,26 @@ test_that("labelled plot is ok", {
   )
 })
 
+test_that("add_wavenumber_marker() respects custom vertical label offsets (#38)", {
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing manipulations")
+  }
+
+  biodiesel_plot <- plot_ftir(biodiesel)
+
+  expect_no_warning(
+    built <- ggplot2::ggplot_build(add_wavenumber_marker(
+      biodiesel_plot,
+      1740,
+      "CO Stretch",
+      label_aesthetics = list(vjust = 3)
+    ))
+  )
+
+  label_layer <- Filter(\(layer) "label" %in% colnames(layer), built$data)[[1]]
+  expect_equal(label_layer$vjust, 3)
+})
+
 test_that("-.ggplot is ok", {
   if (!require("ggplot2", quietly = TRUE)) {
     testthat::skip("ggplot2 not available for testing -.gg.")
