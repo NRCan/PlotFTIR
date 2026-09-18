@@ -352,9 +352,15 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
     # First-derivative zero crossings can land between coarse data points, so
     # use either the caller's merge window or one full data-point spacing,
     # whichever is wider. Adding the two would over-merge separate peaks.
-    max(window_merge, resolution)
+    max(window_merge, resolution),
+    prefer = "candidate"
   )
-  all_peaks <- .merge_peak_candidates(all_peaks, norm_peaks, window_merge)
+  all_peaks <- .merge_peak_candidates(
+    all_peaks,
+    norm_peaks,
+    window_merge,
+    prefer = "existing"
+  )
 
   all_peaks <- sort(all_peaks)
 
@@ -413,19 +419,32 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'   `all_peaks`.
 #' @param window_merge (`numeric(1)`) The maximum distance within which peaks
 #'   are treated as the same feature.
+#' @param prefer (`character(1)`) Which location to keep when a candidate falls
+#'   within the merge window of an existing peak.
 #' @returns (`numeric`) The merged peak locations.
 #' @keywords internal
 #' @noRd
-.merge_peak_candidates <- function(all_peaks, candidate_peaks, window_merge) {
+.merge_peak_candidates <- function(
+  all_peaks,
+  candidate_peaks,
+  window_merge,
+  prefer = c("existing", "candidate")
+) {
+  prefer <- match.arg(prefer)
+
   for (i in seq_along(candidate_peaks)) {
     matches <- abs(all_peaks - candidate_peaks[i]) < window_merge
     if (sum(matches) == 0) {
       all_peaks <- c(all_peaks, candidate_peaks[i])
-    } else {
-      avg_idx <- which(matches)[1]
-      all_peaks[avg_idx] <- mean(c(all_peaks[avg_idx], candidate_peaks[i]))
+      next
+    }
+
+    if (identical(prefer, "candidate")) {
+      match_idx <- which(matches)[1]
+      all_peaks[match_idx] <- candidate_peaks[i]
     }
   }
+
   all_peaks
 }
 

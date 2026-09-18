@@ -174,6 +174,43 @@ test_that("find_ftir_peaks finds flat-topped peaks via first derivative zero-cro
   expect_true(any(abs(peaks_broad - expected_peak) <= peak_tolerance))
 })
 
+test_that(".merge_peak_candidates respects merge precedence for nearby candidates (#noissue)", {
+  expect_equal(
+    .merge_peak_candidates(c(100.5), c(101), window_merge = 1),
+    100.5
+  )
+  expect_equal(
+    .merge_peak_candidates(
+      c(100),
+      c(100.5),
+      window_merge = 1,
+      prefer = "candidate"
+    ),
+    100.5
+  )
+  expect_equal(
+    .merge_peak_candidates(c(100.5), c(102), window_merge = 1),
+    c(100.5, 102)
+  )
+})
+
+test_that("peak candidate merging keeps derivative-centered locations over nearby raw maxima (#noissue)", {
+  peaks <- .merge_peak_candidates(
+    c(100),
+    c(100.5),
+    window_merge = 1,
+    prefer = "candidate"
+  )
+  peaks <- .merge_peak_candidates(
+    peaks,
+    c(101),
+    window_merge = 1,
+    prefer = "existing"
+  )
+
+  expect_equal(peaks, 100.5)
+})
+
 # === Section 3: fit_peaks() Core Tests ===
 
 test_that("fit_peaks (voigt) returns correct results", {
