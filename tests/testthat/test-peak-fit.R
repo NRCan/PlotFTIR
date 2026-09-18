@@ -624,6 +624,121 @@ test_that("get_fit_spectra preserves baseline-shifted signal mass (#noissue)", {
   }
 })
 
+test_that("get_fit_spectra reconstruction is numerically faithful (#36)", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
+
+  peaklist <- c(
+    1040,
+    1100,
+    1130,
+    1160,
+    1190,
+    1220,
+    1260,
+    1300,
+    1340,
+    1380,
+    1410,
+    1460,
+    1560,
+    1750,
+    1900,
+    1970
+  )
+  total_ss <- sum(ftir$absorbance^2)
+
+  for (method in c("gauss", "voigt", "lorentz", "dsg")) {
+    fit <- fit_peaks(ftir, peaklist = peaklist, method = method)
+    fitted_curve <- PlotFTIR:::.get_fit_spectra(ftir, fit)
+
+    # Initialization uses the starting peak list and default shape parameters,
+    # so a converged fit must not be worse than where the optimizer started.
+    init <- fit
+    init$mu <- peaklist
+    init$mix_ratio <- rep(1 / length(peaklist), length(peaklist))
+    init$amplitude <- init$mix_ratio * sum(ftir$absorbance)
+    init$sigma <- rep(10, length(peaklist))
+    init$gam <- rep(10, length(peaklist))
+    init$eta <- rep(0.5, length(peaklist))
+    init$alpha <- rep(1e-4, length(peaklist))
+    init_curve <- PlotFTIR:::.get_fit_spectra(ftir, init)
+
+    rss_fit <- sum((ftir$absorbance - fitted_curve)^2)
+    rss_init <- sum((ftir$absorbance - init_curve)^2)
+
+    expect_lte(rss_fit, rss_init)
+    # Relative residual: the fit must explain the bulk of the signal energy.
+    expect_lt(rss_fit / total_ss, 0.15)
+    # Area preservation on the baseline-shifted scale.
+    expect_equal(sum(fitted_curve), sum(ftir$absorbance), tolerance = 1e-6)
+    expect_true(all(fitted_curve >= 0))
+    expect_false(anyNA(fitted_curve))
+
+    # Components must sum exactly to the full reconstruction, point by point.
+    component_sum <- Reduce(
+      "+",
+      lapply(
+        seq_along(fit$mu),
+        function(i) PlotFTIR:::.get_fit_spectra(ftir, fit, i)
+      )
+    )
+    expect_equal(component_sum, fitted_curve, tolerance = 1e-8)
+
+    # Halving a component's amplitude must change the reconstruction by
+    # exactly half that component, guarding against post hoc rescaling.
+    scaled <- fit
+    scaled$amplitude[1] <- scaled$amplitude[1] / 2
+    expect_equal(
+      PlotFTIR:::.get_fit_spectra(ftir, scaled),
+      fitted_curve - PlotFTIR:::.get_fit_spectra(ftir, fit, 1) / 2,
+      tolerance = 1e-8
+    )
+  }
+})
+
+test_that("get_fit_spectra recovers a known synthetic spectrum exactly (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  mu <- c(1080, 1200)
+  sigma <- c(10, 12)
+  amplitude <- c(30, 20)
+  absorbance <- Reduce(
+    "+",
+    Map(
+      function(m, s, a) a * PlotFTIR:::.truncated_g(x, mu = m, sigma = s),
+      mu,
+      sigma,
+      amplitude
+    )
+  )
+  ftir <- data.frame(
+    sample_id = "synthetic",
+    wavenumber = x,
+    absorbance = absorbance
+  )
+
+  known_fit <- list(
+    mu = mu,
+    sigma = sigma,
+    mix_ratio = amplitude / sum(amplitude),
+    amplitude = amplitude,
+    method = "gauss"
+  )
+
+  expect_equal(
+    PlotFTIR:::.get_fit_spectra(ftir, known_fit),
+    absorbance,
+    tolerance = 1e-10
+  )
+})
+
 test_that("truncated gaussian matches kernel normalization used by other fits (#noissue)", {
   x <- seq(1000, 1100, by = 1)
   kernel <- PlotFTIR:::.truncated_g(x, mu = 1050, sigma = 8)
@@ -1476,6 +1591,224 @@ test_that("Fixed Peak Locations don't move", {
   expect_equal(lmm_fixed$mu, peaklist)
   expect_equal(pvmm_fixed$mu, peaklist)
   expect_equal(dsgmm_fixed$mu, peaklist)
+})
+
+# === Section 12: Difficult Peak-Separation Stress Tests ===
+
+# Build a synthetic spectrum from known components using the same truncated
+# kernels the optimizers target, so recovery can be checked against truth.
+.synth_spectrum <- function(x, components, shape) {
+  kernel <- switch(
+    shape,
+    gauss = function(p) {
+      p$amplitude * PlotFTIR:::.truncated_g(x, mu = p$mu, sigma = p$sigma)
+    },
+    lorentz = function(p) {
+      p$amplitude * PlotFTIR:::.truncated_l(x, mu = p$mu, gam = p$gam)
+    },
+    voigt = function(p) {
+      p$amplitude *
+        PlotFTIR:::.truncated_pv(x, mu = p$mu, sigma = p$sigma, eta = p$eta)
+    },
+    dsg = function(p) {
+      p$amplitude *
+        PlotFTIR:::.truncated_dsg(
+          x,
+          mu = p$mu,
+          sigma = p$sigma,
+          alpha = p$alpha,
+          eta = p$eta
+        )
+    }
+  )
+  data.frame(
+    sample_id = "synthetic",
+    wavenumber = x,
+    absorbance = Reduce("+", lapply(components, kernel))
+  )
+}
+
+.relative_rss <- function(ftir, fit) {
+  y <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
+  sum((y - PlotFTIR:::.get_fit_spectra(ftir, fit))^2) / sum(y^2)
+}
+
+test_that("optimizer recovers well-separated synthetic gaussian peaks (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1080, sigma = 10, amplitude = 30),
+      list(mu = 1200, sigma = 12, amplitude = 20)
+    ),
+    "gauss"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = c(1075, 1205),
+    method = "gauss",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(fit$mu, c(1080, 1200), tolerance = 0.5)
+  expect_equal(fit$sigma, c(10, 12), tolerance = 0.5)
+  expect_equal(fit$amplitude, c(30, 20), tolerance = 0.5)
+  expect_lt(.relative_rss(ftir, fit), 1e-6)
+})
+
+test_that("optimizer separates strongly overlapping gaussian bands (#36)", {
+  # Centres separated by ~2 sigma: heavily overlapping but still resolvable.
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1140, sigma = 12, amplitude = 25),
+      list(mu = 1165, sigma = 12, amplitude = 25)
+    ),
+    "gauss"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = c(1135, 1170),
+    method = "gauss",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(sort(fit$mu), c(1140, 1165), tolerance = 1)
+  expect_equal(fit$sigma, c(12, 12), tolerance = 1)
+  expect_equal(fit$amplitude, c(25, 25), tolerance = 1)
+  # Peaks must not collapse onto one another.
+  expect_gt(diff(sort(fit$mu)), 15)
+  expect_lt(.relative_rss(ftir, fit), 1e-4)
+})
+
+test_that("optimizer resolves a narrow shoulder on a broad band (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1150, sigma = 45, amplitude = 40),
+      list(mu = 1180, sigma = 8, amplitude = 10)
+    ),
+    "gauss"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = c(1145, 1182),
+    method = "gauss",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(fit$mu, c(1150, 1180), tolerance = 1)
+  # Widths must stay distinct: the broad band should not shrink to the shoulder.
+  expect_gt(max(fit$sigma) / min(fit$sigma), 3)
+  expect_equal(fit$amplitude, c(40, 10), tolerance = 1)
+  expect_lt(.relative_rss(ftir, fit), 1e-3)
+})
+
+test_that("optimizer recovers overlapping lorentzian bands with broad wings (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1140, gam = 10, amplitude = 30),
+      list(mu = 1168, gam = 10, amplitude = 20)
+    ),
+    "lorentz"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = c(1134, 1174),
+    method = "lorentz",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(fit$mu, c(1140, 1168), tolerance = 1)
+  # Lorentzian wings are truncated by the finite window, so widths and
+  # amplitudes recover with a looser tolerance than the gaussian cases.
+  expect_equal(fit$gam, c(10, 10), tolerance = 1.5)
+  expect_equal(fit$amplitude, c(30, 20), tolerance = 2)
+  expect_lt(.relative_rss(ftir, fit), 1e-2)
+})
+
+test_that("optimizer recovers overlapping pseudo-voigt bands (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1140, sigma = 12, eta = 0.4, amplitude = 30),
+      list(mu = 1162, sigma = 12, eta = 0.4, amplitude = 25)
+    ),
+    "voigt"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = c(1136, 1166),
+    method = "voigt",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(fit$mu, c(1140, 1162), tolerance = 1)
+  expect_true(all(fit$eta >= 0 & fit$eta <= 1))
+  expect_equal(fit$amplitude, c(30, 25), tolerance = 2)
+  expect_lt(.relative_rss(ftir, fit), 1e-2)
+})
+
+test_that("optimizer reconstructs an asymmetric doniach-sunjic band (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(list(mu = 1150, sigma = 12, alpha = 0.2, eta = 0.5, amplitude = 40)),
+    "dsg"
+  )
+
+  fit <- fit_peaks(
+    ftir,
+    peaklist = 1150,
+    method = "dsg",
+    conv_cri = 1e-6,
+    maxit = 3000
+  )
+
+  expect_equal(fit$mu, 1150, tolerance = 1)
+  # sigma/alpha/eta trade off against each other in the DSG shape, so only the
+  # peak position and the reconstruction are checked quantitatively.
+  expect_gt(fit$alpha, 0)
+  expect_lt(.relative_rss(ftir, fit), 1e-2)
+})
+
+test_that("optimizer log-likelihood improves monotonically on hard cases (#36)", {
+  x <- seq(1000, 1300, by = 1)
+  ftir <- .synth_spectrum(
+    x,
+    list(
+      list(mu = 1140, sigma = 12, amplitude = 25),
+      list(mu = 1165, sigma = 12, amplitude = 25)
+    ),
+    "gauss"
+  )
+
+  fits <- suppressMessages(list(
+    gauss = fit_peaks(ftir, peaklist = c(1135, 1170), method = "gauss"),
+    voigt = fit_peaks(ftir, peaklist = c(1135, 1170), method = "voigt"),
+    lorentz = fit_peaks(ftir, peaklist = c(1135, 1170), method = "lorentz"),
+    dsg = fit_peaks(ftir, peaklist = c(1135, 1170), method = "dsg")
+  ))
+
+  for (fit in fits) {
+    expect_gt(length(fit$LL), 1)
+    expect_true(all(diff(fit$LL) >= -1e-8))
+  }
 })
 
 test_that("zero_normalization and zero_deriv check ok", {

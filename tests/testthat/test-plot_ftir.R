@@ -170,7 +170,7 @@ test_that("Missing `scales` dependency errors bilingually (#noissue)", {
     testthat::skip("ggplot2 not available for testing dependency checks")
   }
 
-  if(!require("scales", quietly = TRUE)) {
+  if (!require("scales", quietly = TRUE)) {
     expect_error_bilingual(
       en = "requires scales package installation.",
       fr = "n\u00e9cessite l'installation du paquet scales."
@@ -178,7 +178,6 @@ test_that("Missing `scales` dependency errors bilingually (#noissue)", {
   } else {
     testthat::skip("scales available, can't test dependency checks")
   }
-
 })
 
 test_that("Language settings work", {
