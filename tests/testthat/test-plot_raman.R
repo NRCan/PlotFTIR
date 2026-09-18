@@ -342,6 +342,9 @@ test_that("plot_raman_stacked() validates stack_offset", {
 })
 
 test_that("plot_raman_stacked y-axis label is bilingual (#34)", {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing")
+  }
   wn <- seq(100, 400, by = 10)
   raman_data <- rbind(
     data.frame(wavenumber = wn, intensity = wn / 10, sample_id = "a"),
