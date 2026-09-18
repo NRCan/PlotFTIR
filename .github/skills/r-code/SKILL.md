@@ -6,7 +6,7 @@ description: Guide for writing R code. Use when writing new functions, designing
 
 # R code
 
-This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill. Once satisfied with the function of the code (see the `tdd-workflow` skill), verify that the code passes R CMD Check without errors, warnings, or notes. Address any issues before finalizing the code.
+This skill covers how to design and write R functions — including naming conventions, signatures, API conventions, input validation, error handling, and common pitfalls. For documenting functions, use the `document` skill. For tests, use the `tdd-workflow` skill. Once satisfied with the function of the code (see the `tdd-workflow` skill), verify that the code passes R CMD Check without errors, warnings, or notes. Address any issues before finalizing the code. If an R CMD Check note or warning cannot be resolved without changes outside the scope of the current task (e.g., it originates from a dependency or existing code), document it explicitly and flag it for developer review rather than suppressing it silently.
 
 ## Naming conventions
 
@@ -43,7 +43,11 @@ fetch_records(fp, ps, ow)
 
 ## File organization
 
-For existing code and capabilites that fit into the existing structure: Please use the currently available file structure and naming conventions. Do not create new .R files unless you are adding a completely new capability that does not fit into the existing structure. If you are adding a new capability, please follow the file organization guidelines below: One exported function per file: `R/{function_name}.R` (e.g. `fetch_records()` → `R/fetch_records.R`). Internal helpers used exclusively by that function live in the same file. Shared helpers go in `R/utils.R` or `R/utils-{topic}.R` (e.g. `R/utils-parsing.R`).
+1. If modifying or extending existing functionality: place code in the existing file(s). Do not create new `.R` files.
+2. If adding a completely new capability:
+  a. Place the exported function in `R/{function_name}.R` (e.g. `fetch_records()` -> `R/fetch_records.R`).
+  b. Place helpers used only by that function in the same file.
+  c. Place helpers shared across multiple functions in `R/utils.R` or `R/utils-{topic}.R` (e.g. `R/utils-parsing.R`).
 
 ## Coding style
 
@@ -133,9 +137,9 @@ summarize_data <- function(x) {
 
 ## Input validation
 
-Validate all input parameters. Provide cli::cli_abort() errors with informative messages and appropriate error classes if parameter values are invalid. This ensures that users get clear feedback when they call the function incorrectly, and allows them to handle specific error classes if needed.
+Validate each input parameter in the function that directly uses it. Provide cli::cli_abort() errors with informative messages and appropriate error classes if parameter values are invalid. This ensures that users get clear feedback when they call the function incorrectly, and allows them to handle specific error classes if needed.
 
-Some validation functions exist (i.e. to check the spectra format or intesnsity type). Use them when appropriate.
+Existing validators such as those for spectra format and intensity type are available in the package. Always use these existing validators when the parameter type or structure they check matches what you need to validate, rather than re-implementing equivalent checks with `cli::cli_abort()` directly.
 
 **Validate in the function that uses the parameter**, not in a caller that passes it through. This preserves R's lazy evaluation — if a parameter is never used on a code path, it is never evaluated or validated.
 
@@ -185,7 +189,7 @@ Internal helpers use a dot prefix (e.g. `.parse_response()`).
 
 Always provide informative error messages with `cli::cli_abort()`.
 
-Provide both the function and cause of the error in the message. 
+Include the name of the calling function (using `{.fn func_name}`) and a description of why the input is invalid in every `cli::cli_abort()` message. Example: `cli::cli_abort("{.fn fetch_records}: {.arg page_size} must be a positive integer, not {.val {page_size}}.")`.
 
 ## Common package mistakes
 
@@ -208,7 +212,7 @@ system.file("extdata", "data.csv", package = "mypkg")   # Right
 
 ### Use existing imports first
 
-Packages already in `Imports` in `DESCRIPTION` should be preferred over base R equivalents: `purrr::map()` over `lapply()`, `rlang::is_*()` predicates over `is.*()`, and `withr::local_*()` over manual `on.exit()` state management.
+Packages already in `Imports` in `DESCRIPTION` should be preferred over base R equivalents: `purrr::map()` over `lapply()`, `rlang::is_*()` predicates over `is.*()`, and `withr::local_*()` over manual `on.exit()` state management. The preference for purrr, rlang, and withr only applies when those packages are already listed under `Imports` in `DESCRIPTION`. If they are not present, treat them as new dependencies requiring explicit discussion before use.
 
 ### When to add a new dependency
 

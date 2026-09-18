@@ -891,7 +891,7 @@ ir_to_plotftir <- function(ir_data, what = NA) {
     what <- seq_along(ir_data$spectra)
   }
 
-  if (suppressWarnings(any(is.na(as.numeric(what))))) {
+  if (suppressWarnings(anyNA(as.numeric(what)))) {
     if (all(what %in% ir_data$id_sample)) {
       what <- which(what %in% ir_data$id_sample)
     } else {

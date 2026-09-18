@@ -36,8 +36,8 @@ NULL
     )
   }
 
-  lang <- .get_language()
-  message <- messages[[lang]]
+  current_lang <- .get_language()
+  message <- messages[[current_lang]]
 
   if (is.null(message)) {
     # Fallback to English if language not found
@@ -63,8 +63,8 @@ NULL
     )
   }
 
-  lang <- .get_language()
-  message <- messages[[lang]]
+  current_lang <- .get_language()
+  message <- messages[[current_lang]]
 
   if (is.null(message)) {
     # Fallback to English if language not found
@@ -90,8 +90,8 @@ NULL
     )
   }
 
-  lang <- .get_language()
-  message <- messages[[lang]]
+  current_lang <- .get_language()
+  message <- messages[[current_lang]]
 
   if (is.null(message)) {
     # Fallback to English if language not found

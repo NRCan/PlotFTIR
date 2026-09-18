@@ -1,5 +1,7 @@
 # PlotFTIR (development version)
 
+* `fit_peaks()` now documents explicit fitting controls and clarifies that automatic peak discovery is a heuristic starting point for fitting, not a validated deconvolution standard (#33).
+* Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. ([#33](https://github.com/NRCan/PlotFTIR/issues/33))
 * Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).
 * `smooth_spectra()`, `baseline_correct()`, `normalize_raman()`, and `find_peak_maxima()` accept `sample_ids = NULL` to select every sample (#34).
 * `smooth_spectra()` and `baseline_correct()` now report a clear error when given FTIR absorbance or transmittance data instead of Raman spectra (#34).

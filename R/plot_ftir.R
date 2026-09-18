@@ -74,6 +74,22 @@ plot_ftir_core <- function(
     )
   }
 
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    .pkg_abort(
+      list(
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg scales} package installation.",
+          i = "Install {.pkg scales} with {.run install.packages('scales')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg scales}.",
+          i = "Installez le paquet {.pkg scales} avec la commande {.run install.packages('scales')}"
+        )
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
   ftir <- check_ftir_data(ftir)
   if (!is.character(plot_title) || length(plot_title) > 2) {
     .pkg_abort(
@@ -161,6 +177,8 @@ plot_ftir_core <- function(
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
 
+  scales_available <- requireNamespace("scales", quietly = TRUE)
+
   if (grepl("absorbance", mode)) {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
@@ -178,8 +196,13 @@ plot_ftir_core <- function(
         y = .data$transmittance,
         color = as.factor(.data$sample_id)
       )) +
-      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20)) +
       ggplot2::coord_cartesian(ylim = c(0, 100))
+
+    if (scales_available) {
+      p <- p + ggplot2::scale_y_continuous(breaks = scales::breaks_width(20))
+    } else {
+      p <- p + ggplot2::scale_y_continuous()
+    }
   }
 
   p <- p +
@@ -193,11 +216,17 @@ plot_ftir_core <- function(
       color = ggplot2::guide_legend(title = legend_title),
       x = ggplot2::guide_axis(minor.ticks = TRUE)
     ) +
-    ggplot2::theme_light() +
-    ggplot2::scale_x_reverse(
-      breaks = scales::breaks_extended(),
-      expand = ggplot2::expansion()
-    )
+    ggplot2::theme_light()
+
+  if (scales_available) {
+    p <- p +
+      ggplot2::scale_x_reverse(
+        breaks = scales::breaks_extended(),
+        expand = ggplot2::expansion()
+      )
+  } else {
+    p <- p + ggplot2::scale_x_reverse(expand = ggplot2::expansion())
+  }
 
   if (
     !requireNamespace("ggthemes", quietly = TRUE) ||

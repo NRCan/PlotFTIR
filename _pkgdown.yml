@@ -1,5 +1,5 @@
 url: https://nrcan.github.io/PlotFTIR/
-detemplate:
+template:
   bootstrap: 5
   light-switch: true
 
@@ -30,7 +30,7 @@ reference:
   - baseline_correct
   - find_peak_maxima
 - title: "Plotting and Graphical Changes"
-  desc: > 
+  desc: >
     Functions for plotting specta and annotating or manipulating plots
   contents:
   - plot_ftir
@@ -45,4 +45,13 @@ reference:
   - matches("plot_sample_ids")
   - save_plot
   - zoom_in_on_range
-
+- title: "Peak Fitting"
+  desc: >
+    Functions for finding peaks and performing deconvolution, and plotting the results
+  contents:
+  - find_ftir_peaks
+  - fit_peak_df
+  - fit_peaks
+  - plot_components
+  - plot_fit_ftir_peaks
+  - plot_fit_residuals

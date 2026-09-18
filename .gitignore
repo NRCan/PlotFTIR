@@ -53,6 +53,11 @@ inst/doc
 
 *.Rbak
 revdep/
+
+.vscode/*
+.kilo/*
+tests/testthat/_problems*
+test_changes.R
 docs
 tests/testthat/testthat-problems.rds
 tests/testthat/_problems/*

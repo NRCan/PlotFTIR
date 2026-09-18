@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# PlotFTIR <img src='man/figures/PlotFTIR_logo.png' align="right" width="25%" min-width="120px"/>
+# PlotFTIR <a href="https://nrcan.github.io/PlotFTIR/"><img src="man/figures/logo.png" align="right" height="139" alt="PlotFTIR website" /></a>
 
 ([Français](#introduction-et-installation))
 
@@ -43,22 +43,15 @@ biodiesel_plot <- plot_ftir(biodiesel)
 biodiesel_plot
 ```
 
-<img src="man/figures/README-basic_plot_en-1.png" alt="" width="66.67%" />
+<div class="figure">
 
-You can inspect the structure of your data using the print method:
+<img src="man/figures/README-basic_plot_en-1.png" alt="Plot of FTIR spectra of biodiesel samples." width="66.67%" />
+<p class="caption">
 
-``` r
-print(biodiesel)
-#> PlotFTIR data:
-#>   Spectral range: 700.7395 - 3999.434 cm⁻¹
-#>   Resolution: variable
-#>   Intensity type: absorbance 
-#>   Number of samples: 11 
-#>   Sample IDs: biodiesel_0, biodiesel_0_25, biodiesel_0_50, biodiesel_1_0, biodiesel_2_5 ...
-```
+Plot of FTIR spectra of biodiesel samples.
+</p>
 
-This will display the spectral range, inferred resolution, intensity
-type, number of samples, and sample IDs.
+</div>
 
 You can also plot spectra in a stacked/offset manner instead of
 overlaid:
@@ -68,7 +61,15 @@ overlaid:
 plot_ftir_stacked(biodiesel)
 ```
 
-<img src="man/figures/README-stack_plot_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-stack_plot_en-1.png" alt="Stacked plot of FTIR spectra of biodiesel samples" width="66.67%" />
+<p class="caption">
+
+Stacked plot of FTIR spectra of biodiesel samples
+</p>
+
+</div>
 
 Note the default plot and legend titles are in english but can be
 automatically changed to french defaults by supplying the `lang = 'fr'`
@@ -81,7 +82,15 @@ Plots can be manipulated, for example, by zooming in on a range:
 zoom_in_on_range(biodiesel_plot, c(1650, 1850))
 ```
 
-<img src="man/figures/README-biodiesel_zoom_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_zoom_en-1.png" alt="FTIR spectra of biodiesel samples, zoomed from 1650 to 1850 cm-1." width="66.67%" />
+<p class="caption">
+
+FTIR spectra of biodiesel samples, zoomed from 1650 to 1850 cm-1.
+</p>
+
+</div>
 
 Some FTIR plots have a compressed low-energy portion of the graph which
 you might wish to zoom in on. You can achieve this by the following:
@@ -92,7 +101,15 @@ you might wish to zoom in on. You can achieve this by the following:
 compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
-<img src="man/figures/README-biodiesel_compress_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_compress_en-1.png" alt="FTIR spectra of biodiesel samples, with low-energy region compressed." width="66.67%" />
+<p class="caption">
+
+FTIR spectra of biodiesel samples, with low-energy region compressed.
+</p>
+
+</div>
 
 You can also add marker lines (with labels) at specific wavenumbers on
 the plots, controlling their line or text properties as needed.
@@ -107,7 +124,16 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
 add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 ```
 
-<img src="man/figures/README-biodiesel_labelled_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_labelled_en-1.png" alt="FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch." width="66.67%" />
+<p class="caption">
+
+FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating
+C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch.
+</p>
+
+</div>
 
 If the need arises to rename samples listed in the legend, this is
 possible via `rename_plot_sample_ids()`. Samples must be listed in the
@@ -130,7 +156,15 @@ new_names <- c(
 rename_plot_sample_ids(biodiesel_plot, new_names)
 ```
 
-<img src="man/figures/README-biodiesel_rename_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_rename_en-1.png" alt="FTIR spectra of biodiesel samples, with renamed samples in legend." width="66.67%" />
+<p class="caption">
+
+FTIR spectra of biodiesel samples, with renamed samples in legend.
+</p>
+
+</div>
 
 A helper function for the renaming is provided (see the documentation
 for `get_plot_sample_ids()`).
@@ -200,7 +234,16 @@ sample_spectra |>
 #> ℹ Adding new coordinate system, which will replace the existing one.
 ```
 
-<img src="man/figures/README-tidy_en-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-tidy_en-1.png" alt="A FTIR spectral plot of other samples, showing the complex plots that can be built with this package." width="66.67%" />
+<p class="caption">
+
+A FTIR spectral plot of other samples, showing the complex plots that
+can be built with this package.
+</p>
+
+</div>
 
 ## Data Manipulation
 
@@ -225,6 +268,43 @@ subtracting scalar values from entire spectra, normalizing spectra, and
 averaging spectra, see: \* `recalculate_baseline()` \*
 `add_scalar_value()` and `subtract_scalar_value()` \*
 `normalize_spectra()` \* `average_spectra()`
+
+## Peak Fitting
+
+Peaks can be found in spectra by calling `find_ftir_peaks()`. Once peaks
+are identified, you can fit component shapes to overlapping absorption
+bands using Expectation-Maximization algorithms. The functions
+`find_ftir_peaks()` and `fit_peaks()` detect peak locations and fit
+Voigt, Gaussian, Lorentzian, or Doniach-Sunjic-Gauss component shapes to
+decompose complex spectra. Peak detection requires the optional `signal`
+package for Savitzky-Golay smoothing.
+
+``` r
+subset_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_10_0", ]
+subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_spectrum$wavenumber > 1000, ]
+
+fitted <- fit_peaks(subset_spectrum, method = "voigt")
+
+plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+#> Loading required namespace: gghighlight
+```
+
+<div class="figure">
+
+<img src="man/figures/README-peakfit_en-1.png" alt="FTIR spectra of a diesel sample, zoomed from 2000 to 1000 cm-1, showing fit component peaks." width="66.67%" />
+<p class="caption">
+
+FTIR spectra of a diesel sample, zoomed from 2000 to 1000 cm-1, showing
+fit component peaks.
+</p>
+
+</div>
+
+A [detailed vignette](vignettes/peak_fitting.Rmd) demonstrates a
+complete peak fitting workflow on biodiesel-diesel blend spectra, from
+identifying functional groups through evaluating fit quality.
 
 ## Reading Files
 
@@ -308,24 +388,15 @@ library(PlotFTIR)
 plot_ftir(sample_spectra, lang = "fr")
 ```
 
-<img src="man/figures/README-basic_plot_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
 
-Vous pouvez examiner la structure de vos données à l’aide de la méthode
-d’impression :
+<img src="man/figures/README-basic_plot_fr-1.png" alt="Graphique des spectres FTIR d'échantillons de biodiesel." width="66.67%" />
+<p class="caption">
 
-``` r
-print(biodiesel)
-#> PlotFTIR data:
-#>   Spectral range: 700.7395 - 3999.434 cm⁻¹
-#>   Resolution: variable
-#>   Intensity type: absorbance 
-#>   Number of samples: 11 
-#>   Sample IDs: biodiesel_0, biodiesel_0_25, biodiesel_0_50, biodiesel_1_0, biodiesel_2_5 ...
-```
+Graphique des spectres FTIR d’échantillons de biodiesel.
+</p>
 
-Ceci affichera la plage spectrale, la résolution inférée, le type
-d’intensité, le nombre d’échantillons et les identifiants des
-échantillons.
+</div>
 
 Vous pouvez également tracer les spectres de manière empilée/décalée au
 lieu de les superposer :
@@ -334,7 +405,15 @@ lieu de les superposer :
 plot_ftir_stacked(biodiesel, plot_title = "Spectre IRTF empilée", lang = "fr")
 ```
 
-<img src="man/figures/README-stack_plot_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-stack_plot_fr-1.png" alt="Graphique superposé des spectres FTIR d'échantillons de biodiesel" width="66.67%" />
+<p class="caption">
+
+Graphique superposé des spectres FTIR d’échantillons de biodiesel
+</p>
+
+</div>
 
 Notez que les titres par défaut de tracé et du légende sont en anglais,
 mais qu’ils peuvent être automatiquement modifiés en français en
@@ -351,7 +430,15 @@ biodiesel_trace <- plot_ftir(biodiesel, lang = "fr")
 zoom_in_on_range(biodiesel_trace, c(1650, 1850))
 ```
 
-<img src="man/figures/README-biodiesel_zoom_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_zoom_fr-1.png" alt="Spectres FTIR d'échantillons de biodiesel, zoomés de 1650 à 1850 cm-1." width="66.67%" />
+<p class="caption">
+
+Spectres FTIR d’échantillons de biodiesel, zoomés de 1650 à 1850 cm-1.
+</p>
+
+</div>
 
 Certains tracés IRTF ont une partie compressée du graphique à faible
 énergie qui peuvent etre agrandie de la manière suivante :
@@ -362,7 +449,16 @@ Certains tracés IRTF ont une partie compressée du graphique à faible
 compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
-<img src="man/figures/README-biodiesel_compress_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_compress_fr-1.png" alt="Spectres FTIR d'échantillons de biodiesel, avec la région de basse énergie compressée." width="66.67%" />
+<p class="caption">
+
+Spectres FTIR d’échantillons de biodiesel, avec la région de basse
+énergie compressée.
+</p>
+
+</div>
 
 Vous pouvez également ajouter des lignes de marqueur (avec des
 étiquettes) à des numéros d’onde spécifiques sur les tracés, en
@@ -378,7 +474,17 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
 add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
 ```
 
-<img src="man/figures/README-biodiesel_labelled_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_labelled_fr-1.png" alt="Spectres FTIR d'échantillons de biodiesel, avec un marqueur à 1742 cm-1 indiquant l'élongation C=O et une bande colorée de 3050 à 2750 pour l'élongation C-H." width="66.67%" />
+<p class="caption">
+
+Spectres FTIR d’échantillons de biodiesel, avec un marqueur à 1742 cm-1
+indiquant l’élongation C=O et une bande colorée de 3050 à 2750 pour
+l’élongation C-H.
+</p>
+
+</div>
 
 S’il est nécessaire de renommer les échantillons répertoriés dans la
 légende, cela est possible via `rename_plot_sample_ids()`. Le vecteur de
@@ -401,7 +507,16 @@ nouveau_noms <- c(
 rename_plot_sample_ids(biodiesel_trace, nouveau_noms)
 ```
 
-<img src="man/figures/README-biodiesel_rename_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-biodiesel_rename_fr-1.png" alt="Spectres FTIR d'échantillons de biodiesel, avec les échantillons renommés dans la légende." width="66.67%" />
+<p class="caption">
+
+Spectres FTIR d’échantillons de biodiesel, avec les échantillons
+renommés dans la légende.
+</p>
+
+</div>
 
 Une fonction d’assistance pour le changement de nom est fournie (voir la
 documentation pour `get_plot_sample_ids()`).
@@ -451,7 +566,16 @@ sample_spectra |>
 #> ℹ Adding new coordinate system, which will replace the existing one.
 ```
 
-<img src="man/figures/README-tidy_fr-1.png" alt="" width="66.67%" />
+<div class="figure">
+
+<img src="man/figures/README-tidy_fr-1.png" alt="Un spectre FTIR d'autres échantillons, illustrant la complexité des graphiques pouvant être construits avec ce logiciel." width="66.67%" />
+<p class="caption">
+
+Un spectre FTIR d’autres échantillons, illustrant la complexité des
+graphiques pouvant être construits avec ce logiciel.
+</p>
+
+</div>
 
 ## Production de tracés “tidy”
 
@@ -504,6 +628,43 @@ normalisation des spectres, et calculer la moyenne des spectres, voir :
 \* `recalculate_baseline()` \* `add_scalar_value()` et
 `subtract_scalar_value()` \* `normalize_spectra()` \*
 `average_spectra()`
+
+## Ajustement des pics
+
+Une fois les pics identifiés, vous pouvez ajuster des formes de
+composantes aux bandes d’absorption chevauchantes à l’aide d’algorithmes
+d’espérance-maximisation. Les fonctions `find_ftir_peaks()` et
+`fit_peaks()` détectent les emplacements des pics et ajustent des formes
+de composantes Voigt, Gaussienne, Lorentzienne ou Doniach-Sunjic-Gauss
+pour décomposer les spectres complexes. La détection des pics nécessite
+le paquetage optionnel `signal` pour le lissage de Savitzky-Golay ; les
+algorithmes d’ajustement nécessitent le paquetage `EMpeaksR`.
+
+``` r
+subset_spectrum <- biodiesel[biodiesel$sample_id == "biodiesel_10_0", ]
+subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_spectrum$wavenumber > 1000, ]
+
+fitted <- fit_peaks(subset_spectrum, method = "voigt")
+plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
+#> Scale for colour is already present.
+#> Adding another scale for colour, which will replace the existing scale.
+```
+
+<div class="figure">
+
+<img src="man/figures/README-peakfit_fr-1.png" alt="Spectres FTIR d'un échantillon de diesel, zoomés de 2000 à 1000 cm-1, montrant les pics des composants ajustés." width="66.67%" />
+<p class="caption">
+
+Spectres FTIR d’un échantillon de diesel, zoomés de 2000 à 1000 cm-1,
+montrant les pics des composants ajustés.
+</p>
+
+</div>
+
+Une [vignette détaillée](vignettes/peak_fitting.Rmd) présente un flux de
+travail complet d’ajustement de pics sur les spectres de mélanges
+diesel-biodiesel, de l’identification des groupes fonctionnels à
+l’évaluation de la qualité de l’ajustement.
 
 ## Lecture des fichiers
 

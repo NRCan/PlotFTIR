@@ -116,6 +116,9 @@ test_that("compress region is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    testthat::skip("scales not available for testing manipulations")
+  }
 
   expect_error_bilingual(
     compress_low_energy("abc"),
@@ -166,6 +169,21 @@ test_that("compress region is ok", {
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
     ggplot2::ggplot_build(compressed_plot)$layout$panel_params[[1]]$y.range
   )
+})
+
+
+test_that("plot_ftir_core uses scales conditionally", {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing plot production")
+  }
+
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    testthat::skip("scales not available for testing plot production")
+  }
+
+  p <- plot_ftir(absorbance_to_transmittance(biodiesel))
+  expect_true(ggplot2::is_ggplot(p))
+  expect_identical(p$scales$get_scales("x")$trans$name, "reverse")
 })
 
 test_that("labelled plot is ok", {
@@ -230,7 +248,7 @@ test_that("labelled plot is ok", {
       biodiesel_plot,
       wavenumber = 1740,
       text = "CO Stretch",
-      line_aesthetics = 'dashed'
+      line_aesthetics = "dashed"
     ),
     en = "`line_aesthetics` must be a named list. You provided",
     fr = "`line_aesthetics` doit être une liste nommée. Vous avez fourni"
@@ -564,6 +582,14 @@ test_that("add_band is ok", {
 })
 
 test_that("compress_trans internal helper works", {
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    expect_error_bilingual(
+      PlotFTIR:::compress_trans(intercept = 2000, ratio = 5),
+      en = "requires scales package installation",
+      fr = "nécessite l'installation du paquet scales"
+    )
+    testthat::skip("scales not available for testing compress_trans")
+  }
   trans <- PlotFTIR:::compress_trans(intercept = 2000, ratio = 5)
 
   # Values above intercept (after sign flip to -2000) pass through unchanged

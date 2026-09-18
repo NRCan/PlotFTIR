@@ -91,13 +91,13 @@ Having loaded the data, we can see that it has a structure of three columns, nam
 ## Plotting
 
 The loaded spectra can be plotted (with reasonable defaults) in just one line of code:
-```{r basicplot_en}
+```{r basicplot_en, fig.cap="A number of plotted FTIR spectra of multiple samples overlaid."}
 plot_ftir(spectra)
 ```
 
 If plotting multiple samples (as we are here), you can offset the samples in the y axis to be able to more clearly see differences where they may have otherwise overlapped near the baseline:
 
-```{r offsetplot_en}
+```{r offsetplot_en, fig.cap="A number of plotted FTIR spectra, each offset slightly from the others."}
 plot_ftir_stacked(spectra)
 ```
 
@@ -107,7 +107,7 @@ We can modify this plot a number of ways:
 
 The plot title and subtitle, and the legend title are all customization. The location of the legend can be changed too! To add a subtitle, pass a two-element string vector to the `plot_title` argument of `plot_ftir()`.
 
-```{r titles_en}
+```{r titles_en, fig.cap="The first overlaid spectral plot, with title 'Title of my Spectra Plot'."}
 plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with PlotFTIR"), legend_title = "Samples:") |>
   move_plot_legend(position = "bottom")
 ```
@@ -116,7 +116,7 @@ plot_ftir(spectra, plot_title = c("Title of my Spectra Plot", "Plotted with Plot
 
 Once a plot has been produced, it' easy to rename the samples in the legend. This might be useful when moving from exploratory analysis to a final output product, or if the sample names in the raw data are very long and you have short-forms that you want to show on the plot. The format for the renaming is `"new_name"` = `"old_name"`. Not all `sample_id` need to be matched, samples without a rename given will retain the name they currently have.
 
-```{r rename_samples_en}
+```{r rename_samples_en, fig.cap="The first overlaid spectral plot, with two samples renamed."}
 plot_ftir(spectra) |>
   rename_plot_sample_ids(sample_ids = c("Methylbenzene" = "toluene", "C7" = "heptanes"))
 ```
@@ -125,7 +125,7 @@ plot_ftir(spectra) |>
 
 The lower energy region of a FTIR plot may not be of much interest. We can compress those to both save graphical space and enhance the view of the more complex fingerprint region at higher energy. 
 
-```{r compress_en}
+```{r compress_en, fig.cap="The first overlaid spectral plot with the lower-energy region compressed."}
 plot_ftir(spectra) |>
   compress_low_energy(cutoff = 1850, compression_ratio = 5)
 ```
@@ -136,7 +136,7 @@ plot_ftir(spectra) |>
 
 You can limit wavenumber range (zoom in) to any plot. If we want to look at the OH & CH stretch region, we can limit the spectra to that range.
 
-```{r r_zoom_en}
+```{r r_zoom_en, fig.cap="The first overlaid spectral plot, zoomed in to the 3600 to 2600 wavenumbers region."}
 plot_ftir(spectra) |>
   zoom_in_on_range(c(3600, 2600))
 ```
@@ -147,7 +147,7 @@ You might notice the plot itself could be adjusted - a section later discusses m
 
 We can add markers at any specific wavenumber, to indicate significant peaks or areas of interest. For example, the 1495 wavenumber peak corresponds with a carbon-carbon bond (aromatic) vibration. This marker's label can be coloured or styled in any way, and the line can be modified as well. See the `ggplot2` documentation [for `line_aesthetics` and `label_aesthetics`](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html).
 
-```{r markers_en}
+```{r markers_en, fig.cap="The first spectral plot with a marker at 1495 cm-1, indicating 'C-C Aromatic'."}
 plot_ftir(spectra) |>
   add_wavenumber_marker(
     wavenumber = 1495,
@@ -163,7 +163,7 @@ Note that any number of markers can be added, before or after other transformati
 
 All of the manipulations can be done in sequence to one image. This allows you to easily produce plots modified to your samples and annotated per your need. 
 
-```{r combo_en}
+```{r combo_en, fig.cap="A complex spectral plot"}
 plot_ftir(spectra, plot_title = c("My FTIR Plot", "Closeup of Detailed Region 1600 to 800 wavenumbers"), legend_title = "Samples:") |>
   move_plot_legend(position = "bottom") |>
   zoom_in_on_range(zoom_range = c(1600, 800)) |>
@@ -178,7 +178,7 @@ plot_ftir(spectra, plot_title = c("My FTIR Plot", "Closeup of Detailed Region 16
 ### Conversion Between Transmittance and Absorbance
 
 Some instruments collect data in transmittance units, others in absorbance units. It could also be required to plot FTIR spectra in some specific units for a journal or report, or to compare to other existing literature. Fortunately, the two are related by a simple mathematical function. Two functions exist in this package to easily swap between the two y-axis units. We'll use `absorbance_to_transmittance()` but the inverse `transmittance_to_absorbance()` is available as well.
-```{r transmittance_en}
+```{r transmittance_en, fig.cap="The initial spectral plot with transmittance units on the y axis."}
 transmittance_spectra <- absorbance_to_transmittance(spectra)
 
 plot_ftir(transmittance_spectra)
@@ -188,7 +188,7 @@ plot_ftir(transmittance_spectra)
 
 It may be desired to shift a sample's result on the plotted spectra by a certain numerical amount. This can be done by adding or subtracting a `scalar` value - a single value of a set magnitude. We can use the `add_scalar_value()` or `subtract_scalar_value()` function to do that addition or subtraction to the data prior to plotting. These functions can act on all the spectra in the data set, or only on specific sample_ids as provided.
 
-```{r scalar_en}
+```{r scalar_en, fig.cap="The initial spectral plot with two components shifted up 0.2 absorbance units."}
 shifted_spectra <- add_scalar_value(ftir = spectra, value = 0.2, sample_ids = c("heptanes", "toluene"))
 
 plot_ftir(shifted_spectra)
@@ -210,14 +210,14 @@ All of these shifts are achieved by calling the `recalculate_baseline()` functio
 
 For this demonstration, we'll use the `biodiesel` data contained in the package. It's a set of spectra of diesel samples containing increasing amount of biodiesel. 
 
-```{r plot_biodiesel_en}
+```{r plot_biodiesel_en, fig.cap="A spectral plot of biodiesel samples zoomed in to the 2000 to 1000 wavenumber range."}
 plot_ftir(biodiesel) |>
   zoom_in_on_range(c(2000, 1000))
 ```
 
 If you look closely, all of the spectra are floating just above the 0 absorbance line. We can adjust those down then plot the same. We'll recalculate based on the average (`method = "average"`) across the `wavenumber_range = c(2000, 1900)`, and move all of the samples by their own calculated amount (i.e. `individually = TRUE`).
 
-```{r plot_biodiesel_baseline_1_en}
+```{r plot_biodiesel_baseline_1_en, fig.cap="The above plot with baselines recalculated to align spectra at 0."}
 biodiesel |>
   recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
   plot_ftir() |>
@@ -226,7 +226,7 @@ biodiesel |>
 
 Of course, if you aren't careful with baselining you can get some weird results. If we didn't pay attention and tried to adjust by the point at 1250 cm-1 individually, we'd get a plot that's not useful in most situations (even if it looks cool).
 
-```{r plot_biodiesel_baseline_2_en}
+```{r plot_biodiesel_baseline_2_en, fig.cap="The above plot, but with the spectra set to a 0 value at exactly 1250 cm-1."}
 biodiesel |>
   recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
   plot_ftir() |>
@@ -235,7 +235,7 @@ biodiesel |>
 
 Instead, it might be more useful to adjust all of the spectra by the minimum point in a range (the minimum of each sample's minimum in the range). This puts that region close to zero, without removing what might be otherwise useful differences in absorbance.
 
-```{r plot_biodiesel_baseline_3_en}
+```{r plot_biodiesel_baseline_3_en, fig.cap="The above plot, with spectra shifted to the minimal value between 1300 and 1000 wavenumbers set to 0."}
 biodiesel |>
   recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
   plot_ftir() |>
@@ -310,13 +310,13 @@ Après avoir chargé les données, nous pouvons voir qu'elles ont une structure 
 
 Les spectres chargés peuvent être tracés (avec des valeurs par défaut raisonnables) en une seule ligne de code (notez que l'ajout de `lang = 'fr'` produit un tracé avec des titres français):
 
-```{r basicplot_fr}
+```{r basicplot_fr, fig.cap="Un certain nombre de spectres FTIR superposés de plusieurs échantillons."}
 plot_ftir(spectres, lang = "fr")
 ```
 
 Si vous tracez plusieurs échantillons (comme nous le faisons ici), vous pouvez décaler les échantillons sur l'axe des y pour pouvoir voir plus clairement les différences là où ils auraient pu se chevaucher près de la ligne de base:
 
-```{r offsetplot_fr}
+```{r offsetplot_fr, fig.cap="Un certain nombre de spectres FTIR tracés, chacun légèrement décalé par rapport aux autres."}
 plot_ftir_stacked(spectres, lang = "fr")
 ```
 
@@ -326,7 +326,7 @@ Nous pouvons modifier ce tracé de plusieurs manières:
 
 Le titre et le sous-titre du tracé, ainsi que le titre de la légende sont tous configurables. L'emplacement de la légende peut également être modifié ! Pour ajouter un sous-titre, passez un vecteur de texte à deux éléments à l'argument `plot_title` de `plot_ftir()`.
 
-```{r titles_fr}
+```{r titles_fr, fig.cap="Le premier graphique spectral superposé, intitulé 'Titre de mon tracé de spectres'."}
 plot_ftir(spectres, lang = "fr", plot_title = c("Titre de mon tracé de spectres", "Tracé avec PlotFTIR"), legend_title = "Echantillons:") |>
   move_plot_legend(position = "bottom")
 ```
@@ -335,7 +335,7 @@ plot_ftir(spectres, lang = "fr", plot_title = c("Titre de mon tracé de spectres
 
 Lorsque le tracé a été produit, il est facile de renommer les échantillons dans la légende. Cela peut être utile pour passer d'une analyse exploratoire à un produit final, ou si les noms des échantillons dans les données sont très longs et que vous avez des formes abrégées que vous voulez montrer sur le tracé. Le format de renommage est `"nouveau_nom" = "ancien_nom"`. Il n'est pas nécessaire de faire correspondre tous les `sample_id`, les échantillons qui n'ont pas été renommés conserveront le nom qu'ils portent actuellement.
 
-```{r rename_samples_fr}
+```{r rename_samples_fr, fig.cap="Le premier graphique spectral superposé, avec deux échantillons renommés."}
 plot_ftir(spectres, lang = "fr") |>
   rename_plot_sample_ids(sample_ids = c("methylbenzene" = "toluene", "C7" = "heptanes"))
 ```
@@ -344,7 +344,7 @@ plot_ftir(spectres, lang = "fr") |>
 
 La région de basse énergie d'un tracé IRTF peut ne pas présenter beaucoup d'intérêt. Nous pouvons les compresser pour économiser de l'espace graphique et améliorer la visualisation de la région plus complexe de l'empreinte digitale à plus haute énergie. 
 
-```{r compress_fr}
+```{r compress_fr, fig.cap="Le premier graphique spectral superposé avec la région de basse énergie comprimée."}
 plot_ftir(spectres, lang = "fr") |>
   compress_low_energy(cutoff = 1850, compression_ratio = 5)
 ```
@@ -355,7 +355,7 @@ plot_ftir(spectres, lang = "fr") |>
 
 Vous pouvez limiter la gamme de nombres d'ondes (zoomer sur) à n'importe quel tracé. Si nous voulons examiner la région d'étirement OH & CH, nous pouvons limiter les spectres à cette gamme.
 
-```{r r_zoom_fr}
+```{r r_zoom_fr, fig.cap="Le premier graphique spectral superposé, zoomé sur la région des nombres d'onde de 3600 à 2600."}
 plot_ftir(spectres, lang = "fr") |>
   zoom_in_on_range(c(3600, 2600))
 ```
@@ -366,7 +366,7 @@ Vous remarquerez peut-être que le tracé lui-même pourrait être ajusté - une
 
 Nous pouvons ajouter des marqueurs à n'importe quel nombre d'ondes spécifique, pour indiquer les pics significatifs ou les zones d'intérêt. Par exemple, le nombre d'ondes de 1495 correspond à une vibration de liaison carbone-carbone (aromatique). L'étiquette de ce marqueur peut être colorée ou stylisée à volonté, et la ligne peut également être modifiée. Voir la documentation de `ggplot2` [pour `line_aesthetics` et `label_aesthetics`](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html).
 
-```{r markers_fr}
+```{r markers_fr, fig.cap="Le premier graphique spectral avec un marqueur à 1495 cm-1, indiquant 'C-C aromatique'."}
 plot_ftir(spectres, lang = "fr") |>
   add_wavenumber_marker(
     wavenumber = 1495,
@@ -382,7 +382,7 @@ Notez qu'un nombre quelconque de marqueurs peut être ajouté, avant ou après d
 
 Toutes les manipulations peuvent être effectuées en séquence sur une image. Cela vous permet de produire facilement des tracés modifiés en fonction de vos échantillons et annotés selon vos besoins. 
 
-```{r combo_fr}
+```{r combo_fr, fig.cap="Un diagramme spectral complexe"}
 plot_ftir(spectres, lang = "fr", plot_title = c("Mon Tracé IRTF", "Gros plan de la région détaillée de 1600 à 800 nombres d'ondes"), legend_title = "Samples:") |>
   move_plot_legend(position = "bottom") |>
   zoom_in_on_range(zoom_range = c(1600, 800)) |>
@@ -398,7 +398,7 @@ plot_ftir(spectres, lang = "fr", plot_title = c("Mon Tracé IRTF", "Gros plan de
 
 Certains instruments collectent des données en unités de transmittance, d'autres en unités d'absorbance. Il peut également être nécessaire de tracer les spectres IRTF dans certaines unités spécifiques pour une revue ou un rapport, ou pour les comparer à d'autres documents existants. Heureusement, les deux sont liés par une simple fonction mathématique. Deux fonctions existent dans ce package pour permuter facilement entre les deux unités de l'axe des ordonnées. Nous utiliserons `absorbance_to_transmittance()` mais la fonction inverse `transmittance_to_absorbance()` est également disponible.
 
-```{r transmittance_fr}
+```{r transmittance_fr, fig.cap="Le diagramme spectral initial avec les unités de transmittance sur l'axe des y."}
 spectres_transmittance <- absorbance_to_transmittance(spectres)
 plot_ftir(spectres_transmittance, lang = "fr")
 ```
@@ -407,7 +407,7 @@ plot_ftir(spectres_transmittance, lang = "fr")
 
 Il peut être souhaitable de décaler le résultat d'un échantillon sur les spectres tracés d'une certaine valeur numérique. Ceci peut être fait en ajoutant ou en soustrayant une valeur "scalaire" - une valeur unique d'une magnitude définie. Nous pouvons utiliser les fonctions `add_scalar_value()` ou `subtract_scalar_value()` pour effectuer cet ajout ou cette soustraction aux données avant de les tracer. Ces fonctions peuvent agir sur tous les spectres de l'ensemble de données, ou seulement sur des identifiants d'échantillons spécifiques.
 
-```{r scalar_fr}
+```{r scalar_fr, fig.cap="Le diagramme spectral initial avec deux composantes décalées de 0.2 unité d'absorbance vers le haut."}
 spectres_decales <- add_scalar_value(ftir = spectres, value = 0.2, sample_ids = c("heptanes", "toluene"))
 
 plot_ftir(spectres_decales, lang = "fr")
@@ -429,7 +429,7 @@ Tous ces changements sont réalisés en appelant la fonction `recalculate_baseli
 
 Pour cette démonstration, nous utiliserons les données `biodiesel` contenues dans le paquet. Il s'agit d'un ensemble de spectres d'échantillons de diesel contenant des quantités croissantes de biodiesel. 
 
-```{r plot_biodiesel_fr}
+```{r plot_biodiesel_fr, fig.cap="Un graphique spectral d'échantillons de biodiesel zoomé sur la plage de nombres d'onde de 2000 à 1000."}
 plot_ftir(biodiesel, lang = "fr") |>
   zoom_in_on_range(c(2000, 1000))
 ```
@@ -437,7 +437,7 @@ plot_ftir(biodiesel, lang = "fr") |>
 Si vous regardez de près, tous les spectres flottent juste au-dessus de la ligne d'absorbance `0`. Nous pouvons les ajuster vers le bas puis tracer les mêmes. Nous allons recalculer sur la base de la moyenne (`method = "average"`) sur l'ensemble de `wavenumber_range = c(2000, 1900)`, et déplacer tous les échantillons de leur propre quantité calculée (c.-à-d. `individually = TRUE`).
 
 
-```{r plot_biodiesel_baseline_1_fr}
+```{r plot_biodiesel_baseline_1_fr, fig.cap="Le graphique ci-dessus avec les lignes de base recalculées pour aligner les spectres à 0."}
 biodiesel |>
   recalculate_baseline(method = "average", wavenumber_range = c(2000, 1900), individually = TRUE) |>
   plot_ftir(lang = "fr") |>
@@ -446,7 +446,7 @@ biodiesel |>
 
 Bien sûr, si l'on ne fait pas attention à l'alignement de base, on peut obtenir des résultats bizarres. Si nous ne faisions pas attention et essayions d'ajuster individuellement le point à 1250 cm-1, nous obtiendrions un tracé qui n'est pas utile dans la plupart des situations (même s'il a l'air cool).
 
-```{r plot_biodiesel_baseline_2_fr}
+```{r plot_biodiesel_baseline_2_fr, fig.cap="Le graphique ci-dessus, mais avec les spectres fixés à une valeur 0 à exactement 1250 cm-1."}
 biodiesel |>
   recalculate_baseline(method = "point", wavenumber_range = 1250, individually = TRUE) |>
   plot_ftir(lang = "fr") |>
@@ -455,7 +455,7 @@ biodiesel |>
 
 Il serait plus utile d'ajuster tous les spectres en fonction du point minimum d'une gamme (le minimum de chaque échantillon dans la gamme). Cela permet de rapprocher cette région de zéro, sans supprimer les différences d'absorbance qui pourraient être utiles.
 
-```{r plot_biodiesel_baseline_3_fr}
+```{r plot_biodiesel_baseline_3_fr, fig.cap="Le graphique ci-dessus, avec les spectres décalés à la valeur minimale entre 1300 et 1000 nombres d'ondes fixés à 0."}
 biodiesel |>
   recalculate_baseline(method = "minimum", wavenumber_range = c(1300, 1000), individually = FALSE) |>
   plot_ftir(lang = "fr") |>
