@@ -137,10 +137,19 @@ compress_trans <- function(intercept = 2000, ratio = 5) {
   # So, we're really talking about intercept as a -1*intercept
 
   if (!requireNamespace("scales", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "{.pkg PlotFTIR} requires {.pkg scales} package installation.",
-      i = "Install {.pkg scales} with {.run install.packages('scales')}"
-    ))
+    .pkg_abort(
+      list(
+        en = c(
+          "{.pkg PlotFTIR} requires {.pkg scales} package installation.",
+          i = "Install {.pkg scales} with {.run install.packages('scales')}"
+        ),
+        fr = c(
+          "{.pkg PlotFTIR} n\u00e9cessite l'installation du paquet {.pkg scales}.",
+          i = "Installez le paquet {.pkg scales} avec la commande {.run install.packages('scales')}"
+        )
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   intercept <- intercept * -1

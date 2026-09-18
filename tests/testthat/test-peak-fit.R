@@ -1208,9 +1208,10 @@ test_that("Languages are handled properly", {
   )
   expect_equal(p$plot_env$legend_title, "ID de l'\u00e9chantillon")
 
-  expect_warning(
+  expect_warning_bilingual(
     plot_components(ftir, fitpeaks, lang = "test"),
-    "language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or"
+    en = "language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not 'test'. Use default.",
+    fr = "la langue doit \u00eatre l'une des suivantes : 'en', 'english', 'anglais', 'fr', 'french', 'francais' ou 'fran\u00e7ais', et non 'test'. La valeur par d\u00e9faut sera utilis\u00e9e."
   )
 })
 

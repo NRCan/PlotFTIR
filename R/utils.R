@@ -523,8 +523,11 @@ intensity_type <- function(ftir) {
         several.ok = FALSE
       ),
       error = function(x) {
-        cli::cli_warn(
-          "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'. Use default.",
+        .pkg_warn(
+          list(
+            en = "{.arg lang}: language must be one of 'en', 'english', 'anglais', 'fr', 'french', 'francais' or 'fran\u00e7ais', not '{lang}'. Use default.",
+            fr = "{.arg lang} : la langue doit \u00eatre l'une des suivantes : 'en', 'english', 'anglais', 'fr', 'french', 'francais' ou 'fran\u00e7ais', et non '{lang}'. La valeur par d\u00e9faut sera utilis\u00e9e."
+          ),
           call = call
         )
         NA_character_

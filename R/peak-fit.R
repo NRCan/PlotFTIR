@@ -2373,13 +2373,23 @@ NULL
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
       if (verbose) {
-        cli::cli_alert_success(
-          "Converged in {i} iterations ({round(cal_time)} seconds)."
+        .pkg_inform(
+          list(
+            en = cli::format_inline(
+              "Converged in {i} iterations ({round(cal_time)} seconds)."
+            ),
+            fr = cli::format_inline(
+              "Convergence atteinte en {i} it\u00e9rations ({round(cal_time)} secondes)."
+            )
+          )
         )
       }
       break
     } else if (verbose) {
-      cli::cli_alert_info("LL: {LL_1[i+1]}")
+      .pkg_inform(list(
+        en = cli::format_inline("LL: {LL_1[i + 1]}"),
+        fr = cli::format_inline("LL : {LL_1[i + 1]}")
+      ))
     }
   }
 
@@ -2515,13 +2525,23 @@ NULL
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
       if (verbose) {
-        cli::cli_alert_success(
-          "Converged in {i} iterations ({round(cal_time)} seconds)."
+        .pkg_inform(
+          list(
+            en = cli::format_inline(
+              "Converged in {i} iterations ({round(cal_time)} seconds)."
+            ),
+            fr = cli::format_inline(
+              "Convergence atteinte en {i} it\u00e9rations ({round(cal_time)} secondes)."
+            )
+          )
         )
       }
       break
     } else if (verbose) {
-      cli::cli_alert_info("LL: {LL_1[i+1]}")
+      .pkg_inform(list(
+        en = cli::format_inline("LL: {LL_1[i + 1]}"),
+        fr = cli::format_inline("LL : {LL_1[i + 1]}")
+      ))
     }
   }
 
@@ -2685,13 +2705,23 @@ NULL
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
       if (verbose) {
-        cli::cli_alert_success(
-          "Converged in {i} iterations ({round(cal_time)} seconds)."
+        .pkg_inform(
+          list(
+            en = cli::format_inline(
+              "Converged in {i} iterations ({round(cal_time)} seconds)."
+            ),
+            fr = cli::format_inline(
+              "Convergence atteinte en {i} it\u00e9rations ({round(cal_time)} secondes)."
+            )
+          )
         )
       }
       break
     } else if (verbose) {
-      cli::cli_alert_info("LL: {LL_1[i+1]}")
+      .pkg_inform(list(
+        en = cli::format_inline("LL: {LL_1[i + 1]}"),
+        fr = cli::format_inline("LL : {LL_1[i + 1]}")
+      ))
     }
   }
 
@@ -2884,13 +2914,23 @@ NULL
       status <- "converged"
       cal_time <- difftime(Sys.time(), start_cal, units = "sec")
       if (verbose) {
-        cli::cli_alert_success(
-          "Converged in {i} iterations ({round(cal_time)} seconds)."
+        .pkg_inform(
+          list(
+            en = cli::format_inline(
+              "Converged in {i} iterations ({round(cal_time)} seconds)."
+            ),
+            fr = cli::format_inline(
+              "Convergence atteinte en {i} it\u00e9rations ({round(cal_time)} secondes)."
+            )
+          )
         )
       }
       break
     } else if (verbose) {
-      cli::cli_alert_info("LL: {LL_1[i+1]}")
+      .pkg_inform(list(
+        en = cli::format_inline("LL: {LL_1[i + 1]}"),
+        fr = cli::format_inline("LL : {LL_1[i + 1]}")
+      ))
     }
   }
 
