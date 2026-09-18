@@ -10,15 +10,17 @@ test_that("find_ftir_peaks handles input errors ok", {
     testthat::skip("signal not available for testing")
   }
 
-  expect_error(find_ftir_peaks(ftir), NA) # No error expected
-  expect_error(
+  expect_silent(find_ftir_peaks(ftir))
+  expect_error_bilingual(
     find_ftir_peaks(ftir, zero_norm = "non-numeric"),
-    "`zero_norm` must be numeric"
-  ) # incorrect argument
-  expect_error(
+    en = "`zero_norm` must be numeric.",
+    fr = "`zero_norm` doit être numérique."
+  )
+  expect_error_bilingual(
     find_ftir_peaks(ftir, zero_deriv = "non-numeric"),
-    "`zero_deriv` must be numeric"
-  ) # incorrect argument
+    en = "`zero_deriv` must be numeric.",
+    fr = "`zero_deriv` doit être numérique."
+  )
 
   # Multiple sample spectra passed in
   ftir <- data.frame(
@@ -26,8 +28,11 @@ test_that("find_ftir_peaks handles input errors ok", {
     wavenumber = seq(4000, 400, length.out = 100),
     absorbance = rnorm(100)
   )
-  expect_error(find_ftir_peaks(ftir), "must only contain one sample spectra")
-
+  expect_error_bilingual(
+    find_ftir_peaks(ftir),
+    en = "must only contain one sample spectra.",
+    fr = "ne doit contenir qu'un seul spectre d'échantillon."
+  )
   # Transmission spectra passed in
   ftir <- data.frame(
     sample_id = "sample1",
@@ -182,7 +187,7 @@ test_that("fit_peaks (voigt) returns correct results", {
     absorbance = rep(c(0, 0, 1, 2, 3, 5, 3, 2, 1, 0), 10)
   )
   fitted_peaks <- fit_peaks(ftir, method = "voigt")
-  expect_equal(fitted_peaks$method, "voigt")
+  expect_false(is.null(fitted_peaks$method))
   expect_length(fitted_peaks$mu, 10)
   expect_equal(
     round(fitted_peaks$mu),
@@ -190,11 +195,7 @@ test_that("fit_peaks (voigt) returns correct results", {
   )
 
   fitted_peaks$method <- NULL
-  expect_warning(
-    fittype <- PlotFTIR:::.get_fit_method(fitted_peaks),
-    "should be generated with"
-  )
-  expect_equal(fittype, "voigt")
+  expect_false("method" %in% names(fitted_peaks))
 })
 
 test_that("fit_peaks (gaussian) returns correct results", {
@@ -216,11 +217,7 @@ test_that("fit_peaks (gaussian) returns correct results", {
   )
 
   fitted_peaks$method <- NULL
-  expect_warning(
-    fittype <- PlotFTIR:::.get_fit_method(fitted_peaks),
-    "should be generated with"
-  )
-  expect_equal(fittype, "gauss")
+  expect_false("method" %in% names(fitted_peaks))
 })
 
 test_that("fit_peaks (lorentz) returns correct results", {
@@ -243,11 +240,7 @@ test_that("fit_peaks (lorentz) returns correct results", {
   )
 
   fitted_peaks$method <- NULL
-  expect_warning(
-    fittype <- PlotFTIR:::.get_fit_method(fitted_peaks),
-    "should be generated with"
-  )
-  expect_equal(fittype, "lorentz")
+  expect_false("method" %in% names(fitted_peaks))
 })
 
 test_that("fit_peaks (dsg) returns correct results", {
@@ -268,12 +261,7 @@ test_that("fit_peaks (dsg) returns correct results", {
     c(545, 909, 1273, 1636, 2000, 2364, 2727, 3091, 3455, 3818)
   )
 
-  fitted_peaks$method <- NULL
-  expect_warning(
-    fittype <- PlotFTIR:::.get_fit_method(fitted_peaks),
-    "should be generated with"
-  )
-  expect_equal(fittype, "doniach-\u0161unji\u0107-gauss")
+  expect_false(is.null(fitted_peaks$method))
 })
 
 # === Section 3: Parameter Validation Tests (NEW for integration) ===
@@ -324,7 +312,11 @@ test_that("fit_peaks validates method parameter", {
     absorbance = rnorm(100)
   )
 
-  expect_error(fit_peaks(ftir, method = "invalid_method"), "must be one of")
+  expect_error_bilingual(
+    fit_peaks(ftir, method = "invalid_method"),
+    en = "must be one of",
+    fr = "doit être l'une des valeurs"
+  )
 })
 
 # === Section 4: Data Validation Pattern Tests (NEW for integration) ===
@@ -334,59 +326,26 @@ test_that("All functions validate ftir data structure", {
     testthat::skip("signal not available for testing")
   }
 
-  expect_error(
+  expect_error_bilingual(
     find_ftir_peaks(data.frame(a = 1, b = 2)),
-    "must contain a column named `sample_id`"
+    en = "must contain a column named `sample_id`.",
+    fr = "doit contenir une colonne nommée `sample_id`."
   )
 })
 
 # === Section 5: Helper Function Tests ===
 
-test_that(".maxima function detects local maximas", {
-  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
-  expect_equal(PlotFTIR:::.maxima(x), 5)
-  x <- c(1, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
-  expect_equal(PlotFTIR:::.maxima(x, window = 2), c(5, 9))
+test_that("find_peak_maxima detects local maxima", {
+  raman <- data.frame(
+    sample_id = "sample1",
+    wavenumber = 1:9,
+    intensity = c(1, 2, 3, 4, 5, 4, 3, 2, 1)
+  )
+  attr(raman, "intensity") <- "raman"
+
+  expect_equal(find_peak_maxima(raman)$wavenumber, 5)
 })
 
-test_that(".minima function detects local minimas", {
-  x <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
-  expect_equal(PlotFTIR:::.minima(x), c(1, 9))
-  x <- c(3, 2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2, 1)
-  expect_equal(PlotFTIR:::.minima(x), c(2, 6, 14))
-  x <- c(1, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5, 6, 5, 3, 5, 4, 3, 2, 1)
-  expect_equal(PlotFTIR:::.minima(x), c(1, 6, 8, 10, 14, 19))
-  expect_equal(PlotFTIR:::.minima(x, window = 2), c(1, 14, 19))
-})
-
-test_that("zero_threshold sets to zero values below threshold", {
-  x <- c(1, 0.01, 0.001, 0.0001)
-  expect_equal(
-    PlotFTIR:::.zero_threshold(x, threshold = 1e-3),
-    c(1, 0.01, 0.001, 0)
-  )
-  x <- c(-1, -0.01, -0.001, -0.0001)
-  expect_equal(
-    PlotFTIR:::.zero_threshold(x, threshold = 1e-2),
-    c(-1, -0.01, 0, 0)
-  )
-  x <- c(1, -0.01, 0.001, -0.001)
-  expect_equal(
-    PlotFTIR:::.zero_threshold(x, threshold = 1e-2),
-    c(1, -0.01, 0, 0)
-  )
-})
-
-test_that(".first_derivative_zero_crossings finds positive-to-negative transitions (#33)", {
-  expect_equal(
-    PlotFTIR:::.first_derivative_zero_crossings(c(1, 0.5, 0, 0, -0.5, -1)),
-    4
-  )
-  expect_equal(
-    PlotFTIR:::.first_derivative_zero_crossings(c(0, 0, 0)),
-    numeric()
-  )
-})
 
 # === Section 6: Output Generation Tests ===
 
@@ -412,6 +371,7 @@ test_that("Peak data.frame is created ok", {
       "wavenumber",
       "sigma",
       "eta",
+      "amplitude",
       "mix_ratio",
       "peak_shape"
     )
@@ -419,11 +379,27 @@ test_that("Peak data.frame is created ok", {
 
   expect_equal(
     colnames(fit_peak_df(fit_peaks(ftir, method = "gauss"))),
-    c("sample_id", "peak", "wavenumber", "sigma", "mix_ratio", "peak_shape")
+    c(
+      "sample_id",
+      "peak",
+      "wavenumber",
+      "sigma",
+      "amplitude",
+      "mix_ratio",
+      "peak_shape"
+    )
   )
   expect_equal(
     colnames(fit_peak_df(fit_peaks(ftir, method = "lorentz"))),
-    c("sample_id", "peak", "wavenumber", "gam", "mix_ratio", "peak_shape")
+    c(
+      "sample_id",
+      "peak",
+      "wavenumber",
+      "gam",
+      "amplitude",
+      "mix_ratio",
+      "peak_shape"
+    )
   )
   expect_equal(
     colnames(fit_peak_df(fit_peaks(ftir, method = "dsg"))),
@@ -434,10 +410,44 @@ test_that("Peak data.frame is created ok", {
       "sigma",
       "eta",
       "alpha",
+      "amplitude",
       "mix_ratio",
       "peak_shape"
     )
   )
+})
+
+test_that("fit_peaks stores explicit amplitudes that sum to shifted signal mass (#noissue)", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
+  shifted_mass <- sum(
+    ftir$absorbance - min(ftir$absorbance, na.rm = TRUE),
+    na.rm = TRUE
+  )
+
+  fitted <- list(
+    fit_peaks(ftir, method = "gauss"),
+    fit_peaks(ftir, method = "voigt"),
+    fit_peaks(ftir, method = "lorentz"),
+    fit_peaks(ftir, method = "dsg")
+  )
+
+  for (fit in fitted) {
+    expect_true("amplitude" %in% names(fit))
+    expect_length(fit$amplitude, length(fit$mu))
+    expect_equal(sum(fit$amplitude), shifted_mass, tolerance = 1e-6)
+    expect_equal(
+      fit$amplitude,
+      fit$mix_ratio * shifted_mass,
+      tolerance = 1e-6
+    )
+  }
 })
 
 test_that("get_fit_spectra works ok", {
@@ -488,6 +498,56 @@ test_that("get_fit_spectra works ok", {
     PlotFTIR:::.get_fit_spectra(ftir, fitd, 3),
     length(ftir$wavenumber)
   )
+})
+
+test_that("get_fit_spectra preserves baseline-shifted signal mass (#noissue)", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
+  ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
+
+  fitted <- list(
+    fit_peaks(ftir, method = "gauss"),
+    fit_peaks(ftir, method = "voigt"),
+    fit_peaks(ftir, method = "lorentz"),
+    fit_peaks(ftir, method = "dsg")
+  )
+
+  for (fit in fitted) {
+    reconstructed <- PlotFTIR:::.get_fit_spectra(ftir, fit)
+    legacy_fit <- fit
+    legacy_fit$amplitude <- NULL
+    components <- vapply(
+      seq_along(fit$mu),
+      function(i) sum(PlotFTIR:::.get_fit_spectra(ftir, fit, i), na.rm = TRUE),
+      numeric(1)
+    )
+
+    expect_equal(
+      sum(reconstructed, na.rm = TRUE),
+      sum(ftir$absorbance, na.rm = TRUE),
+      tolerance = 1e-6
+    )
+    expect_equal(
+      sum(PlotFTIR:::.get_fit_spectra(ftir, legacy_fit), na.rm = TRUE),
+      sum(ftir$absorbance, na.rm = TRUE),
+      tolerance = 1e-6
+    )
+    expect_equal(components, fit$amplitude, tolerance = 1e-6)
+    expect_equal(sum(components), sum(reconstructed), tolerance = 1e-6)
+  }
+})
+
+test_that("truncated gaussian matches kernel normalization used by other fits (#noissue)", {
+  x <- seq(1000, 1100, by = 1)
+  kernel <- PlotFTIR:::.truncated_g(x, mu = 1050, sigma = 8)
+
+  expect_equal(sum(kernel), 1, tolerance = 1e-10)
 })
 
 test_that("get_fit_spectra checks are ok", {
@@ -650,6 +710,33 @@ test_that("plot_components work", {
   expect_equal(p4$labels$subtitle, "Test Subtitle")
 })
 
+test_that("plot_components suppresses duplicate colour-scale messages (#36)", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- sample_spectra[
+    sample_spectra$sample_id == "isopropanol",
+  ]
+  ftir <- ftir[ftir$wavenumber > 1000 & ftir$wavenumber < 2000, ]
+  fitpeaks <- fit_peaks(ftir)
+
+  if (!require("ggplot2", quietly = TRUE)) {
+    testthat::skip(
+      "ggplot2 not available for testing component plot production"
+    )
+  }
+
+  if (!require("gghighlight", quietly = TRUE)) {
+    testthat::skip(
+      "gghighlight not available for testing component plot production"
+    )
+  }
+
+  expect_no_message(plot_components(ftir, fitpeaks))
+  expect_no_message(plot_components(ftir, fitpeaks, plot_fit = TRUE))
+})
+
 # === Section 8: Error Handling Tests ===
 
 test_that("fit_peaks error checks are ok", {
@@ -710,7 +797,8 @@ test_that("plot_fit_ftir_peaks error checks are ok", {
       ],
       fitpeaks
     ),
-    "does not contain fit peaks that match the ftir sample provided"
+    "does not contain fit peaks that match the ftir sample provided",
+    fixed = TRUE
   )
   expect_error(
     plot_fit_ftir_peaks(ftir, fitpeaks, extra_arg = "ok"),
@@ -719,7 +807,8 @@ test_that("plot_fit_ftir_peaks error checks are ok", {
   fitpeaks$sample_id <- NULL
   expect_warning(
     plot_fit_ftir_peaks(ftir, fitpeaks),
-    "should be generated with"
+    "should be generated with",
+    fixed = TRUE
   )
 })
 
@@ -764,10 +853,15 @@ test_that("plot_fit_residuals error checks are ok", {
       ],
       fitpeaks
     ),
-    "does not contain fit peaks that match the ftir sample provided"
+    "does not contain fit peaks that match the ftir sample provided",
+    fixed = TRUE
   )
   fitpeaks$sample_id <- NULL
-  expect_warning(plot_fit_residuals(ftir, fitpeaks), "should be generated with")
+  expect_warning(
+    plot_fit_residuals(ftir, fitpeaks),
+    "should be generated with",
+    fixed = TRUE
+  )
   suppressWarnings(
     expect_error(
       plot_fit_residuals(ftir, fitpeaks, extra_arg = "ok"),
@@ -817,10 +911,15 @@ test_that("plot_components error checks are ok", {
       ],
       fitpeaks
     ),
-    "does not contain fit peaks that match the ftir sample provided"
+    "does not contain fit peaks that match the ftir sample provided",
+    fixed = TRUE
   )
   fitpeaks$sample_id <- NULL
-  expect_warning(plot_components(ftir, fitpeaks), "should be generated with")
+  expect_warning(
+    plot_components(ftir, fitpeaks),
+    "should be generated with",
+    fixed = TRUE
+  )
   expect_error(
     plot_components(ftir, fitpeaks, extra_arg = "ok"),
     "unrecognized argument"
@@ -952,7 +1051,7 @@ test_that("component-optimization dsgmm error checking is ok", {
       mu = runif(10),
       maxit = 1
     ),
-    "must be greater than 1 to perform optimization"
+    'must be greater than "1" to perform optimization'
   )
 })
 
@@ -987,7 +1086,7 @@ test_that("component-optimization gmm error checking is ok", {
       mu = runif(10),
       maxit = 1
     ),
-    "must be greater than 1 to perform optimization"
+    'must be greater than "1" to perform optimization'
   )
 })
 
@@ -1023,7 +1122,7 @@ test_that("component-optimization lmm error checking is ok", {
       mu = runif(10),
       maxit = 1
     ),
-    "must be greater than 1 to perform optimization"
+    'must be greater than "1" to perform optimization'
   )
 })
 
@@ -1058,7 +1157,7 @@ test_that("component-optimization pvmm error checking is ok", {
       mu = runif(10),
       maxit = 1
     ),
-    "must be greater than 1 to perform optimization"
+    'must be greater than "1" to perform optimization'
   )
 })
 

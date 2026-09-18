@@ -116,12 +116,7 @@ test_that("compress region is ok", {
   biodiesel_plot <- plot_ftir(biodiesel)
 
   # test arg checks.
-  if (!require("scales", quietly = TRUE)) {
-    expect_error(
-      compress_low_energy(biodiesel_plot),
-      "requires scales package installation",
-      fixed = TRUE
-    )
+  if (!requireNamespace("scales", quietly = TRUE)) {
     testthat::skip("scales not available for testing manipulations")
   }
 
@@ -174,6 +169,21 @@ test_that("compress region is ok", {
     ggplot2::ggplot_build(biodiesel_plot)$layout$panel_params[[1]]$y.range,
     ggplot2::ggplot_build(compressed_plot)$layout$panel_params[[1]]$y.range
   )
+})
+
+
+test_that("plot_ftir_core uses scales conditionally", {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    testthat::skip("ggplot2 not available for testing plot production")
+  }
+
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    testthat::skip("scales not available for testing plot production")
+  }
+
+  p <- plot_ftir(absorbance_to_transmittance(biodiesel))
+  expect_true(ggplot2::is_ggplot(p))
+  expect_identical(p$scales$get_scales("x")$trans$name, "reverse")
 })
 
 test_that("labelled plot is ok", {

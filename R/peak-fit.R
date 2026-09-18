@@ -118,8 +118,11 @@
 find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   # check dependencies
   if (!requireNamespace("signal", quietly = TRUE)) {
-    cli::cli_abort(
-      "{.pkg signal} must be available to find peaks.",
+    .pkg_abort(
+      list(
+        en = "{.pkg signal} must be available to find peaks.",
+        fr = "{.pkg signal} doit \u00eatre disponible pour trouver les pics."
+      ),
       call = call
     )
   }
@@ -128,8 +131,11 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (length(unique(ftir$sample_id)) != 1) {
-    cli::cli_abort(
-      "{.arg ftir} must only contain one sample spectra.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must only contain one sample spectra.",
+        fr = "{.arg ftir} ne doit contenir qu'un seul spectre d'\u00e9chantillon."
+      ),
       call = call
     )
   }
@@ -153,90 +159,126 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   window_merge <- `if`("window_merge" %in% names(args), args$window_merge, 5)
 
   if (!is.numeric(zero_norm)) {
-    cli::cli_abort(
-      "{.arg zero_norm} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg zero_norm} must be numeric.",
+        fr = "{.arg zero_norm} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (!is.numeric(zero_deriv)) {
-    cli::cli_abort(
-      "{.arg zero_deriv} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg zero_deriv} must be numeric.",
+        fr = "{.arg zero_deriv} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (!is.numeric(window_merge)) {
-    cli::cli_abort(
-      "{.arg window_merge} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg window_merge} must be numeric.",
+        fr = "{.arg window_merge} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (window_merge <= 0) {
-    cli::cli_abort(
-      "{.arg window_merge} must be positive.",
-      "plotftir_invalid_value",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg window_merge} must be positive.",
+        fr = "{.arg window_merge} doit \u00eatre positif."
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
     )
   }
 
   if (!is.numeric(sg_p_norm)) {
-    cli::cli_abort(
-      "{.arg sg_p_norm} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_p_norm} must be numeric.",
+        fr = "{.arg sg_p_norm} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (sg_p_norm < 0 || sg_p_norm != floor(sg_p_norm)) {
-    cli::cli_abort(
-      "{.arg sg_p_norm} must be an integer >= 0.",
-      "plotftir_invalid_value",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_p_norm} must be an integer >= 0.",
+        fr = "{.arg sg_p_norm} doit \u00eatre un entier >= 0."
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
     )
   }
   if (!is.numeric(sg_n_norm)) {
-    cli::cli_abort(
-      "{.arg sg_n_norm} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_n_norm} must be numeric.",
+        fr = "{.arg sg_n_norm} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (sg_n_norm < 3 || sg_n_norm != floor(sg_n_norm) || sg_n_norm %% 2 == 0) {
-    cli::cli_abort(
-      "{.arg sg_n_norm} must be an odd integer >= 3.",
-      "plotftir_invalid_value",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_n_norm} must be an odd integer >= 3.",
+        fr = "{.arg sg_n_norm} doit \u00eatre un entier impair >= 3."
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
     )
   }
   if (!is.numeric(sg_p_deriv)) {
-    cli::cli_abort(
-      "{.arg sg_p_deriv} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_p_deriv} must be numeric.",
+        fr = "{.arg sg_p_deriv} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (sg_p_deriv < 0 || sg_p_deriv != floor(sg_p_deriv)) {
-    cli::cli_abort(
-      "{.arg sg_p_deriv} must be an integer >= 0.",
-      "plotftir_invalid_value",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_p_deriv} must be an integer >= 0.",
+        fr = "{.arg sg_p_deriv} doit \u00eatre un entier >= 0."
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
     )
   }
   if (!is.numeric(sg_n_deriv)) {
-    cli::cli_abort(
-      "{.arg sg_n_deriv} must be numeric.",
-      "plotftir_invalid_type",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_n_deriv} must be numeric.",
+        fr = "{.arg sg_n_deriv} doit \u00eatre num\u00e9rique."
+      ),
+      call = call,
+      class = "plotftir_invalid_type"
     )
   }
   if (
     sg_n_deriv < 3 || sg_n_deriv != floor(sg_n_deriv) || sg_n_deriv %% 2 == 0
   ) {
-    cli::cli_abort(
-      "{.arg sg_n_deriv} must be an odd integer >= 3.",
-      "plotftir_invalid_value",
-      call = call
+    .pkg_abort(
+      list(
+        en = "{.arg sg_n_deriv} must be an odd integer >= 3.",
+        fr = "{.arg sg_n_deriv} doit \u00eatre un entier impair >= 3."
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
     )
   }
 
@@ -255,19 +297,31 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
   )
 
   if (zero_norm > max(abs(sg), na.rm = TRUE)) {
-    cli::cli_abort(
-      c(
-        "{.arg zero_norm} is larger than the highest point in the spectra.",
-        i = "Set {.arg zero_norm} to remove noise, typically around 1e-4."
+    .pkg_abort(
+      list(
+        en = c(
+          "{.arg zero_norm} is larger than the highest point in the spectra.",
+          i = "Set {.arg zero_norm} to remove noise, typically around 1e-4."
+        ),
+        fr = c(
+          "{.arg zero_norm} est plus grand que le point le plus \u00e9lev\u00e9 du spectre.",
+          i = "R\u00e9glez {.arg zero_norm} pour supprimer le bruit, g\u00e9n\u00e9ralement autour de 1e-4."
+        )
       ),
       call = call
     )
   }
   if (zero_deriv > max(abs(sg_deriv), na.rm = TRUE)) {
-    cli::cli_abort(
-      c(
-        "{.arg zero_deriv} is larger than the highest point in the derivative spectra.",
-        i = "Set {.arg zero_deriv} to remove noise, typically around 1e-4."
+    .pkg_abort(
+      list(
+        en = c(
+          "{.arg zero_deriv} is larger than the highest point in the derivative spectra.",
+          i = "Set {.arg zero_deriv} to remove noise, typically around 1e-4."
+        ),
+        fr = c(
+          "{.arg zero_deriv} est plus grand que le point le plus \u00e9lev\u00e9 du spectre d\u00e9riv\u00e9.",
+          i = "R\u00e9glez {.arg zero_deriv} pour supprimer le bruit, g\u00e9n\u00e9ralement autour de 1e-4."
+        )
       ),
       call = call
     )
@@ -614,15 +668,21 @@ fit_peaks <- function(
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort(
-      "{.arg ftir} must be supplied in absorbance units.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must be supplied in absorbance units.",
+        fr = "{.arg ftir} doit \u00eatre fourni en unit\u00e9s d'absorbance."
+      ),
       call = call
     )
   }
 
   if (length(unique(ftir$sample_id)) != 1) {
-    cli::cli_abort(
-      "{.arg ftir} must only contain one sample spectra.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must only contain one sample spectra.",
+        fr = "{.arg ftir} ne doit contenir qu'un seul spectre d'\u00e9chantillon."
+      ),
       call = call
     )
   }
@@ -643,8 +703,25 @@ fit_peaks <- function(
     "doniach-\u0161unji\u0107-gauss" = "doniach-sunjic-gauss"
   )
 
-  method <- rlang::arg_match(method, names(.fit_method_map))
-  canonical_method <- .fit_method_map[method]
+  if (
+    !is.character(method) ||
+      length(method) != 1 ||
+      !method %in% names(.fit_method_map)
+  ) {
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "{.arg method} must be one of {paste(shQuote(names(.fit_method_map)), collapse = ', ')}, not {.val {method}}."
+        ),
+        fr = cli::format_inline(
+          "{.arg method} doit \u00eatre l'une des valeurs {paste(shQuote(names(.fit_method_map)), collapse = ', ')}, pas {.val {method}}."
+        )
+      ),
+      call = call,
+      class = "plotftir_invalid_value"
+    )
+  }
+  canonical_method <- .fit_method_map[[method]]
 
   args <- list(...)
 
@@ -672,6 +749,7 @@ fit_peaks <- function(
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
+  total_signal <- sum(ftir$absorbance, na.rm = TRUE)
 
   if (canonical_method == "gauss") {
     utils::capture.output(
@@ -736,6 +814,10 @@ fit_peaks <- function(
   res$method <- unname(canonical_method)
   res$sample_id <- unique(ftir$sample_id)
   res$fixed_peaks <- fixed_peaks
+  res$amplitude <- res$mix_ratio * total_signal
+  if ("MIX_RATIO" %in% names(res)) {
+    res$AMPLITUDE <- res$MIX_RATIO * total_signal
+  }
 
   return(res)
 }
@@ -793,6 +875,9 @@ fit_peak_df <- function(fitted_peaks) {
   if ("alpha" %in% names(fitted_peaks)) {
     peak_table$alpha <- fitted_peaks$alpha
   }
+  if ("amplitude" %in% names(fitted_peaks)) {
+    peak_table$amplitude <- fitted_peaks$amplitude
+  }
   peak_table$mix_ratio <- fitted_peaks$mix_ratio
   peak_table$peak_shape <- fitted_peaks$method
 
@@ -821,9 +906,10 @@ fit_peak_df <- function(fitted_peaks) {
   if (("method" %in% names(fitted_peaks))) {
     method <- fitted_peaks$method
   } else {
-    cli::cli_warn(
-      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}."
-    )
+    .pkg_warn(list(
+      en = "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+      fr = "{.arg fitted_peaks} devrait \u00eatre g\u00e9n\u00e9r\u00e9 par {.fn fit_peaks}."
+    ))
     if ("alpha" %in% names(fitted_peaks)) {
       method <- "doniach-\u0161unji\u0107-gauss"
     } else if ("gam" %in% names(fitted_peaks)) {
@@ -888,24 +974,52 @@ fit_peak_df <- function(fitted_peaks) {
   method <- .get_fit_method(fitted_peaks)
   if (!is.null(peak)) {
     if (!is.numeric(peak)) {
-      cli::cli_abort(
-        "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}.",
-        "plotftir_invalid_value",
-        call = call
+      .pkg_abort(
+        list(
+          en = cli::format_inline(
+            "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}."
+          ),
+          fr = cli::format_inline(
+            "{.arg peak} doit \u00eatre un entier positif; vous avez fourni {.obj_type_friendly {peak}}."
+          )
+        ),
+        call = call,
+        class = "plotftir_invalid_value"
       )
     } else if (peak %% 1 != 0) {
-      cli::cli_abort(
-        "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}.",
-        "plotftir_invalid_value",
-        call = call
+      .pkg_abort(
+        list(
+          en = cli::format_inline(
+            "{.arg peak} must be a positive integer; you provided {.obj_type_friendly {peak}}."
+          ),
+          fr = cli::format_inline(
+            "{.arg peak} doit \u00eatre un entier positif; vous avez fourni {.obj_type_friendly {peak}}."
+          )
+        ),
+        call = call,
+        class = "plotftir_invalid_value"
       )
     }
     if (peak > length(fitted_peaks$mu) || peak < 1) {
-      cli::cli_abort(
-        "Requested peak {.val {peak}} is out of range; only {length(fitted_peaks$mu)} peak(s) fitted.",
+      .pkg_abort(
+        list(
+          en = cli::format_inline(
+            "Requested peak {.val {peak}} is out of range; only {length(fitted_peaks$mu)} peak(s) fitted."
+          ),
+          fr = cli::format_inline(
+            "Le pic demand\u00e9 {.val {peak}} est hors limites; seulement {length(fitted_peaks$mu)} pic(s) ont \u00e9t\u00e9 ajust\u00e9s."
+          )
+        ),
         call = call
       )
     }
+  }
+
+  amplitude <- if ("amplitude" %in% names(fitted_peaks)) {
+    fitted_peaks$amplitude
+  } else {
+    shifted_signal <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)
+    fitted_peaks$mix_ratio * sum(shifted_signal, na.rm = TRUE)
   }
 
   if (method == "gauss") {
@@ -914,7 +1028,7 @@ fit_peak_df <- function(fitted_peaks) {
       lapply(
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
+          amplitude[x] *
             .truncated_g(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
@@ -929,7 +1043,7 @@ fit_peak_df <- function(fitted_peaks) {
       lapply(
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
+          amplitude[x] *
             .truncated_pv(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
@@ -945,7 +1059,7 @@ fit_peak_df <- function(fitted_peaks) {
       lapply(
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
+          amplitude[x] *
             .truncated_l(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
@@ -960,7 +1074,7 @@ fit_peak_df <- function(fitted_peaks) {
       lapply(
         seq_along(fitted_peaks$mu),
         FUN = function(x) {
-          fitted_peaks$mix_ratio[x] *
+          amplitude[x] *
             .truncated_dsg(
               ftir$wavenumber,
               mu = fitted_peaks$mu[x],
@@ -973,24 +1087,19 @@ fit_peak_df <- function(fitted_peaks) {
     )
   }
 
-  scale_factor <- (1 / max(y, na.rm = TRUE)) *
-    max(ftir$absorbance, na.rm = TRUE)
-
   if (is.null(peak)) {
-    return(y * scale_factor)
+    return(y)
   }
 
-  # we need to only produce a single peak. We did all of the fitting math to
-  # determine the scale factor, but now recalculate the peak of interest.
   if (method == "gauss") {
-    y <- fitted_peaks$mix_ratio[peak] *
+    y <- amplitude[peak] *
       .truncated_g(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         sigma = fitted_peaks$sigma[peak]
       )
   } else if (method == "voigt") {
-    y <- fitted_peaks$mix_ratio[peak] *
+    y <- amplitude[peak] *
       .truncated_pv(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
@@ -998,14 +1107,14 @@ fit_peak_df <- function(fitted_peaks) {
         eta = fitted_peaks$eta[peak]
       )
   } else if (method == "lorentz") {
-    y <- fitted_peaks$mix_ratio[peak] *
+    y <- amplitude[peak] *
       .truncated_l(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
         gam = fitted_peaks$gam[peak]
       )
   } else {
-    y <- fitted_peaks$mix_ratio[peak] *
+    y <- amplitude[peak] *
       .truncated_dsg(
         ftir$wavenumber,
         mu = fitted_peaks$mu[peak],
@@ -1014,7 +1123,7 @@ fit_peak_df <- function(fitted_peaks) {
         eta = fitted_peaks$eta[peak]
       )
   }
-  return(y * scale_factor)
+  return(y)
 }
 
 
@@ -1119,14 +1228,20 @@ plot_components <- function(
 ) {
   ftir <- PlotFTIR::check_ftir_data(ftir)
   if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort(
-      "{.arg ftir} must be supplied in absorbance units.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must be supplied in absorbance units.",
+        fr = "{.arg ftir} doit \u00eatre fourni en unit\u00e9s d'absorbance."
+      ),
       call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
-    cli::cli_abort(
-      "{.arg ftir} must only contain one sample spectra.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must only contain one sample spectra.",
+        fr = "{.arg ftir} ne doit contenir qu'un seul spectre d'\u00e9chantillon."
+      ),
       call = call
     )
   }
@@ -1148,8 +1263,15 @@ plot_components <- function(
         c("plot_title", "legend_title", "lang", "fitted_sample_name"))
     ]
     lun <- length(unused)
-    cli::cli_abort(
-      "{.fun plot_components} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "{.fun plot_components} received {lun} unrecognized argument{?s}: {.val {unused}}."
+        ),
+        fr = cli::format_inline(
+          "{.fun plot_components} a re\u00e7u {lun} argument{?s} non reconnu{?s} : {.val {unused}}."
+        )
+      ),
       call = call
     )
   }
@@ -1165,16 +1287,29 @@ plot_components <- function(
   method <- .get_fit_method(fitted_peaks)
 
   if (!("sample_id" %in% names(fitted_peaks))) {
-    cli::cli_warn(
-      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+    .pkg_warn(
+      list(
+        en = "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+        fr = "{.arg fitted_peaks} devrait \u00eatre g\u00e9n\u00e9r\u00e9 par {.fn fit_peaks}."
+      ),
       call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(
-      c(
-        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+    .pkg_warn(
+      list(
+        en = c(
+          "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+          i = cli::format_inline(
+            'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+          )
+        ),
+        fr = c(
+          "{.arg fitted_peaks} ne contient pas de pics ajust\u00e9s correspondant au spectre fourni.",
+          i = cli::format_inline(
+            'Les pics ont \u00e9t\u00e9 ajust\u00e9s pour l\u2019\u00e9chantillon "{fitted_peaks$sample_id}" et vous avez fourni "{unique(ftir$sample_id)[1]}".'
+          )
+        )
       ),
       call = call
     )
@@ -1269,15 +1404,15 @@ plot_components <- function(
   ))
 
   if (requireNamespace("ggthemes", quietly = TRUE)) {
-    suppressWarnings(
+    suppressMessages(suppressWarnings(
       p <- p +
         ggthemes::scale_color_calc()
-    )
+    ))
   } else {
-    suppressWarnings(
+    suppressMessages(suppressWarnings(
       p <- p +
         ggplot2::scale_color_viridis_d()
-    )
+    ))
   }
 
   if (plot_fit) {
@@ -1391,29 +1526,48 @@ plot_fit_residuals <- function(
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort(
-      "{.arg ftir} must be supplied in absorbance units.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must be supplied in absorbance units.",
+        fr = "{.arg ftir} doit \u00eatre fourni en unit\u00e9s d'absorbance."
+      ),
       call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
-    cli::cli_abort(
-      "{.arg ftir} must only contain one sample spectra.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must only contain one sample spectra.",
+        fr = "{.arg ftir} ne doit contenir qu'un seul spectre d'\u00e9chantillon."
+      ),
       call = call
     )
   }
 
   if (!("sample_id" %in% names(fitted_peaks))) {
-    cli::cli_warn(
-      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+    .pkg_warn(
+      list(
+        en = "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+        fr = "{.arg fitted_peaks} devrait \u00eatre g\u00e9n\u00e9r\u00e9 par {.fn fit_peaks}."
+      ),
       call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(
-      c(
-        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+    .pkg_warn(
+      list(
+        en = c(
+          "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+          i = cli::format_inline(
+            'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+          )
+        ),
+        fr = c(
+          "{.arg fitted_peaks} ne contient pas de pics ajust\u00e9s correspondant au spectre fourni.",
+          i = cli::format_inline(
+            'Les pics ont \u00e9t\u00e9 ajust\u00e9s pour l\u2019\u00e9chantillon "{fitted_peaks$sample_id}" et vous avez fourni "{unique(ftir$sample_id)[1]}".'
+          )
+        )
       ),
       call = call
     )
@@ -1440,8 +1594,15 @@ plot_fit_residuals <- function(
   if (any(!(argnames %in% c("plot_title", "legend_title", "lang")))) {
     unused <- argnames[!(argnames %in% c("plot_title", "legend_title", "lang"))]
     lun <- length(unused)
-    cli::cli_abort(
-      "{.fun plot_fit_residuals} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "{.fun plot_fit_residuals} received {lun} unrecognized argument{?s}: {.val {unused}}."
+        ),
+        fr = cli::format_inline(
+          "{.fun plot_fit_residuals} a re\u00e7u {lun} argument{?s} non reconnu{?s} : {.val {unused}}."
+        )
+      ),
       call = call
     )
   }
@@ -1608,14 +1769,20 @@ plot_fit_ftir_peaks <- function(
   ftir <- PlotFTIR::check_ftir_data(ftir)
 
   if (!("absorbance" %in% colnames(ftir))) {
-    cli::cli_abort(
-      "{.arg ftir} must be supplied in absorbance units.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must be supplied in absorbance units.",
+        fr = "{.arg ftir} doit \u00eatre fourni en unit\u00e9s d'absorbance."
+      ),
       call = call
     )
   }
   if (length(unique(ftir$sample_id)) != 1) {
-    cli::cli_abort(
-      "{.arg ftir} must only contain one sample spectra.",
+    .pkg_abort(
+      list(
+        en = "{.arg ftir} must only contain one sample spectra.",
+        fr = "{.arg ftir} ne doit contenir qu'un seul spectre d'\u00e9chantillon."
+      ),
       call = call
     )
   }
@@ -1637,8 +1804,15 @@ plot_fit_ftir_peaks <- function(
         c("plot_title", "legend_title", "lang", "fitted_sample_name"))
     ]
     lun <- length(unused)
-    cli::cli_abort(
-      "{.fun plot_fit_ftir_peaks} received {lun} unrecognized argument{?s}: {.val {unused}}.",
+    .pkg_abort(
+      list(
+        en = cli::format_inline(
+          "{.fun plot_fit_ftir_peaks} received {lun} unrecognized argument{?s}: {.val {unused}}."
+        ),
+        fr = cli::format_inline(
+          "{.fun plot_fit_ftir_peaks} a re\u00e7u {lun} argument{?s} non reconnu{?s} : {.val {unused}}."
+        )
+      ),
       call = call
     )
   }
@@ -1654,16 +1828,29 @@ plot_fit_ftir_peaks <- function(
   method <- .get_fit_method(fitted_peaks)
 
   if (!("sample_id" %in% names(fitted_peaks))) {
-    cli::cli_warn(
-      "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+    .pkg_warn(
+      list(
+        en = "{.arg fitted_peaks} should be generated with {.fn fit_peaks}.",
+        fr = "{.arg fitted_peaks} devrait \u00eatre g\u00e9n\u00e9r\u00e9 par {.fn fit_peaks}."
+      ),
       call = call
     )
     fitted_peaks$sample_id <- ""
   } else if (fitted_peaks$sample_id != unique(ftir$sample_id)) {
-    cli::cli_warn(
-      c(
-        "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
-        i = 'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+    .pkg_warn(
+      list(
+        en = c(
+          "{.arg fitted_peaks} does not contain fit peaks that match the ftir sample provided.",
+          i = cli::format_inline(
+            'The peaks were fit for sample "{fitted_peaks$sample_id}" and you provided "{unique(ftir$sample_id)[1]}".'
+          )
+        ),
+        fr = c(
+          "{.arg fitted_peaks} ne contient pas de pics ajust\u00e9s correspondant au spectre fourni.",
+          i = cli::format_inline(
+            'Les pics ont \u00e9t\u00e9 ajust\u00e9s pour l\u2019\u00e9chantillon "{fitted_peaks$sample_id}" et vous avez fourni "{unique(ftir$sample_id)[1]}".'
+          )
+        )
       ),
       call = call
     )
@@ -1929,9 +2116,10 @@ NULL
 
   # Error checking
   if (length(x) != length(y)) {
-    cli::cli_abort(
-      "Provided {.arg x} and {.arg y} vectors must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "Provided {.arg x} and {.arg y} vectors must be of the same length.",
+      fr = "Les vecteurs {.arg x} et {.arg y} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (
     any(
@@ -1941,14 +2129,16 @@ NULL
       length(sigma) != length(mu)
     )
   ) {
-    cli::cli_abort(
-      "All of {.arg mu}, {.arg sigma}, {.arg alpha}, {.arg eta} and {.arg mix_ratio} must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "All of {.arg mu}, {.arg sigma}, {.arg alpha}, {.arg eta} and {.arg mix_ratio} must be of the same length.",
+      fr = "Tous les param\u00e8tres {.arg mu}, {.arg sigma}, {.arg alpha}, {.arg eta} et {.arg mix_ratio} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (maxit <= 1) {
-    cli::cli_abort(
-      "{.arg maxit} must be greater than 1 to perform optimization."
-    )
+    .pkg_abort(list(
+      en = "{.arg maxit} must be greater than {.val 1} to perform optimization.",
+      fr = "{.arg maxit} doit \u00eatre sup\u00e9rieur \u00e0 {.val 1} pour effectuer l'optimisation."
+    ))
   }
 
   # Initial Values
@@ -2090,17 +2280,22 @@ NULL
     cal_time <- difftime(Sys.time(), start_cal, units = "sec")
   }
 
+  amplitude <- mix_ratio * sum(y)
+  amplitude_1 <- mix_ratio_1 * sum(y)
+
   # mu: component peak centres
   # sigma: component peak widths (specifically, standard deviation of the component centred at mu)
   # alpha: estimated asymmetry of the component
   # eta: mixing of Gauss and Lorentz distribution for the component (proportion Lorentz 0-1)
-  # mix_ratio: component peak heights (should sum to 1)
+  # amplitude: component peak areas on the baseline-shifted absorbance scale
+  # mix_ratio: component mass fractions (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
   # MU: mu values at each iteration
   # SIGMA: sigma values at each iteration
   # ALPHA: alpha values at each iteration
   # ETA: eta values at each iteration
+  # AMPLITUDE: amplitude values at each iteration
   # MIX_RATIO: mix_ratio values at each iteration
   # W_K: decomposed curve of each component [i,] at each x value [,j]
   # convergence: message of convergence in calculation
@@ -2110,6 +2305,7 @@ NULL
     sigma = sigma,
     alpha = alpha,
     eta = eta,
+    amplitude = amplitude,
     mix_ratio = mix_ratio,
     it = i,
     LL = LL_1,
@@ -2117,6 +2313,7 @@ NULL
     SIGMA = sigma_1,
     ALPHA = alpha_1,
     ETA = eta_1,
+    AMPLITUDE = amplitude_1,
     MIX_RATIO = mix_ratio_1,
     convergence = status,
     W_K = w_k,
@@ -2148,19 +2345,22 @@ NULL
 
   # Error checking
   if (length(x) != length(y)) {
-    cli::cli_abort(
-      "Provided {.arg x} and {.arg y} vectors must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "Provided {.arg x} and {.arg y} vectors must be of the same length.",
+      fr = "Les vecteurs {.arg x} et {.arg y} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (any(length(mix_ratio) != length(mu), length(sigma) != length(mu))) {
-    cli::cli_abort(
-      "All of {.arg mu}, {.arg sigma}, and {.arg mix_ratio} must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "All of {.arg mu}, {.arg sigma}, and {.arg mix_ratio} must be of the same length.",
+      fr = "Tous les param\u00e8tres {.arg mu}, {.arg sigma} et {.arg mix_ratio} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (maxit <= 1) {
-    cli::cli_abort(
-      "{.arg maxit} must be greater than 1 to perform optimization."
-    )
+    .pkg_abort(list(
+      en = "{.arg maxit} must be greater than {.val 1} to perform optimization.",
+      fr = "{.arg maxit} doit \u00eatre sup\u00e9rieur \u00e0 {.val 1} pour effectuer l'optimisation."
+    ))
   }
 
   # Initial Values
@@ -2222,14 +2422,19 @@ NULL
     cal_time <- difftime(Sys.time(), start_cal, units = "sec")
   }
 
+  amplitude <- mix_ratio * sum(y)
+  amplitude_1 <- mix_ratio_1 * sum(y)
+
   # mu: component peak centres
   # sigma: component peak widths (specifically, standard deviation of the normal
   # distribution centred at mu)
-  # mix_ratio: component peak heights (should sum to 1)
+  # amplitude: component peak areas on the baseline-shifted absorbance scale
+  # mix_ratio: component mass fractions (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
   # MU: mu values at each iteration
   # SIGMA: sigma values at each iteration
+  # AMPLITUDE: amplitude values at each iteration
   # MIX_RATIO: mix_ratio values at each iteration
   # W_K: decomposed curve of each component [i,] at each x value [,j]
   # convergence: message of convergence in calculation
@@ -2237,11 +2442,13 @@ NULL
   list(
     mu = mu,
     sigma = sigma,
+    amplitude = amplitude,
     mix_ratio = mix_ratio,
     it = i,
     LL = LL_1,
     MU = mu_1,
     SIGMA = sigma_1,
+    AMPLITUDE = amplitude_1,
     MIX_RATIO = mix_ratio_1,
     convergence = status,
     W_K = w_k,
@@ -2275,19 +2482,22 @@ NULL
 
   # Error checking
   if (length(x) != length(y)) {
-    cli::cli_abort(
-      "Provided {.arg x} and {.arg y} vectors must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "Provided {.arg x} and {.arg y} vectors must be of the same length.",
+      fr = "Les vecteurs {.arg x} et {.arg y} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (any(length(mix_ratio) != length(mu), length(gam) != length(mu))) {
-    cli::cli_abort(
-      "All of {.arg mu}, {.arg gam}, and {.arg mix_ratio} must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "All of {.arg mu}, {.arg gam}, and {.arg mix_ratio} must be of the same length.",
+      fr = "Tous les param\u00e8tres {.arg mu}, {.arg gam} et {.arg mix_ratio} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (maxit <= 1) {
-    cli::cli_abort(
-      "{.arg maxit} must be greater than 1 to perform optimization."
-    )
+    .pkg_abort(list(
+      en = "{.arg maxit} must be greater than {.val 1} to perform optimization.",
+      fr = "{.arg maxit} doit \u00eatre sup\u00e9rieur \u00e0 {.val 1} pour effectuer l'optimisation."
+    ))
   }
 
   # Initial Values
@@ -2382,14 +2592,19 @@ NULL
     cal_time <- difftime(Sys.time(), start_cal, units = "sec")
   }
 
+  amplitude <- mix_ratio * sum(y)
+  amplitude_1 <- mix_ratio_1 * sum(y)
+
   # mu: component peak centres
   # gam: component peak widths (specifically, scale parameter of the lorenzian
   # centred at mu)
-  # mix_ratio: component peak heights (should sum to 1)
+  # amplitude: component peak areas on the baseline-shifted absorbance scale
+  # mix_ratio: component mass fractions (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
   # MU: mu values at each iteration
   # GAM: gam values at each iteration
+  # AMPLITUDE: amplitude values at each iteration
   # MIX_RATIO: mix_ratio values at each iteration
   # W_K: decomposed curve of each component [i,] at each x value [,j]
   # convergence: message of convergence in calculation
@@ -2397,11 +2612,13 @@ NULL
   list(
     mu = mu,
     gam = gam,
+    amplitude = amplitude,
     mix_ratio = mix_ratio,
     it = i,
     LL = LL_1,
     MU = mu_1,
     GAM = gam_1,
+    AMPLITUDE = amplitude_1,
     MIX_RATIO = mix_ratio_1,
     convergence = status,
     W_K = w_k,
@@ -2436,9 +2653,10 @@ NULL
 
   # Error checking
   if (length(x) != length(y)) {
-    cli::cli_abort(
-      "Provided {.arg x} and {.arg y} vectors must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "Provided {.arg x} and {.arg y} vectors must be of the same length.",
+      fr = "Les vecteurs {.arg x} et {.arg y} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (
     any(
@@ -2447,14 +2665,16 @@ NULL
       length(sigma) != length(mu)
     )
   ) {
-    cli::cli_abort(
-      "All of {.arg mu}, {.arg sigma}, {.arg eta}, and {.arg mix_ratio} must be of the same length."
-    )
+    .pkg_abort(list(
+      en = "All of {.arg mu}, {.arg sigma}, {.arg eta}, and {.arg mix_ratio} must be of the same length.",
+      fr = "Tous les param\u00e8tres {.arg mu}, {.arg sigma}, {.arg eta} et {.arg mix_ratio} doivent avoir la m\u00eame longueur."
+    ))
   }
   if (maxit <= 1) {
-    cli::cli_abort(
-      "{.arg maxit} must be greater than 1 to perform optimization."
-    )
+    .pkg_abort(list(
+      en = "{.arg maxit} must be greater than {.val 1} to perform optimization.",
+      fr = "{.arg maxit} doit \u00eatre sup\u00e9rieur \u00e0 {.val 1} pour effectuer l'optimisation."
+    ))
   }
 
   # Initial Values
@@ -2570,17 +2790,22 @@ NULL
   if (is.na(cal_time)) {
     cal_time <- difftime(Sys.time(), start_cal, units = "sec")
   }
+  amplitude <- mix_ratio * sum(y)
+  amplitude_1 <- mix_ratio_1 * sum(y)
+
   # mu: component peak centres
   # sigma: component peak widths (specifically, standard deviation of the
   # component centred at mu)
   # eta: mixing of Gauss and Lorentz distribution for the component (proportion
   # Lorentz 0-1)
-  # mix_ratio: component peak heights (should sum to 1)
+  # amplitude: component peak areas on the baseline-shifted absorbance scale
+  # mix_ratio: component mass fractions (should sum to 1)
   # it: number of iterations to convergence or maxit if not converged
   # LL: log likelihood values at each iteration
   # MU: mu values at each iteration
   # SIGMA: gam values at each iteration
   # ETA: eta values at each iteration
+  # AMPLITUDE: amplitude values at each iteration
   # MIX_RATIO: mix_ratio values at each iteration
   # W_K: decomposed curve of each component [i,] at each x value [,j]
   # convergence: message of convergence in calculation
@@ -2589,12 +2814,14 @@ NULL
     mu = mu,
     sigma = sigma,
     eta = eta,
+    amplitude = amplitude,
     mix_ratio = mix_ratio,
     it = i,
     LL = LL_1,
     MU = mu_1,
     SIGMA = sigma_1,
     ETA = eta_1,
+    AMPLITUDE = amplitude_1,
     MIX_RATIO = mix_ratio_1,
     convergence = status,
     W_K = w_k,
@@ -2646,5 +2873,6 @@ NULL
 }
 
 .truncated_g <- function(x, mu, sigma) {
-  (stats::dnorm(x = x, mean = mu[1], sd = sigma[1]))
+  stats::dnorm(x = x, mean = mu[1], sd = sigma[1]) /
+    sum(stats::dnorm(x = x, mean = mu[1], sd = sigma[1]))
 }

@@ -168,6 +168,8 @@ plot_ftir_core <- function(
   ftir <- ftir[stats::complete.cases(ftir), ]
   ftir$wavenumber <- as.numeric(ftir$wavenumber)
 
+  scales_available <- requireNamespace("scales", quietly = TRUE)
+
   if (grepl("absorbance", mode)) {
     ftir$absorbance <- as.numeric(ftir$absorbance)
     p <- ggplot2::ggplot(ftir) +
@@ -185,8 +187,13 @@ plot_ftir_core <- function(
         y = .data$transmittance,
         color = as.factor(.data$sample_id)
       )) +
-      ggplot2::scale_y_continuous(breaks = scales::breaks_width(20)) +
       ggplot2::coord_cartesian(ylim = c(0, 100))
+
+    if (scales_available) {
+      p <- p + ggplot2::scale_y_continuous(breaks = scales::breaks_width(20))
+    } else {
+      p <- p + ggplot2::scale_y_continuous()
+    }
   }
 
   p <- p +
@@ -200,11 +207,17 @@ plot_ftir_core <- function(
       color = ggplot2::guide_legend(title = legend_title),
       x = ggplot2::guide_axis(minor.ticks = TRUE)
     ) +
-    ggplot2::theme_light() +
-    ggplot2::scale_x_reverse(
-      breaks = scales::breaks_extended(),
-      expand = ggplot2::expansion()
-    )
+    ggplot2::theme_light()
+
+  if (scales_available) {
+    p <- p +
+      ggplot2::scale_x_reverse(
+        breaks = scales::breaks_extended(),
+        expand = ggplot2::expansion()
+      )
+  } else {
+    p <- p + ggplot2::scale_x_reverse(expand = ggplot2::expansion())
+  }
 
   if (
     !requireNamespace("ggthemes", quietly = TRUE) ||
