@@ -582,6 +582,14 @@ test_that("add_band is ok", {
 })
 
 test_that("compress_trans internal helper works", {
+  if (!requireNamespace("scales", quietly = TRUE)) {
+    expect_error_bilingual(
+      PlotFTIR:::compress_trans(intercept = 2000, ratio = 5),
+      en = "requires scales package installation",
+      fr = "nécessite l'installation du paquet scales"
+    )
+    testthat::skip("scales not available for testing compress_trans")
+  }
   trans <- PlotFTIR:::compress_trans(intercept = 2000, ratio = 5)
 
   # Values above intercept (after sign flip to -2000) pass through unchanged
