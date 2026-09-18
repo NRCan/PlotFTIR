@@ -1,0 +1,76 @@
+# Plot Raman Spectra Overlaid
+
+Produce a basic spectra overlay plot for all samples found in the Raman
+dataset provided.
+
+Produisez un tracé de base de superposition de spectres pour tous les
+échantillons trouvés dans l'ensemble de données Raman fourni.
+
+## Usage
+
+``` r
+plot_raman(
+  raman,
+  plot_title = "Raman Spectra",
+  legend_title = "Sample ID",
+  lang = NA
+)
+```
+
+## Arguments
+
+- raman:
+
+  A data.frame in long format with columns \`sample_id\`,
+  \`wavenumber\`, and \`intensity\`. The \`intensity\` column contains
+  raw Raman counts. The code determines the correct y axis units and
+  labels the plot appropriately based on whether normalization has been
+  applied.
+
+  Un data.frame au format long avec les colonnes \`sample_id\`,
+  \`wavenumber\`, et \`intensity\`. La colonne \`intensity\` contient
+  des compteurs Raman bruts. Le code détermine les unités correctes de
+  l'axe y et étiquette le tracé en conséquence selon que la
+  normalisation a été appliquée ou non.
+
+- plot_title:
+
+  Title for plot. Defaults to "FTIR Spectra". Vector length 2 uses
+  second element as subtitle. Titre du tracé. Par défaut "FTIR Spectra".
+  Un vecteur de longueur 2 utilise le deuxième élément comme sous-titre.
+
+- legend_title:
+
+  Title for legend. Defaults to "Sample ID". Titre de la légende. Par
+  défaut "Sample ID".
+
+- lang:
+
+  Optional language argument:
+  \`fr\`/\`french\`/\`francais\`/\`français\` for French;
+  \`en\`/\`english\`/\`anglais\` for English; \`NA\` uses default.
+  Argument optionnel pour la langue :
+  \`fr\`/\`french\`/\`francais\`/\`français\` pour le français ;
+  \`en\`/\`english\`/\`anglais\` pour l'anglais ; \`NA\` utilise la
+  valeur par défaut.
+
+## Value
+
+a ggplot object containing a Raman spectral plot. The plot and legend
+titles are as provided, with each sample provided a different default
+color. Because this is a ggplot object, any other ggplot modifiers,
+layers, or changes can be applied to the returned object.
+
+un objet ggplot contenant un tracé spectral Raman. Les titres de le
+tracé et de la légende sont tels que fournis, avec une couleur par
+défaut différente pour chaque échantillon. Puisqu'il s'agit d'un objet
+ggplot, tous les autres modificateurs, calques ou changements ggplot
+peuvent être appliqués à l'objet retourné.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+  plot_raman(raman_data)
+} # }
+```

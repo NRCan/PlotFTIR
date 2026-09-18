@@ -1,0 +1,84 @@
+# Smooth Spectra Using Savitzky-Golay Filter
+
+Applies a moving-window polynomial filter to denoise spectra. Based on
+the Savitzky-Golay algorithm, which fits an order m polynomial within a
+sliding window of length 2\*n+1 to preserve peak shapes better than
+simple boxcar averaging.
+
+Applique un filtre polynomial à fenêtre mobile pour atténuer le bruit
+des spectres. Basé sur l'algorithme de Savitzky-Golay, qui ajuste un
+polynôme d'ordre m dans une fenêtre glissante de longueur 2\*n+1 afin de
+préserver les formes d'ondes mieux qu'une moyenne simple.
+
+## Usage
+
+``` r
+smooth_spectra(raman, sample_ids = NA, window_length = 7, polyorder = 2)
+```
+
+## Arguments
+
+- raman:
+
+  A data.frame of Raman spectra in long format with columns
+  \`sample_id\`, \`wavenumber\`, and \`intensity\`, carrying an
+  \`intensity\` attribute of \`"raman"\` or \`"normalized raman"\` (as
+  produced by \[read_raman()\]). FTIR absorbance/transmittance data is
+  not accepted.
+
+  Un data.frame de spectres Raman au format long avec les colonnes
+  \`sample_id\`, \`wavenumber\` et \`intensity\`, portant un attribut
+  \`intensity\` de \`"raman"\` ou \`"normalized raman"\` (tel que
+  produit par \[read_raman()\]). Les données FTIR
+  d'absorbance/transmittance ne sont pas acceptées.
+
+- sample_ids:
+
+  A vector of one or more \`sample_id\`s to select.
+
+  Un vecteur d'un ou plusieurs \`sample_id\`s à sélectionner.
+
+- window_length:
+
+  The length of the smoothing window (must be odd). Default is 7. Must
+  be at least \`polyorder + 1\`.
+
+  La longueur de la fenêtre de lissage (doit être impaire). Par
+  défaut, 7. Doit être au moins \`polyorder + 1\`.
+
+- polyorder:
+
+  The order of the polynomial fit within the window. Default is 2. Must
+  be less than \`window_length\`.
+
+  L'ordre du polynôme à ajuster dans la fenêtre. Par défaut, 2. Doit
+  être inférieur à \`window_length\`.
+
+## Value
+
+a data.frame containing the smoothed Raman spectra with the same
+structure as the input (\`wavenumber\`, \`intensity\`, \`sample_id\`).
+
+un data.frame contenant les spectres Raman lissés avec la même structure
+que l'entrée (\`wavenumber\`, \`intensity\`, \`sample_id\`).
+
+## Examples
+
+``` r
+if (requireNamespace("signal", quietly = TRUE)) {
+  # Generate synthetic Raman data with noise
+  wn <- seq(100, 2000, by = 2)
+  peaks <- 100 * exp(-(wn - 500)^2 / 5000) + 50 * exp(-(wn - 1000)^2 / 8000)
+  noisy <- peaks + rnorm(length(wn), sd = 10)
+
+  raman_noisy <- data.frame(
+    wavenumber = wn,
+    intensity = noisy,
+    sample_id = "noisy_sample"
+  )
+  attr(raman_noisy, "intensity") <- "raman"
+
+  # Smooth the spectra
+  raman_smooth <- smooth_spectra(raman_noisy, window_length = 11, polyorder = 2)
+}
+```

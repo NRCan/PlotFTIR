@@ -1,0 +1,158 @@
+# AGENTS.md
+
+## Repository overview
+
+**PlotFTIR** — Plot FTIR and Raman Spectra
+
+The goal of ‘PlotFTIR’ is to easily and quickly kick-start the
+production of journal-quality Fourier Transform Infra-Red (FTIR) and
+Raman spectral plots in R using ‘ggplot2’. The produced plots can be
+published directly or further modified by ‘ggplot2’ functions.
+L’objectif de ‘PlotFTIR’ est de démarrer facilement et rapidement la
+production des tracés spectraux de spectroscopie infrarouge à
+transformée de Fourier (IRTF) et Raman de qualité journal dans R à
+l’aide de ‘ggplot2’. Les tracés produits peuvent être publiés
+directement ou modifiés davantage par les fonctions ‘ggplot2’.
+
+<https://github.com/NRCan/PlotFTIR>
+
+### Overall structure
+
+The project follows standard R package conventions with these key
+directories:
+
+PlotFTIR/ ├── R/ \# R source code │ ├── PlotFTIR-package.R \#
+Auto-generated package docs │ ├── io.R \# File reading (CSV, ASP, JDX +
+ir/ChemoSpec bridges) │ ├── plot_ftir.R \# FTIR plotting (ggplot2
+wrapper) │ ├── plot_raman.R \# Raman plotting (core + stacked variants)
+│ ├── manipulations.R \# Plot transformations (zoom, markers,
+highlighting) │ ├── maths.R \# Spectral operations (average, normalize,
+convert) │ ├── raman_utils.R \# Raman utilities (baseline, smoothing,
+peak finding) │ └── utils.R \# Central validation hub ├── data/ \#
+Reference data files (e.g. Graphite Raman spectra) ├── .github/ │ ├──
+ISSUE_TEMPLATE/ \# GitHub issue templates │ ├── skills/ \# Agent skill
+definitions │ └── workflows/ \# CI/CD configurations ├── tests/testthat/
+\# Test suite (test-plot_raman.R, test-raman_utils.R) ├── man/ \#
+Generated documentation ├── AGENTS.md \# Main agent setup file ├──
+DESCRIPTION \# Package metadata ├── NAMESPACE \# Auto-generated export
+information ├── NEWS.md \# Changelog └── Various config files \#
+.gitignore, codecov.yml, etc.
+
+------------------------------------------------------------------------
+
+## Code Style
+
+- R code formatting: Always run `air format .` after generating R code.
+- Comments explain *why*, not *what*.
+- Bilingual: All documentation, errors, and messages must include French
+  translations.
+- One function per file: R/function_name.R (except shared helpers in
+  utils/).
+
+## Architecture
+
+Standard R package structure with core components: - **io.R**: File
+reading (CSV, ASP, JDX formats + ir/ChemoSpec bridges) -
+**plot_ftir.R**: Core plotting (ggplot2 wrapper) - **plot_raman.R**:
+Raman plotting (core + stacked variants) - **manipulations.R**: Plot
+transformations (zoom, markers, highlighting) - **maths.R**: Spectral
+operations (average, normalize, convert) - **raman_utils.R**: Raman
+utilities (baseline correction, smoothing, peak finding) - **utils.R**:
+Central validation hub
+
+Data structure: Long-format data.frames with exactly 3 columns
+(`wavenumber`, `absorbance|transmittance`, `sample_id`) and mandatory
+`intensity` attribute set by
+[`check_ftir_data()`](https://nrcan.github.io/PlotFTIR/reference/check_ftir_data.md).
+Raman spectra use the same long-format structure with a `raman`
+attribute.
+
+See
+[vignettes/plotting_ftir_spectra.Rmd](https://nrcan.github.io/PlotFTIR/vignettes/plotting_ftir_spectra.Rmd)
+for end-to-end tutorial and
+[doc/deconvoluting-spectra.Rmd](https://nrcan.github.io/PlotFTIR/doc/deconvoluting-spectra.Rmd)
+for advanced techniques.
+
+## Build and Test
+
+- Update packages:
+  [`pak::pak()`](https://pak.r-lib.org/reference/pak.html)
+- Run all tests: `devtools::test(reporter = "check")`
+- Run specific test:
+  `devtools::test(filter = "name", reporter = "check")`
+- Full check: `devtools::check(error_on = "warning")`
+- Document: `roxygen2::roxygenise()`
+- R console: Use `--quiet --vanilla`
+
+## Conventions
+
+- TDD workflow: Write failing test first, then implement.
+- News updates: Add bullet at top of
+  [NEWS.md](https://nrcan.github.io/PlotFTIR/NEWS.md) under dev heading;
+  user-facing changes only, 1 line, present tense, positive framing,
+  function names in backticks near start, end with contributor/issue
+  before period.
+- Bilingual guarantee: All user-facing text in French and English.
+- Error handling: Use `.pkg_abort()` for bilingual errors; gate optional
+  packages with
+  [`requireNamespace()`](https://rdrr.io/r/base/ns-load.html).
+- Issue numbers: Never guess; verify from user, branch name, or
+  `gh issue list`.
+- All in-code non-ascii characters (é, etc) must be escaped with proper
+  unicode (e.g. /u00e9). Non-ascii characters may be used in comments
+  and are preferred for docstrings
+
+------------------------------------------------------------------------
+
+## Standard workflow
+
+For any feature, fix, or refactor:
+
+1.  **Update packages**:
+    [`pak::pak()`](https://pak.r-lib.org/reference/pak.html)
+2.  **Run tests** — confirm passing before changes:
+    `devtools::test(reporter = "check")`. If any fail, stop and ask.
+3.  **Plan** — identify affected R files; check if new exports are
+    needed.
+4.  **Test first** — write failing test, then implement:
+    `devtools::test(filter = "name", reporter = "check")`.
+5.  **Implement** — minimal code to pass tests.
+6.  **Refactor** — clean up, keep tests green.
+7.  **Document** — document any new or changed exports.
+8.  **Verify**: Run `devtools::test(reporter = "check")`, then
+    `devtools::check(error_on = "warning")`. Resolve warnings, errors,
+    and NOTEs.
+9.  **News** — add bullet at top of `NEWS.md` (under dev heading):
+    - User-facing changes only. 1 line, end with `.`
+    - Present tense, positive framing, function names (backticks + `()`)
+      near start: `` * `fn()` now accepts ... `` not `* Fixed ...`
+    - Issue/contributor before final period:
+      `` * `fn()` now accepts ... (@user, #N). `` where `#N` is the
+      GitHub issue number being implemented (e.g. `#42`).
+    - Get username: `gh api user --jq .login`; get issue number from the
+      user’s prompt, the branch name (`git branch --show-current`), or
+      `gh issue list`.
+    - **Never guess or invent an issue number.** Before writing it,
+      verify: (1) you received it from the user or the branch name,
+      OR (2) you looked it up with `gh`. If you cannot trace the number
+      to a concrete source, use `#noissue`.
+
+------------------------------------------------------------------------
+
+## General
+
+- R console: use `--quiet --vanilla`.
+- Always run `air format .` after generating R code.
+- Comments explain *why*, not *what*.
+
+## Skills
+
+| Triggers | Path |
+|----|----|
+| create GitHub issues | @.github/skills/create-issue/SKILL.md |
+| document functions | @.github/skills/document/SKILL.md |
+| from github | @.github/skills/github/SKILL.md |
+| implement issue / work on \#NNN | @.github/skills/implement-issue/SKILL.md |
+| writing R functions / API design / error handling | @.github/skills/r-code/SKILL.md |
+| search / rewrite code | @.github/skills/search-code/SKILL.md |
+| writing or reviewing tests | @.github/skills/tdd-workflow/SKILL.md |
