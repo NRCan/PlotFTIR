@@ -9,6 +9,11 @@
 #'   of optional tuning parameters that can be provided (the defaults work well
 #'   for typical spectra).
 #'
+#'   This procedure is heuristic and is intended to generate starting peak
+#'   locations for fitting, not to certify a unique physical deconvolution. In
+#'   crowded regions or spectra with broad shoulders, users may need to adjust
+#'   smoothing and window parameters or provide peak centers manually.
+#'
 #'   Cette fonction permet de trouver des pics dans les spectres IRTF en
 #'   identifiant les minima de la double dérivée, puis en recherchant à nouveau
 #'   les maxima des pics manqués par la méthode de la dérivée. Elle utilise
@@ -19,6 +24,12 @@
 #'   lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre, un
 #'   certain nombre de paramètres de réglage facultatifs peuvent être fournis
 #'   (les valeurs par défaut fonctionnent bien pour les spectres typiques).
+#'
+#'   Cette procédure est heuristique et vise à générer des positions initiales
+#'   de pics pour l'ajustement, et non à certifier une déconvolution physique
+#'   unique. Dans les régions encombrées ou pour les spectres présentant de
+#'   larges épaules, il peut être nécessaire d'ajuster les paramètres de lissage
+#'   et de fenêtre ou de fournir les centres des pics manuellement.
 #' @param ftir (`data.frame`) A data.frame in long format with a single FTIR
 #'   spectra in columns `sample_id`, `wavenumber`, and `absorbance`. The
 #'   `absorbance` column may be replaced by a `transmittance` column for
@@ -538,11 +549,18 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 
 #' Fit Peaks
 #' @description Once peaks are found by [find_ftir_peaks()], they can be fitted
-#'   by adjusting intensity (area) standard deviation (width), and shape
+#'   by adjusting intensity (area), standard deviation (width), and shape
 #'   parameters (gam, eta, and/or alpha). This can be done by
 #'   Expectation-Maximization methods, implemented here by the `EMpeaksR`
 #'   package's technique. Note that the spectra provided is shifted to baseline
 #'   to reduce the work of the peak fitter in producing background noise.
+#'
+#'   Automatic peak discovery in [find_ftir_peaks()] is a heuristic
+#'   initialization step based on smoothing, thresholding, and merging nearby
+#'   candidate peaks. It is useful for proposing starting values, but it is not
+#'   a validated deconvolution standard. In crowded regions, shoulder peaks, or
+#'   broad overlapping bands, users should inspect residuals carefully and may
+#'   need to supply `peaklist` directly or tune the peak-finding arguments.
 #'
 #'   Une fois les pics trouvés par [find_ftir_peaks()], ils peuvent être ajustés
 #'   en ajustant l'intensité (surface), l'écart-type (largeur) et les paramètres
@@ -551,6 +569,15 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'   `EMpeaksR`. Notez que le spectre fourni est décalé par rapport à la ligne
 #'   de base afin de réduire le travail de l'ajusteur de pics en produisant un
 #'   bruit de fond.
+#'
+#'   La recherche automatique des pics dans [find_ftir_peaks()] est une étape
+#'   d'initialisation heuristique basée sur le lissage, le seuillage et la
+#'   fusion de pics candidats voisins. Elle est utile pour proposer des valeurs
+#'   de départ, mais ne constitue pas une méthode de déconvolution validée. Dans
+#'   les régions encombrées, pour les pics en épaule ou pour les bandes larges
+#'   qui se chevauchent, il faut examiner les résidus avec soin et il peut être
+#'   nécessaire de fournir `peaklist` directement ou d'ajuster les arguments de
+#'   recherche de pics.
 #' @param ftir A data.frame in long format with a single FTIR spectra in columns
 #'   `sample_id`, `wavenumber`, and `absorbance`.
 #'
@@ -593,11 +620,59 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #'   Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
 #'   fournies ou permettre à l'optimiseur de déplacer les pics selon les
 #'   besoins.
-#' @param ... Control parameters for fitting functions (`conv_cri` and/or
-#'   `maxit`) or additional parameters to pass to [find_ftir_peaks()] if needed.
-#'   Paramètres de contrôle pour les fonctions d'ajustement (`conv_cri` et/ou
-#'   `maxit`) ou paramètres supplémentaires à passer à [find_ftir_peaks()] si
-#'   nécessaire.
+#' @param sigma (`numeric`) Optional starting standard deviation values for Gauss,
+#'   Voigt, and Doniach-Šunjić-Gauss fits. When supplied, this should match the
+#'   number of peaks being fitted. Defaults to `rep(10, n_peaks)`.
+#'
+#'   Valeurs initiales optionnelles d'écart-type pour les ajustements Gauss,
+#'   Voigt et Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies, elles doivent
+#'   correspondre au nombre de pics ajustés. Par défaut `rep(10, n_peaks)`.
+#' @param gam (`numeric`) Optional starting gamma width values for Lorentz fits.
+#'   When supplied, this should match the number of peaks being fitted. Defaults
+#'   to `rep(10, n_peaks)`.
+#'
+#'   Valeurs initiales optionnelles de largeur gamma pour les ajustements
+#'   Lorentz. Lorsqu'elles sont fournies, elles doivent correspondre au nombre
+#'   de pics ajustés. Par défaut `rep(10, n_peaks)`.
+#' @param mix_ratio (`numeric`) Optional starting component mixing ratios. When
+#'   supplied, this should match the number of peaks being fitted. Defaults to
+#'   `rep(1 / n_peaks, n_peaks)`.
+#'
+#'   Rapports de mélange initiaux optionnels des composantes. Lorsqu'ils sont
+#'   fournis, ils doivent correspondre au nombre de pics ajustés. Par défaut
+#'   `rep(1 / n_peaks, n_peaks)`.
+#' @param eta (`numeric`) Optional starting Gauss/Lorentz mixing values for
+#'   Voigt and Doniach-Šunjić-Gauss fits. When supplied, this should match the
+#'   number of peaks being fitted. Defaults to `rep(0.5, n_peaks)`.
+#'
+#'   Valeurs initiales optionnelles de mélange Gauss/Lorentz pour les
+#'   ajustements Voigt et Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies,
+#'   elles doivent correspondre au nombre de pics ajustés. Par défaut
+#'   `rep(0.5, n_peaks)`.
+#' @param alpha (`numeric`) Optional starting asymmetry values for
+#'   Doniach-Šunjić-Gauss fits. When supplied, this should match the number of
+#'   peaks being fitted. Defaults to `rep(1e-4, n_peaks)`.
+#'
+#'   Valeurs initiales optionnelles d'asymétrie pour les ajustements
+#'   Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies, elles doivent
+#'   correspondre au nombre de pics ajustés. Par défaut `rep(1e-4, n_peaks)`.
+#' @param conv_cri (`numeric`) Optional convergence threshold passed to the
+#'   underlying `EMpeaksR` optimizer. Smaller values request tighter convergence
+#'   at higher computational cost. Defaults to `1e-2`.
+#'
+#'   Seuil de convergence optionnel transmis à l'optimiseur `EMpeaksR`
+#'   sous-jacent. Des valeurs plus petites demandent une convergence plus serrée
+#'   à un coût de calcul plus élevé. Par défaut `1e-2`.
+#' @param maxit (`numeric`) Optional maximum number of optimization iterations
+#'   passed to the underlying `EMpeaksR` optimizer. Defaults to `1000`.
+#'
+#'   Nombre maximal optionnel d'itérations d'optimisation transmis à
+#'   l'optimiseur `EMpeaksR` sous-jacent. Par défaut `1000`.
+#' @param ... Additional parameters passed to [find_ftir_peaks()] only when
+#'   `peaklist` is not supplied.
+#'
+#'   Paramètres supplémentaires transmis à [find_ftir_peaks()] seulement lorsque
+#'   `peaklist` n'est pas fourni.
 #' @inheritParams .shared-params
 #' @returns An `EMpeaksR` style fitted model. See the documentation for each
 #'   peak shape.
@@ -666,11 +741,15 @@ find_ftir_peaks <- function(ftir, call = rlang::caller_env(), ...) {
 #' print("Fitted Voigt Peaks (Fixed Locations):")
 #' print(fit_peak_df(fitted_voigt_fixed))
 #'
-#' # Example 5: Pass control parameters (e.g., lower convergence criterion)
+#' # Example 5: Pass explicit fitting control parameters
 #' # Note: This might take longer or behave differently
+#' selected_peaks <- c(1130, 1375, 1460)
 #' fitted_voigt_tight_conv <- fit_peaks(
 #'   ftir_data,
-#'   conv_cri = 1e-4 # Tighter convergence
+#'   peaklist = selected_peaks,
+#'   conv_cri = 1e-4,
+#'   maxit = 2000,
+#'   sigma = rep(8, length(selected_peaks))
 #' )
 #' print("Fitted Voigt Peaks (Tighter Convergence):")
 #' print(paste("Iterations:", fitted_voigt_tight_conv$it))
@@ -681,6 +760,13 @@ fit_peaks <- function(
   peaklist = NA,
   method = "voigt",
   fixed_peaks = FALSE,
+  sigma = NULL,
+  gam = NULL,
+  mix_ratio = NULL,
+  eta = NULL,
+  alpha = NULL,
+  conv_cri = 1e-2,
+  maxit = 1e3,
   call = rlang::caller_env(),
   ...
 ) {
@@ -742,13 +828,9 @@ fit_peaks <- function(
   }
   canonical_method <- .fit_method_map[[method]]
 
-  args <- list(...)
+  peak_args <- list(...)
 
   if (all(is.na(peaklist))) {
-    peak_args <- args[
-      !(names(args) %in%
-        c("sigma", "mix_ratio", "eta", "gam", "alpha", "maxit", "conv_cri"))
-    ]
     peaklist <- do.call(
       find_ftir_peaks,
       c(list(ftir = ftir, call = call), peak_args)
@@ -756,15 +838,21 @@ fit_peaks <- function(
   }
   n <- length(peaklist)
 
-  # sort out optional args
-  # `if` documented by Hadley http://adv-r.had.co.nz/Functions.html
-  conv_cri <- `if`("conv_cri" %in% names(args), args$conv_cri, 1e-2)
-  maxit <- `if`("maxit" %in% names(args), args$maxit, 1e3)
-  sigma <- `if`("sigma" %in% names(args), args$sigma, rep(10, n))
-  gam <- `if`("gam" %in% names(args), args$gam, rep(10, n))
-  mix_ratio <- `if`("mix_ratio" %in% names(args), args$mix_ratio, rep(1 / n, n))
-  eta <- `if`("eta" %in% names(args), args$eta, rep(0.5, n))
-  alpha <- `if`("alpha" %in% names(args), args$alpha, rep(1e-4, n))
+  if (is.null(sigma)) {
+    sigma <- rep(10, n)
+  }
+  if (is.null(gam)) {
+    gam <- rep(10, n)
+  }
+  if (is.null(mix_ratio)) {
+    mix_ratio <- rep(1 / n, n)
+  }
+  if (is.null(eta)) {
+    eta <- rep(0.5, n)
+  }
+  if (is.null(alpha)) {
+    alpha <- rep(1e-4, n)
+  }
 
   # simple baseline the ftir to minimize the work of peaks bringing up the noise.
   ftir$absorbance <- ftir$absorbance - min(ftir$absorbance, na.rm = TRUE)

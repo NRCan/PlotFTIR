@@ -49,6 +49,9 @@ le deuxième élément comme sous-titre.}
 \item{legend_title}{Title for legend. Defaults to "Sample ID".
 Titre de la légende. Par défaut "Sample ID".}
 
+\item{fitted_peaks}{An object returned by [fit_peaks()].
+Un objet retourné par [fit_peaks()].}
+
 \item{sample_ids}{A vector of one or more `sample_id`s to select.
 
 Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.}

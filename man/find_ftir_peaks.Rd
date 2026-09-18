@@ -93,6 +93,11 @@ by a Savitzky-Golay filter prior to analysis and as such there are a number
 of optional tuning parameters that can be provided (the defaults work well
 for typical spectra).
 
+This procedure is heuristic and is intended to generate starting peak
+locations for fitting, not to certify a unique physical deconvolution. In
+crowded regions or spectra with broad shoulders, users may need to adjust
+smoothing and window parameters or provide peak centers manually.
+
 Cette fonction permet de trouver des pics dans les spectres IRTF en
 identifiant les minima de la double dérivée, puis en recherchant à nouveau
 les maxima des pics manqués par la méthode de la dérivée. Elle utilise
@@ -103,6 +108,12 @@ nombres d'ondes sont fusionnés en un seul pic représentatif. Le spectre est
 lissé par un filtre de Savitzky-Golay avant l'analyse et, à ce titre, un
 certain nombre de paramètres de réglage facultatifs peuvent être fournis
 (les valeurs par défaut fonctionnent bien pour les spectres typiques).
+
+Cette procédure est heuristique et vise à générer des positions initiales
+de pics pour l'ajustement, et non à certifier une déconvolution physique
+unique. Dans les régions encombrées ou pour les spectres présentant de
+larges épaules, il peut être nécessaire d'ajuster les paramètres de lissage
+et de fenêtre ou de fournir les centres des pics manuellement.
 }
 \examples{
 if(requireNamespace('signal')){

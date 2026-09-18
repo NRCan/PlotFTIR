@@ -89,6 +89,8 @@ detected_peaks
 
 The algorithm detected `r length(detected_peaks)` peaks across the fingerprint region. These locations will serve as initial estimates for the fitting procedure. Note that the peak detection is performed on smoothed data, so the exact wavenumbers may differ slightly from visual inspection of the raw spectrum — this is expected and desirable, as it reduces the influence of noise on peak positioning.
 
+This automatic detection step is heuristic rather than definitive. It is useful for proposing starting peak centers, but it should not be read as a validated deconvolution on its own. In crowded regions, shoulder peaks, or broad overlapping bands, it is often worth tuning the detection parameters or supplying `peaklist` directly.
+
 ## Fitting Peaks: Choosing a Model
 
 With peak locations identified, the next step is fitting each peak with a mathematical function. The `fit_peaks()` function supports four peak shapes, each appropriate for different spectral characteristics. The choice of model affects both the accuracy of peak parameters and the interpretability of the results.
@@ -102,7 +104,7 @@ fitted_voigt <- fit_peaks(subset_spectrum, method = "voigt")
 fit_peak_df(fitted_voigt)
 ```
 
-The output shows the fitted parameters for each peak: wavenumber location (`wavenumber`), width (`sigma`), shape parameter (`eta`), and relative contribution (`mix_ratio`). The Voigt fit found large peaks at approximately 1457, 1378, and 1366 cm⁻¹ — these correspond to known C-H bending and C-C stretching vibrations in hydrocarbon chains.
+The output shows the fitted parameters for each peak: wavenumber location (`wavenumber`), width (`sigma`), shape parameter (`eta`), and relative contribution (`mix_ratio`). These fitted components are model-based summaries of the observed spectrum rather than direct proofs that each component corresponds to a unique physical band. In practice, especially where bands overlap strongly, component interpretation should be checked against residuals, chemical context, and any prior expectations about plausible peak centers.
 
 ### Gaussian Profile
 
@@ -167,7 +169,7 @@ ggplot(comparison_data, aes(x = wavenumber, y = absorbance, color = type)) +
   theme_minimal()
 ```
 
-The Voigt and Lorentzian fits produce the closest representations of the original spectrum, with the Voigt model offering the best balance of accuracy and computational efficiency. The Gaussian fit, while faster, tends to overestimate peak heights and underestimate widths — a consequence of its symmetric, rapidly-decaying shape. For most FTIR applications, the Voigt profile is the recommended default.
+In this example, the Voigt and Lorentzian fits track the observed spectrum more closely than the Gaussian fit, with the Voigt model offering a reasonable balance of flexibility and computational efficiency. The Gaussian fit is simpler, but its symmetric, rapidly decaying shape can miss shoulders or broader tails. These comparisons are data-dependent rather than universal; for a new spectrum, residual patterns and subject-matter expectations matter more than any single default recommendation.
 
 ## Visualizing Fit Components
 
@@ -235,10 +237,11 @@ The resulting table contains fitted peak parameters for every sample. By filteri
 
 ### Tips for Reliable Fitting
 
-- **Start with Voigt**: It is the most universally appropriate model for FTIR data.
+- **Start with Voigt**: It is a reasonable default for many FTIR spectra, not a guarantee of best fit.
 - **Inspect residuals**: Always check the residual plot after fitting. Systematic patterns indicate a poor model.
+- **Treat automatic peaks as starting values**: In crowded or asymmetric regions, consider tuning `find_ftir_peaks()` arguments or supplying `peaklist` directly.
+- **Use explicit fitting arguments when needed**: `sigma`, `gam`, `mix_ratio`, `eta`, `alpha`, `conv_cri`, and `maxit` can be passed directly to `fit_peaks()`.
 - **Use `fixed_peaks = TRUE`** when you want to compare peak parameters across samples without the optimizer shifting peak locations.
-- **Adjust smoothing parameters** (`sg_n_norm`, `sg_n_deriv`) if peak detection is too sensitive or misses broad features.
 - **Limit the wavenumber range** to the region of interest to reduce computation time and avoid spurious peaks outside your analysis window.
 
 ### References
@@ -313,6 +316,8 @@ detected_peaks
 
 L'algorithme a détecté `r length(detected_peaks)` pics sur la région de l'empreinte digitale. Ces emplacements serviront d'estimations initiales pour la procédure d'ajustement. Notez que la détection des pics est effectuée sur des données lissées, donc les nombres d'ondes exacts peuvent différer légèrement de l'inspection visuelle du spectre brut — ce qui est attendu et souhaitable, car cela réduit l'influence du bruit sur le positionnement des pics.
 
+Cette étape de détection automatique est heuristique plutôt que définitive. Elle est utile pour proposer des centres de pics initiaux, mais elle ne doit pas être interprétée à elle seule comme une déconvolution validée. Dans les régions encombrées, pour les pics en épaule ou pour les bandes larges qui se chevauchent, il est souvent utile d'ajuster les paramètres de détection ou de fournir `peaklist` directement.
+
 ## Ajustement des Pics : Choix d'un Modèle
 
 Une fois les emplacements des pics identifiés, l'étape suivante consiste à ajuster chaque pic avec une fonction mathématique. La fonction `fit_peaks()` prend en charge quatre formes de pics, chacune appropriée pour différentes caractéristiques spectrales. Le choix du modèle affecte à la fois la précision des paramètres des pics et l'interprétabilité des résultats.
@@ -326,7 +331,7 @@ fitted_voigt <- fit_peaks(subset_spectrum, method = "voigt")
 fit_peak_df(fitted_voigt)
 ```
 
-La sortie montre les paramètres ajustés pour chaque pic : l'emplacement du nombre d'ondes (`wavenumber`), la largeur (`sigma`), le paramètre de forme (`eta`) et la contribution relative (`mix_ratio`). L'ajustement de Voigt a trouvé des pics aux alentours de 1457, 1378, and 1366 cm⁻¹ — ceux-ci correspondent aux vibrations connues de flexion C-H, et d'étirement C-C dans les chaînes hydrocarbonées.
+La sortie montre les paramètres ajustés pour chaque pic : l'emplacement du nombre d'ondes (`wavenumber`), la largeur (`sigma`), le paramètre de forme (`eta`) et la contribution relative (`mix_ratio`). Ces composantes ajustées sont des résumés du spectre observé fondés sur un modèle, et non des preuves directes qu'une composante correspond à une bande physique unique. En pratique, surtout lorsque les bandes se chevauchent fortement, l'interprétation des composantes doit être vérifiée à l'aide des résidus, du contexte chimique et de toute attente préalable concernant des centres de pics plausibles.
 
 ### Profil Gaussien
 
@@ -391,7 +396,7 @@ ggplot(comparison_data, aes(x = wavenumber, y = absorbance, color = type)) +
   theme_minimal()
 ```
 
-Les ajustements de Voigt et de Lorentz produisent les représentations les plus proches du spectre original, le modèle de Voigt offrant le meilleur équilibre entre précision et efficacité computationnelle. L'ajustement gaussien, bien que plus rapide, a tendance à surestimer les hauteurs de pics et à sous-estimer les largeurs — une conséquence de sa forme symétrique à décroissance rapide. Pour la plupart des applications IRTF, le profil de Voigt est le défaut recommandé.
+Dans cet exemple, les ajustements de Voigt et de Lorentz suivent le spectre observé plus étroitement que l'ajustement gaussien, le modèle de Voigt offrant un compromis raisonnable entre souplesse et efficacité computationnelle. L'ajustement gaussien est plus simple, mais sa forme symétrique à décroissance rapide peut manquer des épaules ou des queues plus larges. Ces comparaisons dépendent des données plutôt que d'être universelles ; pour un nouveau spectre, les motifs de résidus et les attentes du domaine importent davantage qu'une recommandation unique par défaut.
 
 ## Visualisation des Composants de l'Ajustement
 
@@ -461,10 +466,11 @@ Le tableau résultant contient les paramètres de pics ajustés pour chaque éch
 
 ### Conseils pour un Ajustement Fiable
 
-- **Commencer par Voigt** : c'est le modèle le plus universellement approprié pour les données IRTF.
+- **Commencer par Voigt** : c'est un défaut raisonnable pour de nombreux spectres IRTF, sans garantir le meilleur ajustement.
 - **Inspecter les résidus** : vérifier toujours le graphique de résidus après l'ajustement. Des motifs systématiques indiquent un mauvais modèle.
+- **Traiter les pics automatiques comme des valeurs de départ** : dans les régions encombrées ou asymétriques, envisagez d'ajuster les arguments de `find_ftir_peaks()` ou de fournir `peaklist` directement.
+- **Utiliser des arguments d'ajustement explicites si nécessaire** : `sigma`, `gam`, `mix_ratio`, `eta`, `alpha`, `conv_cri` et `maxit` peuvent être passés directement à `fit_peaks()`.
 - **Utiliser `fixed_peaks = TRUE`** lorsque vous voulez comparer les paramètres des pics entre échantillons sans que l'optimiseur ne déplace les emplacements des pics.
-- **Ajuster les paramètres de lissage** (`sg_n_norm`, `sg_n_deriv`) si la détection des pics est trop sensible ou manque des caractéristiques larges.
 - **Limiter la gamme de nombres d'ondes** à la région d'intérêt pour réduire le temps de calcul et éviter les pics aberrants en dehors de votre fenêtre d'analyse.
 
 ### Références

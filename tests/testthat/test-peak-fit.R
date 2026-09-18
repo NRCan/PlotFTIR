@@ -356,6 +356,50 @@ test_that("fit_peaks validates method parameter", {
   )
 })
 
+test_that("fit_peaks accepts explicit fitting controls and separate peak-finder tuning (#noissue)", {
+  if (!requireNamespace("signal", quietly = TRUE)) {
+    testthat::skip("signal not available for testing")
+  }
+
+  ftir <- data.frame(
+    sample_id = "sample1",
+    wavenumber = round(seq(4000, 400, length.out = 100)),
+    absorbance = rep(c(0, 0, 1, 2, 3, 5, 3, 2, 1, 0), 10)
+  )
+  explicit_peaks <- c(545, 909, 1273)
+
+  fitted_peaks <- fit_peaks(
+    ftir,
+    peaklist = explicit_peaks,
+    method = "voigt",
+    sigma = rep(8, length(explicit_peaks)),
+    eta = rep(0.4, length(explicit_peaks)),
+    mix_ratio = rep(1 / length(explicit_peaks), length(explicit_peaks)),
+    conv_cri = 1e-3,
+    maxit = 1500
+  )
+
+  expect_equal(fitted_peaks$method, "voigt")
+  expect_length(fitted_peaks$mu, length(explicit_peaks))
+  expect_length(fitted_peaks$sigma, length(explicit_peaks))
+  expect_length(fitted_peaks$eta, length(explicit_peaks))
+
+  auto_peaks_fit <- fit_peaks(
+    ftir,
+    method = "gauss",
+    sigma = rep(8, 10),
+    conv_cri = 1e-3,
+    maxit = 1500,
+    window_norm = 50,
+    window_deriv = 50,
+    sg_n_norm = 7,
+    sg_n_deriv = 7
+  )
+
+  expect_equal(auto_peaks_fit$method, "gauss")
+  expect_length(auto_peaks_fit$mu, 10)
+})
+
 # === Section 4: Data Validation Pattern Tests (NEW for integration) ===
 
 test_that("All functions validate ftir data structure", {

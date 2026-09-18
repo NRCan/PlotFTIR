@@ -9,6 +9,13 @@ fit_peaks(
   peaklist = NA,
   method = "voigt",
   fixed_peaks = FALSE,
+  sigma = NULL,
+  gam = NULL,
+  mix_ratio = NULL,
+  eta = NULL,
+  alpha = NULL,
+  conv_cri = 0.01,
+  maxit = 1000,
   call = rlang::caller_env(),
   ...
 )
@@ -62,14 +69,69 @@ Booléen, pour savoir s'il faut fixer l'emplacement des pics aux valeurs
 fournies ou permettre à l'optimiseur de déplacer les pics selon les
 besoins.}
 
+\item{sigma}{(\code{numeric}) Optional starting standard deviation values for Gauss,
+Voigt, and Doniach-Šunjić-Gauss fits. When supplied, this should match the
+number of peaks being fitted. Defaults to \code{rep(10, n_peaks)}.
+
+Valeurs initiales optionnelles d'écart-type pour les ajustements Gauss,
+Voigt et Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies, elles doivent
+correspondre au nombre de pics ajustés. Par défaut \code{rep(10, n_peaks)}.}
+
+\item{gam}{(\code{numeric}) Optional starting gamma width values for Lorentz fits.
+When supplied, this should match the number of peaks being fitted. Defaults
+to \code{rep(10, n_peaks)}.
+
+Valeurs initiales optionnelles de largeur gamma pour les ajustements
+Lorentz. Lorsqu'elles sont fournies, elles doivent correspondre au nombre
+de pics ajustés. Par défaut \code{rep(10, n_peaks)}.}
+
+\item{mix_ratio}{(\code{numeric}) Optional starting component mixing ratios. When
+supplied, this should match the number of peaks being fitted. Defaults to
+\code{rep(1 / n_peaks, n_peaks)}.
+
+Rapports de mélange initiaux optionnels des composantes. Lorsqu'ils sont
+fournis, ils doivent correspondre au nombre de pics ajustés. Par défaut
+\code{rep(1 / n_peaks, n_peaks)}.}
+
+\item{eta}{(\code{numeric}) Optional starting Gauss/Lorentz mixing values for
+Voigt and Doniach-Šunjić-Gauss fits. When supplied, this should match the
+number of peaks being fitted. Defaults to \code{rep(0.5, n_peaks)}.
+
+Valeurs initiales optionnelles de mélange Gauss/Lorentz pour les
+ajustements Voigt et Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies,
+elles doivent correspondre au nombre de pics ajustés. Par défaut
+\code{rep(0.5, n_peaks)}.}
+
+\item{alpha}{(\code{numeric}) Optional starting asymmetry values for
+Doniach-Šunjić-Gauss fits. When supplied, this should match the number of
+peaks being fitted. Defaults to \code{rep(1e-4, n_peaks)}.
+
+Valeurs initiales optionnelles d'asymétrie pour les ajustements
+Doniach-Šunjić-Gauss. Lorsqu'elles sont fournies, elles doivent
+correspondre au nombre de pics ajustés. Par défaut \code{rep(1e-4, n_peaks)}.}
+
+\item{conv_cri}{(\code{numeric}) Optional convergence threshold passed to the
+underlying \code{EMpeaksR} optimizer. Smaller values request tighter convergence
+at higher computational cost. Defaults to \code{1e-2}.
+
+Seuil de convergence optionnel transmis à l'optimiseur \code{EMpeaksR}
+sous-jacent. Des valeurs plus petites demandent une convergence plus serrée
+à un coût de calcul plus élevé. Par défaut \code{1e-2}.}
+
+\item{maxit}{(\code{numeric}) Optional maximum number of optimization iterations
+passed to the underlying \code{EMpeaksR} optimizer. Defaults to \code{1000}.
+
+Nombre maximal optionnel d'itérations d'optimisation transmis à
+l'optimiseur \code{EMpeaksR} sous-jacent. Par défaut \code{1000}.}
+
 \item{call}{(`environment`) The caller environment for error messages.
 L'environnement de l'appelant pour les messages d'erreur.}
 
-\item{...}{Control parameters for fitting functions (\code{conv_cri} and/or
-\code{maxit}) or additional parameters to pass to \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} if needed.
-Paramètres de contrôle pour les fonctions d'ajustement (\code{conv_cri} et/ou
-\code{maxit}) ou paramètres supplémentaires à passer à \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} si
-nécessaire.}
+\item{...}{Additional parameters passed to \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} only when
+\code{peaklist} is not supplied.
+
+Paramètres supplémentaires transmis à \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} seulement lorsque
+\code{peaklist} n'est pas fourni.}
 }
 \value{
 An \code{EMpeaksR} style fitted model. See the documentation for each
@@ -80,11 +142,18 @@ forme de pic.
 }
 \description{
 Once peaks are found by \code{\link[=find_ftir_peaks]{find_ftir_peaks()}}, they can be fitted
-by adjusting intensity (area) standard deviation (width), and shape
+by adjusting intensity (area), standard deviation (width), and shape
 parameters (gam, eta, and/or alpha). This can be done by
 Expectation-Maximization methods, implemented here by the \code{EMpeaksR}
 package's technique. Note that the spectra provided is shifted to baseline
 to reduce the work of the peak fitter in producing background noise.
+
+Automatic peak discovery in \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} is a heuristic
+initialization step based on smoothing, thresholding, and merging nearby
+candidate peaks. It is useful for proposing starting values, but it is not
+a validated deconvolution standard. In crowded regions, shoulder peaks, or
+broad overlapping bands, users should inspect residuals carefully and may
+need to supply \code{peaklist} directly or tune the peak-finding arguments.
 
 Une fois les pics trouvés par \code{\link[=find_ftir_peaks]{find_ftir_peaks()}}, ils peuvent être ajustés
 en ajustant l'intensité (surface), l'écart-type (largeur) et les paramètres
@@ -93,6 +162,15 @@ d'espérance-maximisation, implémentées ici par la technique du paquet
 \code{EMpeaksR}. Notez que le spectre fourni est décalé par rapport à la ligne
 de base afin de réduire le travail de l'ajusteur de pics en produisant un
 bruit de fond.
+
+La recherche automatique des pics dans \code{\link[=find_ftir_peaks]{find_ftir_peaks()}} est une étape
+d'initialisation heuristique basée sur le lissage, le seuillage et la
+fusion de pics candidats voisins. Elle est utile pour proposer des valeurs
+de départ, mais ne constitue pas une méthode de déconvolution validée. Dans
+les régions encombrées, pour les pics en épaule ou pour les bandes larges
+qui se chevauchent, il faut examiner les résidus avec soin et il peut être
+nécessaire de fournir \code{peaklist} directement ou d'ajuster les arguments de
+recherche de pics.
 }
 \examples{
 # Load the isopropanol sample spectrum from the PlotFTIR package
@@ -143,11 +221,15 @@ fitted_voigt_fixed <- fit_peaks(
 print("Fitted Voigt Peaks (Fixed Locations):")
 print(fit_peak_df(fitted_voigt_fixed))
 
-# Example 5: Pass control parameters (e.g., lower convergence criterion)
+# Example 5: Pass explicit fitting control parameters
 # Note: This might take longer or behave differently
+selected_peaks <- c(1130, 1375, 1460)
 fitted_voigt_tight_conv <- fit_peaks(
   ftir_data,
-  conv_cri = 1e-4 # Tighter convergence
+  peaklist = selected_peaks,
+  conv_cri = 1e-4,
+  maxit = 2000,
+  sigma = rep(8, length(selected_peaks))
 )
 print("Fitted Voigt Peaks (Tighter Convergence):")
 print(paste("Iterations:", fitted_voigt_tight_conv$it))
