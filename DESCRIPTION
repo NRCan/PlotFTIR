@@ -1,7 +1,7 @@
 Package: PlotFTIR
 Type: Package
 Title: Plot FTIR Spectra
-Version: 1.3.0.9000
+Version: 1.3.1.9000
 Authors@R: c(
     person(given = "Philip", family = "Bulsink", email = "philip.bulsink@nrcan-rncan.gc.ca", 
            role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9668-2429")),
@@ -33,10 +33,11 @@ Suggests:
     R.utils,
     readJDX,
     EMpeaksR,
-    signal,
-    scales
+    scales,
+    baseline,
+    signal
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 BugReports: https://github.com/NRCan/PlotFTIR/issues
 URL: https://github.com/NRCan/PlotFTIR, https://nrcan.github.io/PlotFTIR/
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

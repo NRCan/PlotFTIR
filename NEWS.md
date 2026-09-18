@@ -1,8 +1,17 @@
 # PlotFTIR (development version)
 
 * Peak fitting functionality added with `find_ftir_peaks()`, `fit_peaks()`, and related functions. ([#33](https://github.com/NRCan/PlotFTIR/issues/33))
-* Updated package data to properly print after v1.3.0.
+* Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).
+* `smooth_spectra()`, `baseline_correct()`, `normalize_raman()`, and `find_peak_maxima()` accept `sample_ids = NULL` to select every sample (#34).
+* `smooth_spectra()` and `baseline_correct()` now report a clear error when given FTIR absorbance or transmittance data instead of Raman spectra (#34).
+* `normalize_raman()` now rejects spectra with a non-positive maximum and reports `NA` intensity values rather than silently propagating them (#34).
+* `read_raman()` captures single-`#` header metadata, reports true file line numbers for invalid data, and warns about malformed rows (#34).
+
+# PlotFTIR 1.3.1
+
+* Updated package data sets to properly print after v1.3.0.
 * Added bilingual error codes and bilingual pretty printing (#40)
+* `read_ftir_jdx()` now auto-converts .jdx files with wavelength (micrometer) x-axis units to wavenumber (#43)
 
 # PlotFTIR 1.3.0
 

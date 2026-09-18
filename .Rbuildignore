@@ -12,7 +12,7 @@
 ^LICENSE$
 ^paper$
 ^revdep$
-cobertura\.xml$
+^cobertura\.xml$
 ^AGENTS\.md$
 ^\.kilo$
 ^\.git$

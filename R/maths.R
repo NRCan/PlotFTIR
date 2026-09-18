@@ -607,10 +607,19 @@ recalculate_baseline <- function(
 
   if (method == "point") {
     if (length(wavenumber_range) != 1 || is.na(wavenumber_range)) {
-      cli::cli_abort(c(
-        "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
-        i = "The value at the provided wavenumber will be used to baseline adjust data."
-      ))
+      .pkg_abort(
+        list(
+          en = c(
+            "Error in {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} must be a single numeric value.",
+            i = "The value at the provided wavenumber will be used to baseline adjust data."
+          ),
+          fr = c(
+            "Erreur dans {.fn PlotFTIR::recalculate_baseline}. {.arg wavenumber_range} doit \u00eatre une seule valeur num\u00e9rique.",
+            i = "La valeur \u00e0 la fr\u00e9quence fournie sera utilis\u00e9e pour ajuster la ligne de base des donn\u00e9es."
+          )
+        ),
+        call = rlang::caller_env()
+      )
     }
     if (individually) {
       for (i in seq_along(sample_ids)) {

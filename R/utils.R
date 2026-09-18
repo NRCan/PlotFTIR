@@ -136,7 +136,7 @@ check_ftir_data <- function(ftir) {
           "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var sample_id}."
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
   if (!("wavenumber" %in% colnames(ftir))) {
@@ -149,29 +149,37 @@ check_ftir_data <- function(ftir) {
           "Erreur dans {.fn {fn}}. {.arg ftir} ne contient pas une colonne. Il doit contenir une colonne nomm\u00e9e {.var wavenumber}."
         )
       ),
-      call = rlang::caller_env(),
+      call = rlang::caller_env()
     )
   }
-  if (!any(colnames(ftir) == "absorbance", colnames(ftir) == "transmittance")) {
+  if (
+    !any(
+      colnames(ftir) == "absorbance",
+      colnames(ftir) == "transmittance",
+      colnames(ftir) == "intensity"
+    )
+  ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance} or {.var transmittance} columns."
+          "Error in {.fn {fn}}. {.arg ftir} must have one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} doit avoir une des colonnes {.var absorbance} ou {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} doit contenir une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
   }
-  if ("absorbance" %in% colnames(ftir) && "transmittance" %in% colnames(ftir)) {
+  if (
+    sum(colnames(ftir) %in% c("absorbance", "transmittance", "intensity")) > 1
+  ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} cannot contain both {.var absorbance} and {.var transmittance} columns."
+          "Error in {.fn {fn}}. {.arg ftir} cannot contain more than one of {.var absorbance}, {.var transmittance}, or {.var intensity} columns."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir les deux colonnes {.var absorbance} et {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut pas contenir plus d'une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
@@ -179,16 +187,22 @@ check_ftir_data <- function(ftir) {
   if (
     any(
       !(colnames(ftir) %in%
-        c("sample_id", "wavenumber", "absorbance", "transmittance"))
+        c(
+          "sample_id",
+          "wavenumber",
+          "absorbance",
+          "transmittance",
+          "intensity"
+        ))
     )
   ) {
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance} or {.var transmittance}."
+          "Error in {.fn {fn}}. {.arg ftir} may only contain columns {.var sample_id}, {.var wavenumber}, and one of {.var absorbance}, {.var transmittance}, or {.var intensity}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance} ou {.var transmittance}."
+          "Erreur dans {.fn {fn}}. {.arg ftir} ne peut contenir que les colonnes {.var sample_id}, {.var wavenumber}, et une des colonnes {.var absorbance}, {.var transmittance}, ou {.var intensity}."
         )
       )
     )
@@ -199,8 +213,11 @@ check_ftir_data <- function(ftir) {
         c(
           "absorbance",
           "transmittance",
+          "intensity",
+          "raman",
           "normalized absorbance",
-          "normalized transmittance"
+          "normalized transmittance",
+          "normalized raman"
         ))
   ) {
     .pkg_abort(
@@ -259,11 +276,11 @@ print.PlotFTIR_data <- function(x, ...) {
 
   if (lang == "fr") {
     cat("Donn\u00e9es PlotFTIR:\n")
-    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    cat("  Plage spectrale:", min(wn), "-", max(wn), "cm\u207b\u00b9", "\n")
     if (length(res) == 0) {
       cat("  R\u00e9solution: aucune\n")
     } else if (length(unique(res)) == 1) {
-      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9\\n")
+      cat("  R\u00e9solution:", unique(res), "cm\u207b\u00b9", "\n")
     } else {
       cat("  R\u00e9solution: variable\n")
     }
@@ -281,11 +298,11 @@ print.PlotFTIR_data <- function(x, ...) {
   } else {
     # English by default
     cat("PlotFTIR data:\n")
-    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9\\n")
+    cat("  Spectral range:", min(wn), "-", max(wn), "cm\u207b\u00b9", "\n")
     if (length(res) == 0) {
       cat("  Resolution: none\n")
     } else if (length(unique(res)) == 1) {
-      cat("  Resolution:", unique(res), "cm\u207b\u00b9\\n")
+      cat("  Resolution:", unique(res), "cm\u207b\u00b9", "\n")
     } else {
       cat("  Resolution: variable\n")
     }
@@ -316,16 +333,151 @@ print.PlotFTIR_data <- function(x, ...) {
 #' @keywords internal
 intensity_type <- function(ftir) {
   # Don't check_ftir_data to avoid a loop if called by check_ftir_data()
+  # NOTE: the magnitude heuristic below cannot distinguish raw Raman counts from
+  # transmittance. Callers reading Raman data must set the "intensity" attribute
+  # *before* calling check_ftir_data() so this guess is never reached.
 
   if ("absorbance" %in% colnames(ftir)) {
     return("absorbance")
   } else if ("transmittance" %in% colnames(ftir)) {
     return("transmittance")
+  } else if ("intensity" %in% colnames(ftir)) {
+    intensity_attr <- attr(ftir, "intensity")
+    if (!is.null(intensity_attr) && intensity_attr != "") {
+      return(intensity_attr)
+    }
+    ftir_cols <- colnames(ftir)[
+      !colnames(ftir) %in% c("wavenumber", "sample_id")
+    ]
+    if (length(ftir_cols) != 1L) {
+      .pkg_abort(
+        list(
+          en = c(
+            "FTIR data must contain exactly three columns: {.arg wavenumber}, {.arg sample_id}, and one intensity column.",
+            x = paste0(length(ftir_cols) - 1, " extra columns detected.")
+          ),
+          fr = c(
+            "Les donn\u00e9es FTIR doivent contenir exactement trois colonnes: {.arg wavenumber}, {.arg sample_id}, et une colonne d'intensit\u00e9.",
+            x = paste0(
+              length(ftir_cols) - 1,
+              " colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+            )
+          )
+        ),
+        N = length(ftir_cols)
+      )
+    }
+    ftir_vals <- ftir[[ftir_cols]]
+    return(ifelse(
+      max(ftir_vals, na.rm = TRUE) > 10,
+      "transmittance",
+      "absorbance"
+    ))
   }
 
   # implied else
-  ftir <- ftir[, -which(names(ftir) %in% c("wavenumber", "sample_id"))]
-  return(ifelse(max(ftir, na.rm = TRUE) > 10, "transmittance", "absorbance"))
+  ftir_cols <- colnames(ftir)[!colnames(ftir) %in% c("wavenumber", "sample_id")]
+  if (length(ftir_cols) != 1L) {
+    .pkg_abort(
+      list(
+        en = c(
+          "data must contain exactly three columns: {.arg wavenumber}, {.arg sample_id}, and one intensity column.",
+          x = paste0(length(ftir_cols) - 1, " extra columns detected.")
+        ),
+        fr = c(
+          "Les donn\u00e9es FTIR doivent contenir exactement trois colonnes: {.arg wavenumber}, {.arg sample_id}, et une colonne d'intensit\u00e9.",
+          x = paste0(
+            length(ftir_cols) - 1,
+            " colonnes suppl\u00e9mentaires d\u00e9tect\u00e9es."
+          )
+        )
+      )
+    )
+  }
+  return(ifelse(
+    max(ftir[[ftir_cols]], na.rm = TRUE) > 10,
+    "transmittance",
+    "absorbance"
+  ))
+}
+
+#' Resolve and Validate Requested Sample IDs
+#'
+#' @description Internal helper resolving the `sample_ids` argument shared by the
+#'   Raman processing functions. `NA`, `NULL`, and zero-length inputs all select
+#'   every sample present in `ftir`; anything else is validated against the
+#'   sample IDs actually present.
+#'
+#'   Fonction interne qui résout l'argument `sample_ids` partagé par les
+#'   fonctions de traitement Raman. `NA`, `NULL` et les entrées de longueur nulle
+#'   sélectionnent tous les échantillons présents dans `ftir`; toute autre valeur
+#'   est validée par rapport aux identifiants réellement présents.
+#'
+#' @param spectra A data.frame of FTIR or Raman spectra containing a
+#'   `sample_id` column.
+#'
+#'   Un data.frame de spectres IRTF ou Raman contenant une colonne `sample_id`.
+#'
+#' @param arg The name of the calling function's data argument, used in error
+#'   messages.
+#'
+#'   Le nom de l'argument de données de la fonction appelante, utilisé dans les
+#'   messages d'erreur.
+#'
+#' @param call The calling environment, used for error reporting.
+#'
+#'   L'environnement appelant, utilisé pour le signalement des erreurs.
+#'
+#' @return a character vector of validated sample IDs.
+#'
+#'   un vecteur de caractères d'identifiants d'échantillons validés.
+#'
+#' @keywords internal
+#' @noRd
+.resolve_sample_ids <- function(
+  spectra,
+  sample_ids,
+  arg = "raman",
+  call = rlang::caller_env()
+) {
+  available <- unique(spectra$sample_id)
+
+  # is.null() must be tested before is.na(): is.na(NULL) is logical(0), which
+  # errors when used as an `if` condition.
+  if (
+    is.null(sample_ids) ||
+      length(sample_ids) == 0 ||
+      (length(sample_ids) == 1 && is.na(sample_ids))
+  ) {
+    return(available)
+  }
+
+  if (any(!(sample_ids %in% available))) {
+    mismatch <- sample_ids[!(sample_ids %in% available)]
+    .pkg_abort(
+      list(
+        en = c(
+          cli::format_inline(
+            "All provided {.arg sample_ids} must be in {.arg {arg}} data."
+          ),
+          x = cli::format_inline(
+            "The following {.arg sample_id{?s}} are not present: {.val {mismatch}}."
+          )
+        ),
+        fr = c(
+          cli::format_inline(
+            "Tous les {.arg sample_ids} fournis doivent \u00eatre dans les donn\u00e9es {.arg {arg}}."
+          ),
+          x = cli::format_inline(
+            "Les {.arg sample_id{?s}} suivants ne sont pas pr\u00e9sents: {.val {mismatch}}."
+          )
+        )
+      ),
+      call = call
+    )
+  }
+
+  sample_ids
 }
 
 

@@ -53,7 +53,6 @@ inst/doc
 
 *.Rbak
 revdep/
-cobertura.xml
 
 .vscode/*
 .kilo/*
@@ -63,3 +62,4 @@ docs
 tests/testthat/testthat-problems.rds
 tests/testthat/_problems/*
 .kilo/*
+cobertura.xml

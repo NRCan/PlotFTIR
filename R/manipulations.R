@@ -986,6 +986,7 @@ highlight_sample <- function(ftir_spectra_plot, sample_ids, ...) {
   return(p)
 }
 
+
 #' Add Band
 #'
 #' @description
@@ -1057,10 +1058,10 @@ add_band <- function(
     .pkg_abort(
       list(
         en = cli::format_inline(
-          "Error in {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
+          "Error in {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} must be a ggplot object. You provided {.obj_type_friendly {ftir_spectra_plot}}."
         ),
         fr = cli::format_inline(
-          "Erreur dans {.fn PlotFTIR::highlight_sample}. {.arg ftir_spectra_plot} doit \u00eatre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
+          "Erreur dans {.fn PlotFTIR::add_band}. {.arg ftir_spectra_plot} doit \u00eatre un objet ggplot. Vous avez fourni {.obj_type_friendly {ftir_spectra_plot}}."
         )
       ),
       call = rlang::caller_env()
@@ -1117,6 +1118,9 @@ add_band <- function(
 
   if (wavenumber_range[1] == wavenumber_range[2]) {
     # IF both wavenumbers are the same, then add a marker there, since a 0 width band won't show
+    if (is.null(colour)) {
+      colour <- "#80c7ff"
+    }
     return(add_wavenumber_marker(
       ftir_spectra_plot = ftir_spectra_plot,
       wavenumber = wavenumber_range[1],
