@@ -86,6 +86,17 @@ et `absorbance`/`transmittance`.</p></dd>
 Un tracé généré par [plot_ftir()] ou [plot_ftir_stacked()].</p></dd>
 
 
+<dt id="arg-raman">raman<a class="anchor" aria-label="anchor" href="#arg-raman"></a></dt>
+<dd><p>A data.frame of Raman spectra in long format with columns
+  `sample_id`, `wavenumber`, and `intensity`, carrying an `intensity`
+  attribute of `"raman"` or `"normalized raman"` (as produced by
+  [read_raman()]). FTIR absorbance/transmittance data is not accepted.</p>
+<p>Un data.frame de spectres Raman au format long avec les colonnes
+  `sample_id`, `wavenumber` et `intensity`, portant un attribut `intensity`
+  de `"raman"` ou `"normalized raman"` (tel que produit par [read_raman()]).
+  Les données FTIR d'absorbance/transmittance ne sont pas acceptées.</p></dd>
+
+
 <dt id="arg-lang">lang<a class="anchor" aria-label="anchor" href="#arg-lang"></a></dt>
 <dd><p>Optional language argument: `fr`/`french`/`francais`/`français` for French;
 `en`/`english`/`anglais` for English; `NA` uses default.
@@ -115,6 +126,11 @@ le deuxième élément comme sous-titre.</p></dd>
 <dt id="arg-legend-title">legend_title<a class="anchor" aria-label="anchor" href="#arg-legend-title"></a></dt>
 <dd><p>Title for legend. Defaults to "Sample ID".
 Titre de la légende. Par défaut "Sample ID".</p></dd>
+
+
+<dt id="arg-sample-ids">sample_ids<a class="anchor" aria-label="anchor" href="#arg-sample-ids"></a></dt>
+<dd><p>A vector of one or more `sample_id`s to select.</p>
+<p>Un vecteur d'un ou plusieurs `sample_id`s à sélectionner.</p></dd>
 
 </dl></div>
 

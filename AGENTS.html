@@ -60,13 +60,13 @@
 
 <div class="section level2">
 <h2 id="repository-overview">Repository overview<a class="anchor" aria-label="anchor" href="#repository-overview"></a></h2>
-<p><strong>PlotFTIR</strong> — Plot FTIR Spectra</p>
-<p>The goal of ‘PlotFTIR’ is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) spectral plots in R using ‘ggplot2’. The produced plots can be published directly or further modified by ‘ggplot2’ functions. L’objectif de ‘PlotFTIR’ est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) de qualité journal dans R à l’aide de ‘ggplot2’. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ‘ggplot2’.</p>
+<p><strong>PlotFTIR</strong> — Plot FTIR and Raman Spectra</p>
+<p>The goal of ‘PlotFTIR’ is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) and Raman spectral plots in R using ‘ggplot2’. The produced plots can be published directly or further modified by ‘ggplot2’ functions. L’objectif de ‘PlotFTIR’ est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) et Raman de qualité journal dans R à l’aide de ‘ggplot2’. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions ‘ggplot2’.</p>
 <p><a href="https://github.com/NRCan/PlotFTIR" class="external-link uri">https://github.com/NRCan/PlotFTIR</a></p>
 <div class="section level3">
 <h3 id="overall-structure">Overall structure<a class="anchor" aria-label="anchor" href="#overall-structure"></a></h3>
 <p>The project follows standard R package conventions with these key directories:</p>
-<p>PlotFTIR/ ├── R/ # R source code │ ├── PlotFTIR-package.R # Auto-generated package docs │ └── *.R # Function definitions, 1 file ~= 1 exported function ├── .github/ │ ├── ISSUE_TEMPLATE/ # GitHub issue templates │ ├── skills/ # Agent skill definitions │ └── workflows/ # CI/CD configurations ├── tests/testthat/ # Test suite ├── man/ # Generated documentation ├── AGENTS.md # Main agent setup file ├── DESCRIPTION # Package metadata ├── NAMESPACE # Auto-generated export information ├── NEWS.md # Changelog └── Various config files # .gitignore, codecov.yml, etc.</p>
+<p>PlotFTIR/ ├── R/ # R source code │ ├── PlotFTIR-package.R # Auto-generated package docs │ ├── io.R # File reading (CSV, ASP, JDX + ir/ChemoSpec bridges) │ ├── plot_ftir.R # FTIR plotting (ggplot2 wrapper) │ ├── plot_raman.R # Raman plotting (core + stacked variants) │ ├── manipulations.R # Plot transformations (zoom, markers, highlighting) │ ├── maths.R # Spectral operations (average, normalize, convert) │ ├── raman_utils.R # Raman utilities (baseline, smoothing, peak finding) │ └── utils.R # Central validation hub ├── data/ # Reference data files (e.g. Graphite Raman spectra) ├── .github/ │ ├── ISSUE_TEMPLATE/ # GitHub issue templates │ ├── skills/ # Agent skill definitions │ └── workflows/ # CI/CD configurations ├── tests/testthat/ # Test suite (test-plot_raman.R, test-raman_utils.R) ├── man/ # Generated documentation ├── AGENTS.md # Main agent setup file ├── DESCRIPTION # Package metadata ├── NAMESPACE # Auto-generated export information ├── NEWS.md # Changelog └── Various config files # .gitignore, codecov.yml, etc.</p>
 <hr></div>
 </div>
 <div class="section level2">
@@ -78,8 +78,8 @@
 </ul></div>
 <div class="section level2">
 <h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
-<p>Standard R package structure with core components: - <strong>io.R</strong>: File reading (CSV, ASP, JDX formats + ir/ChemoSpec bridges) - <strong>plot_ftir.R</strong>: Core plotting (ggplot2 wrapper) - <strong>manipulations.R</strong>: Plot transformations (zoom, markers, highlighting) - <strong>maths.R</strong>: Spectral operations (average, normalize, convert) - <strong>utils.R</strong>: Central validation hub</p>
-<p>Data structure: Long-format data.frames with exactly 3 columns (<code>wavenumber</code>, <code>absorbance|transmittance</code>, <code>sample_id</code>) and mandatory <code>intensity</code> attribute set by <code><a href="reference/check_ftir_data.html">check_ftir_data()</a></code>.</p>
+<p>Standard R package structure with core components: - <strong>io.R</strong>: File reading (CSV, ASP, JDX formats + ir/ChemoSpec bridges) - <strong>plot_ftir.R</strong>: Core plotting (ggplot2 wrapper) - <strong>plot_raman.R</strong>: Raman plotting (core + stacked variants) - <strong>manipulations.R</strong>: Plot transformations (zoom, markers, highlighting) - <strong>maths.R</strong>: Spectral operations (average, normalize, convert) - <strong>raman_utils.R</strong>: Raman utilities (baseline correction, smoothing, peak finding) - <strong>utils.R</strong>: Central validation hub</p>
+<p>Data structure: Long-format data.frames with exactly 3 columns (<code>wavenumber</code>, <code>absorbance|transmittance</code>, <code>sample_id</code>) and mandatory <code>intensity</code> attribute set by <code><a href="reference/check_ftir_data.html">check_ftir_data()</a></code>. Raman spectra use the same long-format structure with a <code>raman</code> attribute.</p>
 <p>See <a href="vignettes/plotting_ftir_spectra.Rmd">vignettes/plotting_ftir_spectra.Rmd</a> for end-to-end tutorial and <a href="doc/deconvoluting-spectra.Rmd">doc/deconvoluting-spectra.Rmd</a> for advanced techniques.</p>
 </div>
 <div class="section level2">
