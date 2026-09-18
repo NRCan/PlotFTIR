@@ -8,15 +8,16 @@ NULL
 #' Get current language setting
 #'
 #' @return character string with the current language code
+#' @keywords internal
 .get_language <- function() {
-   lang <- tolower(getOption("PlotFTIR.lang", default = "en"))
-   if (lang %in% c("fr", "fra", "french", "francais", "fran\u00e7ais")) {
-     return("fr")
-   }
-   if (lang %in% c("en", "eng", "english", "anglais")) {
-     return("en")
-   }
-   return("en")
+  lang <- tolower(getOption("PlotFTIR.lang", default = "en"))
+  if (lang %in% c("fr", "fra", "french", "francais", "fran\u00e7ais")) {
+    return("fr")
+  }
+  if (lang %in% c("en", "eng", "english", "anglais")) {
+    return("en")
+  }
+  return("en")
 }
 
 #' Bilingual abort function
@@ -27,8 +28,12 @@ NULL
 #' @param ... Additional arguments passed to cli_abort
 #' @noRd
 .pkg_abort <- function(messages, call = rlang::caller_env(), ...) {
-  if ((!is.character(messages) && !is.list(messages)) || is.null(names(messages))) {
-    cli::cli_abort("{.arg messages} must be a named character vector or a named list.")
+  if (
+    (!is.character(messages) && !is.list(messages)) || is.null(names(messages))
+  ) {
+    cli::cli_abort(
+      "{.arg messages} must be a named character vector or a named list."
+    )
   }
 
   lang <- .get_language()
@@ -50,8 +55,12 @@ NULL
 #' @param ... Additional arguments passed to cli_warn
 #' @noRd
 .pkg_warn <- function(messages, call = rlang::caller_env(), ...) {
-  if ((!is.character(messages) && !is.list(messages)) || is.null(names(messages))) {
-    cli::cli_abort("{.arg messages} must be a named character vector or a named list.")
+  if (
+    (!is.character(messages) && !is.list(messages)) || is.null(names(messages))
+  ) {
+    cli::cli_abort(
+      "{.arg messages} must be a named character vector or a named list."
+    )
   }
 
   lang <- .get_language()
@@ -73,8 +82,12 @@ NULL
 #' @param ... Additional arguments passed to cli_inform
 #' @noRd
 .pkg_inform <- function(messages, call = rlang::caller_env(), ...) {
-  if ((!is.character(messages) && !is.list(messages)) || is.null(names(messages))) {
-    cli::cli_abort("{.arg messages} must be a named character vector or a named list.")
+  if (
+    (!is.character(messages) && !is.list(messages)) || is.null(names(messages))
+  ) {
+    cli::cli_abort(
+      "{.arg messages} must be a named character vector or a named list."
+    )
   }
 
   lang <- .get_language()

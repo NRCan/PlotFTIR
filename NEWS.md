@@ -1,5 +1,11 @@
 # PlotFTIR (development version)
 
+* Added Raman spectral plotting with `plot_raman()`, `read_raman()`, and utilities for baseline correction, smoothing, and peak finding (#34).
+* `smooth_spectra()`, `baseline_correct()`, `normalize_raman()`, and `find_peak_maxima()` accept `sample_ids = NULL` to select every sample (#34).
+* `smooth_spectra()` and `baseline_correct()` now report a clear error when given FTIR absorbance or transmittance data instead of Raman spectra (#34).
+* `normalize_raman()` now rejects spectra with a non-positive maximum and reports `NA` intensity values rather than silently propagating them (#34).
+* `read_raman()` captures single-`#` header metadata, reports true file line numbers for invalid data, and warns about malformed rows (#34).
+
 # PlotFTIR 1.3.1
 
 * Updated package data sets to properly print after v1.3.0.

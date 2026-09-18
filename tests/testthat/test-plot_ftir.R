@@ -65,13 +65,13 @@ test_that("data is checked correctly", {
   )
   expect_error_bilingual(
     plot_ftir(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    en = "`ftir` must have one of `absorbance` or `transmittance` columns.",
-    fr = "`ftir` doit avoir une des colonnes `absorbance` ou `transmittance`."
+    en = "`ftir` must have one of `absorbance`, `transmittance`, or `intensity` columns.",
+    fr = "`ftir` doit contenir une des colonnes `absorbance`, `transmittance`, ou `intensity`."
   )
   expect_error_bilingual(
     plot_ftir(ftir = full_data_df),
-    en = "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fr = "`ftir` ne peut pas contenir les deux colonnes `absorbance` et `transmittance`."
+    en = "cannot contain more than one of `absorbance`, `transmittance`, or `intensity` columns.",
+    fr = "`ftir` ne peut pas contenir plus d'une des colonnes `absorbance`, `transmittance`, ou `intensity`."
   )
 
   expect_error_bilingual(
@@ -86,20 +86,20 @@ test_that("data is checked correctly", {
   )
   expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df[, c("sample_id", "wavenumber")]),
-    en = "`ftir` must have one of `absorbance` or `transmittance` columns.",
-    fr = "`ftir` doit avoir une des colonnes `absorbance` ou `transmittance`."
+    en = "`ftir` must have one of `absorbance`, `transmittance`, or `intensity` columns",
+    fr = "`ftir` doit contenir une des colonnes `absorbance`, `transmittance`, ou `intensity`"
   )
   expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df),
-    en = "`ftir` cannot contain both `absorbance` and `transmittance` columns.",
-    fr = "`ftir` ne peut pas contenir les deux colonnes `absorbance` et `transmittance`."
+    en = "`ftir` cannot contain more than one of `absorbance`, `transmittance`, or `intensity` columns.",
+    fr = "`ftir` ne peut pas contenir plus d'une des colonnes `absorbance`, `transmittance`, ou `intensity`."
   )
 
   colnames(full_data_df)[4] <- "logabs"
   expect_error_bilingual(
     plot_ftir(ftir = full_data_df),
-    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
-    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance` ou `transmittance`."
+    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance`, `transmittance`, or `intensity`.",
+    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance`, `transmittance`, ou `intensity`."
   )
   expect_error_bilingual(
     plot_ftir(biodiesel, 1234),
@@ -119,8 +119,8 @@ test_that("data is checked correctly", {
 
   expect_error_bilingual(
     plot_ftir_stacked(ftir = full_data_df),
-    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance` or `transmittance`.",
-    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance` ou `transmittance`."
+    en = "`ftir` may only contain columns `sample_id`, `wavenumber`, and one of `absorbance`, `transmittance`, or `intensity`.",
+    fr = "`ftir` ne peut contenir que les colonnes `sample_id`, `wavenumber`, et une des colonnes `absorbance`, `transmittance`, ou `intensity`."
   )
   expect_error_bilingual(
     plot_ftir_stacked(biodiesel, stack_offset = "abc"),

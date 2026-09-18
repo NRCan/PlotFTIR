@@ -2,10 +2,10 @@
 
 ## Repository overview
 
-**PlotFTIR** — Plot FTIR Spectra
+**PlotFTIR** — Plot FTIR and Raman Spectra
 
-The goal of 'PlotFTIR' is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) spectral plots in R using 'ggplot2'. The produced plots can be published directly or further modified by 'ggplot2' functions.
-    L'objectif de 'PlotFTIR' est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) de qualité journal dans R à l'aide de 'ggplot2'. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions 'ggplot2'.
+The goal of 'PlotFTIR' is to easily and quickly kick-start the production of journal-quality Fourier Transform Infra-Red (FTIR) and Raman spectral plots in R using 'ggplot2'. The produced plots can be published directly or further modified by 'ggplot2' functions.
+    L'objectif de 'PlotFTIR' est de démarrer facilement et rapidement la production des tracés spectraux de spectroscopie infrarouge à transformée de Fourier (IRTF) et Raman de qualité journal dans R à l'aide de 'ggplot2'. Les tracés produits peuvent être publiés directement ou modifiés davantage par les fonctions 'ggplot2'.
 
 https://github.com/NRCan/PlotFTIR
 
@@ -15,13 +15,20 @@ The project follows standard R package conventions with these key directories:
 
 PlotFTIR/
 ├── R/                          # R source code
-│   ├── PlotFTIR-package.R # Auto-generated package docs
-│   └── *.R                     # Function definitions, 1 file ~= 1 exported function
+│   ├── PlotFTIR-package.R      # Auto-generated package docs
+│   ├── io.R                    # File reading (CSV, ASP, JDX + ir/ChemoSpec bridges)
+│   ├── plot_ftir.R             # FTIR plotting (ggplot2 wrapper)
+│   ├── plot_raman.R            # Raman plotting (core + stacked variants)
+│   ├── manipulations.R         # Plot transformations (zoom, markers, highlighting)
+│   ├── maths.R                 # Spectral operations (average, normalize, convert)
+│   ├── raman_utils.R           # Raman utilities (baseline, smoothing, peak finding)
+│   └── utils.R                 # Central validation hub
+├── data/                       # Reference data files (e.g. Graphite Raman spectra)
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # GitHub issue templates
 │   ├── skills/                 # Agent skill definitions
 │   └── workflows/              # CI/CD configurations
-├── tests/testthat/             # Test suite
+├── tests/testthat/             # Test suite (test-plot_raman.R, test-raman_utils.R)
 ├── man/                        # Generated documentation
 ├── AGENTS.md                   # Main agent setup file
 ├── DESCRIPTION                 # Package metadata
@@ -43,11 +50,13 @@ PlotFTIR/
 Standard R package structure with core components:
 - **io.R**: File reading (CSV, ASP, JDX formats + ir/ChemoSpec bridges)
 - **plot_ftir.R**: Core plotting (ggplot2 wrapper)
+- **plot_raman.R**: Raman plotting (core + stacked variants)
 - **manipulations.R**: Plot transformations (zoom, markers, highlighting)
 - **maths.R**: Spectral operations (average, normalize, convert)
+- **raman_utils.R**: Raman utilities (baseline correction, smoothing, peak finding)
 - **utils.R**: Central validation hub
 
-Data structure: Long-format data.frames with exactly 3 columns (`wavenumber`, `absorbance|transmittance`, `sample_id`) and mandatory `intensity` attribute set by `check_ftir_data()`.
+Data structure: Long-format data.frames with exactly 3 columns (`wavenumber`, `absorbance|transmittance`, `sample_id`) and mandatory `intensity` attribute set by `check_ftir_data()`. Raman spectra use the same long-format structure with a `raman` attribute.
 
 See [vignettes/plotting_ftir_spectra.Rmd](vignettes/plotting_ftir_spectra.Rmd) for end-to-end tutorial and [doc/deconvoluting-spectra.Rmd](doc/deconvoluting-spectra.Rmd) for advanced techniques.
 
