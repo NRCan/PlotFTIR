@@ -41,14 +41,13 @@ seront supprimés.}
 
 \item{label_aesthetics}{A named `list` of aesthetics to pass to ggplot for
   creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
-  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
-  `size`are permitted. Positioning aesthetics will be removed.
+  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface`,
+  `size`, and `vjust` are permitted.
 
   Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
   l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
   plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
-  `fontface` et `size` sont autorisés. Les aspects esthétiques du
-  positionnement seront supprimés.}
+  `fontface`, `size` et `vjust` sont autorisés.}
 }
 \value{
 the FTIR plot as a ggplot2 object, with a marker added at the
@@ -88,6 +87,12 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
   add_wavenumber_marker(p, 2920,
     text = "C-H Stretch",
     line_aesthetics = list("linetype" = "dashed")
+  )
+
+  # Nudge a label down to avoid overlap with another label
+  add_wavenumber_marker(p, 2850,
+    text = "C-H Stretch",
+    label_aesthetics = list(vjust = 3)
   )
 }
 }
