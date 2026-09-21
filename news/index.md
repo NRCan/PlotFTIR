@@ -2,21 +2,32 @@
 
 ## PlotFTIR (development version)
 
+- [`add_wavenumber_marker()`](https://nrcan.github.io/PlotFTIR/reference/add_wavenumber_marker.md)
+  and
+  [`add_band()`](https://nrcan.github.io/PlotFTIR/reference/add_band.md)
+  now respect `label_aesthetics = list(vjust = ...)` so peak labels can
+  be vertically offset to reduce overlap
+  ([@pbulsink](https://github.com/pbulsink),
+  [\#38](https://github.com/NRCan/PlotFTIR/issues/38)).
+
 - [`fit_peaks()`](https://nrcan.github.io/PlotFTIR/reference/fit_peaks.md)
   now documents explicit fitting controls and clarifies that automatic
   peak discovery is a heuristic starting point for fitting, not a
   validated deconvolution standard
   ([\#33](https://github.com/NRCan/PlotFTIR/issues/33)).
+
 - Peak fitting functionality added with
   [`find_ftir_peaks()`](https://nrcan.github.io/PlotFTIR/reference/find_ftir_peaks.md),
   [`fit_peaks()`](https://nrcan.github.io/PlotFTIR/reference/fit_peaks.md),
   and related functions.
   ([\#33](https://github.com/NRCan/PlotFTIR/issues/33))
+
 - Added Raman spectral plotting with
   [`plot_raman()`](https://nrcan.github.io/PlotFTIR/reference/plot_raman.md),
   [`read_raman()`](https://nrcan.github.io/PlotFTIR/reference/read_raman.md),
   and utilities for baseline correction, smoothing, and peak finding
   ([\#34](https://github.com/NRCan/PlotFTIR/issues/34)).
+
 - [`smooth_spectra()`](https://nrcan.github.io/PlotFTIR/reference/smooth_spectra.md),
   [`baseline_correct()`](https://nrcan.github.io/PlotFTIR/reference/baseline_correct.md),
   [`normalize_raman()`](https://nrcan.github.io/PlotFTIR/reference/normalize_raman.md),
@@ -24,16 +35,19 @@
   [`find_peak_maxima()`](https://nrcan.github.io/PlotFTIR/reference/find_peak_maxima.md)
   accept `sample_ids = NULL` to select every sample
   ([\#34](https://github.com/NRCan/PlotFTIR/issues/34)).
+
 - [`smooth_spectra()`](https://nrcan.github.io/PlotFTIR/reference/smooth_spectra.md)
   and
   [`baseline_correct()`](https://nrcan.github.io/PlotFTIR/reference/baseline_correct.md)
   now report a clear error when given FTIR absorbance or transmittance
   data instead of Raman spectra
   ([\#34](https://github.com/NRCan/PlotFTIR/issues/34)).
+
 - [`normalize_raman()`](https://nrcan.github.io/PlotFTIR/reference/normalize_raman.md)
   now rejects spectra with a non-positive maximum and reports `NA`
   intensity values rather than silently propagating them
   ([\#34](https://github.com/NRCan/PlotFTIR/issues/34)).
+
 - [`read_raman()`](https://nrcan.github.io/PlotFTIR/reference/read_raman.md)
   captures single-`#` header metadata, reports true file line numbers
   for invalid data, and warns about malformed rows

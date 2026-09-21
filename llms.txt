@@ -83,8 +83,10 @@ compressed.](reference/figures/README-biodiesel_compress_en-1.png)
 FTIR spectra of biodiesel samples, with low-energy region compressed.
 
 You can also add marker lines (with labels) at specific wavenumbers on
-the plots, controlling their line or text properties as needed.
-Similarly, a shaded band can be added to indicate a region.
+the plots, controlling their line or text properties as needed. When
+labels are close together, you can align them vertically by adjusting
+`vjust` in `label_aesthetics`. Similarly, a shaded band can be added to
+indicate a region.
 
 ``` r
 
@@ -92,16 +94,24 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-) 
+)
+
+biodiesel_marked <- add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 1710,
+  text = "Shoulder",
+  label_aesthetics = list("color" = "red", "vjust" = 3)
+)
+
 add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 ```
 
-![FTIR spectra of biodiesel samples, with a marker at 1742 cm-1
-indicating C=O stretch, and a coloured band from 3050 to 2750 for C-H
+![FTIR spectra of biodiesel samples, with vertically aligned peak labels
+at 1742 and 1710 cm-1 and a coloured band from 3050 to 2750 for C-H
 stretch.](reference/figures/README-biodiesel_labelled_en-1.png)
 
-FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating
-C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch.
+FTIR spectra of biodiesel samples, with vertically aligned peak labels
+at 1742 and 1710 cm-1 and a coloured band from 3050 to 2750 for C-H
+stretch.
 
 If the need arises to rename samples listed in the legend, this is
 possible via
@@ -159,7 +169,7 @@ An example of the `biodiesel` data set is below:
 
 head(biodiesel)
 #> PlotFTIR data:
-#>   Spectral range: 700.7395 - 710.0579 cm⁻¹
+#>   Spectral range: 700.7395 - 710.0579 cm⁻¹ 
 #>   Resolution: variable
 #>   Intensity type: absorbance 
 #>   Number of samples: 1 
@@ -226,7 +236,7 @@ perform these conversions.
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 #> PlotFTIR data:
-#>   Spectral range: 700.7395 - 710.0579 cm⁻¹
+#>   Spectral range: 700.7395 - 710.0579 cm⁻¹ 
 #>   Resolution: variable
 #>   Intensity type: transmittance 
 #>   Number of samples: 1 
@@ -269,8 +279,6 @@ subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_sp
 fitted <- fit_peaks(subset_spectrum, method = "voigt")
 
 plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 #> Loading required namespace: gghighlight
 ```
 
@@ -317,14 +325,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.3.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.3.1.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.3.0.9000},
+#>     note = {R package version 1.3.1.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```
@@ -430,8 +438,10 @@ Spectres FTIR d’échantillons de biodiesel, avec la région de basse
 
 Vous pouvez également ajouter des lignes de marqueur (avec des
 étiquettes) à des numéros d’onde spécifiques sur les tracés, en
-contrôlant leurs propriétés de ligne ou de texte selon vos besoins. De
-même, une bande ombrée peut être ajoutée pour indiquer une région.
+contrôlant leurs propriétés de ligne ou de texte selon vos besoins.
+Lorsque les étiquettes sont proches, vous pouvez les aligner
+verticalement en ajustant `vjust` dans `label_aesthetics`. De même, une
+bande ombrée peut être ajoutée pour indiquer une région.
 
 ``` r
 
@@ -439,17 +449,25 @@ biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-) 
+)
+
+biodiesel_marked <- add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 1710,
+  text = "Épaule",
+  label_aesthetics = list("color" = "red", "vjust" = 3)
+)
+
 add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
 ```
 
-![Spectres FTIR d'échantillons de biodiesel, avec un marqueur à 1742
-cm-1 indiquant l'élongation C=O et une bande colorée de 3050 à 2750 pour
-l'élongation C-H.](reference/figures/README-biodiesel_labelled_fr-1.png)
+![Spectres FTIR d'échantillons de biodiesel, avec des étiquettes de pics
+alignées verticalement à 1742 et 1710 cm-1, et une bande colorée de 3050
+à 2750 pour l'élongation
+C-H.](reference/figures/README-biodiesel_labelled_fr-1.png)
 
-Spectres FTIR d’échantillons de biodiesel, avec un marqueur à 1742 cm-1
-indiquant l’élongation C=O et une bande colorée de 3050 à 2750 pour
-l’élongation C-H.
+Spectres FTIR d’échantillons de biodiesel, avec des étiquettes de pics
+alignées verticalement à 1742 et 1710 cm-1, et une bande colorée de 3050
+à 2750 pour l’élongation C-H.
 
 S’il est nécessaire de renommer les échantillons répertoriés dans la
 légende, cela est possible via
@@ -561,7 +579,7 @@ Un exemple de l’ensemble de données `biodiesel` est ci-dessous:
 
 head(biodiesel)
 #> PlotFTIR data:
-#>   Spectral range: 700.7395 - 710.0579 cm⁻¹
+#>   Spectral range: 700.7395 - 710.0579 cm⁻¹ 
 #>   Resolution: variable
 #>   Intensity type: absorbance 
 #>   Number of samples: 1 
@@ -583,7 +601,7 @@ effectuent ces conversions.
 biodiesel_transm <- absorbance_to_transmittance(biodiesel)
 head(biodiesel_transm)
 #> PlotFTIR data:
-#>   Spectral range: 700.7395 - 710.0579 cm⁻¹
+#>   Spectral range: 700.7395 - 710.0579 cm⁻¹ 
 #>   Resolution: variable
 #>   Intensity type: transmittance 
 #>   Number of samples: 1 
@@ -625,8 +643,6 @@ subset_spectrum <- subset_spectrum[subset_spectrum$wavenumber < 2000 & subset_sp
 
 fitted <- fit_peaks(subset_spectrum, method = "voigt")
 plot_fit_ftir_peaks(ftir = subset_spectrum, fitted_peaks = fitted, plot_components = TRUE)
-#> Scale for colour is already present.
-#> Adding another scale for colour, which will replace the existing scale.
 ```
 
 ![Spectres FTIR d'un échantillon de diesel, zoomés de 2000 à 1000 cm-1,
@@ -675,14 +691,14 @@ citation("PlotFTIR")
 #> To cite package 'PlotFTIR' in publications use:
 #> 
 #>   Bulsink P (????). _PlotFTIR: Plot FTIR Spectra_. R package version
-#>   1.3.0.9000, <https://github.com/NRCan/PlotFTIR>.
+#>   1.3.1.9000, <https://github.com/NRCan/PlotFTIR>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {PlotFTIR: Plot FTIR Spectra},
 #>     author = {Philip Bulsink},
-#>     note = {R package version 1.3.0.9000},
+#>     note = {R package version 1.3.1.9000},
 #>     url = {https://github.com/NRCan/PlotFTIR},
 #>   }
 ```

@@ -132,13 +132,12 @@ seront supprimés.</p></dd>
 <dt id="arg-label-aesthetics">label_aesthetics<a class="anchor" aria-label="anchor" href="#arg-label-aesthetics"></a></dt>
 <dd><p>A named `list` of aesthetics to pass to ggplot for
   creating the label. See `[ggplot2::geom_text()]`'s aesthetics section for
-  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface` and
-  `size`are permitted. Positioning aesthetics will be removed.</p>
+  more info. Specifically, `alpha`, `colo(u)r`, `family`, `fill`, `fontface`,
+  `size`, and `vjust` are permitted.</p>
 <p>Une `list` nommée d'esthétiques à transmettre à ggplot pour créer
   l'étiquette. Voir la section esthétique de `[ggplot2::geom_text()]` pour
   plus d'informations. Plus précisément, `alpha`, `colo(u)r`, `family`, `fill`,
-  `fontface` et `size` sont autorisés. Les aspects esthétiques du
-  positionnement seront supprimés.</p></dd>
+  `fontface`, `size` et `vjust` sont autorisés.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -171,6 +170,12 @@ de l'esthétique.</p>
 <span class="r-in"><span>  <span class="fu">add_wavenumber_marker</span><span class="op">(</span><span class="va">p</span>, <span class="fl">2920</span>,</span></span>
 <span class="r-in"><span>    text <span class="op">=</span> <span class="st">"C-H Stretch"</span>,</span></span>
 <span class="r-in"><span>    line_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"linetype"</span> <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Nudge a label down to avoid overlap with another label</span></span></span>
+<span class="r-in"><span>  <span class="fu">add_wavenumber_marker</span><span class="op">(</span><span class="va">p</span>, <span class="fl">2850</span>,</span></span>
+<span class="r-in"><span>    text <span class="op">=</span> <span class="st">"C-H Stretch"</span>,</span></span>
+<span class="r-in"><span>    label_aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>vjust <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-plt img"><img src="add_wavenumber_marker-1.png" alt="" width="700" height="433"></span>
