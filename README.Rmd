@@ -68,13 +68,20 @@ Some FTIR plots have a compressed low-energy portion of the graph which you migh
 compress_low_energy(biodiesel_plot, cutoff = 2000, compression_ratio = 5)
 ```
 
-You can also add marker lines (with labels) at specific wavenumbers on the plots, controlling their line or text properties as needed. Similarly, a shaded band can be added to indicate a region.
-```{r biodiesel_labelled_en, fig.cap="FTIR spectra of biodiesel samples, with a marker at 1742 cm-1 indicating C=O stretch, and a coloured band from 3050 to 2750 for C-H stretch."}
+You can also add marker lines (with labels) at specific wavenumbers on the plots, controlling their line or text properties as needed. When labels are close together, you can align them vertically by adjusting `vjust` in `label_aesthetics`. Similarly, a shaded band can be added to indicate a region.
+```{r biodiesel_labelled_en, fig.cap="FTIR spectra of biodiesel samples, with vertically aligned peak labels at 1742 and 1710 cm-1 and a coloured band from 3050 to 2750 for C-H stretch."}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_plot,
   wavenumber = 1742,
   text = "C=O Stretch",
   label_aesthetics = list("color" = "red")
-) 
+)
+
+biodiesel_marked <- add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 1710,
+  text = "Shoulder",
+  label_aesthetics = list("color" = "red", "vjust" = 3)
+)
+
 add_band(biodiesel_marked, c(2750,3050), "C-H Stretch")
 ```
 
@@ -241,13 +248,20 @@ Certains tracés IRTF ont une partie compressée du graphique à faible énergie
 compress_low_energy(biodiesel_trace, cutoff = 2000, compression_ratio = 5)
 ```
 
-Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins. De même, une bande ombrée peut être ajoutée pour indiquer une région.
-```{r biodiesel_labelled_fr, fig.cap="Spectres FTIR d'échantillons de biodiesel, avec un marqueur à 1742 cm-1 indiquant l'élongation C=O et une bande colorée de 3050 à 2750 pour l'élongation C-H."}
+Vous pouvez également ajouter des lignes de marqueur (avec des étiquettes) à des numéros d'onde spécifiques sur les tracés, en contrôlant leurs propriétés de ligne ou de texte selon vos besoins. Lorsque les étiquettes sont proches, vous pouvez les aligner verticalement en ajustant `vjust` dans `label_aesthetics`. De même, une bande ombrée peut être ajoutée pour indiquer une région.
+```{r biodiesel_labelled_fr, fig.cap="Spectres FTIR d'échantillons de biodiesel, avec des étiquettes de pics alignées verticalement à 1742 et 1710 cm-1, et une bande colorée de 3050 à 2750 pour l'élongation C-H."}
 biodiesel_marked <- add_wavenumber_marker(biodiesel_trace,
   wavenumber = 1742,
   text = "C=O étirement",
   label_aesthetics = list("color" = "red")
-) 
+)
+
+biodiesel_marked <- add_wavenumber_marker(biodiesel_marked,
+  wavenumber = 1710,
+  text = "Épaule",
+  label_aesthetics = list("color" = "red", "vjust" = 3)
+)
+
 add_band(biodiesel_marked, c(2750,3050), "C-H étirement")
 ```
 
